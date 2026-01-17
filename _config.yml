@@ -16,9 +16,7 @@ timezone: Asia/Seoul
 
 title: WooLam # the main title
 
-tagline: 개발 과정에서 마주친 문제와
-         원인과 해결 과정을 기록하는
-         기술 블로그입니다. # it will display as the subtitle
+tagline: 설명 가능한 경험을 쌓는 공간 # it will display as the subtitle
 
 description: >- # used by seo meta and the atom feed
   A minimal, responsive and feature-rich Jekyll theme for technical writing.
