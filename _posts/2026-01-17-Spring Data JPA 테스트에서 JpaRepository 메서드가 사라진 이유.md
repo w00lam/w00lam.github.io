@@ -234,5 +234,4 @@ IDE는 다음과 같이 판단한다.
 
 ## 한 줄 요약
 
-> **JpaRepository 메서드가 IDE에서 사라진다면**  
-> **코드보다 먼저 Classpath를 의심하자.**
+> **JpaRepository 메서드가 IDE에서 사라진다면 코드보다 먼저 Classpath를 의심하자.**
