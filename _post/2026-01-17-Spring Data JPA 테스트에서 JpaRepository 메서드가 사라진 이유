@@ -1,0 +1,68 @@
+---
+title: "Spring Data JPA 테스트에서 JpaRepository 메서드가 사라진 이유"
+date: 2026-01-17
+categories: [Spring, JPA, Gradle]
+tags: [spring-data-jpa, gradle, sourceset, classpath, ide]
+---
+
+## 문제 상황
+
+멀티 SourceSet(`testUnit`, `testIntegration`) 환경에서 테스트를 구성하던 중  
+**컴파일 타임(IDE) 기준으로 이해하기 어려운 문제**가 발생했다.
+
+> `JpaReservationRepository` 인터페이스는 정상적으로 보이는데  
+> `JpaRepository`가 제공하는 `findAll()`, `count()` 같은 메서드가  
+> **IDE와 컴파일러에서 인식되지 않았다.**
+
+런타임 오류가 아니라 **IDE 단계에서부터 메서드가 사라진 상태**였다.
+
+---
+
+## 처음에 의심했던 원인들
+
+문제 원인을 파악하기 전, 일반적으로 아래와 같은 가능성을 먼저 의심하게 된다.
+
+### 후보 1. 잘못된 import
+- `org.springframework.data.jpa.repository.JpaRepository`가 아닌
+- 다른 Repository 타입을 import했을 가능성
+
+### 후보 2. 필드 타입을 구현체로 착각
+- Repository를 인터페이스가 아닌 구현체처럼 사용했을 가능성
+
+### 후보 3. IDE 캐시 문제
+- IntelliJ 캐시 오류 → Invalidate Caches & Restart
+
+하지만 위 세 가지 모두 **문제의 원인이 아니었다.**
+
+---
+
+## 실제 증상 정리
+
+정확한 증상은 다음과 같았다.
+
+- `JpaReservationRepository` 인터페이스 자체는 정상 인식
+- 하지만 **부모 인터페이스인 `JpaRepository`의 상속 메서드만 증발**
+- IDE 기준으로는  
+  > “부모 인터페이스가 없는 인터페이스”  
+  처럼 보이는 상태
+
+이 시점에서 문제는 **코드가 아니라 Classpath**임이 명확해졌다.
+
+---
+
+## 첫 번째 문제 원인: testIntegration SourceSet에 JPA 의존성 미연결
+
+멀티 SourceSet 환경에서는  
+**각 SourceSet이 독립적인 Classpath**를 가진다.
+
+첫 번째로 확인된 문제는 다음이었다.
+
+> `testIntegration` SourceSet에  
+> **Spring Data JPA 의존성이 포함되어 있지 않았다.**
+
+### 해결
+
+```gradle
+dependencies {
+    testIntegrationImplementation("org.springframework.boot:spring-boot-starter-data-jpa")
+}
