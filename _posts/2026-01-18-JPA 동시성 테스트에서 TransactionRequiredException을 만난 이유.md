@@ -1,7 +1,7 @@
 ---
 title: JPA 동시성 테스트에서 TransactionRequiredException을 만난 이유
 date: 2026-01-18 17:00:00 +0900
-categories: [Backend, JPA]
+categories: [Spring, JPA]
 tags: [Spring, JPA, Transaction, Concurrency, Testing, PessimisticLock]
 ---
 
