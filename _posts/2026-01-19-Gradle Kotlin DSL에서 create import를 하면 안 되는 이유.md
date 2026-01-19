@@ -3,7 +3,7 @@ title: "Gradle Kotlin DSL에서 create import를 하면 안 되는 이유"
 date: 2026-01-19
 categories: [Spring, Gradle]
 tags: [Gradle, Kotlin DSL, Test, Build]
----------------------------------------
+---
 
 ## 문제 상황
 
