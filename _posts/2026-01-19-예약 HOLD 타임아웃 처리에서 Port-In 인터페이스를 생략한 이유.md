@@ -1,6 +1,6 @@
 ---
 title: "예약 HOLD 타임아웃 처리에서 Port-In 인터페이스를 생략한 이유"
-date: 2026-01-18
+date: 2026-01-19
 categories: [Architecture, Design]
 tags: [Hexagonal Architecture, Port-In, UseCase, Scheduler, Design Decision]
 ---
