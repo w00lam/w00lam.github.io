@@ -7,7 +7,7 @@ tags: [JVM, GC, RuntimeDataArea, JIT]
 
 JVM(Java Virtual Machine)의 핵심 구성 요소인 Class Loader, Runtime Data Area, Execution Engine, 그리고 Garbage Collector가 어떻게 상호작용하며 자바 프로그램을 실행하는지 정리한다.
 
-![JVM](https://github.com/w00lam/w00lam.github.io/blob/master/assets/images/2026-03-24-posting/JVM.jpg)
+![JVM](/assets/images/2026-03-24-posting/JVM.jpg)
 
 ## 1. 자바 코드 실행 흐름
 
