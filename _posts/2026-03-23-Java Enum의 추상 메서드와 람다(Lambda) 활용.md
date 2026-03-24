@@ -1,6 +1,6 @@
 ---
 title: Java Enum의 추상 메서드와 람다(Lambda) 활용
-date: 2026-03-21
+date: 2026-03-23
 categories: [Java, Programming]
 tags: [Java, Enum, Lambda, FunctionalInterface]
 ---
