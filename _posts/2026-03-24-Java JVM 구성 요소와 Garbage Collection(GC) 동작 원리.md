@@ -64,8 +64,9 @@ C언어와 달리 자바는 GC가 메모리 해제를 대신 수행한다. GC는
 ![Mark-Sweep](/assets/images/2026-03-24-posting/Mark%20%26%20Sweep.jpg)
 
 1. **Mark:** **GC Root**(Stack, static 변수 등)에서 시작해 참조 사슬을 따라가며 살아있는 객체를 표시한다.
-   ![Mark1](/assets/images/2026-03-24-posting/Mark1.png) | ![Mark2](/assets/images/2026-03-24-posting/Mark2.png) | ![Mark3](/assets/images/2026-03-24-posting/Mark3.png)
-   ---|---|---|
+   ![Mark1](/assets/images/2026-03-24-posting/Mark1.png)
+   ![Mark2](/assets/images/2026-03-24-posting/Mark2.png)
+   ![Mark3](/assets/images/2026-03-24-posting/Mark3.png)
 3. **Sweep:** Mark되지 않은(Unreachable) 객체들을 메모리에서 제거한다.
    ![Sweep](/assets/images/2026-03-24-posting/Sweep.png)
 4. **Compact:** (선택적) 분산된 메모리를 한곳으로 모아 단편화를 방지한다.
@@ -80,9 +81,10 @@ C언어와 달리 자바는 GC가 메모리 해제를 대신 수행한다. GC는
 | **발생 시점** | Eden 영역이 꽉 찼을 때 | Old 영역이 꽉 찼을 때 |
 | **실행 속도** | 매우 빠름 | 상대적으로 느림 |
 
-![GC1](/assets/images/2026-03-24-posting/GC1.png) | ![GC2](/assets/images/2026-03-24-posting/GC2.png)
----|---|
-![GC3](/assets/images/2026-03-24-posting/GC3.png) | ![GC4](/assets/images/2026-03-24-posting/GC4.png)
+![GC1](/assets/images/2026-03-24-posting/GC1.png) 
+![GC2](/assets/images/2026-03-24-posting/GC2.png)
+![GC3](/assets/images/2026-03-24-posting/GC3.png) 
+![GC4](/assets/images/2026-03-24-posting/GC4.png)
 
 ---
 
