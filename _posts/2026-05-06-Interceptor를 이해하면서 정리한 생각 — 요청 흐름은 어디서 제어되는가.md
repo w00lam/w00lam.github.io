@@ -273,6 +273,5 @@ Spring 요청 흐름 자체가 훨씬 명확하게 보이기 시작했다.
 
 * https://docs.spring.io/spring-framework/reference/web/webmvc/mvc-servlet/handlermapping-interceptor.html
 * https://docs.spring.io/spring-framework/reference/web/webmvc.html
-* [Spring Security를 적용하면서 정리한 생각 — 인증은 어떻게 유지되는가](https://w00lam.github.io/posts/Filter%EB%A5%BC-%EC%9D%B4%ED%95%B4%ED%95%98%EB%A9%B4%EC%84%9C-%EC%A0%95%EB%A6%AC%ED%95%9C-%EC%83%9D%EA%B0%81-%EC%9D%B8%EC%A6%9D%EC%9D%80-%EC%96%B4%EB%94%94%EC%84%9C-%EC%8B%9C%EC%9E%91%EB%90%98%EB%8A%94%EA%B0%80/)
 * [Filter vs Interceptor vs AOP — 어디서 무엇을 처리해야 할까](https://w00lam.github.io/posts/Filter-vs-Interceptor-vs-AOP-%EC%96%B4%EB%94%94%EC%84%9C-%EB%AC%B4%EC%97%87%EC%9D%84-%EC%B2%98%EB%A6%AC%ED%95%B4%EC%95%BC-%ED%95%A0%EA%B9%8C/)
 * [Filter를 이해하면서 정리한 생각 — 인증은 어디서 시작되는가](https://w00lam.github.io/posts/Filter%EB%A5%BC-%EC%9D%B4%ED%95%B4%ED%95%98%EB%A9%B4%EC%84%9C-%EC%A0%95%EB%A6%AC%ED%95%9C-%EC%83%9D%EA%B0%81-%EC%9D%B8%EC%A6%9D%EC%9D%80-%EC%96%B4%EB%94%94%EC%84%9C-%EC%8B%9C%EC%9E%91%EB%90%98%EB%8A%94%EA%B0%80/)
