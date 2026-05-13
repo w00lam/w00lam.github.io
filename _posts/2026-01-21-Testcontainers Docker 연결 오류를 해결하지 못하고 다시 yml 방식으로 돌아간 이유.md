@@ -3,6 +3,7 @@ title: Testcontainers Docker 연결 오류를 해결하지 못하고 다시 yml 
 date: 2026-01-21
 categories: [Spring]
 tags: [Spring Boot, Testcontainers, Docker, Windows, Testing]
+permalink: /posts/testcontainers-docker-error-yml/
 ---
 
 ## 들어가며

@@ -3,6 +3,7 @@ title: Java JVM 구성 요소와 Garbage Collection(GC) 동작 원리
 date: 2026-03-24
 categories: [Java, Architecture]
 tags: [JVM, GC, RuntimeDataArea, JIT]
+permalink: /posts/java-jvm-gc/
 ---
 
 JVM(Java Virtual Machine)의 핵심 구성 요소인 Class Loader, Runtime Data Area, Execution Engine, 그리고 Garbage Collector가 어떻게 상호작용하며 자바 프로그램을 실행하는지 정리한다.

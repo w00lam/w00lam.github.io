@@ -3,6 +3,7 @@ title: "안정 계수 정렬(Stable Counting Sort)의 원리와 역방향 순회
 date: 2026-04-03
 categories: [Algorithm, Java]
 tags: [Sorting, CountingSort, Stability, Algorithm]
+permalink: /posts/stable-counting-sort-reverse-traversal/
 ---
 
 **"한 줄 요약: 비교 없이 위치를 계산하여 정렬하되, 입력 순서를 끝까지 지켜내는 알고리즘"**

@@ -3,6 +3,7 @@ title: "PUT vs PATCH — 단순한 수정 범위를 넘어 멱등성으로 이�
 date: 2026-04-24
 categories: [TIL, Backend, API Design]
 tags: [HTTP, REST, PUT, PATCH, Idempotency, Frontend]
+permalink: /posts/put-patch-idempotence/
 ---
 
 ## 배경

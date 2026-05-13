@@ -3,6 +3,7 @@ title: "Spring Data JPA 테스트에서 JpaRepository 메서드가 사라진 이
 date: 2026-01-17
 categories: [Spring, JPA, Gradle]
 tags: [spring-data-jpa, gradle, sourceset, classpath, ide]
+permalink: /posts/jpa-method-missing/
 ---
 
 ## 문제 상황

@@ -3,6 +3,7 @@ title: "Spring Proxy: 핵심 로직을 투명하게 감싸는 '기술적 안경'
 date: 2026-04-10
 categories: [Backend, Spring]
 tags: [Proxy, AOP, JDKDynamicProxy, CGLIB, SpringBoot]
+permalink: /posts/spring-proxy-core-logic/
 ---
 
 **"한 줄 요약: 프록시는 원본 객체를 수정하지 않고도 런타임에 부가 기능을 동적으로 주입해주는 투명한 비서다."**

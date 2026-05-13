@@ -3,6 +3,7 @@ title: "Interceptor를 이해하면서 정리한 생각 — 요청 흐름은 어
 date: 2026-05-06
 categories: [TIL, Backend, Spring]
 tags: [Spring, Interceptor, HandlerInterceptor, Authentication, MVC]
+permalink: /posts/interceptor-request-flow-control/
 ---
 
 ## 들어가면서
@@ -10,12 +11,12 @@ tags: [Spring, Interceptor, HandlerInterceptor, Authentication, MVC]
 이전에 Filter / Interceptor / AOP를 비교하면서
 각 기술이 어디에서 동작하는지 정리했었다.
 
-👉 [Filter vs Interceptor vs AOP — 어디서 무엇을 처리해야 할까](https://w00lam.github.io/posts/Filter-vs-Interceptor-vs-AOP-%EC%96%B4%EB%94%94%EC%84%9C-%EB%AC%B4%EC%97%87%EC%9D%84-%EC%B2%98%EB%A6%AC%ED%95%B4%EC%95%BC-%ED%95%A0%EA%B9%8C/)
+👉 [Filter vs Interceptor vs AOP — 어디서 무엇을 처리해야 할까](/posts/filter-interceptor-aop/)
 
 그리고 최근에는 Filter를 더 깊게 보면서
 “인증은 Controller 전에 이미 끝난다”는 흐름도 다시 정리했다.
 
-👉 [Filter를 이해하면서 정리한 생각 — 인증은 어디서 시작되는가](https://w00lam.github.io/posts/Filter%EB%A5%BC-%EC%9D%B4%ED%95%B4%ED%95%98%EB%A9%B4%EC%84%9C-%EC%A0%95%EB%A6%AC%ED%95%9C-%EC%83%9D%EA%B0%81-%EC%9D%B8%EC%A6%9D%EC%9D%80-%EC%96%B4%EB%94%94%EC%84%9C-%EC%8B%9C%EC%9E%91%EB%90%98%EB%8A%94%EA%B0%80/)
+👉 [Filter를 이해하면서 정리한 생각 — 인증은 어디서 시작되는가](/posts/filter-authentication-start/)
 
 이번에는 실제로 Interceptor를 구현하면서 느낀 점들을 정리해보려고 한다.
 
@@ -178,7 +179,7 @@ Interceptor가 아니라 Filter 기반으로 동작한다.
 이 부분은 이전에 Filter와 Spring Security 흐름을 정리하면서
 조금 더 자세히 다뤘다.
 
-👉 [Filter를 이해하면서 정리한 생각 — 인증은 어디서 시작되는가](https://w00lam.github.io/posts/Filter%EB%A5%BC-%EC%9D%B4%ED%95%B4%ED%95%98%EB%A9%B4%EC%84%9C-%EC%A0%95%EB%A6%AC%ED%95%9C-%EC%83%9D%EA%B0%81-%EC%9D%B8%EC%A6%9D%EC%9D%80-%EC%96%B4%EB%94%94%EC%84%9C-%EC%8B%9C%EC%9E%91%EB%90%98%EB%8A%94%EA%B0%80/)
+👉 [Filter를 이해하면서 정리한 생각 — 인증은 어디서 시작되는가](/posts/filter-authentication-start/)
 
 ---
 
@@ -273,5 +274,5 @@ Spring 요청 흐름 자체가 훨씬 명확하게 보이기 시작했다.
 
 * https://docs.spring.io/spring-framework/reference/web/webmvc/mvc-servlet/handlermapping-interceptor.html
 * https://docs.spring.io/spring-framework/reference/web/webmvc.html
-* [Filter vs Interceptor vs AOP — 어디서 무엇을 처리해야 할까](https://w00lam.github.io/posts/Filter-vs-Interceptor-vs-AOP-%EC%96%B4%EB%94%94%EC%84%9C-%EB%AC%B4%EC%97%87%EC%9D%84-%EC%B2%98%EB%A6%AC%ED%95%B4%EC%95%BC-%ED%95%A0%EA%B9%8C/)
-* [Filter를 이해하면서 정리한 생각 — 인증은 어디서 시작되는가](https://w00lam.github.io/posts/Filter%EB%A5%BC-%EC%9D%B4%ED%95%B4%ED%95%98%EB%A9%B4%EC%84%9C-%EC%A0%95%EB%A6%AC%ED%95%9C-%EC%83%9D%EA%B0%81-%EC%9D%B8%EC%A6%9D%EC%9D%80-%EC%96%B4%EB%94%94%EC%84%9C-%EC%8B%9C%EC%9E%91%EB%90%98%EB%8A%94%EA%B0%80/)
+* [Filter vs Interceptor vs AOP — 어디서 무엇을 처리해야 할까](/posts/filter-interceptor-aop/)
+* [Filter를 이해하면서 정리한 생각 — 인증은 어디서 시작되는가](/posts/filter-authentication-start/)

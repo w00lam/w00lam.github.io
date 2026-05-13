@@ -3,6 +3,7 @@ title: "로컬 develop 오염으로 PR 커밋이 섞인 문제와 해결"
 date: 2026-04-27
 categories: [TIL, Git]
 tags: [Git, Branch, PullRequest, CherryPick, Workflow]
+permalink: /posts/local-develop-pr-issue/
 ---
 
 ## 문제 상황

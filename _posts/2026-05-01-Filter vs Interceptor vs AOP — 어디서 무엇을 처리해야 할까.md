@@ -3,6 +3,7 @@ title: "Filter vs Interceptor vs AOP — 어디서 무엇을 처리해야 할까
 date: 2026-05-01
 categories: [TIL, Backend, Spring]
 tags: [Spring, Filter, Interceptor, AOP, Architecture]
+permalink: /posts/filter-interceptor-aop/
 ---
 
 ## 배경

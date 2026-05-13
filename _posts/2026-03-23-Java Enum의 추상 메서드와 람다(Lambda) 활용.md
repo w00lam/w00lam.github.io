@@ -3,6 +3,7 @@ title: Java Enum의 추상 메서드와 람다(Lambda) 활용
 date: 2026-03-23
 categories: [Java, Programming]
 tags: [Java, Enum, Lambda, FunctionalInterface]
+permalink: /posts/java-enum-lambda/
 ---
 
 Java의 `enum`은 단순히 상수를 나열하는 도구를 넘어, 각 상수가 고유한 로직을 실행할 수 있는 '행위'를 가질 수 있다. 이전에는 추상 메서드를 통해 이를 구현했다면, 더 나아가 함수형 인터페이스와 람다(Lambda)를 결합하여 코드를 훨씬 간결하게 만드는 방법을 학습했다.
