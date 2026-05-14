@@ -4,11 +4,12 @@ subtitle: "OS 단위 격리와 프로세스 단위 격리"
 date: 2026-05-14
 categories: [Infrastructure, Docker]
 tags: [VM, Container, Docker, Virtualization, Infrastructure, TIL, OS, Kernel, Namespace, Cgroup]
+permalink: /posts/vm-container-diff/
 ---
 
 ## 들어가면서
 
-수업을 통해 가상화 기술을 학습하던 중, 오래전에 [자바의 구동 원리를 정리하며](/posts/자바의-구동-원리-JDK-JVM-그리고-플랫폼-독립성/) JVM이라는 가상 머신에 대해 고민했던 기억이 떠올랐다. 또한, 과거 [Testcontainers를 활용한 통합 테스트 환경을 구축하면서](/posts/Spring-테스트-구조에서-sourceSet-분리와-Testcontainers를-써보며-느낀-점/) Docker를 사용했지만, 당시에는 VM과 컨테이너의 구조적 차이를 깊이 이해하지 못한 채 적용하며 겪었던 어려움이 있었다. 이번 학습을 통해 VM과 컨테이너의 본질적인 차이를 명확히 이해하고, 그때의 의문들을 해소하고자 한다.
+수업을 통해 가상화 기술을 학습하던 중, 오래전에 [자바의 구동 원리를 정리하며](/posts/java-jdk-jvm-platform/) JVM이라는 가상 머신에 대해 고민했던 기억이 떠올랐다. 또한, 과거 [Testcontainers를 활용한 통합 테스트 환경을 구축하면서](/posts/spring-test-sourceset-testcontainers/) Docker를 사용했지만, 당시에는 VM과 컨테이너의 구조적 차이를 깊이 이해하지 못한 채 적용하며 겪었던 어려움이 있었다. 이번 학습을 통해 VM과 컨테이너의 본질적인 차이를 명확히 이해하고, 그때의 의문들을 해소하고자 한다.
 
 "컨테이너는 작은 VM"이라는 말이 과연 맞을까? 왜 Docker는 이렇게 많이 쓰이고, VM은 무겁다고 이야기할까? 이 글에서는 이러한 질문들에 답하며 VM과 컨테이너의 본질적인 차이를 깊이 있게 탐구해보고자 한다.
 
@@ -123,5 +124,5 @@ VM과 컨테이너는 모두 애플리케이션을 격리된 환경에서 실행
 
 *   [Docker 공식 문서: What is a Container?](https://www.docker.com/resources/what-container)
 *   [Red Hat: Containers vs. VMs](https://www.redhat.com/en/topics/containers/containers-vs-vms)
-*   [이전 포스트: Spring 테스트 구조에서 sourceSet 분리와 Testcontainers를 써보며 느낀 점](/posts/Spring-테스트-구조에서-sourceSet-분리와-Testcontainers를-써보며-느낀-점/)
-*   [이전 포스트: 자바의 구동 원리: JDK, JVM 그리고 플랫폼 독립성](/posts/자바의-구동-원리-JDK-JVM-그리고-플랫폼-독립성/)
+*   [이전 포스트: Spring 테스트 구조에서 sourceSet 분리와 Testcontainers를 써보며 느낀 점](/posts/spring-test-sourceset-testcontainers/)
+*   [이전 포스트: 자바의 구동 원리: JDK, JVM 그리고 플랫폼 독립성](/posts/java-jdk-jvm-platform/)

@@ -3,6 +3,7 @@ title: "재귀의 늪에서 탈출하기: 메모이제이션(Memoization)"
 date: 2026-04-06
 categories: [Algorithm, Java]
 tags: [Memoization, DynamicProgramming, Recursion, Fibonacci]
+permalink: /posts/recursion-memoization/
 ---
 
 **"한 줄 요약: 이미 계산한 값은 기록해두자. 기억력은 곧 성능이다."**

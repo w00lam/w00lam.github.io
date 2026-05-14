@@ -3,6 +3,7 @@ title: "EntityGraph와 페이징을 같이 사용할 때 주의할 점"
 date: 2026-05-08
 categories: [Backend, JPA]
 tags: [JPA, Hibernate, EntityGraph, Pagination, FetchJoin, N+1]
+permalink: /posts/entitygraph-paging/
 ---
 
 ## 들어가면서

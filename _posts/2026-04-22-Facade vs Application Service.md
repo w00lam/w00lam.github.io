@@ -3,6 +3,7 @@ title: Facade vs Application Service
 date: 2026-04-22
 categories: [Backend, Architecture]
 tags: [Facade, Application-Service, Interface, Refactoring]
+permalink: /posts/facade-vs-application-service/
 ---
 
 > 호출 개수가 아니라 책임의 방향으로 구분하기

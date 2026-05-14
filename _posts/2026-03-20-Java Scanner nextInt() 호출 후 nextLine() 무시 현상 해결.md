@@ -3,6 +3,7 @@ title: Java Scanner nextInt() 호출 후 nextLine() 무시 현상
 date: 2026-03-20
 categories: [Java, Troubleshooting]
 tags: [Java, Scanner, InputBuffer]
+permalink: /posts/scanner-nextint-nextline-fix/
 ---
 
 ## 1. 문제 상황

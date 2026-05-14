@@ -5,6 +5,7 @@ date: 2026-01-20
 categories: [Java, Spring]
 tags: [Spring, Java, 테스트, 통합 테스트, Testcontainers, Docker, 테스트 환경 설계, sourceSet]
 
+permalink: /posts/spring-test-sourceset-testcontainers/
 ---
 
 ## 들어가며

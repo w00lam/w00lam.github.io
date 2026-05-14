@@ -3,6 +3,7 @@ title: "데이터의 안전한 작별: Soft Delete와 유예 기간(Grace Period
 date: 2026-04-28
 categories: [Backend, Database]
 tags: [JPA, Hibernate, SoftDelete, GracePeriod, Batch, Scheduled]
+permalink: /posts/soft-delete-grace-period/
 ---
 
 > "삭제는 끝이 아니라 또 다른 상태로의 전이다. 사용자에게는 실수를 만회할 기회를, 시스템에는 정합성을 유지할 여유를 주어야 한다."

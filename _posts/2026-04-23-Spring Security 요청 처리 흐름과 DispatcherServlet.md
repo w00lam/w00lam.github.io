@@ -3,6 +3,7 @@ title: Spring Security 요청 처리 흐름과 DispatcherServlet
 date: 2026-04-23
 categories: [TIL, Spring]
 tags: [Spring Security, JWT, Authentication, Authorization, SecurityContext, DispatcherServlet]
+permalink: /posts/spring-security-request-dispatcherservlet/
 ---
 
 > 요청이 필터를 거쳐 인증과 인가를 수행하고 DispatcherServlet을 통해 컨트롤러로 전달되는 흐름 정리
