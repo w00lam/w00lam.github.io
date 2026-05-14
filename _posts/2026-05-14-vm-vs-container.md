@@ -1,7 +1,7 @@
 ---
 title: "VM과 컨테이너는 무엇이 다를까?"
 subtitle: "OS 단위 격리와 프로세스 단위 격리"
-date: 2026-05-12
+date: 2026-05-14
 categories: [Infrastructure, Docker]
 tags: [VM, Container, Docker, Virtualization, Infrastructure, TIL, OS, Kernel, Namespace, Cgroup]
 ---
@@ -20,7 +20,7 @@ tags: [VM, Container, Docker, Virtualization, Infrastructure, TIL, OS, Kernel, N
 
 ---
 
-![VM과 컨테이너의 시스템 콜 흐름 및 격리 메커니즘 비교](/assets/images/2026-05-12-posting/vm-container-syscall-isolation.png)
+![VM과 컨테이너의 시스템 콜 흐름 및 격리 메커니즘 비교](/assets/images/2026-05-14-posting/vm-container-syscall-isolation.png)
 
 ## 1. 컴퓨터 실행 계층: 애플리케이션은 어떻게 동작하는가?
 

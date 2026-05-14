@@ -1,7 +1,7 @@
 ---
 title: "Docker 이미지는 정말 OS일까?"
 subtitle: "Docker Image와 RootFS의 정체"
-date: 2026-05-12
+date: 2026-05-14
 categories: [Infrastructure, Docker]
 tags: [Docker, Image, Container, RootFS, OS, Kernel, Layer, TIL]
 ---
@@ -19,7 +19,7 @@ tags: [Docker, Image, Container, RootFS, OS, Kernel, Layer, TIL]
 
 ---
 
-![Docker 이미지 구조와 RootFS](/assets/images/2026-05-12-posting/docker-image-rootfs-layers.png)
+![Docker 이미지 구조와 RootFS](/assets/images/2026-05-14-posting/docker-image-rootfs-layers.png)
 
 ## 1. 문제 제기: Docker 이미지는 OS인가?
 
