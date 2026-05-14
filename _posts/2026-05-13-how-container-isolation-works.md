@@ -1,7 +1,7 @@
 ---
 title: "컨테이너는 어떻게 격리될까?"
 subtitle: "Linux Namespace와 Cgroup 이해하기"
-date: 2026-05-14
+date: 2026-05-13
 categories: [Infrastructure, Docker]
 tags: [Container, Docker, Linux, Namespace, Cgroup, Isolation, TIL]
 permalink: /posts/container-isolation/
@@ -22,7 +22,7 @@ permalink: /posts/container-isolation/
 
 ---
 
-![컨테이너 격리: Namespace와 Cgroup](/assets/images/2026-05-14-posting/container-isolation-namespace-cgroup.png)
+![컨테이너 격리: Namespace와 Cgroup](/assets/images/2026-05-13-posting/container-isolation-namespace-cgroup.png)
 
 ## 1. 문제 제기: 컨테이너는 어떻게 독립성을 얻을까?
 
