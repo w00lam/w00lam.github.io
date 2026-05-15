@@ -7,6 +7,8 @@ tags: [Container, Docker, Kubernetes, Orchestration, Microservices, TIL]
 permalink: /posts/why-containers-are-not-enough/
 ---
 
+![컨테이너 오케스트레이션의 필요성](/assets/images/2026-05-15-posting/container-orchestration-necessity.png)
+
 ## 들어가면서
 
 이전 포스트들에서 [VM과 컨테이너는 무엇이 다를까?](/posts/vm-container-diff/), [컨테이너는 어떻게 격리될까?](/posts/container-isolation/), 그리고 [Docker 이미지는 정말 OS일까?](/posts/docker-image-not-os/)를 통해 컨테이너의 개념과 격리 원리, 그리고 이미지의 본질에 대해 깊이 있게 살펴보았다. 컨테이너는 애플리케이션을 가볍고 효율적으로 패키징하고 실행하는 강력한 도구임이 분명하다.
