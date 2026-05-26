@@ -108,4 +108,4 @@ Make sure that `gem install sass-embedded -v '1.100.0' --source 'https://rubygem
 *   [Bundler 공식 문서](https://bundler.io/)
 *   [GitHub Actions 공식 문서](https://docs.github.com/en/actions)
 *   [GitHub Codespaces 공식 문서](https://docs.github.com/en/codespaces)
-*   [AI 개발 환경을 공부하면서 헷갈렸던 개념들](/posts/ai-dev-environment-concepts/)
+
