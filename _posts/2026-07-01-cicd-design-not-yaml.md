@@ -1,0 +1,338 @@
+---
+title: CI/CD는 YAML 작성이 아니라 안정적인 배포와 복구를 설계하는 과정이었다
+date: 2026-07-01
+categories: [DevOps, CI/CD]
+tags: [CI/CD, GitHub Actions, 배포 전략, 롤백, Health Check]
+permalink: /posts/cicd-design-not-yaml/
+---
+
+새로운 프로젝트를 시작하거나 기존 시스템을 개선할 때, 개발자들이 가장 먼저 구축하고 싶어 하는 것 중 하나가 바로 CI/CD 파이프라인입니다. 코드를 푸시하기만 하면 마법처럼 테스트가 돌고 서버에 최신 코드가 반영되는 모습은 언제 봐도 짜릿하니까요. 
+
+하지만 돌이켜보면, 처음 CI/CD를 접했을 때 저의 관심사는 온통 **"GitHub Actions YAML 파일을 어떻게 작성할 것인가"**에 쏠려 있었습니다. `needs`를 어떻게 걸고, `if` 조건문을 어떻게 채워 넣을지가 파이프라인의 핵심인 줄 알았죠. 
+
+최근 main 브랜치 배포 과정에서 뼈아픈 실패를 겪고 여러 배포 전략을 공부하면서, CI/CD에 대한 저의 관점은 완전히 뒤바뀌었습니다. CI/CD의 본질은 도구의 문법을 맞추는 것이 아니라, **안정적인 배포 전략과 복구 흐름을 설계하는 과정**이었습니다. 그 깨달음의 과정을 정리해 봅니다.
+
+---
+
+## 1. 처음에는 CI/CD를 YAML 작성으로 생각했다
+
+처음 CI/CD를 구축할 때, 제 머릿속의 파이프라인은 단순히 GitHub Actions의 YAML 설정 파일과 동일시되었습니다. 각 단계(Job)의 순서를 아래처럼 올바르게 이어붙이기만 하면 다 끝나는 작업으로 여겼습니다.
+
+```text
+verify (테스트 검증)
+  ↓
+build-and-push (이미지 빌드 및 저장소 업로드)
+  ↓
+deploy (서버 배포)
+```
+
+이 흐름 속에서 각 단계는 아주 명확한 역할분담이 되어 있다고 생각했습니다.
+
+* **verify**: 단위 테스트와 통합 테스트가 깨지지 않고 통과하는지 확인하는 단계
+* **build-and-push**: 테스트를 통과한 코드를 바탕으로 Docker 이미지를 빌드하고 ECR(Elastic Container Registry) 같은 이미지 저장소에 푸시하는 단계
+* **deploy**: 운영 서버에 접속하여 새로 빌드된 이미지를 풀(pull) 받고 기존 컨테이너를 대체하여 실행하는 단계
+
+이 시기에는 GitHub Actions에서 제공하는 구문들—`jobs`, `steps`, `needs`, `if` 등—의 문법적 규칙을 완벽하게 맞추고, 각 단계가 순서대로 에러 없이 초록 불(Success)을 켜는 것에만 집착했습니다. 빌드가 성공하고 배포 단계가 종료되어 GitHub 화면에 초록색 체크마크가 뜨면 그것으로 배포가 끝난 줄 알았습니다.
+
+```mermaid
+flowchart LR
+    A[verify<br/>테스트 실행] --> B[build-and-push<br/>Docker 이미지 빌드 / ECR Push]
+    B --> C[deploy<br/>서버에 새 버전 반영]
+```
+![처음 이해한 CI/CD 흐름](/assets/images/2026-07-01-cicd-design-not-yaml/cicd_pipeline_initial.png)
+> 처음에는 CI/CD를 `verify → build-and-push → deploy` 순서를 맞추는 작업으로 이해했다.
+>
+> **[시각자료 1 이미지 생성 프롬프트]**
+> A clean and modern flat vector diagram illustrating a 3-step software deployment pipeline. It moves from left to right: first step is a green box labeled "verify" with a checklist icon, second step is a blue box labeled "build-and-push" with a Docker whale container icon, and third step is a purple box labeled "deploy" with a server rack icon. Soft gradients, professional tech theme, minimalist background, Korean text labels.
+
+---
+
+## 2. main 브랜치 배포 실패 경험: 컨테이너 실행이 배포 성공은 아니다
+
+그러던 어느 날, 평소처럼 개발 브랜치에서 모든 구현과 테스트를 마치고 main 브랜치에 머지했습니다. 배포 파이프라인이 동작했고, `verify`와 `build-and-push` 단계를 지나 `deploy`까지 문제없이 통과하며 GitHub Actions에는 기분 좋은 초록 불이 켜졌습니다. 
+
+하지만 얼마 지나지 않아 모니터링 채널에 에러 알림이 쏟아지기 시작했습니다. 실제 서비스 페이지에 접속해 보니 서버가 정상적인 응답을 주지 못하고 있었습니다.
+
+> **"컨테이너는 분명 정상적으로 떠 있는 것 같은데, 왜 서비스는 응답하지 않지?"**
+
+황급히 운영 서버에 접속해 `docker ps`를 입력했습니다. 놀랍게도 애플리케이션 컨테이너는 `Up` 상태로 잘 실행되고 있었습니다. 하지만 컨테이너의 실시간 로그를 열어본 뒤에야 원인을 파악할 수 있었습니다. 
+
+애플리케이션이 실행되는 과정에서 데이터베이스(DB) 연결 정보가 담긴 환경 변수가 누락되었거나, 배포 프로필(Profile) 설정이 꼬여 있었고, 내부 포트 포워딩 설정 오류 등으로 인해 실제 포트가 열리지 않았던 것입니다. 애플리케이션 내부 프로세스는 계속해서 커넥션 예외를 뿜어내며 초기화 단계에 멈춰 있었지만, Docker 엔진 입장에서는 프로세스가 일단 살아있으니 컨테이너가 정상 구동 중(`Up`)인 것으로 판단한 것이었습니다.
+
+이 뼈아픈 장애를 겪으며 중요한 사실들을 깨닫게 되었습니다.
+
+* **테스트와 Docker 이미지 빌드가 성공했다고 해서 배포 성공이 아니다.**
+* **컨테이너 프로세스가 실행 중이라고 해서 애플리케이션이 실제 비즈니스 요청에 정상 응답할 수 있는 것은 아니다.** DB 커넥션 예외, 환경 변수 누락, 초기화 코드 오류 등으로 작동 불능 상태일 수 있다.
+* **진정한 배포 성공**은 컨테이너가 살아있는 상태가 아니라, 애플리케이션이 기동을 완료하고 **실제 운영 트래픽을 처리할 준비가 되어 헬스체크(Health Check)를 통과한 상태**이다.
+* 따라서 배포 파이프라인의 `deploy` 단계는 단순한 '명령어 실행' 단계가 아니라, **새 버전이 운영 트래픽을 감당해도 되는지 검증하는 마지막 확인 관문**이어야 한다.
+
+```mermaid
+flowchart LR
+    A[Docker Container Running<br/>컨테이너 실행됨] --> B{Health Check}
+    B -->|성공| C[Ready for Traffic<br/>운영 요청 처리 가능]
+    B -->|실패| D[Deploy Failed<br/>배포 실패]
+
+    D --> E[DB 연결 문제]
+    D --> F[환경변수 누락]
+    D --> G[프로필 설정 오류]
+    D --> H[포트 / 초기화 문제]
+```
+![컨테이너 실행과 서비스 정상 응답의 차이](/assets/images/2026-07-01-cicd-design-not-yaml/container_vs_healthcheck.png)
+> 컨테이너가 실행 중이어도 애플리케이션이 정상 응답하지 않으면 배포 성공이라고 볼 수 없다.
+>
+> **[시각자료 2 이미지 생성 프롬프트]**
+> A system flow diagram showing the difference between a running container and a healthy application. On the left, a 3D Docker container box is labeled "Container Running". An arrow leads to a diamond decision block labeled "Health Check". Two paths split: a green path leads to "Ready for Traffic" (with a user traffic network icon), and a red path leads to "Deploy Failed" which branches into sub-causes: "DB Connection Error", "Missing Env Variables", "Profile Misconfig", "Port Conflicts". Professional dark mode styling, neon colors, Korean labels.
+
+---
+
+## 3. 배포 실패를 단순 YAML 문제로만 볼 수 없었다
+
+처음 장애를 겪었을 때는 단순히 GitHub Actions YAML 파일의 스크립트 작성 방식이 잘못되었다고 생각했습니다. 스크립트에 `sleep 10` 같은 억지 지연을 주거나, 좀 더 똑똑하게 프로세스 종료 코드를 감지하는 쉘 스크립트를 짜면 해결될 일이라 여겼죠.
+
+하지만 인프라 구조와 배포 전략에 대해 깊이 공부하면서 제 관점은 근본적으로 바뀌었습니다. 배포가 실패했을 때 발생하는 장애의 영향 범위와 복구 방식은 단순히 YAML 파일 안의 명령어 몇 줄로 제어할 수 있는 것이 아니었습니다. **어떤 '배포 전략'을 선택하고 인프라 수준에서 어떻게 설계하느냐**의 문제였습니다.
+
+> **CI/CD는 YAML 문법을 맞추는 것이 아니라, 선택한 배포 전략을 안전하게 실행하기 위한 자동화 흐름이다.**
+
+이 깨달음을 기점으로 저는 단순히 GitHub Actions 문법책을 덮고, 실제 서비스 인프라 구조와 롤백 전략을 고민하기 시작했습니다.
+
+```mermaid
+flowchart LR
+    A[처음 생각<br/>GitHub Actions YAML 작성] --> B[needs / if / jobs / steps]
+    B --> C[Job 순서 맞추기]
+
+    C --> D{배포 실패 경험<br/>Health Check 실패}
+
+    D --> E[바뀐 관점<br/>배포 전략 자동화]
+    E --> F[실패 영향 범위]
+    E --> G[헬스체크]
+    E --> H[롤백]
+    E --> I[복구 흐름]
+```
+> 배포 실패를 겪고 나서 CI/CD를 YAML 작성이 아니라 배포 전략을 실행하는 흐름으로 보게 됐다.
+>
+> **[시각자료 3 이미지 생성 프롬프트]**
+> A conceptual diagram showing a shift in perspective. On the left side: "Old View" with a YAML code icon, listing elements like syntax, needs/if, and job order. In the middle: a flash point representing "Deployment Failure". On the right side: "New View" with a compass and shield icon, listing elements like failure blast radius, health check design, auto rollback, and recovery pipeline. Minimalist business presentation style, contrasting warm and cool tones, Korean labels.
+
+---
+
+## 4. 단일 EC2 배포: 자동화해도 구조적 한계가 있다
+
+많은 초기 프로젝트나 개인 토이 프로젝트에서는 단 한 대의 EC2 인스턴스를 띄워 배포를 진행합니다. 이때 GitHub Actions가 수행하는 자동화 단계는 대략 다음과 같습니다.
+
+```text
+GitHub Actions
+  ↓
+테스트 검증 (Test)
+  ↓
+Docker 이미지 빌드 & ECR 푸시
+  ↓
+EC2 인스턴스 SSH 접속
+  ↓
+기존 컨테이너 중지 및 삭제 (docker stop & rm)
+  ↓
+새 이미지 pull 및 실행 (docker run)
+```
+
+이 방식은 확실한 장점을 가지고 있습니다.
+* **장점**: 인프라 구조가 매우 단순하여 이해하기 쉽고, 추가 비용이 거의 들지 않기 때문에 빠른 MVP(Minimum Viable Product) 검증이나 데모 단계에 아주 적합합니다.
+
+하지만 안정성 관점에서는 다음과 같은 치명적인 한계가 존재합니다.
+* **단일 장애 지점(SPOF, Single Point of Failure)**: EC2 인스턴스 하나가 죽거나 물리적 장애가 발생하면 전체 서비스가 완전히 다운됩니다.
+* **필연적인 서비스 다운타임**: 기존 컨테이너를 중지(`docker stop`)하고 새 컨테이너를 띄우는(`docker run`) 몇 초 혹은 몇 분의 시간 동안 사용자는 서비스를 이용할 수 없습니다.
+* **장애 전파 차단 불가**: 만약 새 컨테이너가 배포 과정에서 에러(환경변수 누락 등)로 정상 실행되지 않으면, 기존에 돌아가던 정상 버전은 이미 지워졌기 때문에 복구할 때까지 서비스 전체가 중단 상태에 머물게 됩니다.
+
+즉, **배포 파이프라인을 아무리 매끄럽게 자동화하더라도, 단일 EC2라는 인프라 구조의 불안정성 자체를 해결할 수는 없습니다.** 자동화는 단순히 비효율적인 반복 작업을 대신 해줄 뿐, 서비스의 높은 가용성과 회복탄력성을 보장해 주지는 못합니다.
+
+```mermaid
+flowchart LR
+    A[GitHub Actions] --> B[ECR<br/>Docker Image]
+    B --> C[Single EC2]
+    C --> D[Docker Container]
+    D --> E[Spring Boot App]
+
+    C -. 장애 발생 .-> F[Service Down<br/>전체 서비스 영향]
+```
+![단일 EC2 배포 구조](/assets/images/2026-07-01-cicd-design-not-yaml/single_ec2_architecture.png)
+> 단일 EC2 배포는 구조가 단순하지만, EC2 한 대가 곧 전체 서비스의 장애 지점이 될 수 있다.
+>
+> **[시각자료 4 이미지 생성 프롬프트]**
+> A technical diagram representing a single EC2 deployment architecture. A central cloud server icon labeled "Single EC2" hosts a container icon labeled "Spring Boot App". An alert red dotted line points to a broken link chain icon labeled "Service Down", highlighting the single point of failure concept. Modern AWS console-style colors, clean typography, Korean labels.
+
+---
+
+## 5. ASG 롤링 배포: 실패의 영향 범위를 줄이는 방식
+
+서비스의 가용성을 한 단계 끌어올리기 위해 사용되는 대표적인 인프라 아키텍처 중 하나가 **오토 스케일링 그룹(ASG, Auto Scaling Group)**입니다. ASG는 여러 대의 EC2 인스턴스를 하나의 그룹으로 묶어 트래픽 부하에 따라 대수를 늘리거나 줄이고, 상태가 비정상인 인스턴스를 감지하여 자동으로 새 인스턴스로 교체(Self-healing)해 줍니다.
+
+이 환경에서 가장 보편적으로 쓰이는 배포 방식이 바로 **롤링 배포(Rolling Deployment)**입니다. 모든 서버를 동시에 교체하는 것이 아니라, 설정된 수량 혹은 비율(예: 1대씩)에 따라 구버전 인스턴스를 순차적으로 신버전으로 교체해 나가는 방식입니다.
+
+예를 들어 운영 중인 서버 인스턴스가 A, B, C 세 대일 때의 흐름은 다음과 같습니다.
+
+```text
+기존 상태: [인스턴스 A(v1), 인스턴스 B(v1), 인스턴스 C(v1)]
+
+1. 인스턴스 A를 타겟 그룹에서 제외하고 새 버전(v2)으로 교체 및 실행
+2. 인스턴스 A의 헬스체크 통과 확인 후 타겟 그룹에 다시 편입
+3. 인스턴스 B를 v2로 교체 및 헬스체크 검증
+4. 인스턴스 C를 v2로 교체 및 헬스체크 검증
+```
+
+이 방식은 서비스 운영 측면에서 훌륭한 장점을 제공합니다.
+* **장점**: 서비스 전체가 중단되는 시간(다운타임) 없이 지속적으로 트래픽을 처리할 수 있으며, 배포 도중 문제가 감지되면 즉시 배포 프로세스를 중단하고 롤백할 수 있어 전체 시스템 장애로 확산하는 것을 방지합니다.
+
+하지만 롤링 배포를 적용할 때는 반드시 주의해야 할 기술적 제약 사항이 있습니다. 배포 프로세스가 진행되는 과도기 동안에는 **구버전(v1)과 신버전(v2) 애플리케이션이 동시에 트래픽을 나눠 받아 처리하게 된다**는 점입니다.
+
+```text
+[인스턴스 A(v2) - 신버전]   [인스턴스 B(v1) - 구버전]   [인스턴스 C(v1) - 구버전]
+```
+
+만약 신버전에서 사용자의 요청 API 포맷을 깨뜨리는 변경을 가했거나, 공유 DB의 테이블 스키마를 하위 호환성 없이 변경(예: 기존 컬럼 삭제)해 버린다면, 아직 배포되지 않은 구버전 인스턴스(B, C)들이 즉각 오동작을 일으키며 전체 시스템이 깨지게 됩니다.
+
+따라서 롤링 배포를 제대로 활용하기 위해서는 **하위 호환성 설계(Backward Compatibility)**, **점진적인 DB 스키마 마이그레이션(Expand/Contract 패턴)**, 그리고 **배포 단계별 헬스체크 기준 설정**과 **실패 시 중단 조건**이 정밀하게 선행적으로 조율되어야 합니다.
+
+```mermaid
+flowchart LR
+    A[Load Balancer] --> B[EC2 A<br/>v1 → v2]
+    A --> C[EC2 B<br/>v1]
+    A --> D[EC2 C<br/>v1]
+
+    B --> E{Health Check}
+    E -->|통과| F[다음 인스턴스 교체]
+    E -->|실패| G[배포 중단 / 롤백]
+```
+![ASG 롤링 배포 흐름](/assets/images/2026-07-01-cicd-design-not-yaml/asg_rolling_deployment.png)
+> ASG 롤링 배포는 모든 서버를 한 번에 바꾸지 않고, 헬스체크를 확인하며 순차적으로 교체한다.
+>
+> **[시각자료 5 이미지 생성 프롬프트]**
+> A network routing diagram explaining rolling deployment. A central load balancer directs traffic to three EC2 instance cards labeled A, B, and C. Instance A is highlighted with a green loading icon indicating update to v2, while B and C remain at v1. The update flow points to a decision node labeled "Health Check", with one success path to "Next Instance Update" and a warning path to "Abort & Rollback". Professional, clean UI vector, Korean labels.
+
+```mermaid
+flowchart TB
+    A[Load Balancer] --> B[EC2 A<br/>v2]
+    A --> C[EC2 B<br/>v1]
+    A --> D[EC2 C<br/>v1]
+
+    B -.-> E[New API Response]
+    C -.-> F[Old API Response]
+    D -.-> F
+```
+> 롤링 배포 중에는 v1과 v2가 동시에 트래픽을 받을 수 있으므로 하위 호환성을 고려해야 한다.
+>
+> **[시각자료 6 이미지 생성 프롬프트]**
+> An architectural block diagram showing version coexistence during a rolling deploy. A load balancer distributes traffic to EC2 A (v2) and EC2 B/C (v1). EC2 A generates "New API Response" (green line) and EC2 B/C generate "Old API Response" (blue line). A warning icon highlights the coexistence of two different response schemas. Isometric vector art, clear color coding, Korean labels.
+
+---
+
+## 6. Blue-Green 배포: 검증 후 트래픽을 전환하는 방식
+
+배포 과도기에 구버전과 신버전이 공존하여 발생하는 복잡한 정합성 문제를 회피하고, 더욱 신속하고 안전한 롤백을 구현하기 위한 궁극적인 전략 중 하나가 바로 **Blue-Green 배포**입니다.
+
+Blue-Green 배포는 현재 서비스가 실제로 동작 중인 프로덕션 환경(**Blue**)과 완전히 동일한 스펙의 새로운 환경(**Green**)을 별도로 구성하여 배포를 수행합니다.
+
+```text
+Blue  = 현재 활성화되어 실시간 트래픽을 처리하는 환경 (v1)
+Green = 새 버전이 임시 배포되어 검증 대기 중인 환경 (v2)
+```
+
+배포의 전체적인 작동 원리는 다음과 같습니다.
+1. 사용자 트래픽은 계속해서 기존의 Blue 환경으로 향합니다.
+2. 배포 시스템은 Green 환경에 새로운 버전의 소스 코드 및 Docker 컨테이너를 한꺼번에 배포합니다.
+3. Green 환경에 배포가 완료되면, 운영 트래픽이 유입되기 전에 내부 헬스체크 및 별도 테스트망을 통해 신버전의 정상 동작 여부를 철저하게 사전 검증합니다.
+4. 모든 검증을 이상 없이 통과하면, 로드밸런서(LB)나 라우팅 규칙(예: AWS Route 53)을 스위칭하여 사용자 트래픽을 일순간에 Blue에서 Green으로 전환합니다.
+5. 전환 직후 예상치 못한 문제가 발생하면, 단순히 로드밸런서 설정을 되돌려 트래픽을 다시 Blue로 향하게 하여 수 초 내에 즉각적인 롤백을 수행합니다.
+
+* **장점**: 신버전을 실제 운영 환경과 거의 격리된 공간에서 검증하므로 배포 실패가 사용자에게 전달될 위험을 현저히 줄입니다. 문제가 발견되더라도 마우스 클릭 한 번 혹은 설정 파일 복구만으로 전원이 꺼지듯 이전 버전으로 롤백이 가능합니다.
+* **한계**: 완전히 동일한 리소스 구성을 두 세트 유지해야 하므로 인프라 구축 및 유지 비용이 크게 증가합니다. 또한 로드밸런서, 타겟 그룹 제어, 외부 라우팅 설정 등 구성 복잡도가 올라갑니다.
+
+Blue-Green 배포는 **"새 버전을 곧바로 실서버에 반영하지 않고, 철저한 사전 검증을 마친 후에 트래픽 제어권을 매끄럽게 넘겨받는 설계"**의 중요성을 잘 보여줍니다.
+
+```mermaid
+flowchart LR
+    U[User Traffic] --> LB[Load Balancer]
+
+    LB --> Blue[Blue Environment<br/>현재 운영 v1]
+    LB -. 전환 대기 .-> Green[Green Environment<br/>새 버전 v2]
+
+    Green --> HC{Health Check}
+    HC -->|통과| Switch[Traffic Switch<br/>Blue → Green]
+    HC -->|실패| Keep[Blue 유지<br/>사용자 영향 최소화]
+
+    Switch --> Rollback[문제 발생 시<br/>Green → Blue 롤백]
+```
+![Blue-Green 배포 흐름](/assets/images/2026-07-01-cicd-design-not-yaml/blue_green_deployment.png)
+> Blue-Green 배포는 새 버전을 별도 환경에서 검증한 뒤, 트래픽만 전환하는 방식이다.
+>
+> **[시각자료 7 이미지 생성 프롬프트]**
+> A professional systems architecture diagram of a Blue-Green deployment. A user traffic arrow enters a Load Balancer. The Load Balancer has two arrows: a solid line pointing to a blue-colored server cluster box named "Blue Environment (v1 Active)" and a dotted line pointing to a green-colored server cluster box named "Green Environment (v2 Idle)". A switch icon indicates the traffic swap. Clean tech illustration, corporate styling, Korean labels.
+
+---
+
+## 7. 실행 조건도 CI/CD 설계의 일부다
+
+배포 아키텍처뿐만 아니라, **GitHub Actions 파이프라인의 실행 조건을 제어하는 일** 역시 매우 중요한 안전장치 설계의 일부입니다.
+
+처음에는 단순히 PR을 통한 임시 빌드와 최종 릴리즈를 구분하기 위해 다음과 같은 단순한 부정 조건문을 사용하곤 했습니다.
+
+```yaml
+# 기존 작성 방식
+if: github.event_name != 'pull_request'
+```
+
+이 조건은 직관적으로는 잘 작동하는 것처럼 보이지만, 커다란 보안 및 운영상의 허점을 안고 있습니다. "PR 이벤트만 아니라면 실행한다"는 의미이므로, 개발자가 임시로 만든 피처 브랜치(feature branch)에서 원격 저장소에 일반 push만 일어나는 경우나, 릴리즈와 무관한 임시 태그 push 상황에서도 배포 파이프라인이 오작동하여 예기치 않은 배포를 트리거할 수 있기 때문입니다.
+
+더 명확하고 보수적인 화이트리스트 기반 조건문으로 개선해야 안전합니다.
+
+```yaml
+# 개선된 작성 방식
+if: github.event_name == 'workflow_dispatch' || github.ref == 'refs/heads/main'
+```
+
+이 조건문은 배포 트리거를 아래 두 가지 상황으로 강력하게 고정합니다.
+1. **workflow_dispatch**: 관리자가 GitHub UI에서 의도를 가지고 배포 버튼을 직접 클릭하여 수동 실행(Manual Trigger)한 경우
+2. **main 브랜치 push/merge**: 모든 검증을 끝내고 main 브랜치로 최종 병합이 일어난 경우
+
+이를 통해 잘못된 시점이나 엉뚱한 임시 브랜치에서 운영 환경에 파괴적인 변경을 가하는 사고를 근본적으로 방지할 수 있습니다. 
+
+> **자동화는 강력하고 편리하지만, 잘못된 시점이나 잘못된 대상에 잘못 트리거되면 대형 재앙이 됩니다.**
+> **따라서 CI/CD 설계에서는 "어떤 파이프라인을 실행할 것인가"만큼 "어떤 타이밍과 조건에서 안전하게 트리거할 것인가"도 핵심 고려 대상입니다.**
+
+```mermaid
+flowchart TB
+    A[기존 조건<br/>github.event_name != pull_request] --> B[PR이 아니면 실행]
+    B --> C[push 이벤트에서도 실행 가능]
+    C --> D[의도치 않은 배포 가능성]
+
+    E[변경 조건<br/>workflow_dispatch 또는 main] --> F[수동 실행]
+    E --> G[main 브랜치]
+    F --> H[배포 조건 명확]
+    G --> H
+```
+> CI/CD에서는 어떤 job을 만들지뿐 아니라, 어떤 이벤트에서 실행할지도 중요한 설계 대상이다.
+>
+> **[시각자료 8 이미지 생성 프롬프트]**
+> A flowchart comparing CI/CD trigger conditions. On the left side: Red warning flow for the old permissive condition `github.event_name != 'pull_request'` leading to unintended deployment. On the right side: Green check flow for the new strict condition `workflow_dispatch || main` leading to controlled, intended deployment. Elegant presentation graphic, high-contrast, Korean labels.
+
+---
+
+## 8. 한눈에 비교하는 배포 전략 및 자동화 관점
+
+각 배포 방식의 구체적인 특징과 주의점은 다음과 같이 정리할 수 있습니다.
+
+| 배포 방식 | CI/CD가 자동화하는 것 | 장점 | 주의점 |
+| :--- | :--- | :--- | :--- |
+| **단일 EC2 배포** | EC2 인스턴스 원격 접속, 컨테이너 중지/삭제 및 새 버전 교체 실행 | 구조가 직관적이고 인프라 비용이 저렴함 | 배포 중 불가피한 다운타임 발생, 서버 한 대의 결함이 전체 서비스 장애로 직결 |
+| **ASG 롤링 배포** | 인스턴스별 순차적 교체 및 기동 여부 검증(Health Check) 흐름 제어 | 무중단 배포 구현 가능, 실패 시 해당 시점에서 전체 인스턴스로의 전파 차단 | 배포 진행 중 구버전과 신버전이 동시 존재하므로 백엔드/API 하위 호환성 설계 필수 |
+| **Blue-Green 배포** | 완전히 독립된 Green 환경 배포 및 헬스체크 검증 후 로드밸런서 트래픽 일시 전환 | 트래픽 유입 전 사전 검증 가능, 문제 발생 시 즉각 스위칭 롤백으로 다운타임 최소화 | 인프라 비용 및 복잡도 증가, 네트워크 스위칭 설계에 따르는 공수 |
+| **GitHub Actions 조건 제어** | 배포 파이프라인의 시작 조건 및 대상 타겟 브랜치 필터링 | 부적절한 타이밍에 예기치 않게 운영 배포가 트리거되는 인적 재해 차단 | 조건식이 허술할 경우 의도치 않은 브랜치의 코드가 실제 운영 서버로 덮어씌워질 가능성 존재 |
+
+---
+
+## 9. 마치며: YAML 문법에서 안정적인 흐름의 설계로
+
+처음 제가 CI/CD라는 개념을 마주했을 때 그것은 단지 **"GitHub Actions YAML 파일 문법을 마스터하는 일"**에 지나지 않았습니다. 오류 없이 초록색 체크 표시가 완료 창에 뜨는 것만이 개발자로서의 성과라고 생각했습니다.
+
+하지만 main 브랜치 배포 중 빌드는 성공했으나 애플리케이션 초기화 실패로 장애를 겪고, 그 과정에서 단일 EC2, ASG 롤링 배포, Blue-Green 배포 등 다양한 배포 모델의 가치와 위험성을 경험하면서 제 시야는 훌륭하게 확장되었습니다. 
+
+결국 배포 자동화의 본질적인 목적은 단순히 타이핑을 줄이고 빌드를 편하게 해주는 것이 아니었습니다. **우리가 시스템을 수정하여 새 버전을 출시할 때 가장 안정적으로 사용자에게 전달하고, 만에 하나 실패하더라도 서비스의 훼손을 최소화하며 안전하고 빠르게 정상 상태로 복구할 수 있는 복원력이 높은 흐름을 설계하는 것**이었습니다.
+
+앞으로 파이프라인을 설계하고 코드를 작성할 때는 `needs`, `if`, `jobs`, `steps` 같은 YAML 문법의 화려함에 매몰되지 않겠습니다. 대신, **"내가 작성한 이 자동화가 장애의 영향 범위를 어떻게 통제하는가?"**, **"장애 시 롤백 프로세스는 안전하게 기획되어 있는가?"**, **"헬스체크의 검증 깊이는 충분한가?"**와 같은 근본적인 배포 전략의 견고함을 끊임없이 질문하며 설계해 나가는 백엔드 개발자가 되고자 합니다.
