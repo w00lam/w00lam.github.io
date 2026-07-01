@@ -34,16 +34,8 @@ deploy (서버 배포)
 
 이 시기에는 GitHub Actions에서 제공하는 구문들—`jobs`, `steps`, `needs`, `if` 등—의 문법적 규칙을 완벽하게 맞추고, 각 단계가 순서대로 에러 없이 초록 불(Success)을 켜는 것에만 집착했습니다. 빌드가 성공하고 배포 단계가 종료되어 GitHub 화면에 초록색 체크마크가 뜨면 그것으로 배포가 끝난 줄 알았습니다.
 
-```mermaid
-flowchart LR
-    A[verify<br/>테스트 실행] --> B[build-and-push<br/>Docker 이미지 빌드 / ECR Push]
-    B --> C[deploy<br/>서버에 새 버전 반영]
-```
 ![처음 이해한 CI/CD 흐름](/assets/images/2026-07-01-cicd-design-not-yaml/cicd_pipeline_initial.png)
 > 처음에는 CI/CD를 `verify → build-and-push → deploy` 순서를 맞추는 작업으로 이해했다.
->
-> **[시각자료 1 이미지 생성 프롬프트]**
-> A clean and modern flat vector diagram illustrating a 3-step software deployment pipeline. It moves from left to right: first step is a green box labeled "verify" with a checklist icon, second step is a blue box labeled "build-and-push" with a Docker whale container icon, and third step is a purple box labeled "deploy" with a server rack icon. Soft gradients, professional tech theme, minimalist background, Korean text labels.
 
 ---
 
@@ -66,22 +58,8 @@ flowchart LR
 * **진정한 배포 성공**은 컨테이너가 살아있는 상태가 아니라, 애플리케이션이 기동을 완료하고 **실제 운영 트래픽을 처리할 준비가 되어 헬스체크(Health Check)를 통과한 상태**이다.
 * 따라서 배포 파이프라인의 `deploy` 단계는 단순한 '명령어 실행' 단계가 아니라, **새 버전이 운영 트래픽을 감당해도 되는지 검증하는 마지막 확인 관문**이어야 한다.
 
-```mermaid
-flowchart LR
-    A[Docker Container Running<br/>컨테이너 실행됨] --> B{Health Check}
-    B -->|성공| C[Ready for Traffic<br/>운영 요청 처리 가능]
-    B -->|실패| D[Deploy Failed<br/>배포 실패]
-
-    D --> E[DB 연결 문제]
-    D --> F[환경변수 누락]
-    D --> G[프로필 설정 오류]
-    D --> H[포트 / 초기화 문제]
-```
 ![컨테이너 실행과 서비스 정상 응답의 차이](/assets/images/2026-07-01-cicd-design-not-yaml/container_vs_healthcheck.png)
 > 컨테이너가 실행 중이어도 애플리케이션이 정상 응답하지 않으면 배포 성공이라고 볼 수 없다.
->
-> **[시각자료 2 이미지 생성 프롬프트]**
-> A system flow diagram showing the difference between a running container and a healthy application. On the left, a 3D Docker container box is labeled "Container Running". An arrow leads to a diamond decision block labeled "Health Check". Two paths split: a green path leads to "Ready for Traffic" (with a user traffic network icon), and a red path leads to "Deploy Failed" which branches into sub-causes: "DB Connection Error", "Missing Env Variables", "Profile Misconfig", "Port Conflicts". Professional dark mode styling, neon colors, Korean labels.
 
 ---
 
@@ -95,23 +73,7 @@ flowchart LR
 
 이 깨달음을 기점으로 저는 단순히 GitHub Actions 문법책을 덮고, 실제 서비스 인프라 구조와 롤백 전략을 고민하기 시작했습니다.
 
-```mermaid
-flowchart LR
-    A[처음 생각<br/>GitHub Actions YAML 작성] --> B[needs / if / jobs / steps]
-    B --> C[Job 순서 맞추기]
-
-    C --> D{배포 실패 경험<br/>Health Check 실패}
-
-    D --> E[바뀐 관점<br/>배포 전략 자동화]
-    E --> F[실패 영향 범위]
-    E --> G[헬스체크]
-    E --> H[롤백]
-    E --> I[복구 흐름]
-```
 > 배포 실패를 겪고 나서 CI/CD를 YAML 작성이 아니라 배포 전략을 실행하는 흐름으로 보게 됐다.
->
-> **[시각자료 3 이미지 생성 프롬프트]**
-> A conceptual diagram showing a shift in perspective. On the left side: "Old View" with a YAML code icon, listing elements like syntax, needs/if, and job order. In the middle: a flash point representing "Deployment Failure". On the right side: "New View" with a compass and shield icon, listing elements like failure blast radius, health check design, auto rollback, and recovery pipeline. Minimalist business presentation style, contrasting warm and cool tones, Korean labels.
 
 ---
 
@@ -143,20 +105,8 @@ EC2 인스턴스 SSH 접속
 
 즉, **배포 파이프라인을 아무리 매끄럽게 자동화하더라도, 단일 EC2라는 인프라 구조의 불안정성 자체를 해결할 수는 없습니다.** 자동화는 단순히 비효율적인 반복 작업을 대신 해줄 뿐, 서비스의 높은 가용성과 회복탄력성을 보장해 주지는 못합니다.
 
-```mermaid
-flowchart LR
-    A[GitHub Actions] --> B[ECR<br/>Docker Image]
-    B --> C[Single EC2]
-    C --> D[Docker Container]
-    D --> E[Spring Boot App]
-
-    C -. 장애 발생 .-> F[Service Down<br/>전체 서비스 영향]
-```
 ![단일 EC2 배포 구조](/assets/images/2026-07-01-cicd-design-not-yaml/single_ec2_architecture.png)
 > 단일 EC2 배포는 구조가 단순하지만, EC2 한 대가 곧 전체 서비스의 장애 지점이 될 수 있다.
->
-> **[시각자료 4 이미지 생성 프롬프트]**
-> A technical diagram representing a single EC2 deployment architecture. A central cloud server icon labeled "Single EC2" hosts a container icon labeled "Spring Boot App". An alert red dotted line points to a broken link chain icon labeled "Service Down", highlighting the single point of failure concept. Modern AWS console-style colors, clean typography, Korean labels.
 
 ---
 
@@ -190,36 +140,10 @@ flowchart LR
 
 따라서 롤링 배포를 제대로 활용하기 위해서는 **하위 호환성 설계(Backward Compatibility)**, **점진적인 DB 스키마 마이그레이션(Expand/Contract 패턴)**, 그리고 **배포 단계별 헬스체크 기준 설정**과 **실패 시 중단 조건**이 정밀하게 선행적으로 조율되어야 합니다.
 
-```mermaid
-flowchart LR
-    A[Load Balancer] --> B[EC2 A<br/>v1 → v2]
-    A --> C[EC2 B<br/>v1]
-    A --> D[EC2 C<br/>v1]
-
-    B --> E{Health Check}
-    E -->|통과| F[다음 인스턴스 교체]
-    E -->|실패| G[배포 중단 / 롤백]
-```
 ![ASG 롤링 배포 흐름](/assets/images/2026-07-01-cicd-design-not-yaml/asg_rolling_deployment.png)
 > ASG 롤링 배포는 모든 서버를 한 번에 바꾸지 않고, 헬스체크를 확인하며 순차적으로 교체한다.
->
-> **[시각자료 5 이미지 생성 프롬프트]**
-> A network routing diagram explaining rolling deployment. A central load balancer directs traffic to three EC2 instance cards labeled A, B, and C. Instance A is highlighted with a green loading icon indicating update to v2, while B and C remain at v1. The update flow points to a decision node labeled "Health Check", with one success path to "Next Instance Update" and a warning path to "Abort & Rollback". Professional, clean UI vector, Korean labels.
 
-```mermaid
-flowchart TB
-    A[Load Balancer] --> B[EC2 A<br/>v2]
-    A --> C[EC2 B<br/>v1]
-    A --> D[EC2 C<br/>v1]
-
-    B -.-> E[New API Response]
-    C -.-> F[Old API Response]
-    D -.-> F
-```
 > 롤링 배포 중에는 v1과 v2가 동시에 트래픽을 받을 수 있으므로 하위 호환성을 고려해야 한다.
->
-> **[시각자료 6 이미지 생성 프롬프트]**
-> An architectural block diagram showing version coexistence during a rolling deploy. A load balancer distributes traffic to EC2 A (v2) and EC2 B/C (v1). EC2 A generates "New API Response" (green line) and EC2 B/C generate "Old API Response" (blue line). A warning icon highlights the coexistence of two different response schemas. Isometric vector art, clear color coding, Korean labels.
 
 ---
 
@@ -246,24 +170,8 @@ Green = 새 버전이 임시 배포되어 검증 대기 중인 환경 (v2)
 
 Blue-Green 배포는 **"새 버전을 곧바로 실서버에 반영하지 않고, 철저한 사전 검증을 마친 후에 트래픽 제어권을 매끄럽게 넘겨받는 설계"**의 중요성을 잘 보여줍니다.
 
-```mermaid
-flowchart LR
-    U[User Traffic] --> LB[Load Balancer]
-
-    LB --> Blue[Blue Environment<br/>현재 운영 v1]
-    LB -. 전환 대기 .-> Green[Green Environment<br/>새 버전 v2]
-
-    Green --> HC{Health Check}
-    HC -->|통과| Switch[Traffic Switch<br/>Blue → Green]
-    HC -->|실패| Keep[Blue 유지<br/>사용자 영향 최소화]
-
-    Switch --> Rollback[문제 발생 시<br/>Green → Blue 롤백]
-```
 ![Blue-Green 배포 흐름](/assets/images/2026-07-01-cicd-design-not-yaml/blue_green_deployment.png)
 > Blue-Green 배포는 새 버전을 별도 환경에서 검증한 뒤, 트래픽만 전환하는 방식이다.
->
-> **[시각자료 7 이미지 생성 프롬프트]**
-> A professional systems architecture diagram of a Blue-Green deployment. A user traffic arrow enters a Load Balancer. The Load Balancer has two arrows: a solid line pointing to a blue-colored server cluster box named "Blue Environment (v1 Active)" and a dotted line pointing to a green-colored server cluster box named "Green Environment (v2 Idle)". A switch icon indicates the traffic swap. Clean tech illustration, corporate styling, Korean labels.
 
 ---
 
@@ -295,22 +203,7 @@ if: github.event_name == 'workflow_dispatch' || github.ref == 'refs/heads/main'
 
 > **자동화는 강력하고 편리하지만, 잘못된 시점이나 잘못된 대상에 잘못 트리거되면 대형 재앙이 됩니다.**
 > **따라서 CI/CD 설계에서는 "어떤 파이프라인을 실행할 것인가"만큼 "어떤 타이밍과 조건에서 안전하게 트리거할 것인가"도 핵심 고려 대상입니다.**
-
-```mermaid
-flowchart TB
-    A[기존 조건<br/>github.event_name != pull_request] --> B[PR이 아니면 실행]
-    B --> C[push 이벤트에서도 실행 가능]
-    C --> D[의도치 않은 배포 가능성]
-
-    E[변경 조건<br/>workflow_dispatch 또는 main] --> F[수동 실행]
-    E --> G[main 브랜치]
-    F --> H[배포 조건 명확]
-    G --> H
-```
 > CI/CD에서는 어떤 job을 만들지뿐 아니라, 어떤 이벤트에서 실행할지도 중요한 설계 대상이다.
->
-> **[시각자료 8 이미지 생성 프롬프트]**
-> A flowchart comparing CI/CD trigger conditions. On the left side: Red warning flow for the old permissive condition `github.event_name != 'pull_request'` leading to unintended deployment. On the right side: Green check flow for the new strict condition `workflow_dispatch || main` leading to controlled, intended deployment. Elegant presentation graphic, high-contrast, Korean labels.
 
 ---
 
