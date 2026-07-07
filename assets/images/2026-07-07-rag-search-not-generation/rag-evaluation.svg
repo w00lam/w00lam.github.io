@@ -1,0 +1,34 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="620" viewBox="0 0 1200 620" role="img" aria-labelledby="title desc">
+  <title id="title">RAG 평가 구조</title>
+  <desc id="desc">RAG 평가는 검색 평가와 생성 평가를 나누어 보고, 골든 데이터셋으로 회귀 테스트처럼 관리한다</desc>
+  <defs>
+    <filter id="shadow" x="-15%" y="-15%" width="130%" height="130%">
+      <feDropShadow dx="0" dy="8" stdDeviation="9" flood-color="#0f172a" flood-opacity="0.10"/>
+    </filter>
+  </defs>
+  <rect width="1200" height="620" rx="28" fill="#f8fafc"/>
+  <text x="70" y="78" font-family="Arial, 'Noto Sans KR', sans-serif" font-size="34" font-weight="700" fill="#0f172a">RAG 평가는 검색과 생성을 나눠서 본다</text>
+  <text x="72" y="116" font-family="Arial, 'Noto Sans KR', sans-serif" font-size="18" fill="#64748b">답변이 좋아졌는지 감으로 판단하지 않고, 어디가 좋아졌는지 지표로 분리한다.</text>
+
+  <g filter="url(#shadow)" font-family="Arial, 'Noto Sans KR', sans-serif">
+    <rect x="105" y="185" width="440" height="255" rx="24" fill="#eff6ff" stroke="#bfdbfe"/>
+    <text x="325" y="235" text-anchor="middle" font-size="26" font-weight="700" fill="#1d4ed8">검색 평가</text>
+    <rect x="165" y="285" width="150" height="72" rx="16" fill="#ffffff" stroke="#93c5fd"/>
+    <text x="240" y="329" text-anchor="middle" font-size="21" font-weight="700" fill="#1e3a8a">recall@K</text>
+    <rect x="335" y="285" width="150" height="72" rx="16" fill="#ffffff" stroke="#93c5fd"/>
+    <text x="410" y="329" text-anchor="middle" font-size="21" font-weight="700" fill="#1e3a8a">MRR</text>
+    <text x="325" y="395" text-anchor="middle" font-size="16" fill="#475569">정답 근거 문서를 잘 찾았는가</text>
+
+    <rect x="655" y="185" width="440" height="255" rx="24" fill="#ecfdf5" stroke="#bbf7d0"/>
+    <text x="875" y="235" text-anchor="middle" font-size="26" font-weight="700" fill="#166534">생성 평가</text>
+    <rect x="715" y="285" width="150" height="72" rx="16" fill="#ffffff" stroke="#86efac"/>
+    <text x="790" y="329" text-anchor="middle" font-size="21" font-weight="700" fill="#14532d">충실도</text>
+    <rect x="885" y="285" width="150" height="72" rx="16" fill="#ffffff" stroke="#86efac"/>
+    <text x="960" y="329" text-anchor="middle" font-size="21" font-weight="700" fill="#14532d">답변 관련성</text>
+    <text x="875" y="395" text-anchor="middle" font-size="16" fill="#475569">근거를 바탕으로 질문에 답했는가</text>
+
+    <rect x="250" y="490" width="700" height="72" rx="20" fill="#fff7ed" stroke="#fed7aa"/>
+    <text x="600" y="519" text-anchor="middle" font-size="21" font-weight="700" fill="#9a3412">골든 데이터셋</text>
+    <text x="600" y="548" text-anchor="middle" font-size="16" fill="#475569">질문 + 정답 문서 + 기대 답변으로 회귀 테스트처럼 튜닝한다</text>
+  </g>
+</svg>
