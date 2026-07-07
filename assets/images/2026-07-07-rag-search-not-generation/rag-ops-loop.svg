@@ -1,0 +1,45 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="660" viewBox="0 0 1200 660" role="img" aria-labelledby="title desc">
+  <title id="title">RAG 운영 루프</title>
+  <desc id="desc">RAG를 운영 시스템으로 볼 때 문서 갱신, 검색 품질, 비용, 권한과 보안을 함께 관리해야 함을 보여주는 도식</desc>
+  <defs>
+    <marker id="arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#0f766e"/>
+    </marker>
+  </defs>
+  <rect width="1200" height="660" rx="28" fill="#f8fafc"/>
+  <text x="70" y="82" font-family="Arial, 'Noto Sans KR', sans-serif" font-size="34" font-weight="700" fill="#0f172a">RAG는 만들어놓고 끝나는 기능이 아니라 운영 루프다</text>
+  <text x="72" y="120" font-family="Arial, 'Noto Sans KR', sans-serif" font-size="18" fill="#64748b">문서, 검색, 비용, 권한을 계속 관찰하고 조정해야 한다.</text>
+
+  <circle cx="600" cy="350" r="128" fill="#ffffff" stroke="#99f6e4" stroke-width="4"/>
+  <text x="600" y="330" text-anchor="middle" font-family="Arial, 'Noto Sans KR', sans-serif" font-size="28" font-weight="700" fill="#115e59">RAG</text>
+  <text x="600" y="366" text-anchor="middle" font-family="Arial, 'Noto Sans KR', sans-serif" font-size="18" fill="#475569">검색 기반</text>
+  <text x="600" y="392" text-anchor="middle" font-family="Arial, 'Noto Sans KR', sans-serif" font-size="18" fill="#475569">답변 시스템</text>
+
+  <g>
+    <rect x="100" y="190" width="250" height="116" rx="18" fill="#eff6ff" stroke="#bfdbfe"/>
+    <text x="225" y="236" text-anchor="middle" font-family="Arial, 'Noto Sans KR', sans-serif" font-size="22" font-weight="700" fill="#1d4ed8">문서 갱신</text>
+    <text x="225" y="270" text-anchor="middle" font-family="Arial, 'Noto Sans KR', sans-serif" font-size="15" fill="#475569">ID 기반 upsert</text>
+  </g>
+  <g>
+    <rect x="850" y="190" width="250" height="116" rx="18" fill="#ecfdf5" stroke="#bbf7d0"/>
+    <text x="975" y="236" text-anchor="middle" font-family="Arial, 'Noto Sans KR', sans-serif" font-size="22" font-weight="700" fill="#166534">검색 품질</text>
+    <text x="975" y="270" text-anchor="middle" font-family="Arial, 'Noto Sans KR', sans-serif" font-size="15" fill="#475569">recall@K, MRR</text>
+  </g>
+  <g>
+    <rect x="850" y="430" width="250" height="116" rx="18" fill="#fff7ed" stroke="#fed7aa"/>
+    <text x="975" y="476" text-anchor="middle" font-family="Arial, 'Noto Sans KR', sans-serif" font-size="22" font-weight="700" fill="#9a3412">비용</text>
+    <text x="975" y="510" text-anchor="middle" font-family="Arial, 'Noto Sans KR', sans-serif" font-size="15" fill="#475569">topK, 청크, 리랭킹</text>
+  </g>
+  <g>
+    <rect x="100" y="430" width="250" height="116" rx="18" fill="#f1f5f9" stroke="#cbd5e1"/>
+    <text x="225" y="476" text-anchor="middle" font-family="Arial, 'Noto Sans KR', sans-serif" font-size="22" font-weight="700" fill="#334155">권한과 보안</text>
+    <text x="225" y="510" text-anchor="middle" font-family="Arial, 'Noto Sans KR', sans-serif" font-size="15" fill="#475569">metadata 필터링</text>
+  </g>
+
+  <path d="M 350 246 C 440 190, 510 188, 572 226" stroke="#0f766e" stroke-width="5" fill="none" marker-end="url(#arrow)"/>
+  <path d="M 628 226 C 700 184, 774 188, 850 246" stroke="#0f766e" stroke-width="5" fill="none" marker-end="url(#arrow)"/>
+  <path d="M 975 306 C 1012 350, 1012 390, 975 430" stroke="#0f766e" stroke-width="5" fill="none" marker-end="url(#arrow)"/>
+  <path d="M 850 488 C 760 548, 686 548, 628 474" stroke="#0f766e" stroke-width="5" fill="none" marker-end="url(#arrow)"/>
+  <path d="M 572 474 C 500 548, 424 548, 350 488" stroke="#0f766e" stroke-width="5" fill="none" marker-end="url(#arrow)"/>
+  <path d="M 225 430 C 188 388, 188 348, 225 306" stroke="#0f766e" stroke-width="5" fill="none" marker-end="url(#arrow)"/>
+</svg>
