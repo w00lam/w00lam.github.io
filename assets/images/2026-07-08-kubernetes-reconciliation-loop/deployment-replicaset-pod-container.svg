@@ -1,0 +1,56 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1600" height="900" viewBox="0 0 1600 900" role="img" aria-labelledby="title desc">
+  <title id="title">Deployment ReplicaSet Pod Container Hierarchy</title>
+  <desc id="desc">Kubernetes workload hierarchy diagram</desc>
+  <defs>
+    <marker id="arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="8" markerHeight="8" orient="auto">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#2563eb"/>
+    </marker>
+    <style>
+      .bg{fill:#f8fafc}
+      .box{fill:#fff;stroke:#2563eb;stroke-width:4;rx:20}
+      .pod{fill:#f0fdf4;stroke:#16a34a;stroke-width:4;rx:20}
+      .container{fill:#eff6ff;stroke:#1d4ed8;stroke-width:3;rx:14}
+      .note{fill:#fff7ed;stroke:#f97316;stroke-width:3;rx:18}
+      .text{font-family:Inter,Segoe UI,Arial,sans-serif;fill:#0f172a;font-size:34px;font-weight:800}
+      .small{font-family:Inter,Segoe UI,Arial,sans-serif;fill:#475569;font-size:22px;font-weight:600}
+      .line{stroke:#2563eb;stroke-width:5;fill:none;marker-end:url(#arrow)}
+    </style>
+  </defs>
+  <rect class="bg" width="1600" height="900"/>
+
+  <rect class="box" x="560" y="70" width="480" height="115"/>
+  <text class="text" x="800" y="120" text-anchor="middle">Deployment</text>
+  <text class="small" x="800" y="156" text-anchor="middle">rollout strategy</text>
+
+  <rect class="box" x="560" y="270" width="480" height="115"/>
+  <text class="text" x="800" y="320" text-anchor="middle">ReplicaSet</text>
+  <text class="small" x="800" y="356" text-anchor="middle">maintains pod count</text>
+
+  <path class="line" d="M800 185 V270"/>
+
+  <rect class="pod" x="170" y="520" width="340" height="210"/>
+  <text class="text" x="340" y="575" text-anchor="middle">Pod</text>
+  <text class="small" x="340" y="610" text-anchor="middle">scheduling unit</text>
+  <rect class="container" x="220" y="650" width="240" height="55"/>
+  <text class="small" x="340" y="686" text-anchor="middle">Container</text>
+
+  <rect class="pod" x="630" y="520" width="340" height="210"/>
+  <text class="text" x="800" y="575" text-anchor="middle">Pod</text>
+  <text class="small" x="800" y="610" text-anchor="middle">scheduling unit</text>
+  <rect class="container" x="680" y="650" width="240" height="55"/>
+  <text class="small" x="800" y="686" text-anchor="middle">Container</text>
+
+  <rect class="pod" x="1090" y="520" width="340" height="210"/>
+  <text class="text" x="1260" y="575" text-anchor="middle">Pod</text>
+  <text class="small" x="1260" y="610" text-anchor="middle">scheduling unit</text>
+  <rect class="container" x="1140" y="650" width="240" height="55"/>
+  <text class="small" x="1260" y="686" text-anchor="middle">Container</text>
+
+  <path class="line" d="M800 385 V500"/>
+  <path class="line" d="M800 455 C800 485 340 485 340 520"/>
+  <path class="line" d="M800 455 C800 485 1260 485 1260 520"/>
+
+  <rect class="note" x="1135" y="88" width="320" height="88"/>
+  <text class="small" x="1295" y="123" text-anchor="middle">You usually</text>
+  <text class="small" x="1295" y="153" text-anchor="middle">declare Deployment.</text>
+</svg>
