@@ -80,8 +80,6 @@ Filter는 HTTP 요청 자체를 다룬다.
 * Handler 정보 접근 가능
 * Spring Bean 활용 가능
 
-즉,
-
 > “Spring MVC 흐름 안에서 요청을 제어하는 역할”
 
 에 더 가깝다.
@@ -160,15 +158,15 @@ JWT 인증은:
 - SecurityContext 생성
 - 인증 자체를 처리
 
-즉, 요청 입구(Filter)에서 끝내야 한다.
+그래서 요청 입구인 Filter에서 끝내야 한다.
 
-실제로 Spring Security도 구조적으로 보면  
+실제로 Spring Security도 구조적으로 보면
 Interceptor가 아니라 Filter 기반으로 동작한다.
 
-인증은 요청이 Controller까지 도달하기 전에  
+인증은 요청이 Controller까지 도달하기 전에
 먼저 검증되어야 하기 때문이다.
 
-반면 Interceptor는:
+그에 비해 Interceptor는:
 
 - 이미 Spring MVC 내부로 들어온 요청을 기준으로
 - 접근 가능한지 확인하거나
@@ -225,8 +223,6 @@ public class WebConfig implements WebMvcConfigurer {
 ```
 
 이 부분이 꽤 인상 깊었다.
-
-왜냐하면:
 
 > “어떤 요청에 적용할지”를 매우 세밀하게 제어할 수 있었기 때문이다.
 

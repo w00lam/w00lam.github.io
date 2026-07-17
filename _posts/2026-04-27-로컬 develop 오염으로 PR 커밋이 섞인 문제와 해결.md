@@ -43,7 +43,7 @@ feature/common-response
    └─ local develop 기준으로 분기됨
 ```
 
-즉, 새 브랜치가 **이미 이전 feature 커밋을 포함한 상태에서 생성된 것**이다.
+즉, 새 브랜치가 **이미 이전 feature 커밋을 포함한 상태에서 생성됐다**.
 
 ---
 
@@ -58,8 +58,7 @@ compare: feature/common-response
 
 하지만 `feature/common-response`에는
 로컬에서 merge된 `common-enums` 커밋이 포함되어 있었기 때문에
-
-👉 GitHub는 이를 "새로운 변경"으로 인식
+GitHub는 이를 "새로운 변경"으로 인식했다.
 
 결과적으로 PR에 불필요한 변경 사항이 함께 표시되었다.
 
@@ -129,7 +128,7 @@ git checkout develop
 git merge feature/common-enums   # 지양
 ```
 
-👉 feature → develop 병합은 반드시 PR을 통해 수행
+feature → develop 병합은 반드시 PR을 통해 수행한다.
 
 ---
 

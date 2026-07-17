@@ -16,7 +16,7 @@ permalink: /posts/nginx-deployment-switching-point/
 Client → Nginx → Spring Boot
 ```
 
-이 정도만 보면 Nginx는 Spring Boot 앞에서 요청을 넘겨주는 프록시처럼 보인다. 실제로 처음에는 나도 그렇게 이해했다. 사용자가 80번이나 443번 포트로 요청하면, Nginx가 내부의 8080 포트로 요청을 넘겨주는 정도로 생각했다.
+이 정도만 보면 Nginx는 Spring Boot 앞에서 요청을 넘겨주는 프록시처럼 보인다. 실제로 처음에는 나도 그렇게 이해했다. 사용자가 80번이나 443번 포트로 요청하면 Nginx가 내부의 8080 포트로 요청을 넘겨주는 정도로 생각했다.
 
 하지만 Docker Compose, 단일 EC2 배포, GitHub Actions를 이용한 CI/CD, Blue-Green 배포까지 함께 생각하니 Nginx는 단순한 요청 전달자 이상으로 보이기 시작했다.
 
@@ -24,7 +24,7 @@ Client → Nginx → Spring Boot
 
 이번 글의 핵심은 다음이다.
 
-> Nginx는 단순히 Spring Boot 앞에서 요청을 넘겨주는 프록시가 아니라, Docker 기반 배포 환경에서 외부 요청과 내부 애플리케이션 구조를 분리하고, upstream을 통해 로드밸런싱과 Blue-Green 배포 전환 지점이 되며, proxy header를 통해 원본 요청 정보를 애플리케이션에 전달하는 운영 경계다.
+> Nginx는 단순히 Spring Boot 앞에서 요청을 넘겨주는 프록시가 아니라, Docker 기반 배포 환경에서 외부 요청과 내부 애플리케이션 구조를 분리하고 upstream으로 로드밸런싱과 Blue-Green 배포 전환 지점이 되며 proxy header로 원본 요청 정보를 애플리케이션에 전달하는 운영 경계다.
 
 ---
 
@@ -36,11 +36,11 @@ Client → Nginx → Spring Boot
 Client → Nginx → Spring Boot
 ```
 
-사용자가 80/443 포트로 요청하면 Nginx가 내부 Spring Boot 8080 포트로 전달한다. Spring Boot는 비즈니스 로직을 처리하고, Nginx는 앞에서 요청을 받아 넘긴다.
+사용자가 80/443 포트로 요청하면 Nginx가 내부 Spring Boot 8080 포트로 전달한다. Spring Boot는 비즈니스 로직을 처리하고 Nginx는 앞에서 요청을 받아 넘긴다.
 
 이 설명 자체가 틀린 것은 아니다. 다만 이 수준에서 멈추면 운영 배포 구조에서 Nginx가 왜 중요한지 충분히 보이지 않는다.
 
-예를 들어 Docker Compose로 Spring Boot, MySQL, Redis, Nginx를 함께 실행한다고 해보자. 여기에 GitHub Actions로 새 Docker 이미지를 빌드하고, EC2에서 컨테이너를 교체하는 흐름까지 붙이면 질문이 생긴다.
+예를 들어 Docker Compose로 Spring Boot, MySQL, Redis, Nginx를 함께 실행한다고 해보자. 여기에 GitHub Actions로 새 Docker 이미지를 빌드하고 EC2에서 컨테이너를 교체하는 흐름까지 붙이면 질문이 생긴다.
 
 ```text
 새 컨테이너는 어떤 주소로 접근해야 하지?
@@ -65,7 +65,7 @@ location / {
 }
 ```
 
-이 경우 `localhost:8080`은 EC2 호스트 자신의 8080 포트를 의미한다. 즉, 같은 서버에서 실행 중인 Spring Boot 애플리케이션을 바라볼 수 있다.
+이 경우 `localhost:8080`은 EC2 호스트 자신의 8080 포트를 의미한다. 같은 서버에서 실행 중인 Spring Boot 애플리케이션을 바라본다.
 
 하지만 Nginx도 Docker 컨테이너로 실행 중이라면 이야기가 달라진다.
 
@@ -118,7 +118,7 @@ services:
 
 이때 Nginx 컨테이너는 `http://app:8080`으로 Spring Boot 컨테이너에 요청을 보낼 수 있다.
 
-여기서 `app`은 외부 도메인이 아니다. Docker Compose 내부 네트워크에서 사용할 수 있는 서비스 이름이다. 같은 Compose 네트워크에 들어간 컨테이너들은 이 이름을 통해 서로를 찾을 수 있다.
+여기서 `app`은 외부 도메인이 아니다. Docker Compose 내부 네트워크에서 사용할 수 있는 서비스 이름이다. 같은 Compose 네트워크에 들어간 컨테이너들은 이 이름으로 서로를 찾는다.
 
 이 구조를 단순히 그리면 다음과 같다.
 
@@ -130,9 +130,9 @@ nginx container
 app container
 ```
 
-이전 [Docker Compose 다음에 Kubernetes가 필요한 이유](/posts/kubernetes-after-docker-compose/) 글에서는 Docker Compose가 단일 EC2 안에서 여러 컨테이너를 함께 실행하기 좋은 현실적인 선택이라고 정리했다. 이번에는 그 Compose 내부에서 컨테이너끼리 어떤 이름으로 연결되는지를 Nginx 설정을 통해 다시 확인한 셈이다.
+이전 [Docker Compose 다음에 Kubernetes가 필요한 이유](/posts/kubernetes-after-docker-compose/) 글에서는 Docker Compose가 단일 EC2 안에서 여러 컨테이너를 함께 실행하기 좋은 현실적인 선택이라고 정리했다. 이번에는 그 Compose 내부에서 컨테이너끼리 어떤 이름으로 연결되는지를 Nginx 설정으로 다시 확인한 셈이다.
 
-결국 Nginx 설정에서 `proxy_pass`는 단순히 URL 하나를 적는 것이 아니라, 외부 요청을 Compose 내부의 어떤 서비스로 넘길지 결정하는 설정이다.
+Nginx 설정에서 `proxy_pass`는 단순히 URL 하나를 적는 것이 아니라, 외부 요청을 Compose 내부의 어떤 서비스로 넘길지 결정하는 설정이다.
 
 ---
 
@@ -176,7 +176,7 @@ upstream backend
 server app:8080
 ```
 
-이렇게 보면 `upstream`은 내부 서버의 실제 주소를 감싸는 논리적인 이름이라고 볼 수 있다. Nginx는 외부 요청을 `backend`라는 그룹으로 보내고, 그 그룹 안에 등록된 서버로 실제 요청을 전달한다.
+이렇게 보면 `upstream`은 내부 서버의 실제 주소를 감싸는 논리적인 이름이라고 볼 수 있다. Nginx는 외부 요청을 `backend`라는 그룹으로 보내고 그 그룹 안에 등록된 서버로 실제 요청을 전달한다.
 
 ---
 
@@ -208,7 +208,7 @@ server {
 
 즉, Reverse Proxy 구조가 Load Balancing 구조로 확장된다.
 
-여기서 중요한 점은 `upstream`이 단순히 설정을 보기 좋게 만드는 문법만은 아니라는 것이다. 내부 서버 그룹을 논리적으로 관리하고, 그 그룹 안에 서버를 하나에서 여러 개로 확장할 수 있게 해주는 기반이다.
+여기서 짚고 넘어갈 부분이 있다. `upstream`은 단순히 설정을 보기 좋게 만드는 문법이 아니다. 내부 서버 그룹을 논리적으로 관리하고 그 그룹 안에 서버를 하나에서 여러 개로 확장할 수 있게 해주는 기반이다.
 
 처음에는 `proxy_pass http://app:8080`처럼 하나의 대상만 생각했다. 하지만 운영 관점으로 들어가면 "현재 요청을 어떤 서버 그룹으로 보낼 것인가"가 더 중요해진다. `upstream`은 그 서버 그룹을 Nginx 안에서 표현하는 방법이라고 이해했다.
 
@@ -227,7 +227,7 @@ upstream backend {
 }
 ```
 
-이 구조에서는 `app-blue`와 `app-green`이 동시에 트래픽을 받는다. 두 애플리케이션이 모두 같은 버전이거나, 동시에 트래픽을 받아도 문제가 없는 구조라면 의미가 있다.
+이 구조에서는 `app-blue`와 `app-green`이 동시에 트래픽을 받는다. 두 애플리케이션이 모두 같은 버전이거나 동시에 트래픽을 받아도 문제가 없는 구조라면 의미가 있다.
 
 반면 Blue-Green 배포에서는 두 서버가 동시에 트래픽을 받는 것이 핵심이 아니다. 현재 운영 버전 하나만 트래픽을 받고 있다가, 새 버전이 준비되면 트래픽 대상을 전환하는 것이 핵심이다.
 
@@ -251,7 +251,7 @@ upstream backend {
 
 이 차이를 놓치면 "Blue-Green은 컨테이너 두 개 띄우고 둘 다 upstream에 넣으면 되는 것 아닌가?"라고 오해할 수 있다. 하지만 그렇게 하면 두 버전이 동시에 요청을 나눠 받는 구조가 된다.
 
-정리하면 다음과 같다.
+핵심 차이는 이렇다.
 
 > Load Balancing은 여러 서버에 요청을 나눠 보내는 구조이고, Blue-Green 배포는 현재 트래픽을 받는 버전을 새 버전으로 전환하는 구조다.
 
@@ -309,9 +309,9 @@ Nginx 설정을 변경한 뒤에는 reload가 필요하다.
 sudo systemctl reload nginx
 ```
 
-컨테이너 환경이라면 Nginx 컨테이너 안에서 reload를 실행하거나, 설정 반영 방식에 맞게 Nginx 컨테이너를 재시작할 수 있다.
+컨테이너 환경이라면 Nginx 컨테이너 안에서 reload를 실행하거나 설정 반영 방식에 맞게 Nginx 컨테이너를 재시작할 수 있다.
 
-여기서 중요한 점은 Nginx가 배포 도구 자체는 아니라는 것이다. GitHub Actions처럼 이미지를 빌드하거나, EC2에 접속해서 컨테이너를 실행하는 일을 Nginx가 대신해주지는 않는다.
+여기서 중요한 점이 있다. Nginx는 배포 도구 자체가 아니다. GitHub Actions처럼 이미지를 빌드하거나 EC2에 접속해서 컨테이너를 실행하는 일을 Nginx가 대신해주지는 않는다.
 
 다만 Nginx는 사용자 트래픽을 어느 애플리케이션 버전으로 보낼지 결정하는 전환 지점이 될 수 있다.
 
@@ -393,7 +393,7 @@ proxy_set_header X-Forwarded-Proto $scheme;
 
 하지만 Docker Compose 환경에서는 `localhost`의 의미부터 다시 생각해야 했다. Nginx가 컨테이너로 실행 중이라면 `localhost:8080`은 Spring Boot 컨테이너가 아니라 Nginx 컨테이너 자신을 가리킬 수 있다. 그래서 컨테이너 간 통신에는 Compose 서비스 이름을 사용해야 한다.
 
-또한 `upstream`을 사용하면 내부 서버를 논리적으로 묶을 수 있고, 여러 서버로 확장되면 Load Balancing 구조가 된다. 다만 Load Balancing과 Blue-Green 배포는 다르다. Blue-Green 배포에서는 두 서버를 동시에 사용하는 것이 아니라, health check 이후 트래픽 대상을 전환하는 것이 중요하다.
+upstream을 사용하면 내부 서버를 논리적으로 묶을 수 있고 여러 서버로 확장되면 Load Balancing 구조가 된다. 다만 Load Balancing과 Blue-Green 배포는 다르다. Blue-Green 배포에서는 두 서버를 동시에 사용하는 것이 아니라, health check 이후 트래픽 대상을 전환하는 것이 중요하다.
 
 마지막으로 Reverse Proxy 뒤의 Spring Boot는 원본 요청 정보를 직접 알기 어렵기 때문에 `proxy_set_header`로 Host, 실제 IP, HTTPS 여부 같은 정보를 전달해야 한다.
 

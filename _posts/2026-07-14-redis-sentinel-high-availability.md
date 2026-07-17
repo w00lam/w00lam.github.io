@@ -31,7 +31,7 @@ Redis가 한 대뿐이라면 이 노드는 **SPOF(Single Point of Failure), 즉 
 - 분산 락을 얻지 못해 타임세일 주문과 쿠폰 발급 요청을 거절한다.
 - 장애 처리 정책이 불명확하면 정합성이 필요한 로직이 안전하지 않게 실행될 수 있다.
 
-즉, Redis의 장애 범위는 Redis를 어디에 사용했는지에 따라 달라진다. **중요한 것은 Redis 장애가 서비스 전체 장애인지 아닌지를 단정하는 것이 아니라, Redis 의존 기능별 실패 방식을 미리 정하는 것**이다.
+Redis의 장애 범위는 Redis를 어디에 사용했는지에 따라 달라진다. **중요한 것은 Redis 장애가 서비스 전체 장애인지 아닌지를 단정하는 것이 아니라, Redis 의존 기능별 실패 방식을 미리 정하는 것**이다.
 
 이전에 [Spring Cache의 Key 설계와 동기화 책임](/posts/spring-cache-design-sync-redistemplate/)을 정리했다면, 이번에는 그 캐시 저장소 자체에 장애가 생겼을 때 어떻게 복구 시간을 줄일지로 질문을 확장해 보았다.
 
@@ -171,7 +171,7 @@ Sentinel은 가장 적절한 Replica를 골라 역할을 전환할 수 있지만
 
 ## 9. Redisson 분산 락에서도 남는 주의점
 
-이전에 [동시성 제어 전략과 Redis 분산 락](/posts/concurrency-control-strategy/)을 정리했지만, 당시의 락 흐름도 Redis가 정상적으로 동작한다는 전제를 가진다. 현재 프로젝트의 Redisson 기반 정책은 다음과 같다.
+이전에 [동시성 제어 전략과 Redis 분산 락](/posts/concurrency-control-strategy/)을 정리했지만, 당시의 락 흐름도 Redis가 정상적으로 동작한다는 전제를 깔고 있다. 현재 프로젝트의 Redisson 기반 정책은 다음과 같다.
 
 - 타임세일 주문 락과 쿠폰 발급 락에 사용
 - Wait Time 3초
@@ -227,7 +227,7 @@ Sentinel과 Redis Cluster는 모두 장애 대응과 관련이 있지만 해결 
 
 **Sentinel은 데이터 크기에 따라 키를 여러 노드에 자동 분산하는 샤딩 기술이 아니다.** Primary 하나의 데이터 전체를 Replica가 복제하는 구조이므로, 데이터 용량이나 쓰기 처리량이 단일 Primary의 한계를 넘으면 Redis Cluster 또는 샤딩을 제공하는 관리형 서비스를 검토해야 한다.
 
-반대로 데이터 규모가 작고 당장의 문제는 Primary 장애 후 수동 복구 시간이라면 Cluster가 항상 더 나은 출발점인 것도 아니다. Cluster는 더 많은 노드와 샤딩 제약, 운영 복잡도를 함께 가져오기 때문이다.
+반대로 데이터 규모가 작고 당장의 문제는 Primary 장애 후 수동 복구 시간이라면 Cluster가 항상 더 나은 출발점인 것도 아니다. Cluster는 더 많은 노드와 샤딩 제약, 운영 복잡도가 함께 따라오기 때문이다.
 
 ![전체 데이터를 복제하는 Redis Sentinel과 해시 슬롯으로 샤딩하는 Redis Cluster 비교](/assets/images/2026-07-14-redis-sentinel/sentinel-vs-cluster.png)
 
@@ -254,7 +254,7 @@ Sentinel과 Redis Cluster는 모두 장애 대응과 관련이 있지만 해결 
 
 진정한 고가용성을 목표로 한다면 Redis 노드와 Sentinel을 독립적으로 장애가 날 수 있는 서로 다른 서버 또는 가용 영역에 분산해야 한다. 직접 운영할 인력과 비용까지 고려하면 AWS ElastiCache 같은 관리형 Redis도 함께 비교할 수 있다. 관리형 서비스 역시 어떤 Failover와 일관성 특성을 제공하는지 확인해야 하며, “관리형”이라는 이유만으로 애플리케이션의 장애 대응 설계가 사라지는 것은 아니다.
 
-현재 프로젝트에 대한 결론은 다음과 같다.
+현재 프로젝트에서 내린 결론은 다음과 같다.
 
 > **지금 바로 Redis Cluster를 도입하기보다 단일 Redis의 장애 정책을 먼저 명확히 하고, 복구 시간 요구가 실제로 커질 때 서로 다른 장애 영역의 Sentinel 구성이나 관리형 Redis로 확장하는 편이 현실적이다.**
 
