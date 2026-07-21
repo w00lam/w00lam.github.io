@@ -1,0 +1,67 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1600" height="860" viewBox="0 0 1600 860" role="img" aria-labelledby="title desc">
+  <title id="title">지나치게 큰 MVP와 하나의 가설에 집중한 MVP 비교</title>
+  <desc id="desc">왼쪽에는 취향 분석부터 결제까지 한꺼번에 포함한 초기 아이디어가 있고, 오른쪽에는 장소 선택, 동선 생성, 결과 확인으로 핵심 가설만 검증하는 작은 MVP가 있다</desc>
+  <defs>
+    <filter id="shadow" x="-20%" y="-20%" width="140%" height="140%">
+      <feDropShadow dx="0" dy="8" stdDeviation="12" flood-color="#0f172a" flood-opacity="0.08"/>
+    </filter>
+    <marker id="arrow" markerWidth="12" markerHeight="12" refX="10" refY="6" orient="auto">
+      <path d="M0,0 L12,6 L0,12 Z" fill="#2563eb"/>
+    </marker>
+  </defs>
+  <rect width="1600" height="860" fill="#f8fafc"/>
+  <text x="800" y="72" text-anchor="middle" font-family="Noto Sans KR, Apple SD Gothic Neo, Segoe UI, sans-serif" font-size="38" font-weight="700" fill="#0f172a">기능을 줄이기 전에 검증할 가설을 하나로 줄인다</text>
+  <text x="800" y="116" text-anchor="middle" font-family="Noto Sans KR, Apple SD Gothic Neo, Segoe UI, sans-serif" font-size="22" fill="#64748b">모든 기능을 축소 구현하는 대신 가장 먼저 확인할 흐름에 집중한다</text>
+
+  <g filter="url(#shadow)">
+    <rect x="70" y="168" width="680" height="590" rx="30" fill="#ffffff" stroke="#f97316" stroke-width="3"/>
+    <rect x="850" y="168" width="680" height="590" rx="30" fill="#ffffff" stroke="#2563eb" stroke-width="3"/>
+  </g>
+
+  <rect x="70" y="168" width="680" height="90" rx="30" fill="#fff7ed"/>
+  <text x="410" y="209" text-anchor="middle" font-family="Noto Sans KR, Apple SD Gothic Neo, Segoe UI, sans-serif" font-size="27" font-weight="700" fill="#c2410c">초기 아이디어: 모든 기능을 한 번에</text>
+  <text x="410" y="240" text-anchor="middle" font-family="Noto Sans KR, Apple SD Gothic Neo, Segoe UI, sans-serif" font-size="18" fill="#9a3412">검증 대상과 구현 범위가 함께 커진다</text>
+
+  <g font-family="Noto Sans KR, Apple SD Gothic Neo, Segoe UI, sans-serif" font-size="22" font-weight="600" fill="#334155">
+    <rect x="120" y="306" width="260" height="92" rx="18" fill="#fff7ed" stroke="#fdba74" stroke-width="2"/>
+    <text x="250" y="362" text-anchor="middle">취향 분석</text>
+    <rect x="440" y="306" width="260" height="92" rx="18" fill="#fff7ed" stroke="#fdba74" stroke-width="2"/>
+    <text x="570" y="362" text-anchor="middle">장소 추천</text>
+    <rect x="120" y="430" width="260" height="92" rx="18" fill="#fff7ed" stroke="#fdba74" stroke-width="2"/>
+    <text x="250" y="486" text-anchor="middle">동선 생성</text>
+    <rect x="440" y="430" width="260" height="92" rx="18" fill="#fff7ed" stroke="#fdba74" stroke-width="2"/>
+    <text x="570" y="486" text-anchor="middle">숙소 예약</text>
+    <rect x="120" y="554" width="260" height="92" rx="18" fill="#fff7ed" stroke="#fdba74" stroke-width="2"/>
+    <text x="250" y="610" text-anchor="middle">체험 상품</text>
+    <rect x="440" y="554" width="260" height="92" rx="18" fill="#fff7ed" stroke="#fdba74" stroke-width="2"/>
+    <text x="570" y="610" text-anchor="middle">결제</text>
+  </g>
+  <text x="410" y="700" text-anchor="middle" font-family="Noto Sans KR, Apple SD Gothic Neo, Segoe UI, sans-serif" font-size="20" fill="#c2410c">데이터 · 외부 상품 · 연동 · 정책이 동시에 필요</text>
+
+  <rect x="850" y="168" width="680" height="90" rx="30" fill="#eff6ff"/>
+  <text x="1190" y="209" text-anchor="middle" font-family="Noto Sans KR, Apple SD Gothic Neo, Segoe UI, sans-serif" font-size="27" font-weight="700" fill="#1d4ed8">축소된 MVP: 하나의 핵심 가설</text>
+  <text x="1190" y="240" text-anchor="middle" font-family="Noto Sans KR, Apple SD Gothic Neo, Segoe UI, sans-serif" font-size="18" fill="#1e40af">동선 생성이 일정 계획의 불편을 줄이는지 확인</text>
+
+  <g font-family="Noto Sans KR, Apple SD Gothic Neo, Segoe UI, sans-serif">
+    <circle cx="955" cy="431" r="68" fill="#dbeafe" stroke="#60a5fa" stroke-width="3"/>
+    <text x="955" y="421" text-anchor="middle" font-size="21" font-weight="700" fill="#1e3a8a">장소를</text>
+    <text x="955" y="452" text-anchor="middle" font-size="21" font-weight="700" fill="#1e3a8a">선택한다</text>
+
+    <circle cx="1190" cy="431" r="68" fill="#dbeafe" stroke="#60a5fa" stroke-width="3"/>
+    <text x="1190" y="421" text-anchor="middle" font-size="21" font-weight="700" fill="#1e3a8a">동선을</text>
+    <text x="1190" y="452" text-anchor="middle" font-size="21" font-weight="700" fill="#1e3a8a">생성한다</text>
+
+    <circle cx="1425" cy="431" r="68" fill="#dbeafe" stroke="#60a5fa" stroke-width="3"/>
+    <text x="1425" y="421" text-anchor="middle" font-size="21" font-weight="700" fill="#1e3a8a">결과를</text>
+    <text x="1425" y="452" text-anchor="middle" font-size="21" font-weight="700" fill="#1e3a8a">확인한다</text>
+  </g>
+  <line x1="1036" y1="431" x2="1107" y2="431" stroke="#2563eb" stroke-width="4" marker-end="url(#arrow)"/>
+  <line x1="1271" y1="431" x2="1342" y2="431" stroke="#2563eb" stroke-width="4" marker-end="url(#arrow)"/>
+
+  <rect x="948" y="569" width="484" height="94" rx="20" fill="#ecfdf5" stroke="#34d399" stroke-width="2"/>
+  <text x="1190" y="607" text-anchor="middle" font-family="Noto Sans KR, Apple SD Gothic Neo, Segoe UI, sans-serif" font-size="20" font-weight="700" fill="#047857">확인할 질문</text>
+  <text x="1190" y="640" text-anchor="middle" font-family="Noto Sans KR, Apple SD Gothic Neo, Segoe UI, sans-serif" font-size="19" fill="#065f46">생성된 동선이 일정 계획에 도움이 되는가?</text>
+  <text x="1190" y="700" text-anchor="middle" font-family="Noto Sans KR, Apple SD Gothic Neo, Segoe UI, sans-serif" font-size="20" fill="#1d4ed8">구현 범위와 검증 대상이 분명하다</text>
+
+  <text x="800" y="815" text-anchor="middle" font-family="Noto Sans KR, Apple SD Gothic Neo, Segoe UI, sans-serif" font-size="21" font-weight="600" fill="#475569">작은 MVP의 기준은 기능 수가 아니라 한 번에 답하려는 질문의 수다</text>
+</svg>
