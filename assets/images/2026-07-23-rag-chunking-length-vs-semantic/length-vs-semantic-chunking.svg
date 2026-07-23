@@ -1,0 +1,81 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="640" viewBox="0 0 1200 640" role="img" aria-labelledby="title desc">
+  <title id="title">길이 기반 청킹과 의미 기반 청킹 비교</title>
+  <desc id="desc">길이 기반 청킹은 문서를 비슷한 크기로 나누어 문장이 경계에서 끊길 수 있고, 의미 기반 청킹은 주제 경계에 따라 서로 다른 크기로 나누어 같은 주제의 문장이 하나의 청크로 묶인다</desc>
+  <rect width="1200" height="640" rx="28" fill="#f8fafc"/>
+  <text x="70" y="80" font-family="Arial, 'Noto Sans KR', sans-serif" font-size="32" font-weight="700" fill="#0f172a">같은 문서, 다른 자르는 기준</text>
+
+  <!-- Left panel: length-based -->
+  <g>
+    <rect x="70" y="130" width="510" height="470" rx="22" fill="#fff7ed" stroke="#fed7aa"/>
+    <text x="325" y="176" text-anchor="middle" font-family="Arial, 'Noto Sans KR', sans-serif" font-size="24" font-weight="700" fill="#9a3412">길이 기반 청킹</text>
+    <text x="325" y="204" text-anchor="middle" font-family="Arial, 'Noto Sans KR', sans-serif" font-size="15" fill="#7c2d12">chunk_size 기준으로 비슷한 크기로 자른다</text>
+
+    <!-- document bar split into equal blocks -->
+    <g stroke="#fb923c" fill="#ffffff">
+      <rect x="100" y="240" width="105" height="300" rx="10"/>
+      <rect x="213" y="240" width="105" height="300" rx="10"/>
+      <rect x="326" y="240" width="105" height="300" rx="10"/>
+      <rect x="439" y="240" width="105" height="300" rx="10"/>
+    </g>
+    <!-- filler lines representing text inside each block -->
+    <g stroke="#fdba74" stroke-width="6" stroke-linecap="round">
+      <line x1="116" y1="270" x2="188" y2="270"/>
+      <line x1="116" y1="300" x2="188" y2="300"/>
+      <line x1="116" y1="330" x2="188" y2="330"/>
+      <line x1="229" y1="270" x2="301" y2="270"/>
+      <line x1="229" y1="300" x2="301" y2="300"/>
+      <line x1="342" y1="270" x2="414" y2="270"/>
+      <line x1="342" y1="300" x2="414" y2="300"/>
+      <line x1="342" y1="330" x2="414" y2="330"/>
+      <line x1="455" y1="270" x2="527" y2="270"/>
+      <line x1="455" y1="300" x2="527" y2="300"/>
+    </g>
+
+    <!-- broken sentence spanning boundary between block 2 and block 3 -->
+    <rect x="270" y="360" width="130" height="26" rx="8" fill="#fee2e2" stroke="#ef4444" stroke-dasharray="4 3"/>
+    <text x="335" y="378" text-anchor="middle" font-family="Arial, 'Noto Sans KR', sans-serif" font-size="12" fill="#b91c1c">문장이 경계에서 끊김</text>
+    <line x1="326" y1="240" x2="326" y2="540" stroke="#ef4444" stroke-width="2" stroke-dasharray="2 4"/>
+
+    <text x="325" y="580" text-anchor="middle" font-family="Arial, 'Noto Sans KR', sans-serif" font-size="15" fill="#475569">비슷한 크기의 블록으로 나뉘고</text>
+    <text x="325" y="604" text-anchor="middle" font-family="Arial, 'Noto Sans KR', sans-serif" font-size="15" fill="#475569">일부 문장이 경계에서 끊길 수 있다</text>
+  </g>
+
+  <!-- Right panel: semantic-based -->
+  <g>
+    <rect x="620" y="130" width="510" height="470" rx="22" fill="#eff6ff" stroke="#bfdbfe"/>
+    <text x="875" y="176" text-anchor="middle" font-family="Arial, 'Noto Sans KR', sans-serif" font-size="24" font-weight="700" fill="#1d4ed8">의미 기반 청킹</text>
+    <text x="875" y="204" text-anchor="middle" font-family="Arial, 'Noto Sans KR', sans-serif" font-size="15" fill="#1e3a8a">주제가 바뀌는 지점을 기준으로 자른다</text>
+
+    <!-- three blocks of different sizes aligned to topic boundaries -->
+    <rect x="650" y="240" width="150" height="140" rx="12" fill="#dbeafe" stroke="#60a5fa"/>
+    <text x="725" y="230" text-anchor="middle" font-family="Arial, 'Noto Sans KR', sans-serif" font-size="13" font-weight="700" fill="#1d4ed8">주제 A</text>
+
+    <rect x="810" y="240" width="230" height="220" rx="12" fill="#dcfce7" stroke="#4ade80"/>
+    <text x="925" y="230" text-anchor="middle" font-family="Arial, 'Noto Sans KR', sans-serif" font-size="13" font-weight="700" fill="#166534">주제 B</text>
+
+    <rect x="1050" y="240" width="90" height="90" rx="12" fill="#ede9fe" stroke="#c4b5fd"/>
+    <text x="1095" y="230" text-anchor="middle" font-family="Arial, 'Noto Sans KR', sans-serif" font-size="13" font-weight="700" fill="#6d28d9">주제 C</text>
+
+    <g stroke="#93c5fd" stroke-width="5" stroke-linecap="round">
+      <line x1="665" y1="280" x2="785" y2="280"/>
+      <line x1="665" y1="310" x2="785" y2="310"/>
+      <line x1="665" y1="340" x2="785" y2="340"/>
+    </g>
+    <g stroke="#86efac" stroke-width="5" stroke-linecap="round">
+      <line x1="826" y1="280" x2="1024" y2="280"/>
+      <line x1="826" y1="310" x2="1024" y2="310"/>
+      <line x1="826" y1="340" x2="1024" y2="340"/>
+      <line x1="826" y1="400" x2="1024" y2="400"/>
+      <line x1="826" y1="430" x2="1024" y2="430"/>
+    </g>
+    <g stroke="#c4b5fd" stroke-width="5" stroke-linecap="round">
+      <line x1="1064" y1="280" x2="1126" y2="280"/>
+      <line x1="1064" y1="308" x2="1126" y2="308"/>
+    </g>
+
+    <text x="875" y="500" text-anchor="middle" font-family="Arial, 'Noto Sans KR', sans-serif" font-size="14" fill="#1e3a8a">같은 주제의 문장은 하나의 청크로 묶인다</text>
+
+    <text x="875" y="580" text-anchor="middle" font-family="Arial, 'Noto Sans KR', sans-serif" font-size="15" fill="#475569">주제 경계에 따라 서로 다른 크기로 나뉘고</text>
+    <text x="875" y="604" text-anchor="middle" font-family="Arial, 'Noto Sans KR', sans-serif" font-size="15" fill="#475569">같은 주제의 문장이 한 청크로 유지된다</text>
+  </g>
+</svg>
