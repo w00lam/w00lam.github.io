@@ -1,5 +1,5 @@
 ---
-title: "[TIL] LLM 개발에서 평가를 먼저 정의하는 EDD"
+title: "LLM 개발에서 평가를 먼저 정의하는 EDD"
 date: 2026-08-10
 categories: [AI, LLM, Backend]
 tags: [EDD, Evaluation, LLM, RAG, AI Agent, TIL, Backend]
