@@ -1,0 +1,46 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="650" viewBox="0 0 1200 650" role="img" aria-labelledby="title desc">
+  <title id="title">비관적 락 동작 흐름</title>
+  <desc id="desc">트랜잭션 A가 SELECT FOR UPDATE로 행 잠금을 획득하고, 트랜잭션 B가 기다렸다가 A의 커밋 후 실행되는 흐름</desc>
+  <defs>
+    <marker id="arrow" markerWidth="10" markerHeight="10" refX="9" refY="3" orient="auto"><path d="M0,0 L10,3 L0,6 Z" fill="#64748b"/></marker>
+    <style>
+      .bg { fill: #f8fafc; }
+      .title { font: 700 26px sans-serif; fill: #0f172a; }
+      .label { font: 700 18px sans-serif; fill: #334155; }
+      .text { font: 500 16px sans-serif; fill: #334155; }
+      .small { font: 500 14px sans-serif; fill: #475569; }
+      .step { fill: #ffffff; stroke: #cbd5e1; stroke-width: 2; rx: 12; }
+      .lock { fill: #eff6ff; stroke: #60a5fa; stroke-width: 2; rx: 12; }
+      .wait { fill: #fff7ed; stroke: #fb923c; stroke-width: 2; rx: 12; }
+      .success { fill: #ecfdf5; stroke: #34d399; stroke-width: 2; rx: 12; }
+      .line { stroke: #64748b; stroke-width: 2.5; fill: none; marker-end: url(#arrow); }
+      .lane { stroke: #cbd5e1; stroke-width: 2; stroke-dasharray: 7 7; }
+    </style>
+  </defs>
+  <rect class="bg" width="1200" height="650"/>
+  <text class="title" x="60" y="55">비관적 락: 충돌 가능성을 보고 먼저 직렬화</text>
+  <text class="label" x="185" y="105">Transaction A</text>
+  <text class="label" x="815" y="105">Transaction B</text>
+  <line class="lane" x1="185" y1="125" x2="185" y2="565"/>
+  <line class="lane" x1="815" y1="125" x2="815" y2="565"/>
+  <rect class="lock" x="80" y="145" width="210" height="90"/>
+  <text class="text" x="185" y="180" text-anchor="middle">SELECT FOR UPDATE</text>
+  <text class="small" x="185" y="205" text-anchor="middle">Row Lock 획득</text>
+  <rect class="wait" x="710" y="145" width="210" height="90"/>
+  <text class="text" x="815" y="180" text-anchor="middle">같은 행 접근</text>
+  <text class="small" x="815" y="205" text-anchor="middle">락 해제까지 대기</text>
+  <rect class="step" x="80" y="290" width="210" height="80"/>
+  <text class="text" x="185" y="323" text-anchor="middle">재고 확인·변경</text>
+  <text class="small" x="185" y="347" text-anchor="middle">짧은 트랜잭션 유지</text>
+  <rect class="success" x="80" y="430" width="210" height="80"/>
+  <text class="text" x="185" y="463" text-anchor="middle">COMMIT</text>
+  <text class="small" x="185" y="487" text-anchor="middle">Lock 반환</text>
+  <rect class="step" x="710" y="430" width="210" height="80"/>
+  <text class="text" x="815" y="463" text-anchor="middle">락 획득 후 실행</text>
+  <text class="small" x="815" y="487" text-anchor="middle">B의 작업 진행</text>
+  <path class="line" d="M185 235 L185 290"/>
+  <path class="line" d="M815 235 L815 430"/>
+  <path class="line" d="M185 370 L185 430"/>
+  <path class="line" d="M290 470 C430 470, 555 470, 700 470"/>
+  <text class="small" x="495" y="448" text-anchor="middle">A가 커밋한 뒤 대기 종료</text>
+</svg>

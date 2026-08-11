@@ -1,0 +1,46 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="650" viewBox="0 0 1200 650" role="img" aria-labelledby="title desc">
+  <title id="title">낙관적 락 동작 흐름</title>
+  <desc id="desc">트랜잭션 A와 B가 같은 버전을 읽고, A가 먼저 성공한 뒤 B가 충돌을 감지하고 최신 데이터를 다시 조회하는 흐름</desc>
+  <defs>
+    <marker id="arrow" markerWidth="10" markerHeight="10" refX="9" refY="3" orient="auto"><path d="M0,0 L10,3 L0,6 Z" fill="#64748b"/></marker>
+    <style>
+      .bg { fill: #f8fafc; }
+      .title { font: 700 26px sans-serif; fill: #0f172a; }
+      .label { font: 700 18px sans-serif; fill: #334155; }
+      .text { font: 500 16px sans-serif; fill: #334155; }
+      .small { font: 500 14px sans-serif; fill: #475569; }
+      .step { fill: #ffffff; stroke: #cbd5e1; stroke-width: 2; rx: 12; }
+      .success { fill: #ecfdf5; stroke: #34d399; stroke-width: 2; rx: 12; }
+      .fail { fill: #fff7ed; stroke: #fb923c; stroke-width: 2; rx: 12; }
+      .line { stroke: #64748b; stroke-width: 2.5; fill: none; marker-end: url(#arrow); }
+      .lane { stroke: #cbd5e1; stroke-width: 2; stroke-dasharray: 7 7; }
+    </style>
+  </defs>
+  <rect class="bg" width="1200" height="650"/>
+  <text class="title" x="60" y="55">낙관적 락: 충돌을 UPDATE 시점에 감지</text>
+  <text class="label" x="185" y="105">Transaction A</text>
+  <text class="label" x="815" y="105">Transaction B</text>
+  <line class="lane" x1="185" y1="125" x2="185" y2="565"/>
+  <line class="lane" x1="815" y1="125" x2="815" y2="565"/>
+  <rect class="step" x="80" y="145" width="210" height="80"/>
+  <text class="text" x="185" y="178" text-anchor="middle">version = 1 조회</text>
+  <text class="small" x="185" y="202" text-anchor="middle">최신 상태를 읽음</text>
+  <rect class="step" x="710" y="145" width="210" height="80"/>
+  <text class="text" x="815" y="178" text-anchor="middle">version = 1 조회</text>
+  <text class="small" x="815" y="202" text-anchor="middle">같은 버전을 읽음</text>
+  <rect class="success" x="80" y="280" width="210" height="90"/>
+  <text class="text" x="185" y="315" text-anchor="middle">UPDATE 성공</text>
+  <text class="small" x="185" y="340" text-anchor="middle">version 1 → 2</text>
+  <rect class="fail" x="710" y="280" width="210" height="90"/>
+  <text class="text" x="815" y="315" text-anchor="middle">UPDATE 실패</text>
+  <text class="small" x="815" y="340" text-anchor="middle">version = 1 행 없음</text>
+  <rect class="step" x="710" y="430" width="210" height="90"/>
+  <text class="text" x="815" y="465" text-anchor="middle">새 트랜잭션에서</text>
+  <text class="small" x="815" y="490" text-anchor="middle">최신 데이터 재조회 후 재시도</text>
+  <path class="line" d="M185 225 L185 280"/>
+  <path class="line" d="M815 225 L815 280"/>
+  <path class="line" d="M815 370 L815 430"/>
+  <path class="line" d="M290 325 C430 325, 555 325, 700 325"/>
+  <text class="small" x="495" y="305" text-anchor="middle">먼저 커밋</text>
+  <text class="small" x="600" y="405" text-anchor="middle">충돌을 막지는 않고 감지함</text>
+</svg>

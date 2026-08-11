@@ -1,0 +1,48 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="760" viewBox="0 0 1200 760" role="img" aria-labelledby="title desc">
+  <title id="title">동시성 제어 전략 선택 흐름</title>
+  <desc id="desc">단순한 DB 연산이면 아토믹 업데이트, 그렇지 않고 충돌이 낮으면 낙관적 락, 충돌이 높으면 비관적 락을 검토하는 선택 흐름</desc>
+  <defs>
+    <marker id="arrow" markerWidth="10" markerHeight="10" refX="9" refY="3" orient="auto"><path d="M0,0 L10,3 L0,6 Z" fill="#64748b"/></marker>
+    <style>
+      .bg { fill: #f8fafc; }
+      .title { font: 700 26px sans-serif; fill: #0f172a; }
+      .question { fill: #ffffff; stroke: #94a3b8; stroke-width: 2; }
+      .atomic { fill: #ecfdf5; stroke: #34d399; stroke-width: 2; }
+      .optimistic { fill: #eff6ff; stroke: #60a5fa; stroke-width: 2; }
+      .pessimistic { fill: #fff7ed; stroke: #fb923c; stroke-width: 2; }
+      .text { font: 600 17px sans-serif; fill: #334155; }
+      .small { font: 500 14px sans-serif; fill: #475569; }
+      .branch { font: 700 15px sans-serif; fill: #64748b; }
+      .line { stroke: #64748b; stroke-width: 2.5; fill: none; marker-end: url(#arrow); }
+    </style>
+  </defs>
+  <rect class="bg" width="1200" height="760"/>
+  <text class="title" x="60" y="55">동시성 제어 전략을 고르는 질문</text>
+  <rect class="question" x="390" y="100" width="420" height="90" rx="16"/>
+  <text class="text" x="600" y="138" text-anchor="middle">조건 검사와 변경을</text>
+  <text class="text" x="600" y="165" text-anchor="middle">DB 연산 하나로 끝낼 수 있는가?</text>
+  <path class="line" d="M600 190 L600 255"/>
+  <text class="branch" x="625" y="227">아니오</text>
+  <path class="line" d="M390 145 C260 145, 180 215, 180 300"/>
+  <text class="branch" x="245" y="137">예</text>
+  <rect class="atomic" x="55" y="300" width="250" height="130" rx="16"/>
+  <text class="text" x="180" y="345" text-anchor="middle">Atomic Update</text>
+  <text class="small" x="180" y="375" text-anchor="middle">단순 증가·감소</text>
+  <text class="small" x="180" y="398" text-anchor="middle">조건부 상태 변경</text>
+  <rect class="question" x="390" y="255" width="420" height="90" rx="16"/>
+  <text class="text" x="600" y="293" text-anchor="middle">동일 데이터 충돌이</text>
+  <text class="text" x="600" y="320" text-anchor="middle">자주 발생하는가?</text>
+  <path class="line" d="M390 300 C300 300, 260 470, 260 515"/>
+  <text class="branch" x="330" y="290">아니오</text>
+  <path class="line" d="M810 300 C900 300, 940 470, 940 515"/>
+  <text class="branch" x="855" y="290">예</text>
+  <rect class="optimistic" x="105" y="515" width="310" height="140" rx="16"/>
+  <text class="text" x="260" y="560" text-anchor="middle">Optimistic Lock</text>
+  <text class="small" x="260" y="590" text-anchor="middle">충돌 시 감지·재시도</text>
+  <text class="small" x="260" y="615" text-anchor="middle">대부분 요청이 성공하는 경우</text>
+  <rect class="pessimistic" x="785" y="515" width="310" height="140" rx="16"/>
+  <text class="text" x="940" y="560" text-anchor="middle">Pessimistic Lock</text>
+  <text class="small" x="940" y="590" text-anchor="middle">처음부터 접근을 직렬화</text>
+  <text class="small" x="940" y="615" text-anchor="middle">짧은 트랜잭션이라는 전제</text>
+  <text class="small" x="600" y="710" text-anchor="middle">트래픽이 매우 크거나 흐름이 길다면 Redis·Queue 등 별도 전략도 함께 검토</text>
+</svg>
