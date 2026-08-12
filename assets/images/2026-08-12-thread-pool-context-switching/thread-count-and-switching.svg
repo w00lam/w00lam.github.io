@@ -1,0 +1,61 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 720" role="img" aria-labelledby="title desc">
+  <title id="title">Too many runnable threads</title>
+  <desc id="desc">Four CPU cores serve many runnable threads, causing frequent context switching instead of linear throughput growth.</desc>
+  <defs>
+    <linearGradient id="bg" x1="0" x2="1" y1="0" y2="1">
+      <stop offset="0" stop-color="#fffdf7"/>
+      <stop offset="1" stop-color="#fff7ed"/>
+    </linearGradient>
+    <filter id="shadow" x="-20%" y="-20%" width="140%" height="140%">
+      <feDropShadow dx="0" dy="8" stdDeviation="10" flood-color="#7c2d12" flood-opacity=".13"/>
+    </filter>
+    <marker id="arrow" markerWidth="12" markerHeight="12" refX="10" refY="6" orient="auto">
+      <path d="M0,0 L12,6 L0,12 Z" fill="#ea580c"/>
+    </marker>
+    <style>
+      .title { font: 700 32px Inter, Segoe UI, sans-serif; fill: #431407; }
+      .label { font: 700 22px Inter, Segoe UI, sans-serif; fill: #431407; }
+      .detail { font: 500 19px Inter, Segoe UI, sans-serif; fill: #7c2d12; }
+      .small { font: 700 18px Inter, Segoe UI, sans-serif; fill: #c2410c; }
+    </style>
+  </defs>
+  <rect width="1200" height="720" rx="28" fill="url(#bg)"/>
+  <text x="65" y="70" class="title">Runnable Threads &amp; Context Switching</text>
+  <text x="65" y="105" class="detail">CPU Core보다 실행 가능한 Thread가 훨씬 많으면 대기와 전환 비용이 커진다</text>
+
+  <g filter="url(#shadow)">
+    <rect x="65" y="155" width="475" height="455" rx="24" fill="#ffffff" stroke="#fdba74" stroke-width="2"/>
+    <text x="105" y="205" class="label">4 CPU Cores</text>
+    <g>
+      <rect x="105" y="240" width="165" height="65" rx="14" fill="#ffedd5" stroke="#fb923c"/>
+      <rect x="290" y="240" width="165" height="65" rx="14" fill="#ffedd5" stroke="#fb923c"/>
+      <rect x="105" y="330" width="165" height="65" rx="14" fill="#ffedd5" stroke="#fb923c"/>
+      <rect x="290" y="330" width="165" height="65" rx="14" fill="#ffedd5" stroke="#fb923c"/>
+      <text x="187" y="280" text-anchor="middle" class="label">Core 1</text>
+      <text x="372" y="280" text-anchor="middle" class="label">Core 2</text>
+      <text x="187" y="370" text-anchor="middle" class="label">Core 3</text>
+      <text x="372" y="370" text-anchor="middle" class="label">Core 4</text>
+    </g>
+    <text x="302" y="460" text-anchor="middle" class="detail">한 순간에 실행되는 Thread는 최대 4개</text>
+    <text x="302" y="505" text-anchor="middle" class="small">동시에 실행 ≠ 대기 중인 Thread 수</text>
+  </g>
+
+  <g filter="url(#shadow)">
+    <rect x="615" y="155" width="520" height="455" rx="24" fill="#ffffff" stroke="#fdba74" stroke-width="2"/>
+    <text x="655" y="205" class="label">Runnable Queue</text>
+    <g fill="#fed7aa" stroke="#fb923c">
+      <rect x="655" y="240" width="190" height="50" rx="12"/><rect x="870" y="240" width="190" height="50" rx="12"/>
+      <rect x="655" y="310" width="190" height="50" rx="12"/><rect x="870" y="310" width="190" height="50" rx="12"/>
+      <rect x="655" y="380" width="190" height="50" rx="12"/><rect x="870" y="380" width="190" height="50" rx="12"/>
+      <rect x="655" y="450" width="190" height="50" rx="12"/><rect x="870" y="450" width="190" height="50" rx="12"/>
+    </g>
+    <text x="750" y="272" text-anchor="middle" class="detail">Thread 1</text><text x="965" y="272" text-anchor="middle" class="detail">Thread 2</text>
+    <text x="750" y="342" text-anchor="middle" class="detail">Thread 3</text><text x="965" y="342" text-anchor="middle" class="detail">Thread ...</text>
+    <text x="750" y="412" text-anchor="middle" class="detail">Thread 99</text><text x="965" y="412" text-anchor="middle" class="detail">Thread 100</text>
+    <text x="860" y="490" text-anchor="middle" class="small">Scheduler → Frequent Context Switching</text>
+    <text x="860" y="535" text-anchor="middle" class="detail">Stack 메모리 + 전환 + Cache 비용</text>
+  </g>
+
+  <path d="M540 385 H605" stroke="#ea580c" stroke-width="5" marker-end="url(#arrow)"/>
+  <text x="600" y="665" text-anchor="middle" class="small">Thread 증가 = 처리량 선형 증가가 아님</text>
+</svg>
