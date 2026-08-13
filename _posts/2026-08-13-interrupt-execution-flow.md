@@ -90,19 +90,9 @@ Interrupt는 Kernel이 CPU의 제어권을 얻어 사건을 처리할 수 있게
 
 ### 시각 자료 1 — Interrupt 전체 흐름
 
-글에 이미지를 추가한다면 다음 위치에 넣을 수 있다. 이미지를 임의로 삽입하지 않고, 아래 프롬프트로 별도 생성하는 방식이다.
+![Interrupt 전체 실행 흐름](/assets/images/2026-08-13-interrupt-execution-flow/interrupt-full-flow.png)
 
-**이미지 생성 프롬프트**
-
-```text
-Create a clean, minimal system architecture diagram for a Korean developer blog.
-Show the execution flow from “Application / CPU” to “Interrupt”, then “Kernel”,
-“Interrupt Handler”, “Scheduler”, and finally “Thread Execution”.
-Use six clearly separated boxes connected by downward arrows, with a subtle navy,
-teal, and white color palette. Add a small side note that Interrupt does not
-automatically mean Context Switching. Flat vector style, generous whitespace,
-no gradients, no decorative characters, legible English labels, 16:9 layout.
-```
+Interrupt가 발생하면 Kernel이 제어권을 얻고, Interrupt Handler가 사건을 처리한다. 이후 Scheduler가 실행될 수 있지만, 항상 실행 대상이 바뀌는 것은 아니다.
 
 ## 3. Interrupt의 주요 종류
 
@@ -192,18 +182,9 @@ Context Switching은 현재 실행 상태를 저장하고 다른 실행 흐름�
 
 ### 시각 자료 2 — Interrupt와 Context Switching의 관계
 
-**이미지 생성 프롬프트**
+![Interrupt 이후 실행 흐름과 Context Switching의 관계](/assets/images/2026-08-13-interrupt-execution-flow/interrupt-context-switching.png)
 
-```text
-Create a simple system architecture decision-flow diagram for a Korean developer blog.
-Start with one box labeled “Interrupt 발생”, then “Kernel이 CPU 제어권 획득”.
-Split into three clearly labeled branches: “기존 스레드로 복귀”,
-“같은 스레드 재선택”, and “다른 스레드로 Context Switching”.
-Use the same navy, teal, and white flat vector style across all boxes,
-with the third branch visually emphasizing that Context Switching happens only
-when the execution target changes. No people, no circuit-board decoration,
-legible English and Korean labels, 16:9 layout.
-```
+세 경로를 비교하면 Interrupt가 발생했다는 사실과 Context Switching이 발생했다는 사실을 분리해서 이해할 수 있다.
 
 ## 5. I/O Interrupt의 실행 흐름
 
@@ -275,17 +256,9 @@ Ready → Running
 
 ### 시각 자료 3 — I/O 요청부터 재실행까지
 
-**이미지 생성 프롬프트**
+![I/O 요청부터 스레드 재실행까지의 상태 전환](/assets/images/2026-08-13-interrupt-execution-flow/io-state-transition.png)
 
-```text
-Create a clean horizontal state-transition diagram for a Korean developer blog.
-Show the exact sequence “Running” → “I/O Request” → “Waiting” →
-“I/O Completion Interrupt” → “Ready” → “Scheduler” → “Running”.
-Visually separate the Waiting state from the Ready state, and add a small note:
-“I/O completion does not mean immediate Running”. Use a minimal flat vector
-system architecture style, navy, teal, amber accent for the interrupt,
-white background, generous spacing, no decorative elements, 16:9 layout.
-```
+I/O 완료 Interrupt 이후에도 Thread는 먼저 Ready 상태가 되고, Scheduler의 선택을 거쳐 Running 상태가 된다.
 
 ## 6. Kernel이 중심에 있다는 점
 
@@ -555,4 +528,3 @@ Thread 실행
 ```
 
 Java/Spring 개발자가 OS의 Interrupt를 직접 구현할 일은 많지 않을 수 있다. 그래도 DB와 외부 API를 기다리는 요청 스레드, Thread Pool의 대기, 응답이 다시 실행되는 시점까지 생각해 보면 이 흐름은 애플리케이션 성능과 동시성을 이해하는 기반이 된다.
-
