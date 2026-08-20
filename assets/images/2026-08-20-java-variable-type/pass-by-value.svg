@@ -1,0 +1,41 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="620" viewBox="0 0 1200 620" role="img" aria-labelledby="title desc">
+  <title id="title">참조 타입의 Pass by Value 전달 과정</title>
+  <desc id="desc">호출자의 참조값이 복사되어 메서드 매개변수에 전달되고, 두 변수가 같은 객체를 가리키지만 변수 자체는 별개라는 것을 보여주는 도식</desc>
+  <defs>
+    <filter id="shadow" x="-20%" y="-20%" width="140%" height="140%">
+      <feDropShadow dx="0" dy="8" stdDeviation="10" flood-color="#0f172a" flood-opacity="0.12"/>
+    </filter>
+    <marker id="arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="8" markerHeight="8" orient="auto">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#2563eb"/>
+    </marker>
+  </defs>
+  <rect width="1200" height="620" rx="28" fill="#f8fafc"/>
+  <text x="70" y="78" font-family="Arial, 'Noto Sans KR', sans-serif" font-size="34" font-weight="700" fill="#0f172a">참조 타입도 Pass by Value로 전달된다</text>
+  <text x="72" y="116" font-family="Arial, 'Noto Sans KR', sans-serif" font-size="18" fill="#64748b">복사되는 것은 객체가 아니라 객체를 참조하는 값이다.</text>
+  <g filter="url(#shadow)" font-family="Arial, 'Noto Sans KR', sans-serif">
+    <rect x="70" y="176" width="420" height="330" rx="24" fill="#eff6ff" stroke="#bfdbfe"/>
+    <text x="280" y="228" text-anchor="middle" font-size="27" font-weight="700" fill="#1d4ed8">Caller</text>
+    <rect x="125" y="288" width="170" height="82" rx="16" fill="#ffffff" stroke="#60a5fa" stroke-width="2"/>
+    <text x="210" y="338" text-anchor="middle" font-size="21" font-weight="700" fill="#1e3a8a">member</text>
+    <path d="M 305 329 L 367 329" stroke="#2563eb" stroke-width="4" marker-end="url(#arrow)"/>
+    <rect x="375" y="270" width="90" height="120" rx="18" fill="#dcfce7" stroke="#4ade80" stroke-width="2"/>
+    <text x="420" y="320" text-anchor="middle" font-size="18" font-weight="700" fill="#166534">Member</text>
+    <text x="420" y="350" text-anchor="middle" font-size="16" fill="#334155">Object</text>
+    <text x="280" y="446" text-anchor="middle" font-size="17" fill="#475569">참조값을 가진 변수</text>
+  </g>
+  <path d="M 530 329 L 670 329" stroke="#2563eb" stroke-width="5" stroke-dasharray="12 10" marker-end="url(#arrow)"/>
+  <text x="600" y="295" text-anchor="middle" font-family="Arial, 'Noto Sans KR', sans-serif" font-size="17" font-weight="700" fill="#1d4ed8">reference value copied</text>
+  <g filter="url(#shadow)" font-family="Arial, 'Noto Sans KR', sans-serif">
+    <rect x="710" y="176" width="420" height="330" rx="24" fill="#fff7ed" stroke="#fed7aa"/>
+    <text x="920" y="228" text-anchor="middle" font-size="27" font-weight="700" fill="#c2410c">Method Parameter</text>
+    <rect x="765" y="288" width="170" height="82" rx="16" fill="#ffffff" stroke="#fb923c" stroke-width="2"/>
+    <text x="850" y="338" text-anchor="middle" font-size="21" font-weight="700" fill="#9a3412">value</text>
+    <path d="M 945 329 L 1007 329" stroke="#ea580c" stroke-width="4" marker-end="url(#arrow)"/>
+    <rect x="1015" y="270" width="90" height="120" rx="18" fill="#dcfce7" stroke="#4ade80" stroke-width="2"/>
+    <text x="1060" y="320" text-anchor="middle" font-size="18" font-weight="700" fill="#166534">same</text>
+    <text x="1060" y="350" text-anchor="middle" font-size="16" fill="#334155">Object</text>
+    <text x="920" y="446" text-anchor="middle" font-size="17" fill="#475569">필드 수정은 같은 객체에 반영</text>
+  </g>
+  <rect x="210" y="540" width="780" height="46" rx="14" fill="#fef3c7" stroke="#fcd34d"/>
+  <text x="600" y="570" text-anchor="middle" font-family="Arial, 'Noto Sans KR', sans-serif" font-size="17" font-weight="700" fill="#92400e">매개변수에 새 객체를 대입해도 호출자의 변수 자체는 바뀌지 않는다</text>
+</svg>

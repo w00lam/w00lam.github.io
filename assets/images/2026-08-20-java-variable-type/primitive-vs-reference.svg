@@ -1,0 +1,42 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="640" viewBox="0 0 1200 640" role="img" aria-labelledby="title desc">
+  <title id="title">기본 타입과 참조 타입의 개념적 저장 방식</title>
+  <desc id="desc">기본 타입 변수는 값을 저장하고, 참조 타입 변수는 객체를 가리키기 위한 참조값을 저장한다.</desc>
+  <defs>
+    <filter id="shadow" x="-20%" y="-20%" width="140%" height="140%">
+      <feDropShadow dx="0" dy="8" stdDeviation="10" flood-color="#0f172a" flood-opacity="0.12"/>
+    </filter>
+    <marker id="arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="8" markerHeight="8" orient="auto">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#2563eb"/>
+    </marker>
+  </defs>
+  <rect width="1200" height="640" rx="28" fill="#f8fafc"/>
+  <text x="70" y="82" font-family="Arial, 'Noto Sans KR', sans-serif" font-size="34" font-weight="700" fill="#0f172a">변수에 저장되는 것은 타입에 따라 다르다</text>
+  <text x="72" y="120" font-family="Arial, 'Noto Sans KR', sans-serif" font-size="18" fill="#64748b">참조 타입의 화살표는 실제 물리 주소가 아닌 개념적인 참조 관계를 나타낸다.</text>
+  <g filter="url(#shadow)" font-family="Arial, 'Noto Sans KR', sans-serif">
+    <rect x="70" y="176" width="500" height="380" rx="24" fill="#eff6ff" stroke="#bfdbfe"/>
+    <text x="320" y="232" text-anchor="middle" font-size="28" font-weight="700" fill="#1d4ed8">Primitive Type</text>
+    <text x="320" y="267" text-anchor="middle" font-size="18" fill="#475569">기본 타입</text>
+    <rect x="130" y="318" width="170" height="90" rx="16" fill="#ffffff" stroke="#60a5fa" stroke-width="2"/>
+    <text x="215" y="354" text-anchor="middle" font-size="20" font-weight="700" fill="#1e3a8a">int a</text>
+    <text x="215" y="385" text-anchor="middle" font-size="20" fill="#334155">10</text>
+    <path d="M 310 363 L 400 363" stroke="#2563eb" stroke-width="4" marker-end="url(#arrow)"/>
+    <rect x="410" y="318" width="100" height="90" rx="16" fill="#dbeafe" stroke="#60a5fa" stroke-width="2"/>
+    <text x="460" y="370" text-anchor="middle" font-size="24" font-weight="700" fill="#1e3a8a">10</text>
+    <text x="320" y="478" text-anchor="middle" font-size="18" fill="#334155">변수에 실제 값이 저장된다</text>
+    <text x="320" y="513" text-anchor="middle" font-size="16" fill="#64748b">null을 표현할 수 없음</text>
+  </g>
+  <g filter="url(#shadow)" font-family="Arial, 'Noto Sans KR', sans-serif">
+    <rect x="630" y="176" width="500" height="380" rx="24" fill="#ecfdf5" stroke="#bbf7d0"/>
+    <text x="880" y="232" text-anchor="middle" font-size="28" font-weight="700" fill="#15803d">Reference Type</text>
+    <text x="880" y="267" text-anchor="middle" font-size="18" fill="#475569">참조 타입</text>
+    <rect x="680" y="318" width="170" height="90" rx="16" fill="#ffffff" stroke="#4ade80" stroke-width="2"/>
+    <text x="765" y="354" text-anchor="middle" font-size="20" font-weight="700" fill="#166534">Member member</text>
+    <text x="765" y="385" text-anchor="middle" font-size="16" fill="#334155">reference value</text>
+    <path d="M 860 363 L 940 363" stroke="#16a34a" stroke-width="4" marker-end="url(#arrow)"/>
+    <rect x="950" y="300" width="130" height="126" rx="18" fill="#dcfce7" stroke="#4ade80" stroke-width="2"/>
+    <text x="1015" y="345" text-anchor="middle" font-size="19" font-weight="700" fill="#166534">Member</text>
+    <text x="1015" y="375" text-anchor="middle" font-size="16" fill="#334155">Object</text>
+    <text x="880" y="478" text-anchor="middle" font-size="18" fill="#334155">객체를 가리키기 위한 참조값이 저장된다</text>
+    <text x="880" y="513" text-anchor="middle" font-size="16" fill="#64748b">null을 표현할 수 있음</text>
+  </g>
+</svg>
