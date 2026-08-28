@@ -327,7 +327,6 @@ toc: false
 
     <div class="portfolio-project-links">
       <a class="portfolio-button" href="https://github.com/w00lam" target="_blank" rel="noopener">GitHub 프로필 <i class="fas fa-arrow-up-right-from-square" aria-hidden="true"></i></a>
-      <a class="portfolio-text-link" href="{{ '/posts/sdd-document-structure-design/' | relative_url }}">맛잇온의 팀 병렬 개발을 위한 SDD 설계 <i class="fas fa-arrow-right" aria-hidden="true"></i></a>
     </div>
   </section>
 
@@ -410,7 +409,6 @@ toc: false
 
     <div class="portfolio-project-links">
       <a class="portfolio-button" href="https://github.com/w00lam/commerce-payment-system" target="_blank" rel="noopener">GitHub 레포 <i class="fas fa-arrow-up-right-from-square" aria-hidden="true"></i></a>
-      <a class="portfolio-text-link" href="{{ '/posts/lock-transaction-boundary/' | relative_url }}">좌석 예약의 락과 트랜잭션 경계 분리 <i class="fas fa-arrow-right" aria-hidden="true"></i></a>
     </div>
   </section>
 
