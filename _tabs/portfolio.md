@@ -124,43 +124,81 @@ toc: false
   <section class="portfolio-section portfolio-ai" id="portfolio-ai" aria-labelledby="portfolio-ai-title">
     <div class="portfolio-section-heading">
       <p class="portfolio-eyebrow">AI-NATIVE WORKFLOW</p>
-      <h2 id="portfolio-ai-title">AI를 개발 과정 전체에 연결합니다.</h2>
+      <h2 id="portfolio-ai-title">AI가 프로젝트의 문맥을 따라 일하도록 설계했습니다.</h2>
     </div>
 
-    <div class="portfolio-ai-layout">
+    <div class="portfolio-ai-intro">
       <div class="portfolio-ai-summary">
         <p>
           Claude Code와 Codex를 설계, 코드 작성, 테스트 생성, 디버깅, 문서화, 배포 자동화에 활용했습니다.
-          프로젝트 외에도 직접 스킬을 만들어 작업을 진행한 경험이 있습니다.
+          그중 팀 프로젝트에서는 Codex Agent Skill을 직접 설계해 개발 과정에 적용했습니다.
         </p>
         <div class="portfolio-ai-tools" aria-label="사용한 AI 도구">
           <span><i class="fas fa-terminal" aria-hidden="true"></i> Claude Code</span>
           <span><i class="fas fa-code" aria-hidden="true"></i> Codex</span>
         </div>
+        <a class="portfolio-ai-repository" href="https://github.com/team-11st-chat/11th-street" target="_blank" rel="noopener">
+          실제 Skill이 적용된 저장소 보기 <i class="fas fa-arrow-up-right-from-square" aria-hidden="true"></i>
+        </a>
       </div>
 
-      <div class="portfolio-ai-matrix">
-        <article>
-          <span>01</span>
-          <h3>설계</h3>
-          <p>요구사항과 구조를 정리합니다.</p>
-        </article>
-        <article>
-          <span>02</span>
-          <h3>구현</h3>
-          <p>코드를 작성하고 변경 단위를 나눕니다.</p>
-        </article>
-        <article>
-          <span>03</span>
-          <h3>검증</h3>
-          <p>테스트를 만들고 실패 원인을 좁힙니다.</p>
-        </article>
-        <article>
-          <span>04</span>
-          <h3>운영</h3>
-          <p>문서화와 배포 자동화까지 연결합니다.</p>
-        </article>
+      <div class="portfolio-ai-why">
+        <span class="portfolio-card-kicker">WHY I BUILT IT</span>
+        <h3>일회성 프롬프트만으로는 팀의 기준을 유지하기 어려웠습니다.</h3>
+        <p>
+          같은 프로젝트를 여러 사람이 AI와 함께 진행할 때는 작업 결과와 판단 기준이 달라질 수 있습니다.
+          그래서 AI가 매번 새롭게 추측하지 않고, 프로젝트 규칙과 현재 Repository 상태를 먼저 확인하도록
+          단계별 책임과 실행 조건을 Skill로 정의했습니다.
+        </p>
       </div>
+    </div>
+
+    <div class="portfolio-ai-flow">
+      <div class="portfolio-ai-flow-heading">
+        <span class="portfolio-card-kicker">HOW IT WORKS</span>
+        <strong>개발 산출물의 흐름을 AI Workflow로 연결했습니다.</strong>
+      </div>
+      <div class="portfolio-ai-pipeline" aria-label="Agent Skill 개발 흐름">
+        <div><b>Requirements</b><small>목표·제약 확인</small></div>
+        <i class="fas fa-arrow-right" aria-hidden="true"></i>
+        <div><b>Domain</b><small>책임 경계 정리</small></div>
+        <i class="fas fa-arrow-right" aria-hidden="true"></i>
+        <div><b>Specification</b><small>동작·규칙 구체화</small></div>
+        <i class="fas fa-arrow-right" aria-hidden="true"></i>
+        <div><b>Issue</b><small>작업 단위 분해</small></div>
+        <i class="fas fa-arrow-right" aria-hidden="true"></i>
+        <div><b>Commit</b><small>변경 기록</small></div>
+        <i class="fas fa-arrow-right" aria-hidden="true"></i>
+        <div><b>PR · Review</b><small>검토·피드백</small></div>
+      </div>
+    </div>
+
+    <div class="portfolio-ai-detail-grid">
+      <article>
+        <span class="portfolio-card-kicker">SKILL CONTRACT</span>
+        <h3>각 단계의 책임을 계약처럼 나눴습니다.</h3>
+        <p>
+          Requirements, Domain, Specification, Issue, Commit, PR, Review, Repository Skill을 분리하고,
+          공통 규칙은 별도로 두었습니다. 각 Skill에는 역할, Trigger, 신뢰할 정보원, CLI 정책,
+          Success Criteria를 정의했습니다.
+        </p>
+      </article>
+      <article>
+        <span class="portfolio-card-kicker">GUARDRAILS</span>
+        <h3>추측보다 확인을 먼저 하도록 했습니다.</h3>
+        <p>
+          요구사항이 비어 있으면 질문하고, Repository·기존 산출물·실행 결과를 확인한 뒤 다음 단계로 넘어갑니다.
+          검증되지 않은 정보는 사실처럼 사용하지 않고 열린 질문이나 가정으로 남깁니다.
+        </p>
+      </article>
+      <article>
+        <span class="portfolio-card-kicker">TRACEABILITY</span>
+        <h3>요구사항부터 리뷰까지 연결했습니다.</h3>
+        <p>
+          Requirements → Domain → Specification → Issue → Commit → Pull Request → Review의 연결을 유지해
+          어떤 판단과 변경이 어디에서 비롯됐는지 추적할 수 있도록 구성했습니다.
+        </p>
+      </article>
     </div>
   </section>
 
