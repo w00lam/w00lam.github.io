@@ -9,10 +9,10 @@ toc: false
 <div class="portfolio-page">
   <section class="portfolio-hero" id="portfolio-overview" aria-labelledby="portfolio-hero-title">
     <div class="portfolio-hero-copy">
-      <p class="portfolio-eyebrow">DEVELOPER PORTFOLIO</p>
-      <h2 id="portfolio-hero-title">문제를 재현하고<br><span>원인을 좁혀 해결합니다.</span></h2>
+      <p class="portfolio-eyebrow">BACKEND DEVELOPER · PORTFOLIO</p>
+      <h2 id="portfolio-hero-title">문제를 재현하고 원인을 좁혀 해결합니다.</h2>
       <p class="portfolio-hero-description">
-        현상을 바로 고치기보다 요청 흐름·데이터 경계·실행 환경을 분리해 재현 조건을 만들고,
+        현상을 바로 고치기보다 요청 흐름·데이터 경계·실행 환경을 나눠 재현 조건을 만들고,
         동시성·트랜잭션·테스트 실행 문제를 구조적으로 해결합니다.
       </p>
     </div>
@@ -35,6 +35,8 @@ toc: false
 
   <nav class="portfolio-nav" aria-label="포트폴리오 섹션">
     <a href="#portfolio-approach">Approach</a>
+    <a href="#portfolio-stack">Stack</a>
+    <a href="#portfolio-ai">AI Native</a>
     <a href="#matisson">Project 01</a>
     <a href="#concert-ticketing">Project 02</a>
     <a href="#portfolio-contact">Contact</a>
@@ -43,7 +45,7 @@ toc: false
   <section class="portfolio-section portfolio-approach" id="portfolio-approach" aria-labelledby="portfolio-approach-title">
     <div class="portfolio-section-heading">
       <p class="portfolio-eyebrow">APPROACH</p>
-      <h2 id="portfolio-approach-title">동작보다 먼저,<br><span>설계의 근거를 남깁니다.</span></h2>
+      <h2 id="portfolio-approach-title">동작보다 먼저, 설계의 근거를 남깁니다.</h2>
     </div>
 
     <div class="portfolio-approach-grid">
@@ -52,16 +54,6 @@ toc: false
           문제를 해결했다는 말은 정상 동작만으로 완성되지 않습니다. 어떤 조건에서 문제가 재현되는지,
           어떤 경계에서 실패를 멈출지, 그리고 그 결과를 어떻게 검증했는지까지 설명할 수 있어야 합니다.
         </p>
-        <div class="portfolio-tool-list" aria-label="사용 기술">
-          <span>Spring Boot</span>
-          <span>Testcontainers</span>
-          <span>PostgreSQL</span>
-          <span>MySQL</span>
-          <span>Redis</span>
-          <span>Kafka</span>
-          <span>Next.js</span>
-          <span>Docker</span>
-        </div>
       </div>
 
       <div class="portfolio-signal-list">
@@ -84,6 +76,94 @@ toc: false
     </div>
   </section>
 
+  <section class="portfolio-section portfolio-stack" id="portfolio-stack" aria-labelledby="portfolio-stack-title">
+    <div class="portfolio-section-heading portfolio-section-heading--inline">
+      <div>
+        <p class="portfolio-eyebrow">TECH STACK</p>
+        <h2 id="portfolio-stack-title">문제를 해결할 때 사용한 기술</h2>
+      </div>
+      <p>프로젝트별 나열보다 역할과 책임을 기준으로 묶었습니다.</p>
+    </div>
+
+    <div class="portfolio-stack-grid">
+      <article class="portfolio-stack-card">
+        <span class="portfolio-stack-index">01</span>
+        <h3>Application</h3>
+        <p>요청 흐름과 도메인 로직을 구현합니다.</p>
+        <div class="portfolio-stack-items">
+          <span>Spring Boot</span><span>Next.js</span><span>Nginx</span>
+        </div>
+      </article>
+      <article class="portfolio-stack-card">
+        <span class="portfolio-stack-index">02</span>
+        <h3>Data &amp; Messaging</h3>
+        <p>상태를 저장하고 경쟁을 제어합니다.</p>
+        <div class="portfolio-stack-items">
+          <span>PostgreSQL</span><span>MySQL</span><span>Redis</span><span>Kafka</span>
+        </div>
+      </article>
+      <article class="portfolio-stack-card">
+        <span class="portfolio-stack-index">03</span>
+        <h3>Infrastructure</h3>
+        <p>실행 환경과 배포 구조를 구성합니다.</p>
+        <div class="portfolio-stack-items">
+          <span>Docker</span><span>Terraform</span><span>AWS</span>
+        </div>
+      </article>
+      <article class="portfolio-stack-card">
+        <span class="portfolio-stack-index">04</span>
+        <h3>Verification</h3>
+        <p>변경을 빠르게 확인하고 반복합니다.</p>
+        <div class="portfolio-stack-items">
+          <span>Testcontainers</span><span>GitHub Actions</span>
+        </div>
+      </article>
+    </div>
+  </section>
+
+  <section class="portfolio-section portfolio-ai" id="portfolio-ai" aria-labelledby="portfolio-ai-title">
+    <div class="portfolio-section-heading">
+      <p class="portfolio-eyebrow">AI-NATIVE WORKFLOW</p>
+      <h2 id="portfolio-ai-title">AI를 개발 과정 전체에 연결합니다.</h2>
+    </div>
+
+    <div class="portfolio-ai-layout">
+      <div class="portfolio-ai-summary">
+        <p>
+          Claude Code와 Codex를 설계, 코드 작성, 테스트 생성, 디버깅, 문서화, 배포 자동화에 활용했습니다.
+          프로젝트 외에도 직접 스킬을 만들어 작업을 진행한 경험이 있습니다.
+        </p>
+        <div class="portfolio-ai-tools" aria-label="사용한 AI 도구">
+          <span><i class="fas fa-terminal" aria-hidden="true"></i> Claude Code</span>
+          <span><i class="fas fa-code" aria-hidden="true"></i> Codex</span>
+        </div>
+      </div>
+
+      <div class="portfolio-ai-matrix">
+        <article>
+          <span>01</span>
+          <h3>설계</h3>
+          <p>요구사항과 구조를 정리합니다.</p>
+        </article>
+        <article>
+          <span>02</span>
+          <h3>구현</h3>
+          <p>코드를 작성하고 변경 단위를 나눕니다.</p>
+        </article>
+        <article>
+          <span>03</span>
+          <h3>검증</h3>
+          <p>테스트를 만들고 실패 원인을 좁힙니다.</p>
+        </article>
+        <article>
+          <span>04</span>
+          <h3>운영</h3>
+          <p>문서화와 배포 자동화까지 연결합니다.</p>
+        </article>
+      </div>
+    </div>
+  </section>
+
   <section class="portfolio-section portfolio-project-index" aria-labelledby="portfolio-projects-title">
     <div class="portfolio-section-heading portfolio-section-heading--inline">
       <div>
@@ -95,8 +175,14 @@ toc: false
 
     <div class="portfolio-project-grid">
       <article class="portfolio-project-card portfolio-project-card--matisson">
-        <div class="portfolio-project-card-media">
-          <img src="{{ '/assets/img/portfolio/matisson-cover.png' | relative_url }}" alt="맛잇온 서비스 화면">
+        <div class="portfolio-project-card-media" aria-hidden="true">
+          <div class="portfolio-project-card-brand">
+            <span class="portfolio-project-symbol">01</span>
+            <span class="portfolio-project-type">AI PLACE DISCOVERY</span>
+          </div>
+          <div class="portfolio-project-card-rail">
+            <span>검증</span><i class="fas fa-arrow-right"></i><span>저장</span><i class="fas fa-arrow-right"></i><span>운영</span>
+          </div>
         </div>
         <div class="portfolio-project-card-body">
           <span class="portfolio-card-kicker">PROJECT 01 · 2026.07 - 2026.08</span>
@@ -107,8 +193,14 @@ toc: false
       </article>
 
       <article class="portfolio-project-card portfolio-project-card--ticketing">
-        <div class="portfolio-project-card-media">
-          <img src="{{ '/assets/img/portfolio/ticketing-cover.png' | relative_url }}" alt="콘서트 티켓팅 예약 시스템 개요">
+        <div class="portfolio-project-card-media" aria-hidden="true">
+          <div class="portfolio-project-card-brand">
+            <span class="portfolio-project-symbol">02</span>
+            <span class="portfolio-project-type">CONCURRENT BOOKING</span>
+          </div>
+          <div class="portfolio-project-card-rail">
+            <span>대기열</span><i class="fas fa-arrow-right"></i><span>좌석</span><i class="fas fa-arrow-right"></i><span>결제</span>
+          </div>
         </div>
         <div class="portfolio-project-card-body">
           <span class="portfolio-card-kicker">PROJECT 02 · 2025.11 - 2026.05</span>
@@ -133,25 +225,27 @@ toc: false
       <span class="portfolio-project-number" aria-hidden="true">01</span>
     </div>
 
-    <div class="portfolio-project-cover">
-      <img src="{{ '/assets/img/portfolio/matisson-cover.png' | relative_url }}" alt="맛잇온 프로젝트 대표 화면">
-    </div>
-
     <div class="portfolio-project-meta">
       <div><span>DATE</span><strong>2026.07 - 2026.08</strong></div>
       <div><span>TEAM</span><strong>백엔드 4명</strong></div>
       <div><span>ROLE</span><strong>백엔드 · 인프라 · 프론트엔드 일부 · 진행 관리</strong></div>
     </div>
 
-    <div class="portfolio-tags" aria-label="맛잇온 기술 스택">
-      <span>Next.js</span><span>Nginx</span><span>Spring Boot</span><span>PostgreSQL</span>
-      <span>Redis</span><span>GitHub Actions</span><span>Docker · Terraform · AWS</span>
+    <div class="portfolio-system-visual portfolio-system-visual--matisson" aria-label="맛잇온 처리 흐름">
+      <div class="portfolio-system-label">REQUEST BOUNDARY</div>
+      <div class="portfolio-flow">
+        <div class="portfolio-flow-node"><strong>외부 검증</strong><span>중복 확인</span></div>
+        <i class="fas fa-arrow-right portfolio-flow-arrow" aria-hidden="true"></i>
+        <div class="portfolio-flow-node"><strong>애플리케이션</strong><span>상태 확정</span></div>
+        <i class="fas fa-arrow-right portfolio-flow-arrow" aria-hidden="true"></i>
+        <div class="portfolio-flow-node"><strong>DB 저장</strong><span>맛집 단위 커밋</span></div>
+      </div>
     </div>
 
     <div class="portfolio-case-grid">
       <div class="portfolio-case-copy">
         <p class="portfolio-card-kicker">OVERVIEW</p>
-        <h3>요청을 검증하고<br>저장 경계를 분리했습니다.</h3>
+        <h3>요청을 검증하고 저장 경계를 분리했습니다.</h3>
         <p>
           외부 API 검증은 요청 흐름에서 처리하고 DB 저장은 필요한 구간만 트랜잭션으로 묶었습니다.
           핵심 상태를 먼저 확정한 뒤 테스트와 후속 처리를 별도 경계로 분리했습니다.
@@ -162,10 +256,11 @@ toc: false
           <li>Docker / Terraform / AWS: 애플리케이션 실행·운영 환경 구성</li>
         </ul>
       </div>
-      <figure class="portfolio-visual">
-        <img src="{{ '/assets/img/portfolio/matisson-architecture.png' | relative_url }}" alt="맛잇온 요청 검증과 저장 경계를 분리한 아키텍처">
-        <figcaption>외부 검증, 애플리케이션 처리, DB 저장과 배포 환경의 경계를 분리했습니다.</figcaption>
-      </figure>
+      <div class="portfolio-decision-panel">
+        <span class="portfolio-card-kicker">DECISION</span>
+        <strong>한 건의 실패가 전체 등록을 막지 않도록</strong>
+        <p>검증과 저장을 나누고, 맛집별 등록 단위를 독립적으로 확인했습니다.</p>
+      </div>
     </div>
 
     <div class="portfolio-proof-grid">
@@ -183,10 +278,13 @@ toc: false
           <div><strong>반복 검증</strong><span>최종 반영 전 상태 재확인</span></div>
         </div>
       </div>
-      <figure class="portfolio-visual portfolio-visual--compact">
-        <img src="{{ '/assets/img/portfolio/matisson-proof.png' | relative_url }}" alt="맛잇온 AI 자동 등록 문제와 검증 결과">
-        <figcaption>한 건의 실패가 전체 등록을 막지 않도록 실패 범위를 줄였습니다.</figcaption>
-      </figure>
+      <div class="portfolio-proof-panel">
+        <span class="portfolio-card-kicker">CHECKED CONDITION</span>
+        <code>same_place_requests = 10</code>
+        <code>duplicate_saved = false</code>
+        <code>partial_saved = false</code>
+        <span class="portfolio-proof-status"><i class="fas fa-check" aria-hidden="true"></i> boundary verified</span>
+      </div>
     </div>
 
     <div class="portfolio-project-links">
@@ -208,24 +306,29 @@ toc: false
       <span class="portfolio-project-number" aria-hidden="true">02</span>
     </div>
 
-    <div class="portfolio-project-cover">
-      <img src="{{ '/assets/img/portfolio/ticketing-cover.png' | relative_url }}" alt="콘서트 티켓팅 예약 시스템 개요">
-    </div>
-
     <div class="portfolio-project-meta">
       <div><span>DATE</span><strong>2025.11 - 2026.05</strong></div>
       <div><span>TEAM</span><strong>1인 개발</strong></div>
       <div><span>ROLE</span><strong>백엔드</strong></div>
     </div>
 
-    <div class="portfolio-tags" aria-label="콘서트 티켓팅 예약 시스템 기술 스택">
-      <span>Spring Boot API</span><span>MySQL</span><span>Redis</span><span>Kafka</span>
+    <div class="portfolio-system-visual portfolio-system-visual--ticketing" aria-label="콘서트 티켓팅 처리 흐름">
+      <div class="portfolio-system-label">STATE CONFIRMATION</div>
+      <div class="portfolio-flow">
+        <div class="portfolio-flow-node"><strong>대기열</strong><span>진입 제어</span></div>
+        <i class="fas fa-arrow-right portfolio-flow-arrow" aria-hidden="true"></i>
+        <div class="portfolio-flow-node"><strong>좌석 락</strong><span>경쟁 직렬화</span></div>
+        <i class="fas fa-arrow-right portfolio-flow-arrow" aria-hidden="true"></i>
+        <div class="portfolio-flow-node"><strong>예약</strong><span>상태 확정</span></div>
+        <i class="fas fa-arrow-right portfolio-flow-arrow" aria-hidden="true"></i>
+        <div class="portfolio-flow-node"><strong>결제</strong><span>멱등 처리</span></div>
+      </div>
     </div>
 
     <div class="portfolio-case-grid">
       <div class="portfolio-case-copy">
         <p class="portfolio-card-kicker">ARCHITECTURE</p>
-        <h3>좌석 요청의 경쟁을 제어하고<br>확정 상태를 분리했습니다.</h3>
+        <h3>좌석 요청의 경쟁을 제어하고 확정 상태를 분리했습니다.</h3>
         <p>
           중복 예약을 막고 확정된 상태만 남기는 것을 목표로 했습니다. 좌석 ID를 경쟁 자원으로 정의하고,
           예약·결제·포인트는 원자적으로 확정했습니다. 커밋 이후 알림·통계 같은 후속 처리는 Kafka 이벤트로 분리했습니다.
@@ -236,10 +339,11 @@ toc: false
           <li>Kafka: 예약 확정 이벤트와 후속 처리 연결</li>
         </ul>
       </div>
-      <figure class="portfolio-visual">
-        <img src="{{ '/assets/img/portfolio/ticketing-architecture.png' | relative_url }}" alt="좌석 경쟁 제어와 확정 상태 분리 구조">
-        <figcaption>좌석 경쟁, 확정 상태, 후속 이벤트의 책임을 분리했습니다.</figcaption>
-      </figure>
+      <div class="portfolio-decision-panel">
+        <span class="portfolio-card-kicker">DECISION</span>
+        <strong>커밋된 상태만 다음 단계로 전달하도록</strong>
+        <p>좌석 경쟁과 확정 상태를 분리하고, 후속 처리는 이벤트로 넘겼습니다.</p>
+      </div>
     </div>
 
     <div class="portfolio-proof-grid">
@@ -257,10 +361,13 @@ toc: false
           <div><strong>동시 결제 5개</strong><span>확정 예약·포인트 차감 각 1건</span></div>
         </div>
       </div>
-      <figure class="portfolio-visual portfolio-visual--compact">
-        <img src="{{ '/assets/img/portfolio/ticketing-proof.png' | relative_url }}" alt="콘서트 티켓팅 동시 요청 검증 결과">
-        <figcaption>동시 요청과 재시도 조건에서 최종 상태가 하나만 남는지 검증했습니다.</figcaption>
-      </figure>
+      <div class="portfolio-proof-panel">
+        <span class="portfolio-card-kicker">CHECKED CONDITION</span>
+        <code>same_seat_requests = 10</code>
+        <code>successful_hold = 1</code>
+        <code>payment_retry_effect = 1</code>
+        <span class="portfolio-proof-status"><i class="fas fa-check" aria-hidden="true"></i> idempotency verified</span>
+      </div>
     </div>
 
     <div class="portfolio-project-links">
@@ -271,10 +378,10 @@ toc: false
 
   <section class="portfolio-contact" id="portfolio-contact" aria-labelledby="portfolio-contact-title">
     <p class="portfolio-eyebrow">CONTACT</p>
-    <h2 id="portfolio-contact-title">문제를 재현하고 원인을 좁혀<br>구조적으로 해결하는 개발자입니다.</h2>
-    <p>더 자세한 내용은 포트폴리오 원본 PDF와 GitHub에서 확인할 수 있습니다.</p>
+    <h2 id="portfolio-contact-title">문제를 재현하고 원인을 좁혀 구조적으로 해결하는 개발자입니다.</h2>
+    <p>더 자세한 기술 기록은 블로그와 GitHub에서 확인할 수 있습니다.</p>
     <div class="portfolio-project-links">
-      <a class="portfolio-button portfolio-button--light" href="{{ '/assets/files/woolam-portfolio.pdf' | relative_url }}" download>포트폴리오 PDF 다운로드 <i class="fas fa-download" aria-hidden="true"></i></a>
+      <a class="portfolio-button portfolio-button--light" href="https://github.com/w00lam" target="_blank" rel="noopener">GitHub 방문 <i class="fas fa-arrow-up-right-from-square" aria-hidden="true"></i></a>
       <a class="portfolio-button portfolio-button--outline" href="mailto:wlam135@naver.com">이메일 보내기 <i class="fas fa-envelope" aria-hidden="true"></i></a>
     </div>
   </section>
