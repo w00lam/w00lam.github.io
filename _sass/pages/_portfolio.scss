@@ -51,9 +51,9 @@
     max-width: 48rem;
     margin: 0.65rem 0 1.25rem;
     color: #f5f7f2;
-    font-size: clamp(2rem, 4.4vw, 3.9rem);
-    line-height: 1.1;
-    letter-spacing: -0.055em;
+    font-size: clamp(1.85rem, 3.2vw, 3rem);
+    line-height: 1.18;
+    letter-spacing: -0.045em;
   }
 }
 
@@ -76,46 +76,6 @@
 
 .portfolio-hero .portfolio-eyebrow {
   color: #89db9d;
-}
-
-.portfolio-hero-description {
-  max-width: 42rem;
-  color: rgb(245 247 242 / 76%);
-  font-size: 1rem;
-  line-height: 1.8;
-}
-
-.portfolio-hero-proof {
-  display: grid;
-  gap: 0.9rem;
-  padding-top: 1.35rem;
-  border-top: 1px solid rgb(255 255 255 / 20%);
-
-  @include bp.lg {
-    padding-top: 0;
-    padding-left: 1.5rem;
-    border-top: 0;
-    border-left: 1px solid rgb(255 255 255 / 20%);
-  }
-
-  div {
-    display: grid;
-    gap: 0.2rem;
-  }
-
-  span {
-    color: rgb(245 247 242 / 55%);
-    font-family: Lato, sans-serif;
-    font-size: 0.66rem;
-    font-weight: 700;
-    letter-spacing: 0.12em;
-  }
-
-  strong {
-    color: #f5f7f2;
-    font-size: 1rem;
-    font-weight: 700;
-  }
 }
 
 .portfolio-nav {

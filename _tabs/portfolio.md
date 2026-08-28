@@ -10,26 +10,7 @@ toc: false
   <section class="portfolio-hero" id="portfolio-overview" aria-labelledby="portfolio-hero-title">
     <div class="portfolio-hero-copy">
       <p class="portfolio-eyebrow">BACKEND DEVELOPER · PORTFOLIO</p>
-      <h2 id="portfolio-hero-title">기록하고 새로운 것을 배우며, 배운 것을 실제 문제에 적용하는 백엔드 개발자입니다.</h2>
-      <p class="portfolio-hero-description">
-        현상을 바로 고치기보다 요청 흐름·데이터 경계·실행 환경을 나눠 재현 조건을 만들고,
-        동시성·트랜잭션·테스트 실행 문제를 구조적으로 해결합니다.
-      </p>
-    </div>
-
-    <div class="portfolio-hero-proof" aria-label="주요 검증 결과">
-      <div>
-        <span>FOCUS</span>
-        <strong>Backend systems</strong>
-      </div>
-      <div>
-        <span>PROOF</span>
-        <strong>1,400 tests · 4m 32s</strong>
-      </div>
-      <div>
-        <span>METHOD</span>
-        <strong>재현 · 경계 · 검증</strong>
-      </div>
+      <h2 id="portfolio-hero-title">기록하고 새로운 것을 배우며 배운 것을 실제 문제에 적용하는 백엔드 개발자입니다.</h2>
     </div>
   </section>
 
@@ -414,7 +395,7 @@ toc: false
 
   <section class="portfolio-contact" id="portfolio-contact" aria-labelledby="portfolio-contact-title">
     <p class="portfolio-eyebrow">CONTACT</p>
-    <h2 id="portfolio-contact-title">기록하고 배우며, 배운 것을 실제 문제에 적용합니다.</h2>
+    <h2 id="portfolio-contact-title">기록하고 배우며 배운 것을 실제 문제에 적용합니다.</h2>
     <p>더 자세한 기술 기록은 블로그와 GitHub에서 확인할 수 있습니다.</p>
     <div class="portfolio-project-links">
       <a class="portfolio-button portfolio-button--light" href="https://github.com/w00lam" target="_blank" rel="noopener">GitHub 방문 <i class="fas fa-arrow-up-right-from-square" aria-hidden="true"></i></a>
