@@ -327,7 +327,7 @@ toc: false
 
     <div class="portfolio-project-links">
       <a class="portfolio-button" href="https://github.com/w00lam" target="_blank" rel="noopener">GitHub 프로필 <i class="fas fa-arrow-up-right-from-square" aria-hidden="true"></i></a>
-      <a class="portfolio-text-link" href="{{ '/posts/sdd-document-structure-design/' | relative_url }}">관련 글: 팀 병렬 개발을 위한 SDD 문서 구조 설계 <i class="fas fa-arrow-right" aria-hidden="true"></i></a>
+      <a class="portfolio-text-link" href="{{ '/posts/sdd-document-structure-design/' | relative_url }}">맛잇온의 팀 병렬 개발을 위한 SDD 설계 <i class="fas fa-arrow-right" aria-hidden="true"></i></a>
     </div>
   </section>
 
@@ -410,7 +410,7 @@ toc: false
 
     <div class="portfolio-project-links">
       <a class="portfolio-button" href="https://github.com/w00lam/commerce-payment-system" target="_blank" rel="noopener">GitHub 레포 <i class="fas fa-arrow-up-right-from-square" aria-hidden="true"></i></a>
-      <a class="portfolio-text-link" href="{{ '/posts/concurrency-control-strategy/' | relative_url }}">관련 글: 동시성 문제를 이해하면서 정리한 생각 <i class="fas fa-arrow-right" aria-hidden="true"></i></a>
+      <a class="portfolio-text-link" href="{{ '/posts/lock-transaction-boundary/' | relative_url }}">좌석 예약의 락과 트랜잭션 경계 분리 <i class="fas fa-arrow-right" aria-hidden="true"></i></a>
     </div>
   </section>
 
@@ -420,7 +420,7 @@ toc: false
     <p>더 자세한 기술 기록은 블로그와 GitHub에서 확인할 수 있습니다.</p>
     <div class="portfolio-project-links">
       <a class="portfolio-button portfolio-button--light" href="https://github.com/w00lam" target="_blank" rel="noopener">GitHub 방문 <i class="fas fa-arrow-up-right-from-square" aria-hidden="true"></i></a>
-      <a class="portfolio-button portfolio-button--outline" href="mailto:wlam135@naver.com">이메일 보내기 <i class="fas fa-envelope" aria-hidden="true"></i></a>
+      <a class="portfolio-button portfolio-button--outline" href="mailto:woolam.dev@gmail.com">이메일 보내기 <i class="fas fa-envelope" aria-hidden="true"></i></a>
     </div>
   </section>
 </div>
