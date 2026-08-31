@@ -26,14 +26,14 @@ toc: false
   <section class="portfolio-section portfolio-approach" id="portfolio-approach" aria-labelledby="portfolio-approach-title">
     <div class="portfolio-section-heading">
       <p class="portfolio-eyebrow">APPROACH</p>
-      <h2 id="portfolio-approach-title">동작보다 먼저, 설계의 근거를 남깁니다.</h2>
+      <h2 id="portfolio-approach-title">동작보다 먼저 설계의 근거를 남깁니다.</h2>
     </div>
 
     <div class="portfolio-approach-grid">
       <div class="portfolio-approach-copy">
         <p>
           문제를 해결했다는 말은 정상 동작만으로 완성되지 않습니다. 어떤 조건에서 문제가 재현되는지,
-          어떤 경계에서 실패를 멈출지, 그리고 그 결과를 어떻게 검증했는지까지 설명할 수 있어야 합니다.
+          어떤 경계에서 실패를 멈출지 그리고 그 결과를 어떻게 검증했는지까지 설명할 수 있어야 합니다.
         </p>
       </div>
 
@@ -278,7 +278,7 @@ toc: false
       <div class="portfolio-decision-panel">
         <span class="portfolio-card-kicker">DECISION</span>
         <strong>한 건의 실패가 전체 등록을 막지 않도록</strong>
-        <p>검증과 저장을 나누고, 맛집별 등록 단위를 독립적으로 확인했습니다.</p>
+        <p>검증과 저장을 나누고 맛집별 등록 단위를 독립적으로 확인했습니다.</p>
       </div>
     </div>
 
@@ -288,7 +288,7 @@ toc: false
         <h3>AI 자동 등록의 중복과 부분 저장을 경계 설계로 막았습니다.</h3>
         <p>
           동일 맛집에 요청이 동시에 들어오면 중복 등록이나 부분 저장이 생길 수 있었습니다.
-          외부 검증과 DB 저장을 분리하고, 맛집 단위의 저장 경계를 하나의 작업으로 묶어 실패 범위를 좁혔습니다.
+          외부 검증과 DB 저장을 분리하고 맛집 단위의 저장 경계를 하나의 작업으로 묶어 실패 범위를 좁혔습니다.
           최종 반영 직전에는 현재 상태를 다시 확인했습니다.
         </p>
         <div class="portfolio-metric-grid">
@@ -318,7 +318,7 @@ toc: false
         <h2 id="ticketing-title">콘서트 티켓팅 예약 시스템</h2>
         <p class="portfolio-project-lead">
           대기열 진입부터 좌석 예약, 결제까지 이어지는 콘서트 티켓팅 서비스를 백엔드 중심으로 구현했습니다.
-          동일 좌석 동시 요청과 결제 재요청을 테스트로 재현하고, 중복·정합성 문제를 해결했습니다.
+          동일 좌석 동시 요청과 결제 재요청을 테스트로 재현하고 중복·정합성 문제를 해결했습니다.
         </p>
       </div>
       <span class="portfolio-project-number" aria-hidden="true">02</span>
@@ -348,7 +348,7 @@ toc: false
         <p class="portfolio-card-kicker">ARCHITECTURE</p>
         <h3>좌석 요청의 경쟁을 제어하고 확정 상태를 분리했습니다.</h3>
         <p>
-          중복 예약을 막고 확정된 상태만 남기는 것을 목표로 했습니다. 좌석 ID를 경쟁 자원으로 정의하고,
+          중복 예약을 막고 확정된 상태만 남기는 것을 목표로 했습니다. 좌석 ID를 경쟁 자원으로 정의하고
           예약·결제·포인트는 원자적으로 확정했습니다. 커밋 이후 알림·통계 같은 후속 처리는 Kafka 이벤트로 분리했습니다.
         </p>
         <ul>
@@ -370,7 +370,7 @@ toc: false
         <h3>재요청에도 결제·예약 상태를 한 번만 반영했습니다.</h3>
         <p>
           좌석 ID 기준으로 경쟁을 직렬화하고 Redis 락·소유권 토큰·만료 시간을 함께 관리했습니다.
-          DB 트랜잭션과 락 해제 시점을 분리해 커밋 경계를 명확히 했고, reservationId로 기존 결제를 먼저 확인한 뒤
+          DB 트랜잭션과 락 해제 시점을 분리해 커밋 경계를 명확히 했고 reservationId로 기존 결제를 먼저 확인한 뒤
           새로운 결제에는 포인트·예약·결제를 하나의 트랜잭션으로 묶었습니다.
         </p>
         <div class="portfolio-metric-grid">
