@@ -17,9 +17,9 @@ toc: false
   <nav class="portfolio-nav" aria-label="포트폴리오 섹션">
     <a href="#portfolio-approach">Approach</a>
     <a href="#portfolio-stack">Stack</a>
-    <a href="#portfolio-ai">AI Native</a>
     <a href="#matisson">Project 01</a>
     <a href="#concert-ticketing">Project 02</a>
+    <a href="#portfolio-ai">AI Native</a>
     <a href="#portfolio-contact">Contact</a>
   </nav>
 
@@ -49,9 +49,9 @@ toc: false
           <p>외부 검증과 DB 저장을 분리해 한 건의 실패가 전체 등록으로 번지지 않게 했습니다.</p>
         </article>
         <article class="portfolio-signal-card">
-          <span class="portfolio-card-kicker">03 · VERIFY</span>
-          <h3>실행 구조 개선</h3>
-          <p>테스트 환경을 재사용해 1,400개 테스트를 8분 20초 이상에서 4분 32초로 줄였습니다.</p>
+          <span class="portfolio-card-kicker">03 · INVARIANT</span>
+          <h3>서비스 정합성 검증</h3>
+          <p>동시 요청에서 성공 수와 최종 저장 건수를 조건으로 남겨 락과 멱등성의 효과를 확인합니다.</p>
         </article>
       </div>
     </div>
@@ -94,91 +94,10 @@ toc: false
       <article class="portfolio-stack-card">
         <span class="portfolio-stack-index">04</span>
         <h3>Verification</h3>
-        <p>변경을 빠르게 확인하고 반복합니다.</p>
+        <p>변경을 빠르게 확인하고 반복합니다. 1,400개 테스트 실행 시간을 8분 20초 이상에서 4분 32초로 줄였습니다.</p>
         <div class="portfolio-stack-items">
           <span>Testcontainers</span><span>GitHub Actions</span>
         </div>
-      </article>
-    </div>
-  </section>
-
-  <section class="portfolio-section portfolio-ai" id="portfolio-ai" aria-labelledby="portfolio-ai-title">
-    <div class="portfolio-section-heading">
-      <p class="portfolio-eyebrow">AI-NATIVE WORKFLOW</p>
-      <h2 id="portfolio-ai-title">프로젝트의 문맥을 AI가 놓치지 않도록 작업 방식을 설계했습니다.</h2>
-    </div>
-
-    <div class="portfolio-ai-intro">
-      <div class="portfolio-ai-summary">
-        <p>
-          설계부터 코드 작성, 테스트 생성, 디버깅, 문서화, 배포 자동화까지 Claude Code와 Codex를 활용했습니다.
-          그중 팀 프로젝트에서는 Codex Agent Skill을 직접 설계해 개발 과정에 적용했습니다.
-        </p>
-        <div class="portfolio-ai-tools" aria-label="사용한 AI 도구">
-          <span><i class="fas fa-terminal" aria-hidden="true"></i> Claude Code</span>
-          <span><i class="fas fa-code" aria-hidden="true"></i> Codex</span>
-        </div>
-        <a class="portfolio-ai-repository" href="https://github.com/team-11st-chat/11th-street" target="_blank" rel="noopener">
-          실제 Skill이 적용된 저장소 보기 <i class="fas fa-arrow-up-right-from-square" aria-hidden="true"></i>
-        </a>
-      </div>
-
-      <div class="portfolio-ai-why">
-        <span class="portfolio-card-kicker">WHY I BUILT IT</span>
-        <h3>일회성 프롬프트에만 의존하면 팀의 기준을 유지하기 어려웠습니다.</h3>
-        <p>
-          같은 프로젝트를 여러 사람이 AI와 함께 진행하면 작업 결과와 판단 기준이 달라질 수 있습니다.
-          그래서 AI가 매번 추측하지 않고 프로젝트 규칙과 현재 Repository 상태를 먼저 확인하도록
-          단계별 책임과 실행 조건을 Skill로 정의했습니다.
-        </p>
-      </div>
-    </div>
-
-    <div class="portfolio-ai-flow">
-      <div class="portfolio-ai-flow-heading">
-        <span class="portfolio-card-kicker">HOW IT WORKS</span>
-        <strong>개발 산출물의 흐름을 AI Workflow에 연결했습니다.</strong>
-      </div>
-      <div class="portfolio-ai-pipeline" aria-label="Agent Skill 개발 흐름">
-        <div><b>Requirements</b><small>목표·제약 확인</small></div>
-        <i class="fas fa-arrow-right" aria-hidden="true"></i>
-        <div><b>Domain</b><small>책임 경계 정리</small></div>
-        <i class="fas fa-arrow-right" aria-hidden="true"></i>
-        <div><b>Specification</b><small>동작·규칙 구체화</small></div>
-        <i class="fas fa-arrow-right" aria-hidden="true"></i>
-        <div><b>Issue</b><small>작업 단위 분해</small></div>
-        <i class="fas fa-arrow-right" aria-hidden="true"></i>
-        <div><b>Commit</b><small>변경 기록</small></div>
-        <i class="fas fa-arrow-right" aria-hidden="true"></i>
-        <div><b>PR · Review</b><small>검토·피드백</small></div>
-      </div>
-    </div>
-
-    <div class="portfolio-ai-detail-grid">
-      <article>
-        <span class="portfolio-card-kicker">SKILL CONTRACT</span>
-        <h3>각 단계의 책임을 계약처럼 나눴습니다.</h3>
-        <p>
-          Requirements, Domain, Specification, Issue, Commit, PR, Review, Repository Skill을 분리해
-          공통 규칙은 따로 두었습니다. 각 Skill에는 역할, Trigger, 신뢰할 정보원, CLI 정책,
-          Success Criteria를 정의했습니다.
-        </p>
-      </article>
-      <article>
-        <span class="portfolio-card-kicker">GUARDRAILS</span>
-        <h3>추측하기보다 확인을 먼저 하도록 했습니다.</h3>
-        <p>
-          요구사항이 비어 있으면 질문합니다. Repository·기존 산출물·실행 결과를 확인한 뒤 다음 단계로 넘어갑니다.
-          검증되지 않은 정보는 사실로 단정하지 않고 열린 질문이나 가정으로 남깁니다.
-        </p>
-      </article>
-      <article>
-        <span class="portfolio-card-kicker">TRACEABILITY</span>
-        <h3>요구사항부터 리뷰까지 이어지게 했습니다.</h3>
-        <p>
-          Requirements → Domain → Specification → Issue → Commit → Pull Request → Review의 연결을 유지해
-          어떤 판단과 변경이 어디에서 나왔는지 추적할 수 있도록 구성했습니다.
-        </p>
       </article>
     </div>
   </section>
@@ -282,6 +201,34 @@ toc: false
       </div>
     </div>
 
+    <div class="portfolio-infra-proof">
+      <div class="portfolio-infra-proof-heading">
+        <p class="portfolio-card-kicker">INFRASTRUCTURE EVIDENCE</p>
+        <h3>애플리케이션만이 아니라 실행 환경의 경계도 구성했습니다.</h3>
+        <p>
+          AWS 요청 흐름을 VPC와 Public·Private Subnet, ALB, EC2, RDS로 나누고,
+          배포 흐름은 CI/CD·ECR·ASG와 Blue-Green 전환 관점에서 따로 정리했습니다.
+        </p>
+      </div>
+      <figure class="portfolio-architecture-figure portfolio-architecture-figure--wide">
+        <img src="{{ '/assets/images/2026-05-19-posting/aws-request-flow-vpc.png' | relative_url }}" alt="AWS VPC의 Public Subnet과 Private Subnet, ALB, EC2, RDS 요청 흐름" loading="lazy">
+        <figcaption>
+          VPC 내부에서 외부 요청과 데이터베이스 접근 경계를 분리한 구조입니다.
+          <a class="portfolio-text-link" href="{{ '/posts/how-aws-request-flow-works/' | relative_url }}">구성 기록 보기 <i class="fas fa-arrow-right" aria-hidden="true"></i></a>
+        </figcaption>
+      </figure>
+      <div class="portfolio-infra-proof-secondary">
+        <figure class="portfolio-architecture-figure">
+          <img src="{{ '/assets/images/2026-07-01-cicd-design-not-yaml/blue_green_deployment.png' | relative_url }}" alt="로드 밸런서가 Blue 환경에서 Green 환경으로 트래픽을 전환하는 Blue-Green 배포 흐름" loading="lazy">
+          <figcaption>Health Check 통과 후 운영 트래픽을 Blue에서 Green으로 전환합니다.</figcaption>
+        </figure>
+        <figure class="portfolio-architecture-figure">
+          <img src="{{ '/assets/images/2026-05-20-posting/deployment-automation-autoscaling-flow.png' | relative_url }}" alt="GitHub Actions와 ECR을 거쳐 ASG의 EC2 인스턴스로 배포하는 흐름" loading="lazy">
+          <figcaption>CI/CD에서 만든 이미지를 Registry와 Auto Scaling 환경으로 전달합니다.</figcaption>
+        </figure>
+      </div>
+    </div>
+
     <div class="portfolio-proof-grid">
       <div class="portfolio-proof-copy">
         <p class="portfolio-card-kicker">TROUBLESHOOTING</p>
@@ -306,8 +253,51 @@ toc: false
       </div>
     </div>
 
+    <div class="portfolio-additional-cases">
+      <article class="portfolio-additional-case">
+        <div>
+          <p class="portfolio-card-kicker">OPERATIONS · SECRETS</p>
+          <h3>컨테이너 메타데이터에 남는 비밀값을 tmpfs 주입으로 전환했습니다.</h3>
+          <p>
+            <code>docker run</code> 환경 변수로 전달한 비밀값이 <code>config.v2.json</code>에 평문으로 남아
+            <code>docker inspect</code>와 볼륨 스냅샷에서 읽히는 경로를 확인했습니다. 환경 변수를 그대로 전달하지 않고
+            tmpfs 파일로 주입해 실행 메타데이터와 영속 볼륨에 비밀값이 남지 않는 경계로 바꿨습니다.
+          </p>
+          <a class="portfolio-text-link" href="{{ '/posts/env-secret-management-1password-bitwarden/' | relative_url }}">비밀값 관리 기록 보기 <i class="fas fa-arrow-right" aria-hidden="true"></i></a>
+        </div>
+        <div class="portfolio-proof-panel">
+          <span class="portfolio-card-kicker">CHECKED CONDITION</span>
+          <code>before_docker_inspect_secret = readable</code>
+          <code>after_docker_inspect_secret = absent</code>
+          <code>after_volume_snapshot_secret = absent</code>
+          <span class="portfolio-proof-status"><i class="fas fa-check" aria-hidden="true"></i> secret exposure blocked</span>
+        </div>
+      </article>
+
+      <article class="portfolio-additional-case">
+        <div>
+          <p class="portfolio-card-kicker">OPERATIONS · RELEASE</p>
+          <h3>배포 실패 때 백엔드·프론트엔드 혼합 버전이 남지 않도록 원자성을 확보했습니다.</h3>
+          <p>
+            배포 루프 안에서 참조 파일을 먼저 바꾸면 이미지 하나의 pull 실패 뒤 백엔드와 프론트엔드가 서로 다른 버전으로
+            서비스될 수 있었습니다. 두 이미지 참조를 임시 디렉터리에 먼저 staging하고 모두 pull에 성공한 뒤 install 단계에서
+            한 번에 교체하도록 배포 경계를 다시 나눴습니다.
+          </p>
+          <a class="portfolio-text-link" href="{{ '/posts/cicd-design-not-yaml/' | relative_url }}">배포 전략 기록 보기 <i class="fas fa-arrow-right" aria-hidden="true"></i></a>
+        </div>
+        <div class="portfolio-proof-panel">
+          <span class="portfolio-card-kicker">CHECKED CONDITION</span>
+          <code>staged_image_refs = backend + frontend</code>
+          <code>pull_all_succeeded_before_install = true</code>
+          <code>mixed_version_after_failure = false</code>
+          <span class="portfolio-proof-status"><i class="fas fa-check" aria-hidden="true"></i> release boundary verified</span>
+        </div>
+      </article>
+    </div>
+
     <div class="portfolio-project-links">
       <a class="portfolio-button" href="https://github.com/w00lam" target="_blank" rel="noopener">GitHub 프로필 <i class="fas fa-arrow-up-right-from-square" aria-hidden="true"></i></a>
+      <a class="portfolio-text-link" href="{{ '/posts/sdd-document-structure-design/' | relative_url }}">팀 개발 기록 보기 <i class="fas fa-arrow-right" aria-hidden="true"></i></a>
     </div>
   </section>
 
@@ -340,6 +330,43 @@ toc: false
         <div class="portfolio-flow-node"><strong>예약</strong><span>상태 확정</span></div>
         <i class="fas fa-arrow-right portfolio-flow-arrow" aria-hidden="true"></i>
         <div class="portfolio-flow-node"><strong>결제</strong><span>멱등 처리</span></div>
+      </div>
+    </div>
+
+    <div class="portfolio-queue-design">
+      <div class="portfolio-queue-heading">
+        <p class="portfolio-card-kicker">QUEUE DESIGN</p>
+        <h3>대기열 순번은 Redis Sorted Set의 정렬 순서로 보장했습니다.</h3>
+        <p>
+          사용자의 토큰을 <code>userId</code> member로 저장하고 진입 시각을 score로 사용합니다.
+          rank 조회는 현재 위치를 보여주고, 입장시킬 때는 <code>ZPOPMIN</code>으로 가장 앞의 사용자를 조회와 동시에 제거합니다.
+          여러 애플리케이션 인스턴스에서도 한 명의 입장 대상을 중복으로 꺼내지 않도록 Redis의 원자 연산을 경계로 삼았습니다.
+        </p>
+      </div>
+      <div class="portfolio-queue-grid">
+        <article>
+          <span>01 · ENQUEUE</span>
+          <strong>진입 순서 기록</strong>
+          <p><code>score = joinTimestamp</code>로 대기 순서를 정렬합니다.</p>
+        </article>
+        <article>
+          <span>02 · RANK</span>
+          <strong>현재 순번 조회</strong>
+          <p><code>ZRANK + 1</code>로 사용자에게 1부터 시작하는 순번을 보여줍니다.</p>
+        </article>
+        <article>
+          <span>03 · ADMIT</span>
+          <strong>앞사람 원자 제거</strong>
+          <p><code>ZPOPMIN</code>으로 다음 입장자를 꺼내고 대기열에서 제거합니다.</p>
+        </article>
+      </div>
+      <div class="portfolio-queue-proof">
+        <span class="portfolio-card-kicker">CHECKED CONDITION</span>
+        <code>enqueue_users = 3</code>
+        <code>rank_before_dequeue = [1, 2, 3]</code>
+        <code>queue_length_after_dequeue = 2</code>
+        <code>next_user_after_dequeue = user2</code>
+        <span class="portfolio-proof-status"><i class="fas fa-check" aria-hidden="true"></i> queue order verified</span>
       </div>
     </div>
 
@@ -383,13 +410,110 @@ toc: false
         <span class="portfolio-card-kicker">CHECKED CONDITION</span>
         <code>same_seat_requests = 10</code>
         <code>successful_hold = 1</code>
+        <code>active_reservations = 1</code>
         <code>payment_retry_effect = 1</code>
         <span class="portfolio-proof-status"><i class="fas fa-check" aria-hidden="true"></i> idempotency verified</span>
       </div>
     </div>
 
     <div class="portfolio-project-links">
-      <a class="portfolio-button" href="https://github.com/w00lam/commerce-payment-system" target="_blank" rel="noopener">GitHub 레포 <i class="fas fa-arrow-up-right-from-square" aria-hidden="true"></i></a>
+      <a class="portfolio-button" href="https://github.com/w00lam/concert-ticketing-server" target="_blank" rel="noopener">GitHub 레포 <i class="fas fa-arrow-up-right-from-square" aria-hidden="true"></i></a>
+      <a class="portfolio-text-link" href="https://github.com/w00lam/concert-ticketing-server/blob/main/docs/Seat_Reservation_Concurrency_Report_2025_12_25.md" target="_blank" rel="noopener">동시성 보고서 <i class="fas fa-arrow-up-right-from-square" aria-hidden="true"></i></a>
+      <a class="portfolio-text-link" href="https://github.com/w00lam/concert-ticketing-server/blob/main/src/test/java/kr/hhplus/be/server/integration/tokenqueue/TokenQueueIntegrationTest.java" target="_blank" rel="noopener">대기열 통합 테스트 <i class="fas fa-arrow-up-right-from-square" aria-hidden="true"></i></a>
+      <a class="portfolio-text-link" href="https://github.com/w00lam/concert-ticketing-server/commit/f8b235a344ec3eedda6a916bd142ae3251a6a4c6" target="_blank" rel="noopener">멱등성 구현 커밋 <i class="fas fa-arrow-up-right-from-square" aria-hidden="true"></i></a>
+    </div>
+  </section>
+
+  <section class="portfolio-section portfolio-ai" id="portfolio-ai" aria-labelledby="portfolio-ai-title">
+    <div class="portfolio-section-heading">
+      <p class="portfolio-eyebrow">AI-NATIVE WORKFLOW</p>
+      <h2 id="portfolio-ai-title">프로젝트의 문맥을 AI가 놓치지 않도록 작업 방식을 설계했습니다.</h2>
+    </div>
+
+    <div class="portfolio-ai-intro">
+      <div class="portfolio-ai-summary">
+        <p>
+          설계부터 코드 작성, 테스트 생성, 디버깅, 문서화, 배포 자동화까지 Claude Code와 Codex를 활용했습니다.
+          그중 팀 프로젝트에서는 Codex Agent Skill을 직접 설계해 개발 과정에 적용했습니다.
+        </p>
+        <div class="portfolio-ai-tools" aria-label="사용한 AI 도구">
+          <span><i class="fas fa-terminal" aria-hidden="true"></i> Claude Code</span>
+          <span><i class="fas fa-code" aria-hidden="true"></i> Codex</span>
+        </div>
+        <a class="portfolio-ai-repository" href="https://github.com/team-11st-chat/11th-street" target="_blank" rel="noopener">
+          실제 Skill이 적용된 저장소 보기 <i class="fas fa-arrow-up-right-from-square" aria-hidden="true"></i>
+        </a>
+      </div>
+
+      <div class="portfolio-ai-why">
+        <span class="portfolio-card-kicker">WHY I BUILT IT</span>
+        <h3>일회성 프롬프트에만 의존하면 팀의 기준을 유지하기 어려웠습니다.</h3>
+        <p>
+          같은 프로젝트를 여러 사람이 AI와 함께 진행하면 작업 결과와 판단 기준이 달라질 수 있습니다.
+          그래서 AI가 매번 추측하지 않고 프로젝트 규칙과 현재 Repository 상태를 먼저 확인하도록
+          단계별 책임과 실행 조건을 Skill로 정의했습니다.
+        </p>
+      </div>
+    </div>
+
+    <div class="portfolio-ai-outcome">
+      <span class="portfolio-card-kicker">OUTCOME</span>
+      <strong>작업 전 확인 항목과 완료 조건을 공통화해 팀 산출물의 형식을 맞췄습니다.</strong>
+      <p>요구사항·코드·테스트·리뷰를 같은 흐름으로 연결해 AI가 만든 결과도 Repository와 실행 결과로 확인할 수 있게 했습니다.</p>
+    </div>
+
+    <div class="portfolio-ai-flow">
+      <div class="portfolio-ai-flow-heading">
+        <span class="portfolio-card-kicker">HOW IT WORKS</span>
+        <strong>개발 산출물의 흐름을 AI Workflow에 연결했습니다.</strong>
+      </div>
+      <div class="portfolio-ai-pipeline" aria-label="Agent Skill 개발 흐름">
+        <div><b>Requirements</b><small>목표·제약 확인</small></div>
+        <i class="fas fa-arrow-right" aria-hidden="true"></i>
+        <div><b>Domain</b><small>책임 경계 정리</small></div>
+        <i class="fas fa-arrow-right" aria-hidden="true"></i>
+        <div><b>Specification</b><small>동작·규칙 구체화</small></div>
+        <i class="fas fa-arrow-right" aria-hidden="true"></i>
+        <div><b>Issue</b><small>작업 단위 분해</small></div>
+        <i class="fas fa-arrow-right" aria-hidden="true"></i>
+        <div><b>Commit</b><small>변경 기록</small></div>
+        <i class="fas fa-arrow-right" aria-hidden="true"></i>
+        <div><b>PR · Review</b><small>검토·피드백</small></div>
+      </div>
+    </div>
+
+    <div class="portfolio-ai-detail-grid">
+      <article>
+        <span class="portfolio-card-kicker">SKILL CONTRACT</span>
+        <h3>각 단계의 책임을 계약처럼 나눴습니다.</h3>
+        <p>
+          Requirements, Domain, Specification, Issue, Commit, PR, Review, Repository Skill을 분리해
+          공통 규칙은 따로 두었습니다. 각 Skill에는 역할, Trigger, 신뢰할 정보원, CLI 정책,
+          Success Criteria를 정의했습니다.
+        </p>
+      </article>
+      <article>
+        <span class="portfolio-card-kicker">GUARDRAILS</span>
+        <h3>추측하기보다 확인을 먼저 하도록 했습니다.</h3>
+        <p>
+          요구사항이 비어 있으면 질문합니다. Repository·기존 산출물·실행 결과를 확인한 뒤 다음 단계로 넘어갑니다.
+          검증되지 않은 정보는 사실로 단정하지 않고 열린 질문이나 가정으로 남깁니다.
+        </p>
+      </article>
+      <article>
+        <span class="portfolio-card-kicker">TRACEABILITY</span>
+        <h3>요구사항부터 리뷰까지 이어지게 했습니다.</h3>
+        <p>
+          Requirements → Domain → Specification → Issue → Commit → Pull Request → Review의 연결을 유지해
+          어떤 판단과 변경이 어디에서 나왔는지 추적할 수 있도록 구성했습니다.
+        </p>
+      </article>
+    </div>
+
+    <div class="portfolio-project-links">
+      <a class="portfolio-text-link" href="https://github.com/team-11st-chat/11th-street/pull/98" target="_blank" rel="noopener">배포 헬스체크 롤백 PR <i class="fas fa-arrow-up-right-from-square" aria-hidden="true"></i></a>
+      <a class="portfolio-text-link" href="https://github.com/team-11st-chat/11th-street/commit/613dab07c1065360fdba6f7dab1dcba5afc7b9c3" target="_blank" rel="noopener">롤백 안정성 보강 커밋 <i class="fas fa-arrow-up-right-from-square" aria-hidden="true"></i></a>
+      <a class="portfolio-text-link" href="https://github.com/team-11st-chat/11th-street/commit/ce1714355d7dd4c50a187971938b2d69e6fbff7e" target="_blank" rel="noopener">재검증 가능한 부하 결과 기록 <i class="fas fa-arrow-up-right-from-square" aria-hidden="true"></i></a>
     </div>
   </section>
 
