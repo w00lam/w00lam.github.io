@@ -131,26 +131,6 @@
   }
 }
 
-.portfolio-section-heading--inline {
-  display: flex;
-  flex-direction: column;
-  gap: 0.8rem;
-
-  @include bp.lg {
-    flex-direction: row;
-    align-items: end;
-    justify-content: space-between;
-  }
-
-  > p {
-    max-width: 20rem;
-    margin-bottom: 0.1rem;
-    color: var(--text-muted-color);
-    font-size: 0.88rem;
-    line-height: 1.6;
-  }
-}
-
 .portfolio-evidence {
   margin-top: 3.5rem;
 }

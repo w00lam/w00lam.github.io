@@ -31,12 +31,11 @@ toc: false
   </nav>
 
   <section class="portfolio-section portfolio-evidence" id="portfolio-principles" aria-labelledby="portfolio-evidence-title">
-    <div class="portfolio-section-heading portfolio-section-heading--inline">
+    <div class="portfolio-section-heading">
       <div>
         <p class="portfolio-eyebrow">WORKING PRINCIPLES</p>
         <h2 id="portfolio-evidence-title">어떤 프로젝트에서도 같은 질문으로 문제를 좁힙니다.</h2>
       </div>
-      <p>특정 프로젝트의 사례가 아닌, 문제를 다루고 결과를 설명하는 제 작업 방식입니다.</p>
     </div>
 
     <div class="portfolio-evidence-grid">
@@ -98,12 +97,11 @@ toc: false
   </section>
 
   <section class="portfolio-section portfolio-stack" id="portfolio-stack" aria-labelledby="portfolio-stack-title">
-    <div class="portfolio-section-heading portfolio-section-heading--inline">
+    <div class="portfolio-section-heading">
       <div>
         <p class="portfolio-eyebrow">TECH STACK</p>
         <h2 id="portfolio-stack-title">문제를 해결할 때 사용한 기술</h2>
       </div>
-      <p>프로젝트별로 나열하는 대신, 역할과 책임에 따라 묶었습니다.</p>
     </div>
 
     <div class="portfolio-stack-grid">
@@ -143,12 +141,11 @@ toc: false
   </section>
 
   <section class="portfolio-section portfolio-capabilities" id="portfolio-capabilities" aria-labelledby="portfolio-capabilities-title">
-    <div class="portfolio-section-heading portfolio-section-heading--inline">
+    <div class="portfolio-section-heading">
       <div>
         <p class="portfolio-eyebrow">BACKEND CAPABILITIES</p>
         <h2 id="portfolio-capabilities-title">기술 이름보다 책임과 선택을 보여줍니다.</h2>
       </div>
-      <p>프로젝트에 적용한 내용과 학습·회고에서 정리한 판단 근거를 한곳에 모았습니다.</p>
     </div>
 
     <div class="portfolio-capability-grid">
@@ -180,12 +177,11 @@ toc: false
   </section>
 
   <section class="portfolio-section portfolio-project-index" aria-labelledby="portfolio-projects-title">
-    <div class="portfolio-section-heading portfolio-section-heading--inline">
+    <div class="portfolio-section-heading">
       <div>
         <p class="portfolio-eyebrow">SELECTED PROJECTS</p>
         <h2 id="portfolio-projects-title">문제를 해결한 두 가지 기록</h2>
       </div>
-      <p>각 프로젝트에서 설계 판단과 검증 결과를 자세히 볼 수 있습니다.</p>
     </div>
 
     <div class="portfolio-project-grid">
@@ -679,12 +675,11 @@ toc: false
   </section>
 
   <section class="portfolio-section portfolio-delivery" id="portfolio-delivery" aria-labelledby="portfolio-delivery-title">
-    <div class="portfolio-section-heading portfolio-section-heading--inline">
+    <div class="portfolio-section-heading">
       <div>
         <p class="portfolio-eyebrow">PUBLIC ARTIFACTS · DELIVERY</p>
         <h2 id="portfolio-delivery-title">설명은 링크와 실행 결과로 확인할 수 있어야 합니다.</h2>
       </div>
-      <p>코드·설계 기록·테스트·배포 설정을 목적별로 나눠 필요한 근거를 바로 열 수 있게 했습니다.</p>
     </div>
 
     <div class="portfolio-artifact-grid">
