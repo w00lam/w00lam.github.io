@@ -11,17 +11,62 @@ toc: false
     <div class="portfolio-hero-copy">
       <p class="portfolio-eyebrow">BACKEND DEVELOPER · PORTFOLIO</p>
       <h2 id="portfolio-hero-title">기록하고 새로운 것을 배우며 배운 것을 실제 문제에 적용하는 백엔드 개발자입니다.</h2>
+      <p class="portfolio-hero-lead">
+        Java·Spring Boot를 중심으로 동시성, 트랜잭션, 인증, 배포 경계를 설계하고
+        테스트 결과로 동작을 확인합니다.
+      </p>
+      <div class="portfolio-hero-proof" aria-label="핵심 경험 요약">
+        <div><strong>2</strong><span>selected case studies</span></div>
+        <div><strong>10</strong><span>same-seat concurrent requests</span></div>
+        <div><strong>1,400 → 4:32</strong><span>test execution time</span></div>
+      </div>
     </div>
   </section>
 
   <nav class="portfolio-nav" aria-label="포트폴리오 섹션">
     <a href="#portfolio-approach">Approach</a>
+    <a href="#portfolio-evidence">Evidence</a>
     <a href="#portfolio-stack">Stack</a>
+    <a href="#portfolio-capabilities">Capability</a>
     <a href="#matisson">Project 01</a>
     <a href="#concert-ticketing">Project 02</a>
     <a href="#portfolio-ai">AI Native</a>
+    <a href="#portfolio-delivery">Delivery</a>
     <a href="#portfolio-contact">Contact</a>
   </nav>
+
+  <section class="portfolio-section portfolio-evidence" id="portfolio-evidence" aria-labelledby="portfolio-evidence-title">
+    <div class="portfolio-section-heading portfolio-section-heading--inline">
+      <div>
+        <p class="portfolio-eyebrow">EVALUATION SIGNALS</p>
+        <h2 id="portfolio-evidence-title">문제에서 검증까지, 한 줄로 연결합니다.</h2>
+      </div>
+      <p>프로젝트를 읽을 때 문제·판단·결과·운영의 순서가 끊기지 않도록 구성했습니다.</p>
+    </div>
+
+    <div class="portfolio-evidence-grid">
+      <article>
+        <span class="portfolio-card-kicker">01 · PROBLEM</span>
+        <h3>경쟁 상태와 부분 저장</h3>
+        <p>같은 좌석의 동시 요청, AI 맛집 등록의 중복과 부분 저장을 해결 대상으로 정의했습니다.</p>
+      </article>
+      <article>
+        <span class="portfolio-card-kicker">02 · DECISION</span>
+        <h3>경계를 먼저 나눔</h3>
+        <p>Redis 락·멱등성·트랜잭션·Kafka 이벤트를 각각 상태 확정과 후속 처리의 책임에 맞춰 사용했습니다.</p>
+      </article>
+      <article>
+        <span class="portfolio-card-kicker">03 · VERIFICATION</span>
+        <h3>조건을 수치로 남김</h3>
+        <p>동시 요청 수, 성공 건수, 최종 저장 건수처럼 재현 가능한 조건을 테스트 결과로 기록했습니다.</p>
+      </article>
+      <article>
+        <span class="portfolio-card-kicker">04 · OPERATION</span>
+        <h3>실행 환경까지 설명</h3>
+        <p>AWS 네트워크 경계와 GitHub Actions 기반 배포 흐름을 서비스 동작과 분리해 설명합니다.</p>
+      </article>
+    </div>
+  </section>
 
   <section class="portfolio-section portfolio-approach" id="portfolio-approach" aria-labelledby="portfolio-approach-title">
     <div class="portfolio-section-heading">
@@ -102,6 +147,43 @@ toc: false
     </div>
   </section>
 
+  <section class="portfolio-section portfolio-capabilities" id="portfolio-capabilities" aria-labelledby="portfolio-capabilities-title">
+    <div class="portfolio-section-heading portfolio-section-heading--inline">
+      <div>
+        <p class="portfolio-eyebrow">BACKEND CAPABILITIES</p>
+        <h2 id="portfolio-capabilities-title">기술 이름보다 책임과 선택을 보여줍니다.</h2>
+      </div>
+      <p>프로젝트에서 적용한 내용과 학습·회고로 정리한 판단 근거를 함께 연결했습니다.</p>
+    </div>
+
+    <div class="portfolio-capability-grid">
+      <article>
+        <span class="portfolio-card-kicker">CODE · OOP</span>
+        <h3>변경 이유가 드러나는 객체 설계</h3>
+        <p>다형성과 책임 분리로 조건문을 줄이고, 메서드 이름으로 도메인 의도를 표현합니다.</p>
+        <a class="portfolio-text-link" href="{{ '/posts/ood-polymorphism/' | relative_url }}">OOP 설계 기록 <i class="fas fa-arrow-right" aria-hidden="true"></i></a>
+      </article>
+      <article>
+        <span class="portfolio-card-kicker">SPRING · LAYER</span>
+        <h3>IoC/DI와 계층의 책임 분리</h3>
+        <p>Controller·Service·Repository의 흐름을 기본으로 두고, Facade와 전역 예외 처리의 경계를 상황에 맞게 선택합니다.</p>
+        <a class="portfolio-text-link" href="{{ '/posts/spring-boot-bean-exception/' | relative_url }}">Spring 구조 기록 <i class="fas fa-arrow-right" aria-hidden="true"></i></a>
+      </article>
+      <article>
+        <span class="portfolio-card-kicker">API · DATA</span>
+        <h3>자원 상태와 데이터 접근을 분리</h3>
+        <p>GET·POST·PUT/PATCH의 의미와 2xx·4xx 상태를 계약에 남기고, JPA·QueryDSL·MySQL·Redis의 조회·캐시 경계를 설계합니다.</p>
+        <a class="portfolio-text-link" href="{{ '/posts/api-spec-5-principles/' | relative_url }}">API 설계 기록 <i class="fas fa-arrow-right" aria-hidden="true"></i></a>
+      </article>
+      <article>
+        <span class="portfolio-card-kicker">SECURITY · DELIVERY</span>
+        <h3>인증부터 배포 후 확인까지</h3>
+        <p>세션과 JWT의 트레이드오프, Security Filter와 Interceptor의 위치, PR·CI·배포 후 검증을 흐름으로 이해합니다.</p>
+        <a class="portfolio-text-link" href="{{ '/posts/session-to-jwt-auth/' | relative_url }}">인증 전환 기록 <i class="fas fa-arrow-right" aria-hidden="true"></i></a>
+      </article>
+    </div>
+  </section>
+
   <section class="portfolio-section portfolio-project-index" aria-labelledby="portfolio-projects-title">
     <div class="portfolio-section-heading portfolio-section-heading--inline">
       <div>
@@ -167,6 +249,35 @@ toc: false
       <div><span>DATE</span><strong>2026.07 - 2026.08</strong></div>
       <div><span>TEAM</span><strong>백엔드 4명</strong></div>
       <div><span>ROLE</span><strong>백엔드 · 인프라 · 프론트엔드 일부 · 진행 관리</strong></div>
+    </div>
+
+    <div class="portfolio-requirements" aria-labelledby="matisson-requirements-title">
+      <div class="portfolio-requirements-heading">
+        <p class="portfolio-card-kicker">PROBLEM · REQUIREMENTS · API</p>
+        <h3 id="matisson-requirements-title">사용자 탐색 문제를 등록·검증·저장 요구사항으로 쪼갰습니다.</h3>
+      </div>
+      <div class="portfolio-requirements-grid">
+        <article>
+          <span>문제 정의</span>
+          <strong>흩어진 맛집 정보 탐색</strong>
+          <p>유튜버가 방문한 맛집을 지역·음식 종류·유튜버 기준으로 찾을 수 있어야 합니다.</p>
+        </article>
+        <article>
+          <span>핵심 기능</span>
+          <strong>탐색·인증·제보·신고</strong>
+          <p>지도와 검색 화면, 사용자 인증, 맛집 제보와 신고 처리를 제공합니다.</p>
+        </article>
+        <article>
+          <span>API 책임</span>
+          <strong>검증 결과와 저장 상태 분리</strong>
+          <p>외부 검증·중복 확인을 거친 뒤 맛집 단위로 상태를 확정하고 저장해야 합니다.</p>
+        </article>
+        <article>
+          <span>완료 조건</span>
+          <strong>중복·부분 저장 없음</strong>
+          <p>동일 맛집 10회 요청에서 중복 저장과 부분 저장이 발생하지 않아야 합니다.</p>
+        </article>
+      </div>
     </div>
 
     <div class="portfolio-system-visual portfolio-system-visual--matisson" aria-label="맛잇온 처리 흐름">
@@ -299,6 +410,19 @@ toc: false
       <a class="portfolio-button" href="https://github.com/w00lam" target="_blank" rel="noopener">GitHub 프로필 <i class="fas fa-arrow-up-right-from-square" aria-hidden="true"></i></a>
       <a class="portfolio-text-link" href="{{ '/posts/sdd-document-structure-design/' | relative_url }}">팀 개발 기록 보기 <i class="fas fa-arrow-right" aria-hidden="true"></i></a>
     </div>
+
+    <div class="portfolio-retrospective">
+      <div>
+        <p class="portfolio-card-kicker">LEARNED</p>
+        <h3>외부 API 호출과 내부 DB 저장은 같은 트랜잭션으로 볼 수 없었습니다.</h3>
+        <p>검증·저장·후속 처리를 분리하면서 실패 범위를 작게 만드는 것이 기능 구현만큼 중요한 설계라는 점을 확인했습니다.</p>
+      </div>
+      <div>
+        <p class="portfolio-card-kicker">NEXT ITERATION</p>
+        <h3>API 계약과 운영 지표를 더 앞단에 둡니다.</h3>
+        <p>다음 단계에서는 핵심 요청·응답 스키마를 문서화하고, 등록 성공률과 외부 검증 실패율을 배포 후에도 확인할 수 있도록 확장할 계획입니다.</p>
+      </div>
+    </div>
   </section>
 
   <section class="portfolio-project portfolio-project--ticketing" id="concert-ticketing" aria-labelledby="ticketing-title">
@@ -318,6 +442,35 @@ toc: false
       <div><span>DATE</span><strong>2025.11 - 2026.05</strong></div>
       <div><span>TEAM</span><strong>1인 개발</strong></div>
       <div><span>ROLE</span><strong>백엔드</strong></div>
+    </div>
+
+    <div class="portfolio-requirements" aria-labelledby="ticketing-requirements-title">
+      <div class="portfolio-requirements-heading">
+        <p class="portfolio-card-kicker">PROBLEM · REQUIREMENTS · API</p>
+        <h3 id="ticketing-requirements-title">한정 좌석 서비스를 대기열·예약·결제 상태로 분리했습니다.</h3>
+      </div>
+      <div class="portfolio-requirements-grid">
+        <article>
+          <span>문제 정의</span>
+          <strong>같은 좌석에 몰리는 경쟁</strong>
+          <p>동일 좌석에 여러 요청이 동시에 들어와도 한 명만 예약을 확정해야 합니다.</p>
+        </article>
+        <article>
+          <span>핵심 기능</span>
+          <strong>대기열·TEMP_HOLD·결제</strong>
+          <p>대기열 진입·순번 조회·입장, 좌석 임시 점유, 결제 확정까지 이어집니다.</p>
+        </article>
+        <article>
+          <span>API 책임</span>
+          <strong>자원 상태와 재요청 분리</strong>
+          <p>좌석 ID를 경쟁 자원으로 다루고 reservationId로 기존 결제 여부를 먼저 확인합니다.</p>
+        </article>
+        <article>
+          <span>완료 조건</span>
+          <strong>확정 결과는 한 번만 반영</strong>
+          <p>좌석 10회·동시 결제 5개·결제 재요청 2회 조건에서 중복 확정이 없어야 합니다.</p>
+        </article>
+      </div>
     </div>
 
     <div class="portfolio-system-visual portfolio-system-visual--ticketing" aria-label="콘서트 티켓팅 처리 흐름">
@@ -422,6 +575,19 @@ toc: false
       <a class="portfolio-text-link" href="https://github.com/w00lam/concert-ticketing-server/blob/main/src/test/java/kr/hhplus/be/server/integration/tokenqueue/TokenQueueIntegrationTest.java" target="_blank" rel="noopener">대기열 통합 테스트 <i class="fas fa-arrow-up-right-from-square" aria-hidden="true"></i></a>
       <a class="portfolio-text-link" href="https://github.com/w00lam/concert-ticketing-server/commit/f8b235a344ec3eedda6a916bd142ae3251a6a4c6" target="_blank" rel="noopener">멱등성 구현 커밋 <i class="fas fa-arrow-up-right-from-square" aria-hidden="true"></i></a>
     </div>
+
+    <div class="portfolio-retrospective">
+      <div>
+        <p class="portfolio-card-kicker">LEARNED</p>
+        <h3>락의 종류보다 자원·커밋·재시도 경계를 먼저 정의해야 했습니다.</h3>
+        <p>Redis 락만 추가하는 것으로 끝나지 않고 소유권 토큰, 만료, DB 트랜잭션, 결제 멱등성을 함께 설계해야 정합성을 지킬 수 있었습니다.</p>
+      </div>
+      <div>
+        <p class="portfolio-card-kicker">NEXT ITERATION</p>
+        <h3>메시지 실패와 트래픽 변화를 운영 지표로 연결합니다.</h3>
+        <p>다음 단계에서는 Kafka 재시도·DLT 처리와 부하 테스트 기준을 함께 운영해 지연, 실패, 재처리 상태를 수치로 관찰할 계획입니다.</p>
+      </div>
+    </div>
   </section>
 
   <section class="portfolio-section portfolio-ai" id="portfolio-ai" aria-labelledby="portfolio-ai-title">
@@ -514,6 +680,43 @@ toc: false
       <a class="portfolio-text-link" href="https://github.com/team-11st-chat/11th-street/pull/98" target="_blank" rel="noopener">배포 헬스체크 롤백 PR <i class="fas fa-arrow-up-right-from-square" aria-hidden="true"></i></a>
       <a class="portfolio-text-link" href="https://github.com/team-11st-chat/11th-street/commit/613dab07c1065360fdba6f7dab1dcba5afc7b9c3" target="_blank" rel="noopener">롤백 안정성 보강 커밋 <i class="fas fa-arrow-up-right-from-square" aria-hidden="true"></i></a>
       <a class="portfolio-text-link" href="https://github.com/team-11st-chat/11th-street/commit/ce1714355d7dd4c50a187971938b2d69e6fbff7e" target="_blank" rel="noopener">재검증 가능한 부하 결과 기록 <i class="fas fa-arrow-up-right-from-square" aria-hidden="true"></i></a>
+    </div>
+  </section>
+
+  <section class="portfolio-section portfolio-delivery" id="portfolio-delivery" aria-labelledby="portfolio-delivery-title">
+    <div class="portfolio-section-heading portfolio-section-heading--inline">
+      <div>
+        <p class="portfolio-eyebrow">PUBLIC ARTIFACTS · DELIVERY</p>
+        <h2 id="portfolio-delivery-title">설명은 링크와 실행 결과로 확인할 수 있어야 합니다.</h2>
+      </div>
+      <p>코드·설계 기록·테스트·배포 설정을 목적별로 나눠 필요한 근거를 바로 열 수 있게 했습니다.</p>
+    </div>
+
+    <div class="portfolio-artifact-grid">
+      <article>
+        <span class="portfolio-card-kicker">RUNNING SITE</span>
+        <h3>현재 포트폴리오</h3>
+        <p>실제 페이지에서 프로젝트 설명과 연결된 산출물을 확인할 수 있습니다.</p>
+        <a class="portfolio-text-link" href="https://w00lam.github.io/portfolio/" target="_blank" rel="noopener">포트폴리오 열기 <i class="fas fa-arrow-up-right-from-square" aria-hidden="true"></i></a>
+      </article>
+      <article>
+        <span class="portfolio-card-kicker">SOURCE</span>
+        <h3>사이트 저장소</h3>
+        <p>Jekyll 페이지·콘텐츠·스타일의 변경 이력과 커밋 흐름을 확인할 수 있습니다.</p>
+        <a class="portfolio-text-link" href="https://github.com/w00lam/w00lam.github.io" target="_blank" rel="noopener">GitHub 저장소 <i class="fas fa-arrow-up-right-from-square" aria-hidden="true"></i></a>
+      </article>
+      <article>
+        <span class="portfolio-card-kicker">CI · DEPLOY</span>
+        <h3>Push에서 GitHub Pages까지</h3>
+        <p>master push를 기준으로 Jekyll 빌드와 Pages 배포가 이어지는 workflow를 공개했습니다.</p>
+        <a class="portfolio-text-link" href="https://github.com/w00lam/w00lam.github.io/blob/master/.github/workflows/jekyll.yml" target="_blank" rel="noopener">배포 workflow <i class="fas fa-arrow-up-right-from-square" aria-hidden="true"></i></a>
+      </article>
+      <article>
+        <span class="portfolio-card-kicker">PROJECT EVIDENCE</span>
+        <h3>설계·테스트·변경 기록</h3>
+        <p>티켓팅 프로젝트의 동시성 보고서, 통합 테스트, 멱등성 구현 커밋을 케이스 스터디에 연결했습니다.</p>
+        <a class="portfolio-text-link" href="#concert-ticketing">티켓팅 근거 보기 <i class="fas fa-arrow-right" aria-hidden="true"></i></a>
+      </article>
     </div>
   </section>
 
