@@ -10,7 +10,7 @@ toc: false
   <section class="portfolio-hero" id="portfolio-overview" aria-labelledby="portfolio-hero-title">
     <div class="portfolio-hero-copy">
       <p class="portfolio-eyebrow">BACKEND DEVELOPER · PORTFOLIO</p>
-      <h2 id="portfolio-hero-title">기록하고 새로운 것을 배우며 배운 것을 실제 문제에 적용하는 백엔드 개발자입니다.</h2>
+      <h2 id="portfolio-hero-title">기록하고 배운 내용을 실제 문제에 적용하는 백엔드 개발자입니다.</h2>
       <p class="portfolio-hero-lead">
         Java·Spring Boot를 중심으로 동시성, 트랜잭션, 인증, 배포 경계를 설계하고
         테스트 결과로 동작을 확인합니다.
@@ -36,29 +36,29 @@ toc: false
         <p class="portfolio-eyebrow">WORKING PRINCIPLES</p>
         <h2 id="portfolio-evidence-title">어떤 프로젝트에서도 같은 질문으로 문제를 좁힙니다.</h2>
       </div>
-      <p>특정 프로젝트의 사례가 아니라, 문제를 다루고 결과를 설명하는 공통 작업 방식입니다.</p>
+      <p>특정 프로젝트의 사례가 아닌, 문제를 다루고 결과를 설명하는 제 작업 방식입니다.</p>
     </div>
 
     <div class="portfolio-evidence-grid">
       <article>
         <span class="portfolio-card-kicker">01 · PROBLEM</span>
         <h3>재현 가능한 문제 정의</h3>
-        <p>사용자·비즈니스 맥락과 실패 조건을 먼저 정리해 해결해야 할 문제의 범위를 좁힙니다.</p>
+        <p>사용자·비즈니스 맥락과 실패 조건을 먼저 정리해 해결할 문제의 범위를 좁힙니다.</p>
       </article>
       <article>
         <span class="portfolio-card-kicker">02 · DECISION</span>
         <h3>책임에 맞는 기술 선택</h3>
-        <p>도메인 경계와 데이터 흐름을 기준으로 저장·캐시·메시징·인증의 역할을 나눠 선택 근거를 남깁니다.</p>
+        <p>도메인 경계와 데이터 흐름을 보고 저장·캐시·메시징·인증의 역할을 나눕니다. 선택한 이유도 기록합니다.</p>
       </article>
       <article>
         <span class="portfolio-card-kicker">03 · VERIFICATION</span>
         <h3>완료 조건을 명시</h3>
-        <p>테스트·수동 검증·부하 테스트 중 적절한 방법을 고르고, 성공 조건과 결과를 함께 기록합니다.</p>
+        <p>테스트·수동 검증·부하 테스트 중 상황에 맞는 방법을 골라 성공 조건과 결과를 기록합니다.</p>
       </article>
       <article>
         <span class="portfolio-card-kicker">04 · OPERATION</span>
         <h3>운영까지 연결</h3>
-        <p>배포·로그·모니터링·장애 대응을 구현 이후의 별도 일이 아니라 설계 결과의 일부로 봅니다.</p>
+        <p>배포·로그·모니터링·장애 대응도 구현 뒤에 붙는 일이 아니라 설계의 일부로 봅니다.</p>
       </article>
     </div>
   </section>
@@ -72,8 +72,8 @@ toc: false
     <div class="portfolio-approach-grid">
       <div class="portfolio-approach-copy">
         <p>
-          이 원칙은 특정 도메인에만 적용하지 않습니다. 기능을 시작할 때 문제를 재현할 수 있는 조건을 정하고,
-          책임과 실패의 경계를 나눈 뒤, 변경 후에도 지켜야 할 조건을 검증 가능한 형태로 남깁니다.
+          특정 도메인에만 쓰는 원칙은 아닙니다. 기능을 시작할 때 문제를 재현할 조건을 정합니다.
+          책임과 실패의 경계를 나눕니다. 변경 후에도 지켜야 할 조건은 검증 가능한 형태로 남깁니다.
         </p>
       </div>
 
@@ -81,17 +81,17 @@ toc: false
         <article class="portfolio-signal-card">
           <span class="portfolio-card-kicker">01 · REPRODUCE</span>
           <h3>문제를 재현할 수 있는가?</h3>
-          <p>정상 흐름뿐 아니라 동시 요청·재요청·외부 의존성 실패처럼 문제가 드러나는 조건부터 정의합니다.</p>
+          <p>정상 흐름만 보지 않습니다. 동시 요청·재요청·외부 의존성 실패처럼 문제가 드러나는 조건부터 정합니다.</p>
         </article>
         <article class="portfolio-signal-card">
           <span class="portfolio-card-kicker">02 · BOUNDARY</span>
           <h3>실패가 번지는 경계는 어디인가?</h3>
-          <p>요청·도메인·트랜잭션·외부 시스템의 책임을 나눠 한 단계의 실패가 전체 작업으로 번지지 않게 합니다.</p>
+          <p>요청·도메인·트랜잭션·외부 시스템의 책임을 나눕니다. 한 단계의 실패가 전체 작업으로 번지지 않게 하기 위해서입니다.</p>
         </article>
         <article class="portfolio-signal-card">
           <span class="portfolio-card-kicker">03 · INVARIANT</span>
           <h3>변경 후에도 지켜야 할 조건은 무엇인가?</h3>
-          <p>중복 없음·상태 정합성·재시도 안전성처럼 서비스가 계속 지켜야 할 조건을 테스트 결과로 확인합니다.</p>
+          <p>중복 없음·상태 정합성·재시도 안전성처럼 서비스가 지켜야 할 조건을 테스트로 확인합니다.</p>
         </article>
       </div>
     </div>
@@ -103,7 +103,7 @@ toc: false
         <p class="portfolio-eyebrow">TECH STACK</p>
         <h2 id="portfolio-stack-title">문제를 해결할 때 사용한 기술</h2>
       </div>
-      <p>프로젝트별 나열보다 역할과 책임을 기준으로 묶었습니다.</p>
+      <p>프로젝트별로 나열하는 대신, 역할과 책임에 따라 묶었습니다.</p>
     </div>
 
     <div class="portfolio-stack-grid">
@@ -134,7 +134,7 @@ toc: false
       <article class="portfolio-stack-card">
         <span class="portfolio-stack-index">04</span>
         <h3>Verification</h3>
-        <p>변경을 빠르게 확인하고 반복합니다. 1,400개 테스트 실행 시간을 8분 20초 이상에서 4분 32초로 줄였습니다.</p>
+        <p>변경 결과를 빠르게 확인하고 다시 개선합니다. 1,400개 테스트 실행 시간도 8분 20초 이상에서 4분 32초로 줄였습니다.</p>
         <div class="portfolio-stack-items">
           <span>Testcontainers</span><span>GitHub Actions</span>
         </div>
@@ -148,32 +148,32 @@ toc: false
         <p class="portfolio-eyebrow">BACKEND CAPABILITIES</p>
         <h2 id="portfolio-capabilities-title">기술 이름보다 책임과 선택을 보여줍니다.</h2>
       </div>
-      <p>프로젝트에서 적용한 내용과 학습·회고로 정리한 판단 근거를 함께 연결했습니다.</p>
+      <p>프로젝트에 적용한 내용과 학습·회고에서 정리한 판단 근거를 한곳에 모았습니다.</p>
     </div>
 
     <div class="portfolio-capability-grid">
       <article>
         <span class="portfolio-card-kicker">CODE · OOP</span>
         <h3>변경 이유가 드러나는 객체 설계</h3>
-        <p>다형성과 책임 분리로 조건문을 줄이고, 메서드 이름으로 도메인 의도를 표현합니다.</p>
+        <p>다형성과 책임을 분리해 조건문을 줄입니다. 메서드 이름으로 도메인의 의도도 드러냅니다.</p>
         <a class="portfolio-text-link" href="{{ '/posts/ood-polymorphism/' | relative_url }}">OOP 설계 기록 <i class="fas fa-arrow-right" aria-hidden="true"></i></a>
       </article>
       <article>
         <span class="portfolio-card-kicker">SPRING · LAYER</span>
         <h3>IoC/DI와 계층의 책임 분리</h3>
-        <p>Controller·Service·Repository의 흐름을 기본으로 두고, Facade와 전역 예외 처리의 경계를 상황에 맞게 선택합니다.</p>
+        <p>Controller·Service·Repository로 책임을 나눕니다. 상황에 따라 Facade와 전역 예외 처리의 경계도 선택합니다.</p>
         <a class="portfolio-text-link" href="{{ '/posts/spring-boot-bean-exception/' | relative_url }}">Spring 구조 기록 <i class="fas fa-arrow-right" aria-hidden="true"></i></a>
       </article>
       <article>
         <span class="portfolio-card-kicker">API · DATA</span>
         <h3>자원 상태와 데이터 접근을 분리</h3>
-        <p>GET·POST·PUT/PATCH의 의미와 2xx·4xx 상태를 계약에 남기고, JPA·QueryDSL·MySQL·Redis의 조회·캐시 경계를 설계합니다.</p>
+        <p>GET·POST·PUT/PATCH의 의미와 2xx·4xx 상태를 계약에 남깁니다. JPA·QueryDSL·MySQL·Redis의 조회·캐시 경계도 설계합니다.</p>
         <a class="portfolio-text-link" href="{{ '/posts/api-spec-5-principles/' | relative_url }}">API 설계 기록 <i class="fas fa-arrow-right" aria-hidden="true"></i></a>
       </article>
       <article>
         <span class="portfolio-card-kicker">SECURITY · DELIVERY</span>
         <h3>인증부터 배포 후 확인까지</h3>
-        <p>세션과 JWT의 트레이드오프, Security Filter와 Interceptor의 위치, PR·CI·배포 후 검증을 흐름으로 이해합니다.</p>
+        <p>세션과 JWT의 트레이드오프를 비교합니다. Security Filter와 Interceptor의 위치도 구분합니다. PR·CI·배포 후 검증까지 하나의 흐름으로 살핍니다.</p>
         <a class="portfolio-text-link" href="{{ '/posts/session-to-jwt-auth/' | relative_url }}">인증 전환 기록 <i class="fas fa-arrow-right" aria-hidden="true"></i></a>
       </article>
     </div>
@@ -185,7 +185,7 @@ toc: false
         <p class="portfolio-eyebrow">SELECTED PROJECTS</p>
         <h2 id="portfolio-projects-title">문제를 해결한 두 가지 기록</h2>
       </div>
-      <p>프로젝트를 클릭하면 설계 판단과 검증 결과를 자세히 볼 수 있습니다.</p>
+      <p>각 프로젝트에서 설계 판단과 검증 결과를 자세히 볼 수 있습니다.</p>
     </div>
 
     <div class="portfolio-project-grid">
@@ -202,7 +202,7 @@ toc: false
         <div class="portfolio-project-card-body">
           <span class="portfolio-card-kicker">PROJECT 01 · 2026.07 - 2026.08</span>
           <h3>맛잇온</h3>
-          <p>AI 맛집 자동 등록의 중복과 부분 저장을 경계 설계로 막은 서비스입니다.</p>
+          <p>AI 맛집 자동 등록에서 생기는 중복과 부분 저장을 경계 설계로 막은 서비스입니다.</p>
           <a class="portfolio-card-link" href="#matisson">케이스 스터디 보기 <i class="fas fa-arrow-right" aria-hidden="true"></i></a>
         </div>
       </article>
@@ -249,13 +249,13 @@ toc: false
     <div class="portfolio-requirements" aria-labelledby="matisson-requirements-title">
       <div class="portfolio-requirements-heading">
         <p class="portfolio-card-kicker">PROBLEM · REQUIREMENTS · API</p>
-        <h3 id="matisson-requirements-title">사용자 탐색 문제를 등록·검증·저장 요구사항으로 쪼갰습니다.</h3>
+        <h3 id="matisson-requirements-title">사용자 탐색 문제를 등록·검증·저장 요구사항으로 나눴습니다.</h3>
       </div>
       <div class="portfolio-requirements-grid">
         <article>
           <span>문제 정의</span>
           <strong>흩어진 맛집 정보 탐색</strong>
-          <p>유튜버가 방문한 맛집을 지역·음식 종류·유튜버 기준으로 찾을 수 있어야 합니다.</p>
+          <p>유튜버가 방문한 맛집을 지역·음식 종류·유튜버 기준으로 찾을 수 있도록 했습니다.</p>
         </article>
         <article>
           <span>핵심 기능</span>
@@ -265,12 +265,12 @@ toc: false
         <article>
           <span>API 책임</span>
           <strong>검증 결과와 저장 상태 분리</strong>
-          <p>외부 검증·중복 확인을 거친 뒤 맛집 단위로 상태를 확정하고 저장해야 합니다.</p>
+          <p>외부 검증·중복 확인을 거친 뒤 맛집 단위로 상태를 확정해 저장합니다.</p>
         </article>
         <article>
           <span>완료 조건</span>
           <strong>중복·부분 저장 없음</strong>
-          <p>동일 맛집 10회 요청에서 중복 저장과 부분 저장이 발생하지 않아야 합니다.</p>
+          <p>동일 맛집 10회 요청에서도 중복 저장과 부분 저장이 없어야 합니다.</p>
         </article>
       </div>
     </div>
@@ -291,8 +291,8 @@ toc: false
         <p class="portfolio-card-kicker">OVERVIEW</p>
         <h3>요청을 검증하고 저장 경계를 분리했습니다.</h3>
         <p>
-          외부 API 검증은 요청 흐름에서 처리하고 DB 저장은 필요한 구간만 트랜잭션으로 묶었습니다.
-          핵심 상태를 먼저 확정한 뒤 테스트와 후속 처리를 별도 경계로 분리했습니다.
+          외부 API 검증은 요청 흐름에서 처리했습니다. DB 저장만 필요한 구간에 트랜잭션을 걸었습니다.
+          핵심 상태를 확정한 뒤 테스트와 후속 처리는 따로 다뤘습니다.
         </p>
         <ul>
           <li>Next.js 프론트엔드: 지도·맛집 탐색 화면과 인증 흐름</li>
@@ -303,23 +303,23 @@ toc: false
       <div class="portfolio-decision-panel">
         <span class="portfolio-card-kicker">DECISION</span>
         <strong>한 건의 실패가 전체 등록을 막지 않도록</strong>
-        <p>검증과 저장을 나누고 맛집별 등록 단위를 독립적으로 확인했습니다.</p>
+        <p>검증과 저장을 나눴습니다. 맛집별 등록 단위는 독립적으로 확인했습니다.</p>
       </div>
     </div>
 
     <div class="portfolio-infra-proof">
       <div class="portfolio-infra-proof-heading">
         <p class="portfolio-card-kicker">INFRASTRUCTURE EVIDENCE</p>
-        <h3>애플리케이션만이 아니라 실행 환경의 경계도 구성했습니다.</h3>
+        <h3>애플리케이션뿐 아니라 실행 환경도 경계를 나눠 구성했습니다.</h3>
         <p>
-          AWS 요청 흐름을 VPC와 Public·Private Subnet, ALB, EC2, RDS로 나누고,
+          AWS 요청 흐름은 VPC와 Public·Private Subnet, ALB, EC2, RDS로 나눴습니다.
           배포 흐름은 CI/CD·ECR·ASG와 Blue-Green 전환 관점에서 따로 정리했습니다.
         </p>
       </div>
       <figure class="portfolio-architecture-figure portfolio-architecture-figure--wide">
         <img src="{{ '/assets/images/2026-05-19-posting/aws-request-flow-vpc.png' | relative_url }}" alt="AWS VPC의 Public Subnet과 Private Subnet, ALB, EC2, RDS 요청 흐름" loading="lazy">
         <figcaption>
-          VPC 내부에서 외부 요청과 데이터베이스 접근 경계를 분리한 구조입니다.
+          VPC 안에서 외부 요청과 데이터베이스 접근을 분리한 구조입니다.
           <a class="portfolio-text-link" href="{{ '/posts/how-aws-request-flow-works/' | relative_url }}">구성 기록 보기 <i class="fas fa-arrow-right" aria-hidden="true"></i></a>
         </figcaption>
       </figure>
@@ -340,9 +340,9 @@ toc: false
         <p class="portfolio-card-kicker">TROUBLESHOOTING</p>
         <h3>AI 자동 등록의 중복과 부분 저장을 경계 설계로 막았습니다.</h3>
         <p>
-          동일 맛집에 요청이 동시에 들어오면 중복 등록이나 부분 저장이 생길 수 있었습니다.
-          외부 검증과 DB 저장을 분리하고 맛집 단위의 저장 경계를 하나의 작업으로 묶어 실패 범위를 좁혔습니다.
-          최종 반영 직전에는 현재 상태를 다시 확인했습니다.
+          동일 맛집에 요청이 동시에 들어오면 중복 등록이나 부분 저장이 발생할 수 있었습니다.
+          외부 검증과 DB 저장을 분리했습니다. 맛집 단위의 저장만 하나의 작업으로 묶어 실패 범위를 좁혔습니다.
+          반영하기 직전에 상태를 다시 확인했습니다.
         </p>
         <div class="portfolio-metric-grid">
           <div><strong>동시 요청</strong><span>같은 맛집 10회 재현</span></div>
@@ -367,7 +367,7 @@ toc: false
           <p>
             <code>docker run</code> 환경 변수로 전달한 비밀값이 <code>config.v2.json</code>에 평문으로 남아
             <code>docker inspect</code>와 볼륨 스냅샷에서 읽히는 경로를 확인했습니다. 환경 변수를 그대로 전달하지 않고
-            tmpfs 파일로 주입해 실행 메타데이터와 영속 볼륨에 비밀값이 남지 않는 경계로 바꿨습니다.
+            tmpfs 파일로 주입해 실행 메타데이터와 영속 볼륨에 비밀값이 남지 않게 했습니다.
           </p>
           <a class="portfolio-text-link" href="{{ '/posts/env-secret-management-1password-bitwarden/' | relative_url }}">비밀값 관리 기록 보기 <i class="fas fa-arrow-right" aria-hidden="true"></i></a>
         </div>
@@ -385,8 +385,8 @@ toc: false
           <p class="portfolio-card-kicker">OPERATIONS · RELEASE</p>
           <h3>배포 실패 때 백엔드·프론트엔드 혼합 버전이 남지 않도록 원자성을 확보했습니다.</h3>
           <p>
-            배포 루프 안에서 참조 파일을 먼저 바꾸면 이미지 하나의 pull 실패 뒤 백엔드와 프론트엔드가 서로 다른 버전으로
-            서비스될 수 있었습니다. 두 이미지 참조를 임시 디렉터리에 먼저 staging하고 모두 pull에 성공한 뒤 install 단계에서
+            배포 루프에서 참조 파일을 먼저 바꾸면 이미지 하나의 pull이 실패했을 때 백엔드와 프론트엔드가 서로 다른 버전으로
+            서비스될 수 있었습니다. 두 이미지 참조를 임시 디렉터리에 먼저 staging했습니다. 모두 pull에 성공한 뒤 install 단계에서
             한 번에 교체하도록 배포 경계를 다시 나눴습니다.
           </p>
           <a class="portfolio-text-link" href="{{ '/posts/cicd-design-not-yaml/' | relative_url }}">배포 전략 기록 보기 <i class="fas fa-arrow-right" aria-hidden="true"></i></a>
@@ -410,12 +410,12 @@ toc: false
       <div>
         <p class="portfolio-card-kicker">LEARNED</p>
         <h3>외부 API 호출과 내부 DB 저장은 같은 트랜잭션으로 볼 수 없었습니다.</h3>
-        <p>검증·저장·후속 처리를 분리하면서 실패 범위를 작게 만드는 것이 기능 구현만큼 중요한 설계라는 점을 확인했습니다.</p>
+        <p>검증·저장·후속 처리를 나누면서 실패 범위를 작게 만드는 일이 기능 구현만큼 중요하다는 점을 확인했습니다.</p>
       </div>
       <div>
         <p class="portfolio-card-kicker">NEXT ITERATION</p>
         <h3>API 계약과 운영 지표를 더 앞단에 둡니다.</h3>
-        <p>다음 단계에서는 핵심 요청·응답 스키마를 문서화하고, 등록 성공률과 외부 검증 실패율을 배포 후에도 확인할 수 있도록 확장할 계획입니다.</p>
+        <p>다음 단계에서는 핵심 요청·응답 스키마를 문서화합니다. 등록 성공률과 외부 검증 실패율도 배포 후에 확인하도록 확장할 계획입니다.</p>
       </div>
     </div>
   </section>
@@ -427,7 +427,7 @@ toc: false
         <h2 id="ticketing-title">콘서트 티켓팅 예약 시스템</h2>
         <p class="portfolio-project-lead">
           대기열 진입부터 좌석 예약, 결제까지 이어지는 콘서트 티켓팅 서비스를 백엔드 중심으로 구현했습니다.
-          동일 좌석 동시 요청과 결제 재요청을 테스트로 재현하고 중복·정합성 문제를 해결했습니다.
+          동일 좌석 동시 요청과 결제 재요청을 테스트로 재현했습니다. 중복·정합성 문제도 해결했습니다.
         </p>
       </div>
       <span class="portfolio-project-number" aria-hidden="true">02</span>
@@ -453,12 +453,12 @@ toc: false
         <article>
           <span>핵심 기능</span>
           <strong>대기열·TEMP_HOLD·결제</strong>
-          <p>대기열 진입·순번 조회·입장, 좌석 임시 점유, 결제 확정까지 이어집니다.</p>
+          <p>대기열 진입·순번 조회·입장부터 좌석 임시 점유와 결제 확정까지 이어집니다.</p>
         </article>
         <article>
           <span>API 책임</span>
           <strong>자원 상태와 재요청 분리</strong>
-          <p>좌석 ID를 경쟁 자원으로 다루고 reservationId로 기존 결제 여부를 먼저 확인합니다.</p>
+          <p>좌석 ID를 경쟁 자원으로 삼습니다. reservationId로 기존 결제 여부를 먼저 확인합니다.</p>
         </article>
         <article>
           <span>완료 조건</span>
@@ -486,9 +486,9 @@ toc: false
         <p class="portfolio-card-kicker">QUEUE DESIGN</p>
         <h3>대기열 순번은 Redis Sorted Set의 정렬 순서로 보장했습니다.</h3>
         <p>
-          사용자의 토큰을 <code>userId</code> member로 저장하고 진입 시각을 score로 사용합니다.
-          rank 조회는 현재 위치를 보여주고, 입장시킬 때는 <code>ZPOPMIN</code>으로 가장 앞의 사용자를 조회와 동시에 제거합니다.
-          여러 애플리케이션 인스턴스에서도 한 명의 입장 대상을 중복으로 꺼내지 않도록 Redis의 원자 연산을 경계로 삼았습니다.
+          사용자 토큰은 <code>userId</code> member로 저장합니다. 진입 시각은 score로 씁니다.
+          rank 조회로 현재 위치를 보여줍니다. 입장시킬 때는 <code>ZPOPMIN</code>으로 가장 앞의 사용자를 꺼내면서 대기열에서도 제거합니다.
+          여러 애플리케이션 인스턴스에서 같은 입장자가 중복으로 빠져나가지 않도록 Redis 원자 연산을 사용했습니다.
         </p>
       </div>
       <div class="portfolio-queue-grid">
@@ -523,7 +523,7 @@ toc: false
         <p class="portfolio-card-kicker">ARCHITECTURE</p>
         <h3>좌석 요청의 경쟁을 제어하고 확정 상태를 분리했습니다.</h3>
         <p>
-          중복 예약을 막고 확정된 상태만 남기는 것을 목표로 했습니다. 좌석 ID를 경쟁 자원으로 정의하고
+          중복 예약을 막고 확정된 상태만 남기는 것을 목표로 했습니다. 좌석 ID를 경쟁 자원으로 정의했습니다.
           예약·결제·포인트는 원자적으로 확정했습니다. 커밋 이후 알림·통계 같은 후속 처리는 Kafka 이벤트로 분리했습니다.
         </p>
         <ul>
@@ -535,7 +535,7 @@ toc: false
       <div class="portfolio-decision-panel">
         <span class="portfolio-card-kicker">DECISION</span>
         <strong>커밋된 상태만 다음 단계로 전달하도록</strong>
-        <p>좌석 경쟁과 확정 상태를 분리하고, 후속 처리는 이벤트로 넘겼습니다.</p>
+        <p>좌석 경쟁과 확정 상태를 분리했습니다. 후속 처리는 이벤트로 넘겼습니다.</p>
       </div>
     </div>
 
@@ -545,7 +545,7 @@ toc: false
         <h3>재요청에도 결제·예약 상태를 한 번만 반영했습니다.</h3>
         <p>
           좌석 ID 기준으로 경쟁을 직렬화하고 Redis 락·소유권 토큰·만료 시간을 함께 관리했습니다.
-          DB 트랜잭션과 락 해제 시점을 분리해 커밋 경계를 명확히 했고 reservationId로 기존 결제를 먼저 확인한 뒤
+          DB 트랜잭션과 락 해제 시점을 분리해 커밋 경계를 명확히 했습니다. reservationId로 기존 결제를 먼저 확인한 뒤
           새로운 결제에는 포인트·예약·결제를 하나의 트랜잭션으로 묶었습니다.
         </p>
         <div class="portfolio-metric-grid">
@@ -575,7 +575,7 @@ toc: false
       <div>
         <p class="portfolio-card-kicker">LEARNED</p>
         <h3>락의 종류보다 자원·커밋·재시도 경계를 먼저 정의해야 했습니다.</h3>
-        <p>Redis 락만 추가하는 것으로 끝나지 않고 소유권 토큰, 만료, DB 트랜잭션, 결제 멱등성을 함께 설계해야 정합성을 지킬 수 있었습니다.</p>
+        <p>Redis 락만 추가해서는 충분하지 않았습니다. 소유권 토큰, 만료, DB 트랜잭션, 결제 멱등성까지 함께 설계해야 정합성을 지킬 수 있었습니다.</p>
       </div>
       <div>
         <p class="portfolio-card-kicker">NEXT ITERATION</p>
@@ -588,14 +588,14 @@ toc: false
   <section class="portfolio-section portfolio-ai" id="portfolio-ai" aria-labelledby="portfolio-ai-title">
     <div class="portfolio-section-heading">
       <p class="portfolio-eyebrow">AI-NATIVE WORKFLOW</p>
-      <h2 id="portfolio-ai-title">프로젝트의 문맥을 AI가 놓치지 않도록 작업 방식을 설계했습니다.</h2>
+      <h2 id="portfolio-ai-title">AI가 프로젝트의 문맥을 놓치지 않게 작업 방식을 설계했습니다.</h2>
     </div>
 
     <div class="portfolio-ai-intro">
       <div class="portfolio-ai-summary">
         <p>
           설계부터 코드 작성, 테스트 생성, 디버깅, 문서화, 배포 자동화까지 Claude Code와 Codex를 활용했습니다.
-          그중 팀 프로젝트에서는 Codex Agent Skill을 직접 설계해 개발 과정에 적용했습니다.
+          팀 프로젝트에서는 Codex Agent Skill을 직접 설계해 개발 과정에 적용했습니다.
         </p>
         <div class="portfolio-ai-tools" aria-label="사용한 AI 도구">
           <span><i class="fas fa-terminal" aria-hidden="true"></i> Claude Code</span>
@@ -611,16 +611,16 @@ toc: false
         <h3>일회성 프롬프트에만 의존하면 팀의 기준을 유지하기 어려웠습니다.</h3>
         <p>
           같은 프로젝트를 여러 사람이 AI와 함께 진행하면 작업 결과와 판단 기준이 달라질 수 있습니다.
-          그래서 AI가 매번 추측하지 않고 프로젝트 규칙과 현재 Repository 상태를 먼저 확인하도록
-          단계별 책임과 실행 조건을 Skill로 정의했습니다.
+          AI가 매번 추측하지 않도록 프로젝트 규칙과 현재 Repository 상태를 먼저 확인하게 했습니다.
+          단계별 책임과 실행 조건은 Skill로 정의했습니다.
         </p>
       </div>
     </div>
 
     <div class="portfolio-ai-outcome">
       <span class="portfolio-card-kicker">OUTCOME</span>
-      <strong>작업 전 확인 항목과 완료 조건을 공통화해 팀 산출물의 형식을 맞췄습니다.</strong>
-      <p>요구사항·코드·테스트·리뷰를 같은 흐름으로 연결해 AI가 만든 결과도 Repository와 실행 결과로 확인할 수 있게 했습니다.</p>
+      <strong>작업 전에 확인할 항목과 완료 조건을 통일해 팀 산출물의 형식을 맞췄습니다.</strong>
+      <p>요구사항·코드·테스트·리뷰를 한 흐름으로 묶었습니다. AI가 만든 결과도 Repository와 실행 결과로 확인할 수 있게 했습니다.</p>
     </div>
 
     <div class="portfolio-ai-flow">
@@ -646,10 +646,10 @@ toc: false
     <div class="portfolio-ai-detail-grid">
       <article>
         <span class="portfolio-card-kicker">SKILL CONTRACT</span>
-        <h3>각 단계의 책임을 계약처럼 나눴습니다.</h3>
+        <h3>각 단계의 책임을 분리했습니다.</h3>
         <p>
-          Requirements, Domain, Specification, Issue, Commit, PR, Review, Repository Skill을 분리해
-          공통 규칙은 따로 두었습니다. 각 Skill에는 역할, Trigger, 신뢰할 정보원, CLI 정책,
+          Requirements, Domain, Specification, Issue, Commit, PR, Review, Repository Skill을 나눴습니다.
+          공통 규칙은 따로 뒀습니다. 각 Skill에 역할, Trigger, 신뢰할 정보원, CLI 정책,
           Success Criteria를 정의했습니다.
         </p>
       </article>
@@ -666,7 +666,7 @@ toc: false
         <h3>요구사항부터 리뷰까지 이어지게 했습니다.</h3>
         <p>
           Requirements → Domain → Specification → Issue → Commit → Pull Request → Review의 연결을 유지해
-          어떤 판단과 변경이 어디에서 나왔는지 추적할 수 있도록 구성했습니다.
+          어떤 판단과 변경이 어디에서 나왔는지 추적합니다.
         </p>
       </article>
     </div>
@@ -717,7 +717,7 @@ toc: false
 
   <section class="portfolio-contact" id="portfolio-contact" aria-labelledby="portfolio-contact-title">
     <p class="portfolio-eyebrow">CONTACT</p>
-    <h2 id="portfolio-contact-title">기록하고 배우며 배운 것을 실제 문제에 적용합니다.</h2>
+    <h2 id="portfolio-contact-title">기록하고 배운 내용을 실제 문제에 적용합니다.</h2>
     <p>더 자세한 기술 기록은 블로그와 GitHub에서 확인할 수 있습니다.</p>
     <div class="portfolio-project-links">
       <a class="portfolio-button portfolio-button--light" href="https://github.com/w00lam" target="_blank" rel="noopener">GitHub 방문 <i class="fas fa-arrow-up-right-from-square" aria-hidden="true"></i></a>
