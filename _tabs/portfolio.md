@@ -15,11 +15,6 @@ toc: false
         Java·Spring Boot를 중심으로 동시성, 트랜잭션, 인증, 배포 경계를 설계하고
         테스트 결과로 동작을 확인합니다.
       </p>
-      <div class="portfolio-hero-proof" aria-label="핵심 경험 요약">
-        <div><strong>2</strong><span>selected case studies</span></div>
-        <div><strong>10</strong><span>same-seat concurrent requests</span></div>
-        <div><strong>1,400 → 4:32</strong><span>test execution time</span></div>
-      </div>
     </div>
   </section>
 
