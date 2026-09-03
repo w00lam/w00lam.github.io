@@ -196,7 +196,10 @@ toc: false
           </div>
         </div>
         <div class="portfolio-project-card-body">
-          <span class="portfolio-card-kicker">PROJECT 01 · 2026.07 - 2026.08</span>
+          <div class="portfolio-project-card-meta">
+            <span class="portfolio-card-kicker">PROJECT 01 · 2026.07 - 현재</span>
+            <span class="portfolio-project-status"><i class="fas fa-circle" aria-hidden="true"></i> 진행중</span>
+          </div>
           <h3>맛잇온</h3>
           <p>AI 맛집 자동 등록에서 생기는 중복과 부분 저장을 경계 설계로 막은 서비스입니다.</p>
           <a class="portfolio-card-link" href="#matisson">케이스 스터디 보기 <i class="fas fa-arrow-right" aria-hidden="true"></i></a>
@@ -236,10 +239,11 @@ toc: false
       <span class="portfolio-project-number" aria-hidden="true">01</span>
     </div>
 
-    <div class="portfolio-project-meta">
-      <div><span>DATE</span><strong>2026.07 - 2026.08</strong></div>
+    <div class="portfolio-project-meta portfolio-project-meta--in-progress">
+      <div><span>DATE</span><strong>2026.07 - 진행중</strong></div>
       <div><span>TEAM</span><strong>백엔드 4명</strong></div>
-      <div><span>ROLE</span><strong>백엔드 · 인프라 · 프론트엔드 일부 · 진행 관리</strong></div>
+      <div><span>ROLE</span><strong>팀장 · 백엔드 · 인프라 · 프론트엔드 일부 · 일정·업무 조율</strong></div>
+      <div><span>STATUS</span><strong>진행중</strong></div>
     </div>
 
     <div class="portfolio-requirements" aria-labelledby="matisson-requirements-title">
