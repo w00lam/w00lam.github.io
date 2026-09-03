@@ -25,7 +25,7 @@ toc: false
 
   <nav class="portfolio-nav" aria-label="포트폴리오 섹션">
     <a href="#portfolio-approach">Approach</a>
-    <a href="#portfolio-evidence">Evidence</a>
+    <a href="#portfolio-principles">Principles</a>
     <a href="#portfolio-stack">Stack</a>
     <a href="#portfolio-capabilities">Capability</a>
     <a href="#matisson">Project 01</a>
@@ -35,35 +35,35 @@ toc: false
     <a href="#portfolio-contact">Contact</a>
   </nav>
 
-  <section class="portfolio-section portfolio-evidence" id="portfolio-evidence" aria-labelledby="portfolio-evidence-title">
+  <section class="portfolio-section portfolio-evidence" id="portfolio-principles" aria-labelledby="portfolio-evidence-title">
     <div class="portfolio-section-heading portfolio-section-heading--inline">
       <div>
-        <p class="portfolio-eyebrow">EVALUATION SIGNALS</p>
-        <h2 id="portfolio-evidence-title">문제에서 검증까지, 한 줄로 연결합니다.</h2>
+        <p class="portfolio-eyebrow">WORKING PRINCIPLES</p>
+        <h2 id="portfolio-evidence-title">어떤 프로젝트에서도 같은 질문으로 문제를 좁힙니다.</h2>
       </div>
-      <p>프로젝트를 읽을 때 문제·판단·결과·운영의 순서가 끊기지 않도록 구성했습니다.</p>
+      <p>특정 프로젝트의 사례가 아니라, 문제를 다루고 결과를 설명하는 공통 작업 방식입니다.</p>
     </div>
 
     <div class="portfolio-evidence-grid">
       <article>
         <span class="portfolio-card-kicker">01 · PROBLEM</span>
-        <h3>경쟁 상태와 부분 저장</h3>
-        <p>같은 좌석의 동시 요청, AI 맛집 등록의 중복과 부분 저장을 해결 대상으로 정의했습니다.</p>
+        <h3>재현 가능한 문제 정의</h3>
+        <p>사용자·비즈니스 맥락과 실패 조건을 먼저 정리해 해결해야 할 문제의 범위를 좁힙니다.</p>
       </article>
       <article>
         <span class="portfolio-card-kicker">02 · DECISION</span>
-        <h3>경계를 먼저 나눔</h3>
-        <p>Redis 락·멱등성·트랜잭션·Kafka 이벤트를 각각 상태 확정과 후속 처리의 책임에 맞춰 사용했습니다.</p>
+        <h3>책임에 맞는 기술 선택</h3>
+        <p>도메인 경계와 데이터 흐름을 기준으로 저장·캐시·메시징·인증의 역할을 나눠 선택 근거를 남깁니다.</p>
       </article>
       <article>
         <span class="portfolio-card-kicker">03 · VERIFICATION</span>
-        <h3>조건을 수치로 남김</h3>
-        <p>동시 요청 수, 성공 건수, 최종 저장 건수처럼 재현 가능한 조건을 테스트 결과로 기록했습니다.</p>
+        <h3>완료 조건을 명시</h3>
+        <p>테스트·수동 검증·부하 테스트 중 적절한 방법을 고르고, 성공 조건과 결과를 함께 기록합니다.</p>
       </article>
       <article>
         <span class="portfolio-card-kicker">04 · OPERATION</span>
-        <h3>실행 환경까지 설명</h3>
-        <p>AWS 네트워크 경계와 GitHub Actions 기반 배포 흐름을 서비스 동작과 분리해 설명합니다.</p>
+        <h3>운영까지 연결</h3>
+        <p>배포·로그·모니터링·장애 대응을 구현 이후의 별도 일이 아니라 설계 결과의 일부로 봅니다.</p>
       </article>
     </div>
   </section>
@@ -77,26 +77,26 @@ toc: false
     <div class="portfolio-approach-grid">
       <div class="portfolio-approach-copy">
         <p>
-          문제를 해결했다는 말은 정상 동작만으로 완성되지 않습니다. 어떤 조건에서 문제가 재현되는지,
-          어떤 경계에서 실패를 멈출지 그리고 그 결과를 어떻게 검증했는지까지 설명할 수 있어야 합니다.
+          이 원칙은 특정 도메인에만 적용하지 않습니다. 기능을 시작할 때 문제를 재현할 수 있는 조건을 정하고,
+          책임과 실패의 경계를 나눈 뒤, 변경 후에도 지켜야 할 조건을 검증 가능한 형태로 남깁니다.
         </p>
       </div>
 
       <div class="portfolio-signal-list">
         <article class="portfolio-signal-card">
           <span class="portfolio-card-kicker">01 · REPRODUCE</span>
-          <h3>동시성 재현</h3>
-          <p>같은 좌석 10개 동시 요청과 결제 재요청을 테스트로 재현했습니다.</p>
+          <h3>문제를 재현할 수 있는가?</h3>
+          <p>정상 흐름뿐 아니라 동시 요청·재요청·외부 의존성 실패처럼 문제가 드러나는 조건부터 정의합니다.</p>
         </article>
         <article class="portfolio-signal-card">
           <span class="portfolio-card-kicker">02 · BOUNDARY</span>
-          <h3>실패 경계 분리</h3>
-          <p>외부 검증과 DB 저장을 분리해 한 건의 실패가 전체 등록으로 번지지 않게 했습니다.</p>
+          <h3>실패가 번지는 경계는 어디인가?</h3>
+          <p>요청·도메인·트랜잭션·외부 시스템의 책임을 나눠 한 단계의 실패가 전체 작업으로 번지지 않게 합니다.</p>
         </article>
         <article class="portfolio-signal-card">
           <span class="portfolio-card-kicker">03 · INVARIANT</span>
-          <h3>서비스 정합성 검증</h3>
-          <p>동시 요청에서 성공 수와 최종 저장 건수를 조건으로 남겨 락과 멱등성의 효과를 확인합니다.</p>
+          <h3>변경 후에도 지켜야 할 조건은 무엇인가?</h3>
+          <p>중복 없음·상태 정합성·재시도 안전성처럼 서비스가 계속 지켜야 할 조건을 테스트 결과로 확인합니다.</p>
         </article>
       </div>
     </div>
