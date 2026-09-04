@@ -123,11 +123,18 @@
   margin-bottom: 1.75rem;
 
   h2 {
-    max-width: 44rem;
+    max-width: none;
     margin: 0.6rem 0 0;
-    font-size: clamp(1.7rem, 3.1vw, 2.7rem);
+    font-size: clamp(1rem, 2.5vw, 1.85rem);
     letter-spacing: -0.045em;
-    line-height: 1.18;
+    line-height: 1.25;
+    white-space: nowrap;
+  }
+}
+
+@media (max-width: 399px) {
+  .portfolio-section-heading h2 {
+    white-space: normal;
   }
 }
 
