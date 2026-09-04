@@ -240,10 +240,9 @@ toc: false
     </div>
 
     <div class="portfolio-project-meta portfolio-project-meta--in-progress">
-      <div><span>DATE</span><strong>2026.07 - 진행중</strong></div>
+      <div><span>DATE</span><strong>2026.07 ~ 진행중</strong></div>
       <div><span>TEAM</span><strong>백엔드 4명</strong></div>
       <div><span>ROLE</span><strong>팀장 · 백엔드 · 인프라 · 프론트엔드 일부 · 일정·업무 조율</strong></div>
-      <div><span>STATUS</span><strong>진행중</strong></div>
     </div>
 
     <div class="portfolio-requirements" aria-labelledby="matisson-requirements-title">
@@ -434,7 +433,7 @@ toc: false
     </div>
 
     <div class="portfolio-project-meta">
-      <div><span>DATE</span><strong>2025.11 - 2026.05</strong></div>
+      <div><span>DATE</span><strong>2025.11 ~ 2026.05</strong></div>
       <div><span>TEAM</span><strong>1인 개발</strong></div>
       <div><span>ROLE</span><strong>백엔드</strong></div>
     </div>
