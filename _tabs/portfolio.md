@@ -100,7 +100,7 @@ toc: false
     <div class="portfolio-section-heading">
       <div>
         <p class="portfolio-eyebrow">TECH STACK</p>
-        <h2 id="portfolio-stack-title">문제를 해결할 때 사용한 기술</h2>
+        <h2 id="portfolio-stack-title">설계와 검증을 위해 선택한 기술</h2>
       </div>
     </div>
 
@@ -132,7 +132,7 @@ toc: false
       <article class="portfolio-stack-card">
         <span class="portfolio-stack-index">04</span>
         <h3>Verification</h3>
-        <p>변경 결과를 빠르게 확인하고 다시 개선합니다. 1,400개 테스트 실행 시간도 8분 20초 이상에서 4분 32초로 줄였습니다.</p>
+        <p>변경 결과를 빠르게 확인하고 다시 개선합니다.</p>
         <div class="portfolio-stack-items">
           <span>Testcontainers</span><span>GitHub Actions</span>
         </div>

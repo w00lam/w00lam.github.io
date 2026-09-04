@@ -65,8 +65,13 @@
   max-width: 48rem;
   margin: 0;
   color: rgb(245 247 242 / 76%);
-  font-size: 1rem;
+  font-size: 0.95rem;
   line-height: 1.75;
+
+  @include bp.xl {
+    max-width: none;
+    white-space: nowrap;
+  }
 }
 
 .portfolio-eyebrow,
@@ -191,6 +196,11 @@
 .portfolio-capability-grid {
   article {
     min-height: 13rem;
+    min-width: 0;
+  }
+
+  p {
+    overflow-wrap: anywhere;
   }
 
   .portfolio-text-link {
