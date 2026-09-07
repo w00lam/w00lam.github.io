@@ -534,13 +534,13 @@ toc: false
         <ul>
           <li>Redis: 대기열·좌석 조회 캐시·분산락 처리</li>
           <li>MySQL: 예약·결제·포인트·좌석 데이터 저장</li>
-          <li>Kafka: 예약 확정 이벤트 발행과 Consumer 전달</li>
+          <li>Kafka: 예약 확정 이벤트 발행·Consumer 전달·실패 DLT 이관</li>
         </ul>
       </div>
       <div class="portfolio-decision-panel">
         <span class="portfolio-card-kicker">DECISION</span>
         <strong>커밋된 상태만 다음 단계로 전달하도록</strong>
-        <p>좌석 경쟁과 확정 상태를 분리했습니다. Kafka는 예약 확정 이벤트의 Consumer 전달까지 검증했고, 재시도·DLT는 다음 단계로 남겼습니다.</p>
+        <p>좌석 경쟁과 확정 상태를 분리했습니다. Kafka는 예약 확정 이벤트 전달 실패를 2회 재시도한 뒤 <code>reservation-confirmed-dlt</code>로 이관하는 흐름까지 검증했습니다. 2회는 이번 검증 기준이며 운영 확정값은 아닙니다.</p>
       </div>
     </div>
 
@@ -578,6 +578,7 @@ toc: false
       <a class="portfolio-text-link" href="https://github.com/w00lam/concert-ticketing-server/blob/main/docs/Seat_Reservation_Concurrency_Report_2025_12_25.md" target="_blank" rel="noopener">동시성 보고서 <i class="fas fa-arrow-up-right-from-square" aria-hidden="true"></i></a>
       <a class="portfolio-text-link" href="https://github.com/w00lam/concert-ticketing-server/blob/main/src/test/java/kr/hhplus/be/server/integration/tokenqueue/TokenQueueIntegrationTest.java" target="_blank" rel="noopener">대기열 통합 테스트 <i class="fas fa-arrow-up-right-from-square" aria-hidden="true"></i></a>
       <a class="portfolio-text-link" href="https://github.com/w00lam/concert-ticketing-server/blob/main/src/test/java/kr/hhplus/be/server/integration/tokenqueue/TokenQueueMultiInstanceIntegrationTest.java" target="_blank" rel="noopener">독립 JVM 대기열 검증 <i class="fas fa-arrow-up-right-from-square" aria-hidden="true"></i></a>
+      <a class="portfolio-text-link" href="https://github.com/w00lam/concert-ticketing-server/blob/main/src/test/java/kr/hhplus/be/server/integration/infrastructure/event/KafkaReservationFailureIntegrationTest.java" target="_blank" rel="noopener">Kafka 실패·DLT 검증 <i class="fas fa-arrow-up-right-from-square" aria-hidden="true"></i></a>
       <a class="portfolio-text-link" href="https://github.com/w00lam/concert-ticketing-server/commit/f8b235a344ec3eedda6a916bd142ae3251a6a4c6" target="_blank" rel="noopener">멱등성 구현 커밋 <i class="fas fa-arrow-up-right-from-square" aria-hidden="true"></i></a>
     </div>
 
