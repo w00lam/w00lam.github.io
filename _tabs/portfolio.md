@@ -462,7 +462,7 @@ toc: false
         <article>
           <span>완료 조건</span>
           <strong>확정 결과는 한 번만 반영</strong>
-          <p>좌석 10회·동시 결제 5개·결제 재요청 2회 조건에서 중복 확정이 없어야 합니다.</p>
+          <p>좌석 동시 요청 100·500회와 동일 결제 요청 100·500개 조건에서 중복 확정이 없어야 합니다.</p>
         </article>
       </div>
     </div>
@@ -487,14 +487,14 @@ toc: false
         <p>
           사용자 토큰은 <code>userId</code> member로 저장합니다. 진입 시각은 score로 씁니다.
           rank 조회로 현재 위치를 보여줍니다. 입장시킬 때는 <code>ZPOPMIN</code>으로 가장 앞의 사용자를 꺼내면서 대기열에서도 제거합니다.
-          여러 애플리케이션 인스턴스에서 같은 입장자가 중복으로 빠져나가지 않도록 Redis 원자 연산을 사용했습니다.
+          한 테스트 프로세스의 여러 동시 dequeue 작업에서도 같은 입장자가 중복으로 빠져나가지 않도록 Redis 원자 연산을 사용했습니다.
         </p>
       </div>
       <div class="portfolio-queue-grid">
         <article>
           <span>01 · ENQUEUE</span>
           <strong>진입 순서 기록</strong>
-          <p><code>score = joinTimestamp</code>로 대기 순서를 정렬합니다.</p>
+          <p><code>score = joinTimestamp</code>로 대기 순서를 정렬합니다. 1,000명의 순번을 검증했습니다.</p>
         </article>
         <article>
           <span>02 · RANK</span>
@@ -509,11 +509,13 @@ toc: false
       </div>
       <div class="portfolio-queue-proof">
         <span class="portfolio-card-kicker">CHECKED CONDITION</span>
-        <code>enqueue_users = 3</code>
-        <code>rank_before_dequeue = [1, 2, 3]</code>
-        <code>queue_length_after_dequeue = 2</code>
-        <code>next_user_after_dequeue = user2</code>
-        <span class="portfolio-proof-status"><i class="fas fa-check" aria-hidden="true"></i> queue order verified</span>
+        <code>enqueue_users = 1,000</code>
+        <code>rank_values = [1..1,000]</code>
+        <code>dequeue_workers = 8</code>
+        <code>dequeue_duplicates = 0</code>
+        <code>queue_length_after_dequeue = 0</code>
+        <code>dequeue_throughput_per_second = 4,382.99</code>
+        <span class="portfolio-proof-status"><i class="fas fa-check" aria-hidden="true"></i> rank range and atomic dequeue verified</span>
       </div>
     </div>
 
@@ -528,13 +530,13 @@ toc: false
         <ul>
           <li>Redis: 대기열·좌석 조회 캐시·분산락 처리</li>
           <li>MySQL: 예약·결제·포인트·좌석 데이터 저장</li>
-          <li>Kafka: 예약 확정 이벤트와 후속 처리 연결</li>
+          <li>Kafka: 예약 확정 이벤트 발행과 Consumer 전달</li>
         </ul>
       </div>
       <div class="portfolio-decision-panel">
         <span class="portfolio-card-kicker">DECISION</span>
         <strong>커밋된 상태만 다음 단계로 전달하도록</strong>
-        <p>좌석 경쟁과 확정 상태를 분리했습니다. 후속 처리는 이벤트로 넘겼습니다.</p>
+        <p>좌석 경쟁과 확정 상태를 분리했습니다. Kafka는 예약 확정 이벤트의 Consumer 전달까지 검증했고, 재시도·DLT는 다음 단계로 남겼습니다.</p>
       </div>
     </div>
 
@@ -548,17 +550,21 @@ toc: false
           새로운 결제에는 포인트·예약·결제를 하나의 트랜잭션으로 묶었습니다.
         </p>
         <div class="portfolio-metric-grid">
-          <div><strong>같은 좌석 10회</strong><span>TEMP_HOLD 성공 1건</span></div>
+          <div><strong>같은 좌석 100·500회</strong><span>락 적용 시 TEMP_HOLD 1건</span></div>
           <div><strong>결제 재요청 2회</strong><span>결제·포인트 차감 각 1건</span></div>
-          <div><strong>동시 결제 5개</strong><span>확정 예약·포인트 차감 각 1건</span></div>
+          <div><strong>동일 결제 100·500개</strong><span>결제·포인트 차감 각 1건</span></div>
         </div>
       </div>
       <div class="portfolio-proof-panel">
         <span class="portfolio-card-kicker">CHECKED CONDITION</span>
-        <code>same_seat_requests = 10</code>
+        <code>same_seat_requests = [100, 500]</code>
         <code>successful_hold = 1</code>
         <code>active_reservations = 1</code>
         <code>payment_retry_effect = 1</code>
+        <code>without_lock_reservations_at_500 = 3</code>
+        <code>same_payment_requests = [100, 500]</code>
+        <code>payment_records = 1</code>
+        <code>point_deduction = 1</code>
         <span class="portfolio-proof-status"><i class="fas fa-check" aria-hidden="true"></i> idempotency verified</span>
       </div>
     </div>
@@ -601,7 +607,7 @@ toc: false
           <span><i class="fas fa-code" aria-hidden="true"></i> Codex</span>
         </div>
         <a class="portfolio-ai-repository" href="https://github.com/team-11st-chat/11th-street" target="_blank" rel="noopener">
-          실제 Skill이 적용된 저장소 보기 <i class="fas fa-arrow-up-right-from-square" aria-hidden="true"></i>
+          내가 설계한 Skill을 팀 프로젝트에 적용한 저장소 보기 <i class="fas fa-arrow-up-right-from-square" aria-hidden="true"></i>
         </a>
       </div>
 
@@ -671,9 +677,9 @@ toc: false
     </div>
 
     <div class="portfolio-project-links">
-      <a class="portfolio-text-link" href="https://github.com/team-11st-chat/11th-street/pull/98" target="_blank" rel="noopener">배포 헬스체크 롤백 PR <i class="fas fa-arrow-up-right-from-square" aria-hidden="true"></i></a>
-      <a class="portfolio-text-link" href="https://github.com/team-11st-chat/11th-street/commit/613dab07c1065360fdba6f7dab1dcba5afc7b9c3" target="_blank" rel="noopener">롤백 안정성 보강 커밋 <i class="fas fa-arrow-up-right-from-square" aria-hidden="true"></i></a>
-      <a class="portfolio-text-link" href="https://github.com/team-11st-chat/11th-street/commit/ce1714355d7dd4c50a187971938b2d69e6fbff7e" target="_blank" rel="noopener">재검증 가능한 부하 결과 기록 <i class="fas fa-arrow-up-right-from-square" aria-hidden="true"></i></a>
+      <a class="portfolio-text-link" href="https://github.com/team-11st-chat/11th-street/pull/98" target="_blank" rel="noopener">팀 적용 산출물 · 배포 헬스체크 롤백 PR <i class="fas fa-arrow-up-right-from-square" aria-hidden="true"></i></a>
+      <a class="portfolio-text-link" href="https://github.com/team-11st-chat/11th-street/commit/613dab07c1065360fdba6f7dab1dcba5afc7b9c3" target="_blank" rel="noopener">팀 적용 산출물 · 롤백 안정성 보강 커밋 <i class="fas fa-arrow-up-right-from-square" aria-hidden="true"></i></a>
+      <a class="portfolio-text-link" href="https://github.com/team-11st-chat/11th-street/commit/ce1714355d7dd4c50a187971938b2d69e6fbff7e" target="_blank" rel="noopener">팀 적용 산출물 · 재검증 가능한 부하 결과 기록 <i class="fas fa-arrow-up-right-from-square" aria-hidden="true"></i></a>
     </div>
   </section>
 
