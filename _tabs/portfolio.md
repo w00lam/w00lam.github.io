@@ -235,6 +235,7 @@ toc: false
           유튜버가 방문한 맛집을 지역·음식 종류·유튜버별로 탐색하는 서비스입니다.
           백엔드·인프라 개발과 일부 프론트엔드 구현, 프로젝트 진행 관리를 맡았습니다.
         </p>
+        <a class="portfolio-text-link" href="https://masiton.click/restaurants" target="_blank" rel="noopener">서비스 열기 <i class="fas fa-arrow-up-right-from-square" aria-hidden="true"></i></a>
       </div>
       <span class="portfolio-project-number" aria-hidden="true">01</span>
     </div>
