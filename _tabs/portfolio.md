@@ -488,7 +488,7 @@ toc: false
         <p>
           사용자 토큰은 <code>userId</code> member로 저장합니다. 진입 시각은 score로 씁니다.
           rank 조회로 현재 위치를 보여줍니다. 입장시킬 때는 <code>ZPOPMIN</code>으로 가장 앞의 사용자를 꺼내면서 대기열에서도 제거합니다.
-          한 테스트 프로세스의 여러 동시 dequeue 작업에서도 같은 입장자가 중복으로 빠져나가지 않도록 Redis 원자 연산을 사용했습니다.
+          한 테스트 프로세스의 8개 작업과 독립 JVM 2개의 dequeue worker에서도 같은 입장자가 중복으로 빠져나가지 않도록 Redis 원자 연산을 사용했습니다.
         </p>
       </div>
       <div class="portfolio-queue-grid">
@@ -516,7 +516,10 @@ toc: false
         <code>dequeue_duplicates = 0</code>
         <code>queue_length_after_dequeue = 0</code>
         <code>dequeue_throughput_per_second = 4,382.99</code>
-        <span class="portfolio-proof-status"><i class="fas fa-check" aria-hidden="true"></i> rank range and atomic dequeue verified</span>
+        <code>application_instances = 2</code>
+        <code>dequeue_per_instance = 500</code>
+        <code>multi_instance_duplicates = 0</code>
+        <span class="portfolio-proof-status"><i class="fas fa-check" aria-hidden="true"></i> rank range and multi-JVM atomic dequeue verified</span>
       </div>
     </div>
 
@@ -574,6 +577,7 @@ toc: false
       <a class="portfolio-button" href="https://github.com/w00lam/concert-ticketing-server" target="_blank" rel="noopener">GitHub 레포 <i class="fas fa-arrow-up-right-from-square" aria-hidden="true"></i></a>
       <a class="portfolio-text-link" href="https://github.com/w00lam/concert-ticketing-server/blob/main/docs/Seat_Reservation_Concurrency_Report_2025_12_25.md" target="_blank" rel="noopener">동시성 보고서 <i class="fas fa-arrow-up-right-from-square" aria-hidden="true"></i></a>
       <a class="portfolio-text-link" href="https://github.com/w00lam/concert-ticketing-server/blob/main/src/test/java/kr/hhplus/be/server/integration/tokenqueue/TokenQueueIntegrationTest.java" target="_blank" rel="noopener">대기열 통합 테스트 <i class="fas fa-arrow-up-right-from-square" aria-hidden="true"></i></a>
+      <a class="portfolio-text-link" href="https://github.com/w00lam/concert-ticketing-server/blob/main/src/test/java/kr/hhplus/be/server/integration/tokenqueue/TokenQueueMultiInstanceIntegrationTest.java" target="_blank" rel="noopener">독립 JVM 대기열 검증 <i class="fas fa-arrow-up-right-from-square" aria-hidden="true"></i></a>
       <a class="portfolio-text-link" href="https://github.com/w00lam/concert-ticketing-server/commit/f8b235a344ec3eedda6a916bd142ae3251a6a4c6" target="_blank" rel="noopener">멱등성 구현 커밋 <i class="fas fa-arrow-up-right-from-square" aria-hidden="true"></i></a>
     </div>
 
