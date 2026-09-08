@@ -598,7 +598,7 @@ toc: false
       <div>
         <p class="portfolio-card-kicker">NEXT ITERATION</p>
         <h3>메시지 실패와 트래픽 변화를 운영 지표로 연결합니다.</h3>
-        <p>다음 단계에서는 Kafka 재시도·DLT 처리와 부하 테스트 기준을 함께 운영해 지연, 실패, 재처리 상태를 수치로 관찰할 계획입니다.</p>
+        <p>로컬 환경에서 Kafka 재시도·DLT 처리와 두 애플리케이션 인스턴스의 HTTP 부하를 검증했습니다. 다음 단계에서는 이를 운영 환경 지표와 연결해 지연, 실패, 재처리 상태를 관찰할 계획입니다.</p>
       </div>
     </div>
   </section>
