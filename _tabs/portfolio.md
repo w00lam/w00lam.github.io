@@ -520,7 +520,12 @@ toc: false
         <code>application_instances = 2</code>
         <code>dequeue_per_instance = 500</code>
         <code>multi_instance_duplicates = 0</code>
-        <span class="portfolio-proof-status"><i class="fas fa-check" aria-hidden="true"></i> rank range and multi-JVM atomic dequeue verified</span>
+        <code>http_dequeue_requests = 1,000</code>
+        <code>http_dequeue_throughput_per_second = 3,378.38</code>
+        <code>http_dequeue_p95_ms = 3.97</code>
+        <code>http_dequeue_p99_ms = 4.88</code>
+        <code>http_dequeue_failure_rate = 0%</code>
+        <span class="portfolio-proof-status"><i class="fas fa-check" aria-hidden="true"></i> rank, multi-JVM atomic dequeue, and HTTP performance verified</span>
       </div>
     </div>
 
