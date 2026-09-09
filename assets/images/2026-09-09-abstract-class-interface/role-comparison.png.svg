@@ -1,0 +1,51 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1400" height="820" viewBox="0 0 1400 820" role="img" aria-labelledby="title desc">
+  <title id="title">인터페이스와 추상 클래스의 역할 비교</title>
+  <desc id="desc">인터페이스는 기능과 역할에 대한 계약을 정의하고, 추상 클래스는 공통 상태와 행동을 공유하는 상속 구조를 만든다.</desc>
+  <defs>
+    <filter id="shadow" x="-20%" y="-20%" width="140%" height="140%">
+      <feDropShadow dx="0" dy="8" stdDeviation="10" flood-color="#0f172a" flood-opacity="0.10"/>
+    </filter>
+    <marker id="arrow-blue" markerWidth="10" markerHeight="10" refX="8" refY="5" orient="auto">
+      <path d="M0,0 L10,5 L0,10 Z" fill="#2563eb"/>
+    </marker>
+    <marker id="arrow-purple" markerWidth="10" markerHeight="10" refX="8" refY="5" orient="auto">
+      <path d="M0,0 L10,5 L0,10 Z" fill="#7c3aed"/>
+    </marker>
+  </defs>
+  <rect width="1400" height="820" fill="#f8fafc"/>
+  <text x="700" y="58" text-anchor="middle" font-family="Arial, 'Noto Sans KR', sans-serif" font-size="32" font-weight="700" fill="#0f172a">추상화의 방향이 다르다</text>
+  <text x="700" y="94" text-anchor="middle" font-family="Arial, 'Noto Sans KR', sans-serif" font-size="18" fill="#64748b">계약을 정의할지, 공통 구조를 공유할지에 따라 선택한다</text>
+
+  <rect x="55" y="135" width="610" height="620" rx="24" fill="#eff6ff" stroke="#bfdbfe" stroke-width="3"/>
+  <text x="360" y="190" text-anchor="middle" font-family="Arial, 'Noto Sans KR', sans-serif" font-size="30" font-weight="700" fill="#1d4ed8">Interface</text>
+  <text x="360" y="228" text-anchor="middle" font-family="Arial, 'Noto Sans KR', sans-serif" font-size="20" fill="#1e40af">기능·역할에 대한 계약</text>
+
+  <g filter="url(#shadow)">
+    <rect x="180" y="270" width="360" height="100" rx="16" fill="#2563eb"/>
+    <text x="360" y="330" text-anchor="middle" font-family="Arial, 'Noto Sans KR', sans-serif" font-size="28" font-weight="700" fill="#ffffff">PaymentService</text>
+  </g>
+  <line x1="360" y1="370" x2="360" y2="485" stroke="#2563eb" stroke-width="4" marker-end="url(#arrow-blue)"/>
+  <text x="385" y="438" font-family="Arial, 'Noto Sans KR', sans-serif" font-size="17" fill="#2563eb">implements</text>
+  <rect x="110" y="505" width="225" height="88" rx="14" fill="#ffffff" stroke="#60a5fa" stroke-width="3"/>
+  <rect x="385" y="505" width="225" height="88" rx="14" fill="#ffffff" stroke="#60a5fa" stroke-width="3"/>
+  <text x="222" y="558" text-anchor="middle" font-family="Arial, 'Noto Sans KR', sans-serif" font-size="21" font-weight="700" fill="#1e3a8a">CardPayment</text>
+  <text x="497" y="558" text-anchor="middle" font-family="Arial, 'Noto Sans KR', sans-serif" font-size="21" font-weight="700" fill="#1e3a8a">AccountPayment</text>
+  <text x="360" y="678" text-anchor="middle" font-family="Arial, 'Noto Sans KR', sans-serif" font-size="19" fill="#334155">구현체가 pay()를 제공해야 함</text>
+
+  <rect x="735" y="135" width="610" height="620" rx="24" fill="#f5f3ff" stroke="#ddd6fe" stroke-width="3"/>
+  <text x="1040" y="190" text-anchor="middle" font-family="Arial, 'Noto Sans KR', sans-serif" font-size="30" font-weight="700" fill="#6d28d9">Abstract Class</text>
+  <text x="1040" y="228" text-anchor="middle" font-family="Arial, 'Noto Sans KR', sans-serif" font-size="20" fill="#5b21b6">공통 상태 + 행동을 공유</text>
+
+  <g filter="url(#shadow)">
+    <rect x="860" y="270" width="360" height="100" rx="16" fill="#7c3aed"/>
+    <text x="1040" y="318" text-anchor="middle" font-family="Arial, 'Noto Sans KR', sans-serif" font-size="26" font-weight="700" fill="#ffffff">BasePaymentService</text>
+    <text x="1040" y="347" text-anchor="middle" font-family="Arial, 'Noto Sans KR', sans-serif" font-size="16" fill="#ede9fe">provider · validate()</text>
+  </g>
+  <line x1="1040" y1="370" x2="1040" y2="485" stroke="#7c3aed" stroke-width="4" marker-end="url(#arrow-purple)"/>
+  <text x="1065" y="438" font-family="Arial, 'Noto Sans KR', sans-serif" font-size="17" fill="#7c3aed">extends</text>
+  <rect x="790" y="505" width="225" height="88" rx="14" fill="#ffffff" stroke="#a78bfa" stroke-width="3"/>
+  <rect x="1065" y="505" width="225" height="88" rx="14" fill="#ffffff" stroke="#a78bfa" stroke-width="3"/>
+  <text x="902" y="558" text-anchor="middle" font-family="Arial, 'Noto Sans KR', sans-serif" font-size="21" font-weight="700" fill="#4c1d95">CardPayment</text>
+  <text x="1177" y="558" text-anchor="middle" font-family="Arial, 'Noto Sans KR', sans-serif" font-size="21" font-weight="700" fill="#4c1d95">AccountPayment</text>
+  <text x="1040" y="678" text-anchor="middle" font-family="Arial, 'Noto Sans KR', sans-serif" font-size="19" fill="#334155">같은 상태와 공통 행동을 물려받음</text>
+</svg>

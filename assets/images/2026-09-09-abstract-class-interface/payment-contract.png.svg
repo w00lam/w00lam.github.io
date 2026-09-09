@@ -1,0 +1,42 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="675" viewBox="0 0 1200 675" role="img" aria-labelledby="title desc">
+  <title id="title">PaymentController가 PaymentService 계약에 의존하는 구조</title>
+  <desc id="desc">PaymentController는 PaymentService를 호출하고, 카드 결제와 계좌 결제 서비스는 같은 PaymentService 계약을 구현한다.</desc>
+  <defs>
+    <marker id="arrow" markerWidth="10" markerHeight="10" refX="8" refY="5" orient="auto">
+      <path d="M0,0 L10,5 L0,10 Z" fill="#475569"/>
+    </marker>
+    <filter id="shadow" x="-20%" y="-20%" width="140%" height="140%">
+      <feDropShadow dx="0" dy="8" stdDeviation="10" flood-color="#0f172a" flood-opacity="0.10"/>
+    </filter>
+  </defs>
+  <rect width="1200" height="675" fill="#f8fafc"/>
+  <text x="600" y="62" text-anchor="middle" font-family="Arial, 'Noto Sans KR', sans-serif" font-size="30" font-weight="700" fill="#0f172a">호출부는 계약에만 의존한다</text>
+  <text x="600" y="98" text-anchor="middle" font-family="Arial, 'Noto Sans KR', sans-serif" font-size="18" fill="#64748b">구현체가 바뀌어도 PaymentController의 호출 방식은 같다</text>
+
+  <g filter="url(#shadow)">
+    <rect x="390" y="140" width="420" height="110" rx="18" fill="#0f172a"/>
+    <text x="600" y="188" text-anchor="middle" font-family="Arial, 'Noto Sans KR', sans-serif" font-size="27" font-weight="700" fill="#ffffff">PaymentController</text>
+    <text x="600" y="222" text-anchor="middle" font-family="Arial, 'Noto Sans KR', sans-serif" font-size="17" fill="#cbd5e1">구체 구현체를 알지 못함</text>
+  </g>
+
+  <line x1="600" y1="250" x2="600" y2="330" stroke="#475569" stroke-width="4" marker-end="url(#arrow)"/>
+  <text x="625" y="296" font-family="Arial, 'Noto Sans KR', sans-serif" font-size="16" fill="#475569">의존</text>
+
+  <g filter="url(#shadow)">
+    <rect x="390" y="340" width="420" height="115" rx="18" fill="#2563eb"/>
+    <text x="600" y="388" text-anchor="middle" font-family="Arial, 'Noto Sans KR', sans-serif" font-size="28" font-weight="700" fill="#ffffff">PaymentService</text>
+    <text x="600" y="423" text-anchor="middle" font-family="Arial, 'Noto Sans KR', sans-serif" font-size="18" fill="#dbeafe">pay() 기능의 계약</text>
+  </g>
+
+  <line x1="500" y1="455" x2="300" y2="550" stroke="#475569" stroke-width="4" marker-end="url(#arrow)"/>
+  <line x1="700" y1="455" x2="900" y2="550" stroke="#475569" stroke-width="4" marker-end="url(#arrow)"/>
+
+  <g filter="url(#shadow)">
+    <rect x="100" y="555" width="400" height="78" rx="16" fill="#dbeafe" stroke="#60a5fa" stroke-width="3"/>
+    <text x="300" y="603" text-anchor="middle" font-family="Arial, 'Noto Sans KR', sans-serif" font-size="23" font-weight="700" fill="#1e3a8a">CardPaymentService</text>
+  </g>
+  <g filter="url(#shadow)">
+    <rect x="700" y="555" width="400" height="78" rx="16" fill="#dbeafe" stroke="#60a5fa" stroke-width="3"/>
+    <text x="900" y="603" text-anchor="middle" font-family="Arial, 'Noto Sans KR', sans-serif" font-size="23" font-weight="700" fill="#1e3a8a">AccountPaymentService</text>
+  </g>
+</svg>
