@@ -22,7 +22,7 @@ http://example.com:8080
 
 개발 환경에서는 `localhost:8080`으로 접속하는 일이 익숙하다. 그래서 처음에는 운영 환경에서도 Spring Boot가 실행되는 포트로 바로 들어가면 되는 줄 알았다.
 
-그런데 막상 실제 서비스 주소를 생각해보니 어색했다. 사용자가 매번 `:8080` 같은 포트 번호를 붙여서 접근하는 것도 자연스럽지 않았고, Spring Boot의 애플리케이션 포트를 외부에 직접 노출하는 것도 부담스럽게 느껴졌다.
+그런데 막상 실제 서비스 주소를 생각해보니 어색했다. 사용자가 매번 `:8080` 같은 포트 번호를 붙여서 접근하는 것도 자연스럽지 않았고 Spring Boot의 애플리케이션 포트를 외부에 직접 노출하는 것도 부담스럽게 느껴졌다.
 
 그러다 궁금해졌다.
 
@@ -34,7 +34,7 @@ http://example.com:8080
 
 ## 1. 운영 환경에서는 외부 진입점이 필요하다
 
-HTTP의 기본 포트는 80이고, HTTPS의 기본 포트는 443이다. 사용자는 보통 다음과 같은 주소로 서비스에 접근하기를 기대한다.
+HTTP의 기본 포트는 80이고 HTTPS의 기본 포트는 443이다. 사용자는 보통 다음과 같은 주소로 서비스에 접근하기를 기대한다.
 
 ```text
 https://example.com
@@ -50,9 +50,9 @@ Nginx : 80 / 443
 Spring Boot : 8080
 ```
 
-다만 Nginx가 Spring Boot를 대신 실행하는 서버는 아니다. Spring Boot 애플리케이션은 여전히 8080 포트에서 실행된다. 대신 Nginx가 80번이나 443번 포트에서 외부 요청을 먼저 받고, 그 요청을 내부에서 실행 중인 Spring Boot 애플리케이션으로 전달한다.
+다만 Nginx가 Spring Boot를 대신 실행하는 서버는 아니다. Spring Boot 애플리케이션은 여전히 8080 포트에서 실행된다. 대신 Nginx가 80번이나 443번 포트에서 외부 요청을 먼저 받고 그 요청을 내부에서 실행 중인 Spring Boot 애플리케이션으로 전달한다.
 
-사용자는 Nginx를 바라보고, Nginx는 다시 내부 애플리케이션을 바라보는 구조다.
+사용자는 Nginx를 바라보고 Nginx는 다시 내부 애플리케이션을 바라보는 구조다.
 
 ---
 
@@ -68,7 +68,7 @@ Client → Nginx → Spring Boot
 
 클라이언트는 Spring Boot가 실제로 어떤 포트에서 실행되는지 알 필요가 없다. 클라이언트는 Nginx만 바라본다. 그리고 Nginx가 내부 Spring Boot 애플리케이션으로 요청을 넘겨준다.
 
-그래서 Nginx는 외부 사용자와 내부 애플리케이션 사이의 경계 역할을 한다. 외부에는 표준 포트인 80/443만 열어두고, Spring Boot의 8080 포트는 내부에서만 사용하도록 둘 수 있다.
+그래서 Nginx는 외부 사용자와 내부 애플리케이션 사이의 경계 역할을 한다. 외부에는 표준 포트인 80/443만 열어두고 Spring Boot의 8080 포트는 내부에서만 사용하도록 둘 수 있다.
 
 ```mermaid
 flowchart LR
@@ -105,7 +105,7 @@ server {
 }
 ```
 
-각 설정을 처음 공부하는 관점에서 정리하면 다음과 같다.
+각 설정을 처음 공부하는 관점에서 보면 다음과 같다.
 
 * `listen 80`: Nginx가 80번 포트에서 HTTP 요청을 받는다.
 * `server_name example.com`: 해당 도메인으로 들어온 요청에 이 설정을 적용한다.
@@ -123,7 +123,7 @@ server {
 
 Nginx를 거치면 Spring Boot는 요청을 사용자에게서 직접 받은 것이 아니라 Nginx에게서 받은 것처럼 볼 수 있다.
 
-예를 들어 실제 사용자는 브라우저에서 `https://example.com`으로 접근했지만, Spring Boot 입장에서는 Nginx가 내부에서 넘겨준 요청만 보게 될 수 있다. 그래서 원래 요청 정보를 Spring Boot에 알려주기 위해 `proxy_set_header`를 사용한다.
+예를 들어 실제 사용자는 브라우저에서 `https://example.com`으로 접근했지만 Spring Boot 입장에서는 Nginx가 내부에서 넘겨준 요청만 보게 될 수 있다. 그래서 원래 요청 정보를 Spring Boot에 알려주기 위해 `proxy_set_header`를 사용한다.
 
 주요 헤더는 다음과 같다.
 
@@ -134,13 +134,13 @@ Nginx를 거치면 Spring Boot는 요청을 사용자에게서 직접 받은 것
 
 특히 `X-Forwarded-Proto`는 생각보다 중요할 수 있다. 사용자는 HTTPS로 접근했는데 Spring Boot가 내부 HTTP 요청만 보고 있다면, HTTPS 리다이렉트나 OAuth callback URL, Swagger URL 생성, 로그 분석에서 헷갈리는 상황이 생길 수 있기 때문이다.
 
-처음에는 `proxy_set_header`가 부가 설정처럼 보였지만, 실제 운영 환경에서는 “원래 요청이 어떤 모습이었는지”를 애플리케이션에 전달하는 중요한 역할을 한다.
+처음에는 `proxy_set_header`가 부가 설정처럼 보였지만 실제 운영 환경에서는 “원래 요청이 어떤 모습이었는지”를 애플리케이션에 전달하는 중요한 역할을 한다.
 
 ---
 
 ## 5. HTTPS 처리는 보통 Nginx에서 담당한다
 
-Spring Boot도 HTTPS를 직접 처리할 수 있다. 하지만 운영 환경에서는 보통 Nginx가 HTTPS 처리를 담당하고, Spring Boot는 내부에서 HTTP로 통신하게 두는 구조를 많이 사용한다.
+Spring Boot도 HTTPS를 직접 처리할 수 있다. 하지만 운영 환경에서는 보통 Nginx가 HTTPS 처리를 담당하고 Spring Boot는 내부에서 HTTP로 통신하게 두는 구조를 많이 사용한다.
 
 ```text
 Client
@@ -155,7 +155,7 @@ Spring Boot : 8080
 * 인증서 관리와 애플리케이션 로직을 분리할 수 있다.
 * Nginx가 80 → 443 리다이렉트를 담당할 수 있다.
 * Spring Boot는 API와 비즈니스 로직 처리에 집중할 수 있다.
-* 외부에는 80/443만 공개하고, 8080은 내부 포트로 둘 수 있다.
+* 외부에는 80/443만 공개하고 8080은 내부 포트로 둘 수 있다.
 
 처음에는 “Spring Boot도 서버인데 왜 굳이 Nginx가 필요하지?”라고 생각했다. 하지만 HTTPS 인증서 관리, 표준 포트 처리, 내부 포트 숨김을 같이 생각해보니 역할을 분리하는 이유가 보였다.
 
@@ -181,7 +181,7 @@ Spring Boot Container : 8080
 MySQL / Redis
 ```
 
-MySQL과 Redis는 사용자가 직접 접근하는 서비스가 아니라 Spring Boot가 내부적으로 사용하는 인프라 구성 요소다. 따라서 외부에는 Nginx만 공개하고, Spring Boot, MySQL, Redis는 Docker Compose 내부 네트워크에서 통신하도록 구성하는 것이 더 자연스럽다.
+MySQL과 Redis는 사용자가 직접 접근하는 서비스가 아니라 Spring Boot가 내부적으로 사용하는 인프라 구성 요소다. 외부에는 Nginx만 공개하고 Spring Boot, MySQL, Redis는 Docker Compose 내부 네트워크에서 통신하도록 구성하는 것이 더 자연스럽다.
 
 예를 들어 Spring Boot 컨테이너는 다음과 같은 환경 변수로 MySQL과 Redis에 접근할 수 있다.
 
@@ -193,7 +193,7 @@ REDIS_PORT: 6379
 
 여기서 `mysql`, `redis`는 외부 도메인이 아니다. Docker Compose 내부에서 사용하는 서비스 이름이다.
 
-즉, 같은 Compose 네트워크 안에 있는 Spring Boot 컨테이너는 `mysql`이라는 이름으로 MySQL 컨테이너를 찾고, `redis`라는 이름으로 Redis 컨테이너를 찾을 수 있다.
+같은 Compose 네트워크 안에 있는 Spring Boot 컨테이너는 `mysql`이라는 이름으로 MySQL 컨테이너를 찾고 `redis`라는 이름으로 Redis 컨테이너를 찾을 수 있다.
 
 배포 구조는 다음처럼 정리된다.
 
@@ -212,7 +212,7 @@ Nginx 자체가 CI/CD 도구는 아니다. GitHub Actions처럼 이미지를 빌
 
 하지만 Nginx는 배포 구조에서 외부 요청 주소와 내부 애플리케이션 실행 구조를 분리해준다.
 
-GitHub Actions가 새 Docker 이미지를 빌드하고, EC2에서 Spring Boot 컨테이너를 교체하더라도 사용자는 계속 같은 도메인으로 접근한다.
+GitHub Actions가 새 Docker 이미지를 빌드하고 EC2에서 Spring Boot 컨테이너를 교체하더라도 사용자는 계속 같은 도메인으로 접근한다.
 
 ```text
 User
@@ -238,7 +238,7 @@ Nginx
 
 물론 단일 EC2 + Docker Compose 구조에서 이것만으로 완전한 무중단 배포가 항상 보장되는 것은 아니다. 헬스체크, 컨테이너 기동 시간, 포트 전환 시점, 롤백 방식까지 함께 설계해야 한다.
 
-그래도 Nginx를 앞단에 두면 적어도 외부 요청 경로와 내부 실행 구조를 분리할 수 있고, 이후 Blue-Green 배포 같은 구조로 확장할 수 있는 기반이 생긴다.
+그래도 Nginx를 앞단에 두면 적어도 외부 요청 경로와 내부 실행 구조를 분리할 수 있고 이후 Blue-Green 배포 같은 구조로 확장할 수 있는 기반이 생긴다.
 
 ---
 
@@ -258,7 +258,7 @@ Spring Boot는 여전히 8080 포트에서 실행된다. Nginx는 80/443 포트�
 
 이렇게 정리하고 나니 `proxy_pass`, `proxy_set_header`, HTTPS 처리, Docker Compose 내부 네트워크, Blue-Green 배포가 서로 따로 떨어진 개념처럼 보이지 않았다.
 
-Nginx는 외부 사용자와 내부 애플리케이션 사이의 경계이며, Docker Compose 배포, HTTPS 처리, 배포 전환 구조를 만들기 위한 기반이 되는 구성 요소라고 정리할 수 있었다.
+Nginx는 외부 사용자와 내부 애플리케이션 사이의 경계이며 Docker Compose 배포, HTTPS 처리, 배포 전환 구조를 만들기 위한 기반이 되는 구성 요소라고 정리할 수 있었다.
 
 ---
 

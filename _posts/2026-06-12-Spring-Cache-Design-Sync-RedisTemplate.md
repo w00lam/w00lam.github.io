@@ -16,9 +16,9 @@ Spring 애플리케이션에서 성능 최적화를 이야기할 때 캐시는 �
 
 캐시는 크게 **로컬 캐시**와 **원격 캐시**로 나뉩니다. 두 방식의 특징을 알아야 캐시 전략을 제대로 세울 수 있습니다.
 
-*   **로컬 캐시**: 애플리케이션 서버 내부에 데이터를 저장합니다. Caffeine이나 `ConcurrentHashMap`을 활용한 캐시가 대표적입니다. 같은 JVM 안에서 동작하니 객체 참조를 그대로 저장해도 문제가 없고 접근 속도도 매우 빠릅니다. 다만 서버 인스턴스마다 캐시를 따로 관리하기 때문에 인스턴스 사이의 데이터 일관성을 맞추기 어렵습니다.
+* **로컬 캐시**: 애플리케이션 서버 내부에 데이터를 저장합니다. Caffeine이나 `ConcurrentHashMap`을 활용한 캐시가 대표적입니다. 같은 JVM 안에서 동작하니 객체 참조를 그대로 저장해도 문제가 없고 접근 속도도 매우 빠릅니다. 다만 서버 인스턴스마다 캐시를 따로 관리하기 때문에 인스턴스 사이의 데이터 일관성을 맞추기 어렵습니다.
 
-*   **원격 캐시**: 애플리케이션 서버와 별도의 저장소에 데이터를 둡니다. Redis가 대표적입니다. 여러 서버 인스턴스가 같은 캐시 데이터를 공유하므로 일관성 문제를 해결합니다. 대신 네트워크 통신을 거치는 만큼 로컬 캐시보다 접근 속도는 느립니다.
+* **원격 캐시**: 애플리케이션 서버와 별도의 저장소에 데이터를 둡니다. Redis가 대표적입니다. 여러 서버 인스턴스가 같은 캐시 데이터를 공유하므로 일관성 문제를 해결합니다. 대신 네트워크 통신을 거치는 만큼 로컬 캐시보다 접근 속도는 느립니다.
 
 이 글에서는 원격 캐시인 Redis를 중심으로 캐시 설계와 동기화 전략을 다룹니다.
 
@@ -26,10 +26,10 @@ Spring 애플리케이션에서 성능 최적화를 이야기할 때 캐시는 �
 
 캐시 Key는 캐시된 데이터를 식별하는 기준입니다. 의미를 분명히 전달하고 충돌을 막으려면 일관된 네이밍 전략이 필요합니다.
 
-*   **콜론(:)으로 계층 구조 표현**: `user:1`, `product:category:electronics`처럼 콜론으로 계층 구조를 드러내면 읽기 좋고 관리하기도 편합니다.
-*   **고정 Prefix 사용**: `user:`, `post:`처럼 고정 Prefix를 붙여 Key의 역할을 구분합니다. Key 이름만 봐도 어떤 데이터의 캐시인지 바로 알 수 있습니다.
-*   **Key 이름만 보고 의미 이해 가능**: `post:123:viewCount`처럼 이름만으로 무엇이 캐시됐는지 파악되도록 설계합니다.
-*   **Key Prefix는 코드 상수로 관리**: 매직 스트링을 피해 Key Prefix를 코드 상수로 두면 일관성이 유지되고 오타로 인한 오류도 줄어듭니다.
+* **콜론(:)으로 계층 구조 표현**: `user:1`, `product:category:electronics`처럼 콜론으로 계층 구조를 드러내면 읽기 좋고 관리하기도 편합니다.
+* **고정 Prefix 사용**: `user:`, `post:`처럼 고정 Prefix를 붙여 Key의 역할을 구분합니다. Key 이름만 봐도 어떤 데이터의 캐시인지 바로 알 수 있습니다.
+* **Key 이름만 보고 의미 이해 가능**: `post:123:viewCount`처럼 이름만으로 무엇이 캐시됐는지 파악되도록 설계합니다.
+* **Key Prefix는 코드 상수로 관리**: 매직 스트링을 피해 Key Prefix를 코드 상수로 두면 일관성이 유지되고 오타로 인한 오류도 줄어듭니다.
 
 ```java
 public class CacheKey {
@@ -39,7 +39,7 @@ public class CacheKey {
 }
 ```
 
-*   **같은 캐시 그룹(value)을 유지하되, Key Prefix로 데이터 범위 구분**: 가령 `postCache`라는 그룹 안에서 게시글 ID로 조회할 때와 사용자 이름으로 조회할 때를 나누려면 `postCache::id:1`, `postCache::username:kim`처럼 Key Prefix를 활용하면 됩니다.
+* **같은 캐시 그룹(value)을 유지하되, Key Prefix로 데이터 범위 구분**: 가령 `postCache`라는 그룹 안에서 게시글 ID로 조회할 때와 사용자 이름으로 조회할 때를 나누려면 `postCache::id:1`, `postCache::username:kim`처럼 Key Prefix를 활용하면 됩니다.
 
 ## 캐시 Key 충돌 방지
 
@@ -63,10 +63,10 @@ public Post getPostByUsername(String username) { ... }
 
 TTL(Time To Live)은 캐시 데이터가 유효하게 유지되는 시간입니다. 어떻게 설정하느냐에 따라 캐시 효율과 데이터 최신성이 크게 달라집니다.
 
-*   **데이터 변경 주기가 길면 TTL을 길게**: 자주 바뀌지 않는 데이터(예: 서비스 약관, 정적 설정 정보)는 TTL을 길게 잡아 캐시 히트율을 높입니다.
-*   **조회가 잦고 변경이 적은 데이터일수록 캐싱 효율이 높음**: 이런 데이터일수록 캐시의 이점이 커지므로 TTL만 잘 잡아도 성능이 눈에 띄게 좋아집니다.
-*   **TTL이 너무 짧으면 캐시 효율 감소**: 캐시 데이터가 너무 빨리 만료되면 매번 DB를 다시 조회하게 되어 캐시를 둔 의미가 사라집니다.
-*   **TTL이 너무 길면 데이터 최신성 저하**: 캐시가 너무 오래 남아 있으면 실제 데이터와 어긋날 수 있습니다. 실시간성이 중요한 데이터라면 특히 문제가 됩니다.
+* **데이터 변경 주기가 길면 TTL을 길게**: 자주 바뀌지 않는 데이터(예: 서비스 약관, 정적 설정 정보)는 TTL을 길게 잡아 캐시 히트율을 높입니다.
+* **조회가 잦고 변경이 적은 데이터일수록 캐싱 효율이 높음**: 이런 데이터일수록 캐시의 이점이 커지므로 TTL만 잘 잡아도 성능이 눈에 띄게 좋아집니다.
+* **TTL이 너무 짧으면 캐시 효율 감소**: 캐시 데이터가 너무 빨리 만료되면 매번 DB를 다시 조회하게 되어 캐시를 둔 의미가 사라집니다.
+* **TTL이 너무 길면 데이터 최신성 저하**: 캐시가 너무 오래 남아 있으면 실제 데이터와 어긋날 수 있습니다. 실시간성이 중요한 데이터라면 특히 문제가 됩니다.
 
 데이터 특성과 서비스 요구사항을 함께 보고 TTL을 정하는 게 좋습니다. 필요하면 캐시 무효화 전략과 묶어서 조절합니다.
 
@@ -74,13 +74,13 @@ TTL(Time To Live)은 캐시 데이터가 유효하게 유지되는 시간입니�
 
 데이터가 바뀌었을 때 캐시를 최신 상태로 맞추는 일을 캐시 동기화라고 합니다. Spring Cache에서는 주로 `@CacheEvict`와 `@CachePut` 어노테이션으로 처리합니다.
 
-*   `@CacheEvict`: 메서드가 성공적으로 끝난 뒤 지정한 캐시를 삭제합니다. 다음 조회 때 DB에서 최신 데이터를 다시 읽어 캐싱합니다. 주로 데이터를 삭제하거나 변경할 때 기존 캐시를 무효화하려고 씁니다.
+* `@CacheEvict`: 메서드가 성공적으로 끝난 뒤 지정한 캐시를 삭제합니다. 다음 조회 때 DB에서 최신 데이터를 다시 읽어 캐싱합니다. 주로 데이터를 삭제하거나 변경할 때 기존 캐시를 무효화하려고 씁니다.
     ```java
     @CacheEvict(value = "postCache", key = "'id:' + #postId")
     public void deletePost(Long postId) { ... }
     ```
 
-*   `@CachePut`: 메서드가 성공적으로 끝난 뒤 반환 값을 지정한 캐시에 갱신합니다. 주로 데이터를 생성하거나 수정할 때 최신 데이터를 캐시에 반영하려고 씁니다. `@Cacheable`과 달리 메서드를 항상 실행합니다.
+* `@CachePut`: 메서드가 성공적으로 끝난 뒤 반환 값을 지정한 캐시에 갱신합니다. 주로 데이터를 생성하거나 수정할 때 최신 데이터를 캐시에 반영하려고 씁니다. `@Cacheable`과 달리 메서드를 항상 실행합니다.
     ```java
     @CachePut(value = "postCache", key = "'id:' + #result.id")
     public Post updatePost(Long postId, PostUpdateRequest request) { ... }
@@ -202,14 +202,14 @@ public class ProductCacheService {
 
 `RedisTemplate`은 다음 흐름으로 Redis 명령을 실행합니다.
 
-1.  **메서드 호출**: `RedisTemplate`의 `opsForValue().set(key, value)` 같은 메서드를 호출합니다.
-2.  **직렬화**: Key와 Value로 넘어온 Java 객체를 설정된 `RedisSerializer`(예: `StringRedisSerializer`, `Jackson2JsonRedisSerializer`)가 Redis가 이해할 수 있는 `byte[]` 형태로 직렬화합니다.
-3.  **커넥션 획득**: `RedisTemplate`이 `RedisConnectionFactory`에서 Redis 서버와의 커넥션(`RedisConnection`)을 받아 옵니다.
-4.  **명령 실행**: 얻어 온 `RedisConnection`으로 직렬화된 Key와 Value, 매핑된 Redis 명령(예: `SET`)을 Redis 서버에 보냅니다. 실제 네트워크 통신은 Lettuce나 Jedis 같은 Redis 클라이언트 라이브러리가 맡습니다.
-5.  **결과 역직렬화**: Redis 서버에서 응답이 오면 `RedisConnection`이 이를 받아 `RedisSerializer`로 `byte[]` 형태의 응답을 다시 Java 객체로 역직렬화합니다.
-6.  **커넥션 반환**: 명령이 끝나면 커넥션은 정리되거나 커넥션 풀로 돌아가 재사용됩니다.
+1. **메서드 호출**: `RedisTemplate`의 `opsForValue().set(key, value)` 같은 메서드를 호출합니다.
+2. **직렬화**: Key와 Value로 넘어온 Java 객체를 설정된 `RedisSerializer`(예: `StringRedisSerializer`, `Jackson2JsonRedisSerializer`)가 Redis가 이해할 수 있는 `byte[]` 형태로 직렬화합니다.
+3. **커넥션 획득**: `RedisTemplate`이 `RedisConnectionFactory`에서 Redis 서버와의 커넥션(`RedisConnection`)을 받아 옵니다.
+4. **명령 실행**: 얻어 온 `RedisConnection`으로 직렬화된 Key와 Value, 매핑된 Redis 명령(예: `SET`)을 Redis 서버에 보냅니다. 실제 네트워크 통신은 Lettuce나 Jedis 같은 Redis 클라이언트 라이브러리가 맡습니다.
+5. **결과 역직렬화**: Redis 서버에서 응답이 오면 `RedisConnection`이 이를 받아 `RedisSerializer`로 `byte[]` 형태의 응답을 다시 Java 객체로 역직렬화합니다.
+6. **커넥션 반환**: 명령이 끝나면 커넥션은 정리되거나 커넥션 풀로 돌아가 재사용됩니다.
 
-즉, `RedisTemplate`은 개발자가 Java 객체를 다루듯 Redis를 쓰도록 내부적으로 **메서드 호출을 Redis 명령으로 매핑하고 데이터를 직렬화·역직렬화하며 커넥션을 관리해 Redis 서버와 통신하는 역할**을 합니다.
+`RedisTemplate`은 개발자가 Java 객체를 다루듯 Redis를 쓰도록 내부적으로 **메서드 호출을 Redis 명령으로 매핑하고 데이터를 직렬화·역직렬화하며 커넥션을 관리해 Redis 서버와 통신하는 역할**을 합니다.
 
 ## 공부/구현하면서 느낀 점
 
@@ -225,6 +225,6 @@ Spring Cache를 써 보며 가장 크게 느낀 점은 **캐시를 단순한 성
 
 ## References
 
-*   [Spring Framework Documentation - Caching](https://docs.spring.io/spring-framework/reference/integration/cache.html)
-*   [Spring Data Redis Documentation](https://docs.spring.io/spring-data/redis/docs/current/reference/html/#redis)
-*   [Redis 캐시에 객체를 저장할 때 직렬화가 필요한 이유](/posts/redis-cache-serialization/)
+* [Spring Framework Documentation - Caching](https://docs.spring.io/spring-framework/reference/integration/cache.html)
+* [Spring Data Redis Documentation](https://docs.spring.io/spring-data/redis/docs/current/reference/html/#redis)
+* [Redis 캐시에 객체를 저장할 때 직렬화가 필요한 이유](/posts/redis-cache-serialization/)

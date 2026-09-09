@@ -71,7 +71,7 @@ public enum Operator {
 
 ---
 
-### 🔗 참고 자료 (Sources)
+###  참고 자료 (Sources)
 * **Oracle Java Documentation:** [Functional Interfaces](https://docs.oracle.com/javase/8/docs/api/java/lang/FunctionalInterface.html) - *Concept of single abstract method interfaces.*
 * **Baeldung:** [Lambda Expressions in Java Enums](https://www.baeldung.com/java-enum-iteration) - *How to combine functional programming with enum types.*
 * **Java Language Specification:** [Enum Constants](https://docs.oracle.com/javase/specs/jls/se17/html/jls-8.html#jls-8.9.1) - *Detailed specification on enum constant structure.*

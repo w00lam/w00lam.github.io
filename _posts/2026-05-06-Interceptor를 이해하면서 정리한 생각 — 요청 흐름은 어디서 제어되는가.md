@@ -11,12 +11,12 @@ permalink: /posts/interceptor-request-flow-control/
 이전에 Filter / Interceptor / AOP를 비교하면서
 각 기술이 어디에서 동작하는지 정리했었다.
 
-👉 [Filter vs Interceptor vs AOP — 어디서 무엇을 처리해야 할까](/posts/filter-interceptor-aop/)
+ [Filter vs Interceptor vs AOP — 어디서 무엇을 처리해야 할까](/posts/filter-interceptor-aop/)
 
 그리고 최근에는 Filter를 더 깊게 보면서
 “인증은 Controller 전에 이미 끝난다”는 흐름도 다시 정리했다.
 
-👉 [Filter를 이해하면서 정리한 생각 — 인증은 어디서 시작되는가](/posts/filter-authentication-start/)
+ [Filter를 이해하면서 정리한 생각 — 인증은 어디서 시작되는가](/posts/filter-authentication-start/)
 
 이번에는 실제로 Interceptor를 구현하면서 느낀 점들을 정리해보려고 한다.
 
@@ -55,7 +55,7 @@ Controller
 
 > Interceptor는 DispatcherServlet 이후에 동작한다
 
-즉,
+
 
 * 이미 Spring MVC 안으로 들어온 요청이고
 * Controller 호출 직전 단계다
@@ -174,10 +174,10 @@ Interceptor가 아니라 Filter 기반으로 동작한다.
 
 에 더 가까웠다.
 
-이 부분은 이전에 Filter와 Spring Security 흐름을 정리하면서
+이 부분은 이전에 Filter와 Spring Security 흐름을 보면서
 조금 더 자세히 다뤘다.
 
-👉 [Filter를 이해하면서 정리한 생각 — 인증은 어디서 시작되는가](/posts/filter-authentication-start/)
+ [Filter를 이해하면서 정리한 생각 — 인증은 어디서 시작되는가](/posts/filter-authentication-start/)
 
 ---
 

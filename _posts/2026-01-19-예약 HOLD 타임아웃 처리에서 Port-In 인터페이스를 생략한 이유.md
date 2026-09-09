@@ -14,7 +14,7 @@ permalink: /posts/hold-timeout-port-in/
 - `ConfirmReservationUseCase`
 - `DeductPointUseCase`
 
-Port-In 인터페이스를 두고 Application Service가 이를 구현하는 식이다. 이 구조는 외부 요청(API, 메시지, 배치 등)의 진입 계약을 분명히 하고, 애플리케이션 계층이 무엇을 하려는지 드러내는 데 효과적이었다.
+Port-In 인터페이스를 두고 Application Service가 이를 구현하는 식이다. 이 구조는 외부 요청(API, 메시지, 배치 등)의 진입 계약을 분명히 하고 애플리케이션 계층이 무엇을 하려는지 드러내는 데 효과적이었다.
 
 그런데 좌석 HOLD 타임아웃을 해제하는 기능, `ExpireReservationUseCase`를 설계할 때는 일부러 Port-In 인터페이스를 두지 않았다. 왜 그랬는지 짚어본다.
 
@@ -67,7 +67,7 @@ ReservationRepository
 
 Port-In 인터페이스는 보통 "이 기능은 외부에서 쓸 수 있는 유스케이스다"라고 선언하는 의미를 갖는다. 하지만 예약 만료 처리는 사용자 관점의 기능이 아니라 내부 상태를 정리하는 메커니즘이다.
 
-외부 계약으로 떼어낼 이유가 약했고, 오히려 구조만 복잡해질 판이었다.
+외부 계약으로 떼어낼 이유가 약했고 오히려 구조만 복잡해질 판이었다.
 
 ### 3. 테스트 전략상 인터페이스가 필요하지 않았다
 
@@ -89,7 +89,7 @@ ExpireReservationService
 ↓
 ReservationRepository
 
-불필요한 추상화를 걷어내고, 이 로직은 내부에서만 쓴다는 의도를 구조 자체로 드러냈다.
+불필요한 추상화를 걷어내고 이 로직은 내부에서만 쓴다는 의도를 구조 자체로 드러냈다.
 
 ## Port-In을 두는 것이 더 나았을 상황
 

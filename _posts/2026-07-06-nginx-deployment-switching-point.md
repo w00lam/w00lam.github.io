@@ -8,7 +8,7 @@ permalink: /posts/nginx-deployment-switching-point/
 
 ## 들어가면서
 
-이전에 [Nginx는 왜 Spring Boot 앞단에 있을까?](/posts/why-nginx-in-front-of-spring-boot/)를 정리하면서, Nginx를 외부 요청을 먼저 받고 내부 Spring Boot 애플리케이션으로 전달하는 앞단 서버로 이해했다.
+이전에 [Nginx는 왜 Spring Boot 앞단에 있을까?](/posts/why-nginx-in-front-of-spring-boot/)를 보면서 Nginx를 외부 요청을 먼저 받고 내부 Spring Boot 애플리케이션으로 전달하는 앞단 서버로 이해했다.
 
 그때의 핵심은 다음 구조였다.
 
@@ -57,7 +57,7 @@ Spring Boot는 원래 요청이 HTTPS였는지 어떻게 알지?
 
 가장 먼저 헷갈렸던 부분은 `localhost`였다.
 
-Nginx가 EC2 호스트에 직접 설치되어 있고, Spring Boot도 같은 EC2의 8080 포트에서 실행 중이라면 아래 설정은 자연스럽다.
+Nginx가 EC2 호스트에 직접 설치되어 있고 Spring Boot도 같은 EC2의 8080 포트에서 실행 중이라면 아래 설정은 자연스럽다.
 
 ```nginx
 location / {
@@ -77,7 +77,7 @@ Docker Compose Network
 
 이때 Nginx 컨테이너 안에서 `localhost`는 EC2 호스트가 아니다. Nginx 컨테이너 자기 자신이다.
 
-따라서 아래 설정은 Spring Boot 컨테이너를 바라보지 않는다.
+아래 설정은 Spring Boot 컨테이너를 바라보지 않는다.
 
 ```nginx
 proxy_pass http://localhost:8080;
@@ -95,7 +95,7 @@ proxy_pass http://app:8080;
 
 이 차이를 이해하고 나니 Docker 환경에서 네트워크를 볼 때 `localhost`를 습관적으로 쓰면 안 된다는 것을 알게 됐다.
 
-> Docker 환경에서 localhost는 항상 서버 전체를 의미하지 않는다. 컨테이너 내부에서 localhost는 해당 컨테이너 자신을 의미한다. 따라서 컨테이너 간 통신에는 localhost가 아니라 Compose 서비스 이름을 사용해야 한다.
+> Docker 환경에서 localhost는 항상 서버 전체를 의미하지 않는다. 컨테이너 내부에서 localhost는 해당 컨테이너 자신을 의미한다. 컨테이너 간 통신에는 localhost가 아니라 Compose 서비스 이름을 사용해야 한다.
 
 ![Docker Compose에서 localhost와 service name 차이](/assets/images/2026-07-06-nginx-deployment-switching-point/localhost-service-name.png)
 
@@ -206,7 +206,7 @@ server {
 요청 4 → app-green
 ```
 
-즉, Reverse Proxy 구조가 Load Balancing 구조로 확장된다.
+Reverse Proxy 구조가 Load Balancing 구조로 확장된다.
 
 여기서 짚고 넘어갈 부분이 있다. `upstream`은 단순히 설정을 보기 좋게 만드는 문법이 아니다. 내부 서버 그룹을 논리적으로 관리하고 그 그룹 안에 서버를 하나에서 여러 개로 확장할 수 있게 해주는 기반이다.
 
@@ -253,7 +253,7 @@ upstream backend {
 
 핵심 차이는 이렇다.
 
-> Load Balancing은 여러 서버에 요청을 나눠 보내는 구조이고, Blue-Green 배포는 현재 트래픽을 받는 버전을 새 버전으로 전환하는 구조다.
+> Load Balancing은 여러 서버에 요청을 나눠 보내는 구조이고 Blue-Green 배포는 현재 트래픽을 받는 버전을 새 버전으로 전환하는 구조다.
 
 ![Nginx upstream에서 Load Balancing과 Blue-Green 배포 차이](/assets/images/2026-07-06-nginx-deployment-switching-point/upstream-load-balancing-blue-green.png)
 
@@ -433,8 +433,8 @@ upstream을 사용하면 내부 서버를 논리적으로 묶을 수 있고 여�
 
 ### 프롬프트 1. Docker Compose에서 localhost와 service name 차이
 
-> 16:9 기술 블로그용 다이어그램 이미지. 흰색 또는 아주 밝은 배경, 깔끔한 기업 기술 블로그 스타일, 얇은 선, 둥근 박스, 빨간색 포인트 컬러, 과한 3D 금지. 주제는 Docker Compose 환경에서 Nginx의 `localhost:8080`과 `app:8080` 차이. 왼쪽 영역에는 "EC2 Host에 직접 설치된 Nginx", "Spring Boot : 8080", "`proxy_pass http://localhost:8080`", "localhost가 EC2 Host를 가리킴"을 표시한다. 오른쪽 영역에는 "Docker Compose Network", "nginx container", "app container : 8080", "`proxy_pass http://localhost:8080`은 nginx container 자신을 가리킴", "올바른 설정: `proxy_pass http://app:8080`"을 표시한다. 핵심 문구는 "컨테이너 내부의 localhost는 컨테이너 자신이다". 텍스트는 한국어로 작성하고, 읽기 쉬운 DevOps 다이어그램 스타일로 구성한다.
+> 16:9 기술 블로그용 다이어그램 이미지. 흰색 또는 아주 밝은 배경, 깔끔한 기업 기술 블로그 스타일, 얇은 선, 둥근 박스, 빨간색 포인트 컬러, 과한 3D 금지. 주제는 Docker Compose 환경에서 Nginx의 `localhost:8080`과 `app:8080` 차이. 왼쪽 영역에는 "EC2 Host에 직접 설치된 Nginx", "Spring Boot : 8080", "`proxy_pass http://localhost:8080`", "localhost가 EC2 Host를 가리킴"을 표시한다. 오른쪽 영역에는 "Docker Compose Network", "nginx container", "app container : 8080", "`proxy_pass http://localhost:8080`은 nginx container 자신을 가리킴", "올바른 설정: `proxy_pass http://app:8080`"을 표시한다. 핵심 문구는 "컨테이너 내부의 localhost는 컨테이너 자신이다". 텍스트는 한국어로 작성하고 읽기 쉬운 DevOps 다이어그램 스타일로 구성한다.
 
 ### 프롬프트 2. Nginx upstream, Load Balancing, Blue-Green 비교
 
-> 16:9 기술 블로그용 비교 다이어그램 이미지. 흰색 배경, 좌우 비교 레이아웃, 빨간색 포인트 컬러, 얇은 선과 둥근 박스, DevOps 발표자료 느낌. 주제는 Nginx upstream이 Load Balancing과 Blue-Green 배포에서 어떻게 다르게 사용되는지 비교. 왼쪽은 "Load Balancing" 영역으로 구성하고, "Client → Nginx upstream backend" 흐름 아래에 app-blue와 app-green이 둘 다 활성화되어 있으며 요청 화살표가 두 서버로 나뉘는 모습을 보여준다. 문구는 "여러 서버에 요청 분산". 오른쪽은 "Blue-Green 배포" 영역으로 구성하고, "Client → Nginx" 이후 현재는 app-blue로만 트래픽이 전달되고, app-green은 health check 후 전환 대상으로 표시한다. 전환 후 app-green으로 트래픽이 이동하는 화살표를 함께 표시한다. 문구는 "정상 확인 후 트래픽 전환". 핵심 문구는 "Load Balancing은 분산, Blue-Green은 전환". 텍스트는 한국어로 작성한다.
+> 16:9 기술 블로그용 비교 다이어그램 이미지. 흰색 배경, 좌우 비교 레이아웃, 빨간색 포인트 컬러, 얇은 선과 둥근 박스, DevOps 발표자료 느낌. 주제는 Nginx upstream이 Load Balancing과 Blue-Green 배포에서 어떻게 다르게 사용되는지 비교. 왼쪽은 "Load Balancing" 영역으로 구성하고 "Client → Nginx upstream backend" 흐름 아래에 app-blue와 app-green이 둘 다 활성화되어 있으며 요청 화살표가 두 서버로 나뉘는 모습을 보여준다. 문구는 "여러 서버에 요청 분산". 오른쪽은 "Blue-Green 배포" 영역으로 구성하고 "Client → Nginx" 이후 현재는 app-blue로만 트래픽이 전달되고 app-green은 health check 후 전환 대상으로 표시한다. 전환 후 app-green으로 트래픽이 이동하는 화살표를 함께 표시한다. 문구는 "정상 확인 후 트래픽 전환". 핵심 문구는 "Load Balancing은 분산, Blue-Green은 전환". 텍스트는 한국어로 작성한다.

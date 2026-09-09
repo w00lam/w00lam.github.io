@@ -39,7 +39,7 @@ V3__add_status_column_to_payment.sql
 
 애플리케이션이 실행되면 Flyway는 데이터베이스에 접속하여 아직 적용되지 않은 SQL 마이그레이션 파일을 순서대로 실행합니다. 그리고 어떤 마이그레이션이 적용되었는지는 `flyway_schema_history`라는 내부 테이블에 기록하여 관리합니다.
 
-> Flyway는 DB 스키마 변경을 버전 관리하고, 여러 환경(개발, 테스트, 운영)에 걸쳐 일관되게 적용하기 위한 도구입니다. 공식 설명에서도 Flyway는 데이터베이스 스키마를 쉽고 안정적으로 진화시키는 마이그레이션 도구라고 강조합니다.
+> Flyway는 DB 스키마 변경을 버전 관리하고 여러 환경(개발, 테스트, 운영)에 걸쳐 일관되게 적용하기 위한 도구입니다. 공식 설명에서도 Flyway는 데이터베이스 스키마를 쉽고 안정적으로 진화시키는 마이그레이션 도구라고 강조합니다.
 
 ## 3. Flyway 파일 위치 및 명명 규칙
 
@@ -52,10 +52,10 @@ src/main/resources/db/migration
  └── V3__create_payment_table.sql
 ```
 
-Flyway 파일명은 특정 규칙을 따릅니다. 기본 형식은 `V버전__설명.sql`입니다. 여기서 `V`는 버전(Version)을 의미하며, 버전 뒤에는 **언더스코어(`_`)가 두 개** 붙는다는 점을 주의해야 합니다.
+Flyway 파일명은 특정 규칙을 따릅니다. 기본 형식은 `V버전__설명.sql`입니다. 여기서 `V`는 버전(Version)을 의미하며 버전 뒤에는 **언더스코어(`_`)가 두 개** 붙는다는 점을 주의해야 합니다.
 
-*   **올바른 예**: `V1__init_schema.sql`
-*   **잘못된 예**: `V1_init_schema.sql` (언더스코어 하나)
+* **올바른 예**: `V1__init_schema.sql`
+* **잘못된 예**: `V1_init_schema.sql` (언더스코어 하나)
 
 버전은 숫자뿐만 아니라 점(.)을 포함한 단위도 사용할 수 있어, 더 세분화된 버전 관리가 가능합니다.
 
@@ -65,7 +65,7 @@ V1.1__add_member_status.sql
 V2__create_payment_table.sql
 ```
 
-## 4. Spring Boot 설정 예시: `ddl-auto: validate`와 `flyway.enabled`
+## 4. Spring Boot 설정 예시 — `ddl-auto: validate`와 `flyway.enabled`
 
 배포 환경에서 Flyway를 활용하기 위한 Spring Boot 설정은 다음과 같습니다.
 
@@ -82,45 +82,45 @@ spring:
 
 여기서 핵심은 두 가지입니다.
 
-*   `spring.jpa.hibernate.ddl-auto: validate`: Hibernate가 엔티티와 DB 스키마의 일치 여부만 검증하도록 합니다.
-*   `spring.flyway.enabled: true`: 애플리케이션 시작 시 Flyway 마이그레이션이 자동으로 실행되도록 합니다.
+* `spring.jpa.hibernate.ddl-auto: validate`: Hibernate가 엔티티와 DB 스키마의 일치 여부만 검증하도록 합니다.
+* `spring.flyway.enabled: true`: 애플리케이션 시작 시 Flyway 마이그레이션이 자동으로 실행되도록 합니다.
 
 Spring Boot 공식 문서에서도 Flyway나 Liquibase와 같은 상위 수준의 데이터베이스 마이그레이션 도구를 데이터베이스 초기화에 사용하는 것을 권장합니다.
 
-## 5. `validate`와 Flyway의 관계: 대체재가 아닌 보완재
+## 5. `validate`와 Flyway의 관계 — 대체재가 아닌 보완재
 
 `validate`와 Flyway는 서로 대체 관계가 아닙니다. 둘은 서로를 보완하는 역할을 맡습니다.
 
-*   **Flyway**: SQL 마이그레이션 파일을 실행하여 DB 스키마를 생성하거나 변경하는 역할을 담당합니다.
-*   **Hibernate `validate`**: 애플리케이션의 엔티티 정의와 실제 DB 스키마가 일치하는지 검증하는 역할을 담당합니다.
+* **Flyway**: SQL 마이그레이션 파일을 실행하여 DB 스키마를 생성하거나 변경하는 역할을 담당합니다.
+* **Hibernate `validate`**: 애플리케이션의 엔티티 정의와 실제 DB 스키마가 일치하는지 검증하는 역할을 담당합니다.
 
-따라서 정상적인 애플리케이션 실행 순서는 다음과 같습니다.
+정상적인 애플리케이션 실행 순서는 다음과 같습니다.
 
 ![Flyway와 Hibernate Validate 실행 순서](/assets/images/2026-06-05-flyway-db-schema-management/flyway-hibernate-sequence.png)
 
-1.  **Flyway가 migration SQL 실행**: DB 스키마를 최신 상태로 만듭니다.
-2.  **DB 테이블 생성/변경 완료**: Flyway 작업이 성공적으로 마무리됩니다.
-3.  **Hibernate가 `ddl-auto=validate`로 엔티티와 DB 스키마 검증**: Flyway가 만든 스키마와 엔티티가 일치하는지 확인합니다.
-4.  **애플리케이션 실행**: 모든 검증이 통과되면 애플리케이션이 정상적으로 기동됩니다.
+1. **Flyway가 migration SQL 실행**: DB 스키마를 최신 상태로 만듭니다.
+2. **DB 테이블 생성/변경 완료**: Flyway 작업이 성공적으로 마무리됩니다.
+3. **Hibernate가 `ddl-auto=validate`로 엔티티와 DB 스키마 검증**: Flyway가 만든 스키마와 엔티티가 일치하는지 확인합니다.
+4. **애플리케이션 실행**: 모든 검증이 통과되면 애플리케이션이 정상적으로 기동됩니다.
 
-이 구조에서는 Hibernate가 DB 스키마를 직접 수정하지 않습니다. DB 변경은 Flyway가 전적으로 담당하고, Hibernate는 그 결과를 검증하는 역할만 맡아 안정성을 높입니다.
+이 구조에서는 Hibernate가 DB 스키마를 직접 수정하지 않습니다. DB 변경은 Flyway가 전적으로 담당하고 Hibernate는 그 결과를 검증하는 역할만 맡아 안정성을 높입니다.
 
-## 6. `defer-datasource-initialization`의 함정: 순서 문제
+## 6. `defer-datasource-initialization`의 함정 — 순서 문제
 
-이번에 겪었던 문제의 핵심은 `spring.jpa.defer-datasource-initialization` 옵션이었습니다. `defer`는 '미루다', '연기하다'라는 뜻을 가지고 있습니다. 즉, 이 옵션은 데이터소스 초기화 작업을 뒤로 미룰 것인지 결정합니다.
+이번에 겪었던 문제의 핵심은 `spring.jpa.defer-datasource-initialization` 옵션이었습니다. `defer`는 '미루다', '연기하다'라는 뜻을 가지고 있습니다. 이 옵션은 데이터소스 초기화 작업을 뒤로 미룰 것인지 결정합니다.
 
 만약 이 값이 `true`로 설정되어 있다면, 다음과 같은 문제 상황이 발생할 수 있습니다.
 
 ![defer-datasource-initialization=true 일 때 문제 상황](/assets/images/2026-06-05-flyway-db-schema-management/defer-true-problem.png)
 
-1.  **Hibernate `validate` 실행**: 애플리케이션 시작 시 Hibernate가 스키마 검증을 시도합니다.
-2.  **아직 Flyway가 테이블을 만들기 전**: `defer-datasource-initialization: true`로 인해 Flyway의 DB 초기화 작업이 지연됩니다.
-3.  **Hibernate가 DB에 테이블이 없다고 판단**: 아직 Flyway가 스키마를 적용하기 전이므로, Hibernate는 엔티티에 해당하는 테이블이 없다고 판단합니다.
-4.  **애플리케이션 실행 실패**: 스키마 불일치로 인해 애플리케이션이 기동되지 않습니다.
+1. **Hibernate `validate` 실행**: 애플리케이션 시작 시 Hibernate가 스키마 검증을 시도합니다.
+2. **아직 Flyway가 테이블을 만들기 전**: `defer-datasource-initialization: true`로 인해 Flyway의 DB 초기화 작업이 지연됩니다.
+3. **Hibernate가 DB에 테이블이 없다고 판단**: 아직 Flyway가 스키마를 적용하기 전이므로, Hibernate는 엔티티에 해당하는 테이블이 없다고 판단합니다.
+4. **애플리케이션 실행 실패**: 스키마 불일치로 인해 애플리케이션이 기동되지 않습니다.
 
-즉, `validate` 기능이 꺼진 것이 아니라, **검증이 너무 빨리 실행되어 Flyway의 작업보다 선행**하면서 발생한 순서 문제였던 것입니다.
+`validate` 기능이 꺼진 것이 아니라, **검증이 너무 빨리 실행되어 Flyway의 작업보다 선행**하면서 발생한 순서 문제였던 것입니다.
 
-## 7. `false`로 바꾸면 해결되는 이유: 올바른 실행 순서 보장
+## 7. `false`로 바꾸면 해결되는 이유 — 올바른 실행 순서 보장
 
 `defer-datasource-initialization`을 `false`로 설정하면 DB 초기화 작업을 뒤로 미루지 않습니다. 이로 인해 우리가 의도했던 올바른 실행 순서가 보장됩니다.
 
@@ -132,14 +132,14 @@ spring:
 
 ![defer-datasource-initialization=false 일 때 해결 흐름](/assets/images/2026-06-05-flyway-db-schema-management/defer-false-solution.png)
 
-1.  **Flyway migration 실행**: 애플리케이션 시작 시 Flyway가 먼저 DB 스키마 마이그레이션을 수행합니다.
-2.  **테이블 생성 완료**: Flyway에 의해 필요한 테이블들이 모두 생성됩니다.
-3.  **Hibernate `validate` 실행**: Flyway 작업이 완료된 후, Hibernate가 엔티티와 이미 생성된 DB 스키마를 검증합니다.
-4.  **애플리케이션 실행**: 모든 검증이 통과되어 애플리케이션이 정상적으로 기동됩니다.
+1. **Flyway migration 실행**: 애플리케이션 시작 시 Flyway가 먼저 DB 스키마 마이그레이션을 수행합니다.
+2. **테이블 생성 완료**: Flyway에 의해 필요한 테이블들이 모두 생성됩니다.
+3. **Hibernate `validate` 실행**: Flyway 작업이 완료된 후, Hibernate가 엔티티와 이미 생성된 DB 스키마를 검증합니다.
+4. **애플리케이션 실행**: 모든 검증이 통과되어 애플리케이션이 정상적으로 기동됩니다.
 
-`ddl-auto=validate`는 그대로 활성화되어 있습니다. 다만, `defer-datasource-initialization: false` 설정을 통해 **Flyway가 먼저 테이블을 만들고, 그 다음 Hibernate가 검증하도록 실행 순서를 바로잡은 것**입니다.
+`ddl-auto=validate`는 그대로 활성화되어 있습니다. 다만, `defer-datasource-initialization: false` 설정으로 **Flyway가 먼저 테이블을 만들고 그 다음 Hibernate가 검증하도록 실행 순서를 바로잡은 것**입니다.
 
-## 8. 운영 시 주의사항: 마이그레이션 파일의 불변성
+## 8. 운영 시 주의사항 — 마이그레이션 파일의 불변성
 
 Flyway를 운영 환경에서 사용할 때 가장 중요한 원칙 중 하나는 **한 번 적용된 마이그레이션 파일은 수정하지 않는 것**입니다.
 
@@ -153,12 +153,12 @@ V2__add_payment_status_column.sql
 
 이처럼 변경 이력을 누적하는 방식으로 관리해야 데이터베이스 스키마의 일관성과 안정성을 유지할 수 있습니다.
 
-## 9. 오늘의 마무리: 안정적인 DB 스키마 관리의 중요성
+## 9. 오늘의 마무리 — 안정적인 DB 스키마 관리의 중요성
 
 이번 문제를 겪으면서 Flyway를 활용한 DB 스키마 관리와 `ddl-auto=validate`, `defer-datasource-initialization` 옵션 사이의 관계를 제대로 정리할 수 있었습니다.
 
-*   **Flyway**: DB 스키마 변경 이력을 SQL 파일로 명시적으로 관리하고, 여러 환경에 일관되게 적용하는 핵심 도구입니다.
-*   **Hibernate `validate`**: 프로덕션 환경에서 엔티티와 실제 DB 스키마의 일치 여부를 검증하여 예상치 못한 스키마 변경을 방지하는 안전장치입니다.
+* **Flyway**: DB 스키마 변경 이력을 SQL 파일로 명시적으로 관리하고 여러 환경에 일관되게 적용하는 핵심 도구입니다.
+* **Hibernate `validate`**: 프로덕션 환경에서 엔티티와 실제 DB 스키마의 일치 여부를 검증하여 예상치 못한 스키마 변경을 방지하는 안전장치입니다.
 
 이번 문제의 핵심은 `validate` 자체의 문제가 아니라, Flyway가 테이블을 만들기 전에 Hibernate `validate`가 먼저 실행되면서 발생한 **실행 순서 문제**였습니다. `defer-datasource-initialization: false` 설정으로 이 순서를 바로잡아 안정적인 애플리케이션 기동을 확보할 수 있었습니다.
 
@@ -169,5 +169,5 @@ V2__add_payment_status_column.sql
 
 ### References
 
-*   [Flyway 공식 문서](https://flywaydb.org/documentation/)
-*   [Spring Boot Reference Documentation - Database Initialization](https://docs.spring.io/spring-boot/docs/current/reference/html/howto.html#howto.data-access.initialize-a-database)
+* [Flyway 공식 문서](https://flywaydb.org/documentation/)
+* [Spring Boot Reference Documentation - Database Initialization](https://docs.spring.io/spring-boot/docs/current/reference/html/howto.html#howto.data-access.initialize-a-database)

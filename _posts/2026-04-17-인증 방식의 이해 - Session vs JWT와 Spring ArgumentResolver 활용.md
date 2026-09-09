@@ -8,11 +8,11 @@ permalink: /posts/session-jwt-spring/
 
 인증은 단순히 문을 여는 일이 아니라, 사용자가 누구인지 안전하고 효율적으로 증명하는 과정입니다.
 
-세션 방식과 JWT 방식이 어떻게 다른지 살펴보고, 스프링 부트에서 인증을 다룰 때 쓰는 도구들을 정리해 봅니다.
+세션 방식과 JWT 방식이 어떻게 다른지 살펴보고 스프링 부트에서 인증을 다룰 때 쓰는 도구들을 정리해 봅니다.
 
 ---
 
-## 1. Session vs JWT: 상태를 기억할까, 들고 다닐까?
+## 1. Session vs JWT — 상태를 기억할까, 들고 다닐까?
 
 ### Session 방식 (Stateful)
 서버가 사용자의 로그인 상태를 저장하는 방식입니다.
@@ -35,9 +35,9 @@ permalink: /posts/session-jwt-spring/
 ## 2. JWT의 3단계 구조
 JWT는 `.`을 구분자로 세 부분으로 나뉩니다.
 
-1.  **Header:** 토큰 유형과 사용할 알고리즘(HS256 등) 정보.
-2.  **Payload:** 실제 담길 정보(Claim). 유저 ID, 권한, 만료 시간 등이 포함됩니다. (누구나 볼 수 있으므로 민감한 정보는 금지!)
-3.  **Signature:** 서버의 비밀 키(Secret Key)로 만든 서명. 토큰의 위변조를 막는 핵심 장치입니다.
+1. **Header:** 토큰 유형과 사용할 알고리즘(HS256 등) 정보.
+2. **Payload:** 실제 담길 정보(Claim). 유저 ID, 권한, 만료 시간 등이 포함됩니다. (누구나 볼 수 있으므로 민감한 정보는 금지!)
+3. **Signature:** 서버의 비밀 키(Secret Key)로 만든 서명. 토큰의 위변조를 막는 핵심 장치입니다.
 
 ---
 
@@ -54,10 +54,10 @@ JWT는 `.`을 구분자로 세 부분으로 나뉩니다.
 `@RequestParam`, `@PathVariable`처럼 파라미터에 값을 자동으로 채워주는 도구가 바로 **ArgumentResolver**입니다.
 
 ### 구현 4단계
-1.  **인터페이스 구현:** `HandlerMethodArgumentResolver`를 상속받은 클래스 생성.
-2.  **`supportsParameter()`:** "이 파라미터를 내가 처리해도 될까?"를 결정 (특정 어노테이션이나 타입 체크).
-3.  **`resolveArgument()`:** 실제 주입할 객체를 생성하거나 가져오는 로직 작성.
-4.  **WebMvcConfigurer 등록:** 설정 파일에 만든 리졸버를 추가.
+1. **인터페이스 구현:** `HandlerMethodArgumentResolver`를 상속받은 클래스 생성.
+2. **`supportsParameter()`:** "이 파라미터를 내가 처리해도 될까?"를 결정 (특정 어노테이션이나 타입 체크).
+3. **`resolveArgument()`:** 실제 주입할 객체를 생성하거나 가져오는 로직 작성.
+4. **WebMvcConfigurer 등록:** 설정 파일에 만든 리졸버를 추가.
 
 ---
 

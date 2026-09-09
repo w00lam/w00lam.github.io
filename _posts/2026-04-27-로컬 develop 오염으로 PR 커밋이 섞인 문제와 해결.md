@@ -43,7 +43,7 @@ feature/common-response
    └─ local develop 기준으로 분기됨
 ```
 
-즉, 새 브랜치가 **이미 이전 feature 커밋을 포함한 상태에서 생성됐다**.
+새 브랜치가 **이미 이전 feature 커밋을 포함한 상태에서 생성됐다**.
 
 ---
 
@@ -128,7 +128,7 @@ git checkout develop
 git merge feature/common-enums   # 지양
 ```
 
-feature → develop 병합은 반드시 PR을 통해 수행한다.
+feature → develop 병합은 반드시 PR로 수행한다.
 
 ---
 
@@ -163,4 +163,4 @@ git log --oneline origin/develop..HEAD
 
 ## 한 줄 정리
 
-> 브랜치 문제처럼 보였지만, 실제 원인은 로컬 develop의 히스토리 오염이었다.
+> 브랜치 문제처럼 보였지만 실제 원인은 로컬 develop의 히스토리 오염이었다.

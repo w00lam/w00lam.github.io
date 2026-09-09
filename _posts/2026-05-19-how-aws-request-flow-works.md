@@ -11,32 +11,32 @@ permalink: /posts/how-aws-request-flow-works/
 
 클라우드에서 애플리케이션을 운영하려면 코드 배포만으로는 부족하다. 사용자의 요청이 서비스에 닿기까지 거치는 네트워크 흐름과 인프라 구성을 함께 이해해야 한다. 특히 AWS에서는 여러 서비스가 서로 맞물려 돌아가는데, 운영 중 겪는 문제는 대부분 네트워크 설정 오류에서 시작된다.
 
-이 글에서는 사용자의 요청이 AWS 내부에서 처리되는 흐름을 따라가며, 그 과정의 핵심인 ALB, EC2, RDS를 왜 나눠 두는지, Public/Private Subnet, Route Table, Security Group이 각각 무슨 일을 하는지 살펴본다. 실제 운영 중 저지른 설정 실수와 거기서 배운 점도 함께 정리했다.
+이 글에서는 사용자의 요청이 AWS 내부에서 처리되는 흐름을 따라가며 그 과정의 핵심인 ALB, EC2, RDS를 왜 나눠 두는지, Public/Private Subnet, Route Table, Security Group이 각각 무슨 일을 하는지 살펴본다. 실제 운영 중 저지른 설정 실수와 거기서 배운 점도 함께 정리했다.
 
 ### 이 글의 목표
 
-*   사용자의 요청이 AWS 내부에서 처리되는 전체적인 흐름을 이해한다.
-*   ALB, EC2, RDS 등 주요 AWS 서비스의 역할과 책임 분리 원칙을 설명할 수 있다.
-*   Public Subnet과 Private Subnet의 차이 및 활용 목적을 이해한다.
-*   Route Table과 Security Group의 기능적 차이를 명확히 구분한다.
-*   실제 설정 실수를 통해 클라우드 네트워크 구성의 중요성을 체감한다.
+* 사용자의 요청이 AWS 내부에서 처리되는 전체적인 흐름을 이해한다.
+* ALB, EC2, RDS 등 주요 AWS 서비스의 역할과 책임 분리 원칙을 설명할 수 있다.
+* Public Subnet과 Private Subnet의 차이 및 활용 목적을 이해한다.
+* Route Table과 Security Group의 기능적 차이를 명확히 구분한다.
+* 실제 설정 실수로 클라우드 네트워크 구성의 중요성을 체감한다.
 
 ---
 
-## 1. 문제 제기: `docker run`만으로 운영 가능할까?
+## 1. 문제 제기 — `docker run`만으로 운영 가능할까?
 
-컨테이너는 애플리케이션 실행의 표준이 됐지만, 실제 서비스를 운영할 때는 컨테이너를 둘러싼 네트워크와 인프라 구성이 그만큼 중요하다. 사용자의 요청이 컨테이너로 띄운 애플리케이션에 안전하고 효율적으로 닿으려면 어떤 과정을 거쳐야 할까?
+컨테이너는 애플리케이션 실행의 표준이 됐지만 실제 서비스를 운영할 때는 컨테이너를 둘러싼 네트워크와 인프라 구성이 그만큼 중요하다. 사용자의 요청이 컨테이너로 띄운 애플리케이션에 안전하고 효율적으로 닿으려면 어떤 과정을 거쳐야 할까?
 
-## 2. 전체 요청 흐름 한눈에 보기: 사용자 → ALB → EC2 → RDS
+## 2. 전체 요청 흐름 한눈에 보기 — 사용자 → ALB → EC2 → RDS
 
 일반적인 웹 서비스에서 사용자의 요청은 AWS 내부에서 다음 흐름으로 처리된다.
 
-1.  **사용자**: 웹 브라우저나 모바일 앱을 통해 서비스에 요청을 보낸다.
-2.  **ALB (Application Load Balancer)**: 외부로부터의 요청을 받아 여러 EC2 인스턴스에 분산한다. 로드 밸런싱, SSL/TLS 종료, 헬스 체크 등의 역할을 수행한다.
-3.  **EC2 (Elastic Compute Cloud)**: 애플리케이션 서버가 실행되는 가상 서버이다. 컨테이너화된 애플리케이션이 이 위에서 동작하며, 사용자의 요청을 처리한다.
-4.  **RDS (Relational Database Service)**: 애플리케이션에서 필요한 데이터를 저장하고 관리하는 데이터베이스 서비스이다.
+1. **사용자**: 웹 브라우저나 모바일 앱으로 서비스에 요청을 보낸다.
+2. **ALB (Application Load Balancer)**: 외부로부터의 요청을 받아 여러 EC2 인스턴스에 분산한다. 로드 밸런싱, SSL/TLS 종료, 헬스 체크 등의 역할을 수행한다.
+3. **EC2 (Elastic Compute Cloud)**: 애플리케이션 서버가 실행되는 가상 서버이다. 컨테이너화된 애플리케이션이 이 위에서 동작하며 사용자의 요청을 처리한다.
+4. **RDS (Relational Database Service)**: 애플리케이션에서 필요한 데이터를 저장하고 관리하는 데이터베이스 서비스이다.
 
-각 서비스는 저마다 맡은 역할이 뚜렷하고, 서로 맞물려 동작한다.
+각 서비스는 저마다 맡은 역할이 뚜렷하고 서로 맞물려 동작한다.
 
 ![AWS 요청 흐름 및 VPC 구조](/assets/images/2026-05-19-posting/aws-request-flow-vpc.png)
 
@@ -45,18 +45,18 @@ permalink: /posts/how-aws-request-flow-works/
 
 각 서비스가 분리되어 존재하는 것은 **단일 책임 원칙(Single Responsibility Principle)**과 **관심사의 분리(Separation of Concerns)**를 클라우드 인프라에 적용한 결과이다.
 
-*   **ALB**: 트래픽 분산 및 라우팅, 헬스 체크, SSL/TLS 처리 등 **네트워크 트래픽 관리**에 특화되어 있다.
-*   **EC2**: 애플리케이션 코드 실행, 비즈니스 로직 처리 등 **컴퓨팅 자원 제공 및 애플리케이션 실행**에 집중한다.
-*   **RDS**: 데이터 저장, 관리, 백업, 복구 등 **데이터베이스 관리**에 특화되어 있다.
+* **ALB**: 트래픽 분산 및 라우팅, 헬스 체크, SSL/TLS 처리 등 **네트워크 트래픽 관리**에 특화되어 있다.
+* **EC2**: 애플리케이션 코드 실행, 비즈니스 로직 처리 등 **컴퓨팅 자원 제공 및 애플리케이션 실행**에 집중한다.
+* **RDS**: 데이터 저장, 관리, 백업, 복구 등 **데이터베이스 관리**에 특화되어 있다.
 
-이렇게 나눠 두면 각 서비스가 제 역할에만 집중하게 되고, 확장성과 안정성, 보안성도 함께 올라간다.
+이렇게 나눠 두면 각 서비스가 제 역할에만 집중하게 되고 확장성과 안정성, 보안성도 함께 올라간다.
 
-## 4. Public Subnet과 Private Subnet의 차이: 왜 ALB는 바깥, EC2/RDS는 안쪽에 두는가?
+## 4. Public Subnet과 Private Subnet의 차이 — 왜 ALB는 바깥, EC2/RDS는 안쪽에 두는가?
 
-AWS VPC(Virtual Private Cloud)는 가상 네트워크 환경을 제공하며, 이 안에서 서브넷(Subnet)을 통해 네트워크를 논리적으로 분할한다. 서브넷은 크게 Public Subnet과 Private Subnet으로 나뉜다.
+AWS VPC(Virtual Private Cloud)는 가상 네트워크 환경을 제공하며 이 안에서 서브넷(Subnet)으로 네트워크를 논리적으로 분할한다. 서브넷은 크게 Public Subnet과 Private Subnet으로 나뉜다.
 
-*   **Public Subnet**: 인터넷 게이트웨이(Internet Gateway)와 연결되어 있어 외부 인터넷과의 통신이 가능하다. 주로 ALB와 같이 외부 요청을 직접 받아야 하는 서비스들이 위치한다.
-*   **Private Subnet**: 인터넷 게이트웨이와 직접 연결되어 있지 않아 외부 인터넷과의 통신이 불가능하다. NAT Gateway를 통해서만 외부로 나갈 수 있다. 보안이 중요한 EC2 인스턴스(애플리케이션 서버)나 RDS(데이터베이스)는 Private Subnet에 배치하여 외부로부터의 직접적인 접근을 차단한다.
+* **Public Subnet**: 인터넷 게이트웨이(Internet Gateway)와 연결되어 있어 외부 인터넷과의 통신이 가능하다. 주로 ALB와 같이 외부 요청을 직접 받아야 하는 서비스들이 위치한다.
+* **Private Subnet**: 인터넷 게이트웨이와 직접 연결되어 있지 않아 외부 인터넷과의 통신이 불가능하다. NAT Gateway로만 외부로 나갈 수 있다. 보안이 중요한 EC2 인스턴스(애플리케이션 서버)나 RDS(데이터베이스)는 Private Subnet에 배치하여 외부로부터의 직접적인 접근을 차단한다.
 
 이 구조는 **최소 권한 원칙(Principle of Least Privilege)**을 따른다. 외부에 드러날 필요가 없는 자원을 감춰 시스템 전체의 보안을 끌어올린다.
 
@@ -64,10 +64,10 @@ AWS VPC(Virtual Private Cloud)는 가상 네트워크 환경을 제공하며, �
 
 클라우드 네트워크에서 트래픽의 흐름을 제어하는 두 가지 핵심 요소는 Route Table과 Security Group이다.
 
-*   **Route Table (길 안내)**: 서브넷에 연결되어 트래픽이 목적지(IP 주소 범위)로 가기 위해 어떤 경로(게이트웨이, 네트워크 인터페이스 등)를 거쳐야 하는지 정의한다. 즉, **트래픽의 경로를 결정**한다.
-    *   예: Public Subnet의 Route Table은 인터넷 게이트웨이로 향하는 경로를 포함한다.
-*   **Security Group (출입 통제)**: 인스턴스(EC2, RDS 등)에 연결되어 해당 인스턴스로 들어오고 나가는 트래픽을 허용하거나 차단하는 **방화벽 역할**을 한다. IP 주소, 포트, 프로토콜 등을 기반으로 규칙을 설정한다.
-    *   예: EC2 인스턴스의 Security Group은 ALB로부터의 HTTP/HTTPS 트래픽만 허용하고, RDS의 Security Group은 EC2로부터의 DB 포트 트래픽만 허용한다.
+* **Route Table (길 안내)**: 서브넷에 연결되어 트래픽이 목적지(IP 주소 범위)로 가기 위해 어떤 경로(게이트웨이, 네트워크 인터페이스 등)를 거쳐야 하는지 정의한다. **트래픽의 경로를 결정**한다.
+    * 예: Public Subnet의 Route Table은 인터넷 게이트웨이로 향하는 경로를 포함한다.
+* **Security Group (출입 통제)**: 인스턴스(EC2, RDS 등)에 연결되어 해당 인스턴스로 들어오고 나가는 트래픽을 허용하거나 차단하는 **방화벽 역할**을 한다. IP 주소, 포트, 프로토콜 등으로 규칙을 설정한다.
+    * 예: EC2 인스턴스의 Security Group은 ALB로부터의 HTTP/HTTPS 트래픽만 허용하고 RDS의 Security Group은 EC2로부터의 DB 포트 트래픽만 허용한다.
 
 간단히 말해 Route Table이 트래픽에 갈 길을 알려주는 내비게이션이라면, Security Group은 그 길을 따라온 트래픽을 목적지 인스턴스 앞에서 검사하는 문지기다.
 
@@ -75,8 +75,8 @@ AWS VPC(Virtual Private Cloud)는 가상 네트워크 환경을 제공하며, �
 
 이전 포스트 [실전 클라우드 배포와 운영: 내가 마주한 기술적 고민과 해결책](/posts/cloud-deployment-troubleshooting/)에서 다뤘던 트러블슈팅 사례들은 대부분 AWS 네트워크 설정을 제대로 이해하지 못한 데서 비롯됐다. 아래 실수들을 겪으며 많은 것을 배웠다.
 
-*   **헬스체크 실패**: ALB 헬스체크가 실패해 대상 그룹이 `Unhealthy` 상태로 떨어진 적이 있다. EC2 인스턴스가 RDS에 연결하지 못해 애플리케이션이 제대로 부팅되지 않은 탓이었고, 그 밑에는 EC2와 RDS 간의 Security Group 설정 오류로 DB 포트(예: 3306) 통신이 막힌 문제가 있었다. 애플리케이션만 들여다볼 게 아니라 네트워크 보안 그룹 설정부터 확인해야 한다는 걸 이때 깨달았다.
-*   **보안 그룹 실수**: 특정 포트만 열면 되는데 너무 넓게 열어두거나, 정작 필요한 포트를 닫아 통신이 막힌 경우가 있었다. 인스턴스끼리 통신할 때는 발신(Outbound) 규칙과 수신(Inbound) 규칙을 양쪽 다 정확히 맞춰야 한다는 걸 이때 알았다. Security Group은 최소 권한 원칙에 따라 필요한 통신만 허용하도록 촘촘히 설정해야 한다.
+* **헬스체크 실패**: ALB 헬스체크가 실패해 대상 그룹이 `Unhealthy` 상태로 떨어진 적이 있다. EC2 인스턴스가 RDS에 연결하지 못해 애플리케이션이 제대로 부팅되지 않은 탓이었고 그 밑에는 EC2와 RDS 간의 Security Group 설정 오류로 DB 포트(예: 3306) 통신이 막힌 문제가 있었다. 애플리케이션만 들여다볼 게 아니라 네트워크 보안 그룹 설정부터 확인해야 한다는 걸 이때 깨달았다.
+* **보안 그룹 실수**: 특정 포트만 열면 되는데 너무 넓게 열어두거나, 정작 필요한 포트를 닫아 통신이 막힌 경우가 있었다. 인스턴스끼리 통신할 때는 발신(Outbound) 규칙과 수신(Inbound) 규칙을 양쪽 다 정확히 맞춰야 한다는 걸 이때 알았다. Security Group은 최소 권한 원칙에 따라 필요한 통신만 허용하도록 촘촘히 설정해야 한다.
 
 이런 경험을 거치며 AWS 네트워크 구성이 단순한 설정값 입력이 아니라 시스템 전체의 보안과 안정성을 좌우하는 문제임을 실감했다.
 
@@ -92,9 +92,9 @@ AWS VPC(Virtual Private Cloud)는 가상 네트워크 환경을 제공하며, �
 
 ## References
 
-*   [What is an Application Load Balancer? - AWS Documentation](https://docs.aws.amazon.com/elasticloadbalancing/latest/application/introduction.html)
-*   [What is Amazon EC2? - AWS Documentation](https://docs.aws.amazon.com/ec2/latest/userguide/what-is-amazon-ec2.html)
-*   [What is Amazon RDS? - AWS Documentation](https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/Welcome.html)
-*   [VPCs and subnets - AWS Documentation](https://docs.aws.amazon.com/vpc/latest/userguide/VPC_Subnets.html)
-*   [Route tables - AWS Documentation](https://docs.aws.amazon.com/vpc/latest/userguide/VPC_Route_Tables.html)
-*   [Security groups for your VPC - AWS Documentation](https://docs.aws.amazon.com/vpc/latest/userguide/VPC_SecurityGroups.html)
+* [What is an Application Load Balancer? - AWS Documentation](https://docs.aws.amazon.com/elasticloadbalancing/latest/application/introduction.html)
+* [What is Amazon EC2? - AWS Documentation](https://docs.aws.amazon.com/ec2/latest/userguide/what-is-amazon-ec2.html)
+* [What is Amazon RDS? - AWS Documentation](https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/Welcome.html)
+* [VPCs and subnets - AWS Documentation](https://docs.aws.amazon.com/vpc/latest/userguide/VPC_Subnets.html)
+* [Route tables - AWS Documentation](https://docs.aws.amazon.com/vpc/latest/userguide/VPC_Route_Tables.html)
+* [Security groups for your VPC - AWS Documentation](https://docs.aws.amazon.com/vpc/latest/userguide/VPC_SecurityGroups.html)

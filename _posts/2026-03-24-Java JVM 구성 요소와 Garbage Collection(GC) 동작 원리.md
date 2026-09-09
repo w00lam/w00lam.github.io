@@ -23,7 +23,7 @@ JVM(Java Virtual Machine)의 핵심 구성 요소인 Class Loader, Runtime Data 
 ## 2. JVM 구성 요소별 역할
 
 ### Class Loader (클래스 로더)
-바이트코드를 읽어 JVM의 메모리 영역에 적재하는 역할을 한다. 모든 클래스를 한 번에 올리지 않고, 실제 사용되는 시점에 동적으로 로드하는 **Lazy Loading** 방식을 취해 메모리 효율을 높인다.
+바이트코드를 읽어 JVM의 메모리 영역에 적재하는 역할을 한다. 모든 클래스를 한 번에 올리지 않고 실제 사용되는 시점에 동적으로 로드하는 **Lazy Loading** 방식을 취해 메모리 효율을 높인다.
 
 * **로드(Loading):** `.class` 파일을 찾아 읽음
 * **링크(Linking):** 검증, 메모리 할당, 참조 연결
@@ -34,7 +34,7 @@ JVM이 OS로부터 할당받은 메모리 공간이다.
 * **공유 영역:** Heap, Method Area (모든 스레드 공유)
 * **스레드 전용:** Stack, PC Register, Native Method Stack (각 스레드별 독립 존재)
 
-> **💡 static 사용을 주의해야 하는 이유**
+> ** static 사용을 주의해야 하는 이유**
 > `static`은 Method Area에 생성되어 JVM 종료 시까지 유지된다. GC의 관리 대상이 아니므로 무분별하게 사용하면 메모리 누수의 원인이 되며 모든 스레드가 공유하므로 동시성 문제(Race Condition)가 발생할 수 있다.
 
 ### Execution Engine (실행 엔진)
@@ -61,7 +61,7 @@ C언어와 달리 자바는 GC가 메모리 해제를 대신 수행한다. GC는
    - Young 영역에서 설정된 age 임계값을 넘긴 객체가 승격(Promote)되어 온다.
    - Old 영역이 꽉 차면 **Major GC(Full GC)** 가 발생하며 이때 **Stop The World(STW)** 현상으로 인해 모든 스레드가 일시 정지된다.
 
-### GC 동작 메커니즘: Mark & Sweep
+### GC 동작 메커니즘 — Mark & Sweep
 ![Mark-Sweep](/assets/images/2026-03-24-posting/Mark%20%26%20Sweep.jpg)
 
 1. **Mark:** **GC Root**(Stack, static 변수 등)에서 시작해 참조 사슬을 따라가며 살아있는 객체를 표시한다.
@@ -96,7 +96,7 @@ C언어와 달리 자바는 GC가 메모리 해제를 대신 수행한다. GC는
 
 ---
 
-### 🔗 참고 자료 (Sources)
+###  참고 자료 (Sources)
 * **Oracle:** [Java Virtual Machine Specification](https://docs.oracle.com/javase/specs/jvms/se17/html/index.html)
 * **Oracle:** [Garbage Collection Tuning Guide](https://docs.oracle.com/en/java/javase/17/gctuning/introduction-garbage-collection-tuning.html)
 * **Baeldung:** [JVM Architecture Explained](https://www.baeldung.com/jvm-vs-jre-vs-jdk)

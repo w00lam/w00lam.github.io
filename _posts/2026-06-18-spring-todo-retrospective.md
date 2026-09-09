@@ -18,7 +18,7 @@ permalink: /posts/spring-todo-retrospective/
 
 ## 1. 클래스 레벨 `@Transactional(readOnly = true)`와 메서드 레벨 `@Transactional`
 
-서비스 레이어를 구현하면서 가장 먼저 고민한 부분은 트랜잭션 설정이었습니다. 클래스에 `@Transactional(readOnly = true)`가 선언되어 있고, 그 하위 메서드에 다시 `@Transactional`이 선언되어 있다면 어떤 설정이 적용될지 의문이 생겼습니다.
+서비스 레이어를 구현하면서 가장 먼저 고민한 부분은 트랜잭션 설정이었습니다. 클래스에 `@Transactional(readOnly = true)`가 선언되어 있고 그 하위 메서드에 다시 `@Transactional`이 선언되어 있다면 어떤 설정이 적용될지 의문이 생겼습니다.
 
 결론부터 말하면, **메서드 레벨의 설정이 클래스 레벨 설정보다 우선 적용됩니다.** Spring은 더 구체적인 범위에 선언된 트랜잭션 속성을 우선하기 때문입니다.
 
@@ -42,7 +42,7 @@ public class TodoService {
 }
 ```
 
-서비스 클래스 전체에는 조회용 기본값으로 `@Transactional(readOnly = true)`를 적용하고, 저장·수정·삭제가 발생하는 메서드에만 `@Transactional`을 별도로 선언했습니다.
+서비스 클래스 전체에는 조회용 기본값으로 `@Transactional(readOnly = true)`를 적용하고 저장·수정·삭제가 발생하는 메서드에만 `@Transactional`을 별도로 선언했습니다.
 
 여기서 주의할 점이 있습니다. 메서드마다 항상 새로운 트랜잭션이 만들어진다는 뜻은 아닙니다. 기본 전파 속성인 `REQUIRED`에서는 기존 트랜잭션이 있으면 참여하고 없으면 새 트랜잭션을 시작합니다. 메서드 레벨 선언이 해당 메서드의 트랜잭션 속성을 좀 더 구체적으로 정의한다고 이해하면 됩니다.
 
@@ -62,7 +62,7 @@ this.managers.add(new Manager(user, this));
 
 ## 3. Cascade와 `orphanRemoval` 적용 기준
 
-Manager는 Todo 생성 시 함께 만들어지고 Todo에 종속되는 관계이므로 처음에는 `CascadeType.PERSIST`를 고려했습니다. 이후 Todo 삭제 시 담당자 정보도 함께 사라지는 것이 자연스럽고, Todo가 Manager의 생명주기를 전반적으로 관리한다고 판단하여 `CascadeType.ALL`과 `orphanRemoval = true` 조합을 선택했습니다.
+Manager는 Todo 생성 시 함께 만들어지고 Todo에 종속되는 관계이므로 처음에는 `CascadeType.PERSIST`를 고려했습니다. 이후 Todo 삭제 시 담당자 정보도 함께 사라지는 것이 자연스럽고 Todo가 Manager의 생명주기를 전반적으로 관리한다고 판단하여 `CascadeType.ALL`과 `orphanRemoval = true` 조합을 선택했습니다.
 
 ![JPA Cascade와 orphanRemoval 개념](/assets/images/2026-06-18-spring-todo-retrospective/jpa-cascade-concept.png)
 
@@ -75,7 +75,7 @@ Manager는 Todo 생성 시 함께 만들어지고 Todo에 종속되는 관계이
 private List<Manager> managers = new ArrayList<>();
 ```
 
-`CascadeType.ALL`은 `PERSIST`, `MERGE`, `REMOVE`, `REFRESH`, `DETACH`를 모두 포함합니다. 따라서 단순히 저장과 삭제만 필요하다면 필요한 타입만 명시하는 선택도 가능합니다. 이번에는 Manager의 생명주기가 Todo에 완전히 종속된다는 도메인 판단을 기준으로 `ALL`을 사용했습니다.
+`CascadeType.ALL`은 `PERSIST`, `MERGE`, `REMOVE`, `REFRESH`, `DETACH`를 모두 포함합니다. 단순히 저장과 삭제만 필요하다면 필요한 타입만 명시하는 선택도 가능합니다. 이번에는 Manager의 생명주기가 Todo에 완전히 종속된다는 도메인 판단을 기준으로 `ALL`을 사용했습니다.
 
 다만 모든 연관관계에 같은 설정을 적용하지는 않았습니다.
 
@@ -91,7 +91,7 @@ private List<Manager> managers = new ArrayList<>();
 
 > 자식 엔티티의 생명주기를 부모가 어디까지 관리해야 하는가?
 
-## 4. UserRole 권한 표현 방식: `hasRole`과 `hasAuthority`
+## 4. UserRole 권한 표현 방식 — `hasRole`과 `hasAuthority`
 
 Spring Security를 적용하면서 권한 검사 방식을 선택해야 했습니다. 현재 `UserRole` enum 값이 `ADMIN`, `USER`로 정의되어 있는 상황에서 저는 `hasAuthority("ADMIN")` 방식이 더 명확하다고 판단했습니다.
 
@@ -106,7 +106,7 @@ Spring Security를 적용하면서 권한 검사 방식을 선택해야 했습�
 
 기존에는 로그인 사용자 정보를 컨트롤러에서 받기 위해 커스텀 어노테이션 `@Auth`와 `AuthUserArgumentResolver`를 직접 만들어 사용했습니다. 하지만 Spring Security를 도입하면서 이 구조를 표준 방식으로 변경했습니다.
 
-기존에는 JWT 필터가 `request.setAttribute()`로 사용자 정보를 넘기고 ArgumentResolver가 이를 꺼냈습니다. 변경 후에는 인증 객체가 `SecurityContext`에 저장되고, 컨트롤러에서는 `@AuthenticationPrincipal`로 Principal을 전달받습니다.
+기존에는 JWT 필터가 `request.setAttribute()`로 사용자 정보를 넘기고 ArgumentResolver가 이를 꺼냈습니다. 변경 후에는 인증 객체가 `SecurityContext`에 저장되고 컨트롤러에서는 `@AuthenticationPrincipal`로 Principal을 전달받습니다.
 
 ```java
 @PostMapping("/todos")
@@ -131,7 +131,7 @@ public ResponseEntity<TodoSaveResponse> saveTodo(
 
 이번 필수 기능을 구현하면서 단순히 API가 동작하게 만드는 것보다 **현재 요구사항에서 어디까지 프레임워크에 책임을 맡길지 판단하는 능력**이 더 중요하다는 걸 깨달았습니다.
 
-`@Transactional`의 적용 우선순위나 JPA의 Cascade 설정은 편리하지만, 동작 원리를 정확히 모른 채 사용하면 예상하지 못한 버그를 마주할 수 있습니다. 반대로 원리를 이해하고 도메인의 생명주기와 책임을 기준으로 선택하면 프레임워크의 기능을 훨씬 명확하게 사용할 수 있습니다.
+`@Transactional`의 적용 우선순위나 JPA의 Cascade 설정은 편리하지만 동작 원리를 정확히 모른 채 사용하면 예상하지 못한 버그를 마주할 수 있습니다. 반대로 원리를 이해하고 도메인의 생명주기와 책임을 기준으로 선택하면 프레임워크의 기능을 훨씬 명확하게 사용할 수 있습니다.
 
 ## 한 줄 정리
 

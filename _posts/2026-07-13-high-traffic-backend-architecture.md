@@ -18,7 +18,7 @@ permalink: /posts/high-traffic-backend-architecture/
 
 결제 하나가 발생했을 때 주문 상태 변경, 결제 기록 저장, 상품 판매량 증가, 랭킹 갱신, 배송 준비, 알림 전송을 모두 한 요청 안에서 처리한다고 가정해 보자.
 
-기능은 구현할 수 있지만, 트래픽이 증가하면 다음 문제가 한꺼번에 나타난다.
+기능은 구현할 수 있지만 트래픽이 증가하면 다음 문제가 한꺼번에 나타난다.
 
 - 후속 작업이 많아질수록 사용자 응답 시간이 길어진다.
 - 배송이나 알림처럼 부가 작업 하나가 실패해도 결제 요청 전체가 실패할 수 있다.
@@ -37,7 +37,7 @@ permalink: /posts/high-traffic-backend-architecture/
 
 ## 2. 실시간 랭킹은 Redis ZSET으로 분리할 수 있다
 
-상품 판매량이나 인기 검색어처럼 점수가 계속 바뀌고 순위 조회가 자주 발생하는 데이터는 매번 RDB에서 집계하지 않는 편이 유리할 수 있다. 이때 Redis의 Sorted Set, 즉 ZSET을 사용할 수 있다.
+상품 판매량이나 인기 검색어처럼 점수가 계속 바뀌고 순위 조회가 자주 발생하는 데이터는 매번 RDB에서 집계하지 않는 편이 유리할 수 있다. 이때 Redis의 Sorted Set, ZSET을 사용할 수 있다.
 
 ZSET은 다음 두 요소로 이루어진다.
 
@@ -51,7 +51,7 @@ ZINCRBY product:ranking 1 product:42
 ZREVRANGE product:ranking 0 9 WITHSCORES
 ```
 
-`ZINCRBY`는 특정 상품의 점수를 증가시키고, `ZREVRANGE`는 높은 점수부터 원하는 구간을 조회한다. 삽입과 점수 변경, 순위 조회는 정렬 상태를 유지하는 자료구조의 특성을 활용하므로 점수가 지속해서 변하는 상위 목록을 조회하는 데 적합하다. 일반적으로 정렬된 집합의 갱신과 조회는 `O(log N)` 수준의 비용이 들며, 전체 데이터를 매번 정렬하는 방식보다 예측 가능한 조회 구조를 만든다.
+`ZINCRBY`는 특정 상품의 점수를 증가시키고 `ZREVRANGE`는 높은 점수부터 원하는 구간을 조회한다. 삽입과 점수 변경, 순위 조회는 정렬 상태를 유지하는 자료구조의 특성을 활용하므로 점수가 지속해서 변하는 상위 목록을 조회하는 데 적합하다. 일반적으로 정렬된 집합의 갱신과 조회는 `O(log N)` 수준의 비용이 들며 전체 데이터를 매번 정렬하는 방식보다 예측 가능한 조회 구조를 만든다.
 
 반대로 RDB에서 매 요청마다 `GROUP BY`와 정렬로 판매량을 다시 계산하면 원본 거래 데이터가 많아질수록 조회 부하가 커진다. 결제 완료 이벤트를 받을 때 판매 점수를 Redis에 반영해 두면 랭킹 조회는 빠른 파생 데이터 조회로 바뀐다.
 
@@ -71,9 +71,9 @@ ZREVRANGE product:ranking 0 9 WITHSCORES
 
 ![동기식 처리와 이벤트 기반 처리 비교](/assets/images/2026-07-13-high-traffic-event-architecture/sync-vs-event-driven-architecture.png)
 
-동기식 구조에서는 결제 서비스가 주문, 랭킹, 배송, 알림을 순서대로 직접 호출한다. 결제 서비스는 모든 작업의 성공 여부를 기다려야 하고, 하나의 느린 API나 장애가 전체 요청의 응답 시간과 성공 여부에 영향을 준다.
+동기식 구조에서는 결제 서비스가 주문, 랭킹, 배송, 알림을 순서대로 직접 호출한다. 결제 서비스는 모든 작업의 성공 여부를 기다려야 하고 하나의 느린 API나 장애가 전체 요청의 응답 시간과 성공 여부에 영향을 준다.
 
-이벤트 기반 구조에서는 결제 서비스가 결제 완료라는 사실을 이벤트로 발행하는 책임에 집중한다. 랭킹 Consumer는 판매 점수를 갱신하고, 결제 이력 Consumer는 기록을 저장하며, 배송 Consumer는 배송 준비 데이터를 만든다. 알림 Consumer도 별도로 동작한다.
+이벤트 기반 구조에서는 결제 서비스가 결제 완료라는 사실을 이벤트로 발행하는 책임에 집중한다. 랭킹 Consumer는 판매 점수를 갱신하고 결제 이력 Consumer는 기록을 저장하며 배송 Consumer는 배송 준비 데이터를 만든다. 알림 Consumer도 별도로 동작한다.
 
 이 구조의 핵심은 “Kafka를 넣으면 빨라진다”가 아니다. **결제 완료라는 하나의 사실을 여러 후속 작업이 각자의 속도와 장애 범위 안에서 처리하도록 책임을 분리하는 것**이다.
 
@@ -103,7 +103,7 @@ Kafka의 각 구성 요소는 다음처럼 실제 흐름에 연결할 수 있다
 
 ![Kafka 핵심 구조](/assets/images/2026-07-13-high-traffic-event-architecture/kafka-cluster-consumer-group.png)
 
-같은 Consumer Group 안에서는 하나의 파티션을 동시에 여러 Consumer가 처리하지 않는다. 파티션이 세 개라면 Consumer도 세 개까지 작업을 나눌 수 있지만, Consumer 수를 무작정 늘린다고 처리량이 계속 증가하지는 않는다. 파티션 수와 브로커 자원, 메시지 처리 시간, 운영 비용을 함께 봐야 한다.
+같은 Consumer Group 안에서는 하나의 파티션을 동시에 여러 Consumer가 처리하지 않는다. 파티션이 세 개라면 Consumer도 세 개까지 작업을 나눌 수 있지만 Consumer 수를 무작정 늘린다고 처리량이 계속 증가하지는 않는다. 파티션 수와 브로커 자원, 메시지 처리 시간, 운영 비용을 함께 봐야 한다.
 
 반면 서로 다른 Consumer Group은 같은 이벤트를 독립적으로 소비할 수 있다. 랭킹 Consumer Group, 결제 이력 Consumer Group, 배송 Consumer Group이 각각 존재하면 동일한 결제 완료 이벤트가 서로 다른 목적에 맞게 전달된다.
 
@@ -111,7 +111,7 @@ Kafka의 순서 보장은 토픽 전체가 아니라 파티션 내부에서 제�
 
 ## 5. Spring Boot에서 이벤트를 발행하고 소비하기
 
-Spring Boot에서는 `KafkaTemplate`로 이벤트를 발행하고, `@KafkaListener`로 이벤트를 소비하는 흐름을 구성할 수 있다. Producer serializer는 Java 객체를 메시지 형식으로 변환하고, Consumer deserializer는 메시지를 이벤트 객체로 복원한다. `ConsumerFactory`와 `ConcurrentKafkaListenerContainerFactory`는 Consumer 생성과 리스너 실행 환경을 구성한다.
+Spring Boot에서는 `KafkaTemplate`로 이벤트를 발행하고 `@KafkaListener`로 이벤트를 소비하는 흐름을 구성할 수 있다. Producer serializer는 Java 객체를 메시지 형식으로 변환하고 Consumer deserializer는 메시지를 이벤트 객체로 복원한다. `ConsumerFactory`와 `ConcurrentKafkaListenerContainerFactory`는 Consumer 생성과 리스너 실행 환경을 구성한다.
 
 결제 완료 이벤트는 Java 21의 `record`로 표현하면 불변 데이터의 의도를 간결하게 드러낼 수 있다.
 
@@ -165,13 +165,13 @@ Offset은 단순히 “읽은 위치”가 아니라 Consumer Group의 처리 �
   -> 판매량이 다시 증가할 위험
 ```
 
-자동 commit은 설정이 간단하지만 실제 비즈니스 처리가 끝났는지와 commit 시점이 어긋날 수 있다. 수동 commit이나 컨테이너 기반 commit은 처리 완료 시점을 더 명확히 조절할 수 있지만, 예외 상황과 비동기 처리의 경계를 세밀하게 관리해야 한다.
+자동 commit은 설정이 간단하지만 실제 비즈니스 처리가 끝났는지와 commit 시점이 어긋날 수 있다. 수동 commit이나 컨테이너 기반 commit은 처리 완료 시점을 더 명확히 조절할 수 있지만 예외 상황과 비동기 처리의 경계를 세밀하게 관리해야 한다.
 
-따라서 실무에서는 보통 `at-least-once` 전달을 전제로 한다. 메시지가 적어도 한 번 전달될 수 있다는 뜻은, 같은 메시지가 다시 전달될 수 있다는 뜻이기도 하다. 결국 offset 설정만으로 중복을 없애려 하기보다 Consumer를 멱등하게 만들어야 한다.
+실무에서는 보통 `at-least-once` 전달을 전제로 한다. 메시지가 적어도 한 번 전달될 수 있다는 뜻은, 같은 메시지가 다시 전달될 수 있다는 뜻이기도 하다. 결국 offset 설정만으로 중복을 없애려 하기보다 Consumer를 멱등하게 만들어야 한다.
 
 ## 7. 중복 이벤트와 멱등성
 
-결제 완료 이벤트가 두 번 처리되면 판매량이 두 번 증가하고, 배송 요청이 두 번 생성되며, 알림이 중복 발송될 수 있다. 중복은 네트워크 재전달이나 commit 전 장애처럼 정상적인 운영 과정에서도 발생할 수 있다.
+결제 완료 이벤트가 두 번 처리되면 판매량이 두 번 증가하고 배송 요청이 두 번 생성되며 알림이 중복 발송될 수 있다. 중복은 네트워크 재전달이나 commit 전 장애처럼 정상적인 운영 과정에서도 발생할 수 있다.
 
 대표적인 방어 방법은 다음과 같다.
 
@@ -201,7 +201,7 @@ Consumer 실패가 모두 같은 의미인 것은 아니다. 일시적인 DB 연
 
 ![Kafka 실패 처리와 DLT](/assets/images/2026-07-13-high-traffic-event-architecture/kafka-retry-dlt-flow.png)
 
-DLT는 실패 메시지를 버리는 장소가 아니다. 실패 이벤트를 정상 흐름에서 격리하고, 원인을 분석하고, 복구할 수 있게 만드는 운영 영역이다. 이를 위해 원본 Topic, Partition, Offset, Consumer Group, 예외 타입과 메시지, 실패 시간, 재시도 횟수, 원본 이벤트, 재처리 상태를 함께 남겨야 한다.
+DLT는 실패 메시지를 버리는 장소가 아니다. 실패 이벤트를 정상 흐름에서 격리하고 원인을 분석하고 복구할 수 있게 만드는 운영 영역이다. 이를 위해 원본 Topic, Partition, Offset, Consumer Group, 예외 타입과 메시지, 실패 시간, 재시도 횟수, 원본 이벤트, 재처리 상태를 함께 남겨야 한다.
 
 이전에 [Kafka 재처리와 DLT는 예외 처리가 아니라 운영 설계다](/posts/kafka-retry-dlt-operation/)에서 retry topic, 파티션 순서, DLT 운영 프로세스를 더 자세히 정리했다. 이번 글에서는 그 세부 구현보다 결제 이벤트 흐름에서 DLT가 왜 필요한지에 초점을 맞췄다.
 
@@ -218,7 +218,7 @@ DLT는 실패 메시지를 버리는 장소가 아니다. 실패 이벤트를 �
 
 ![결제 완료 이벤트 전체 흐름](/assets/images/2026-07-13-high-traffic-event-architecture/payment-completed-event-flow.png)
 
-각 Consumer는 서로 다른 Consumer Group을 사용한다. 따라서 배송 Consumer가 일시적으로 실패해도 랭킹 Consumer가 멈추거나 결제 이력 Consumer의 처리까지 함께 실패하지 않는다. 물론 Kafka와 Consumer의 처리 상태를 모니터링해야 하며, 독립성이 곧 무제한 확장성을 의미하는 것은 아니다.
+각 Consumer는 서로 다른 Consumer Group을 사용한다. 배송 Consumer가 일시적으로 실패해도 랭킹 Consumer가 멈추거나 결제 이력 Consumer의 처리까지 함께 실패하지 않는다. 물론 Kafka와 Consumer의 처리 상태를 모니터링해야 하며 독립성이 곧 무제한 확장성을 의미하는 것은 아니다.
 
 이 구조에서 저장소의 경계는 분명해야 한다.
 
@@ -273,7 +273,7 @@ k6 부하 테스트에서는 평균 응답 시간만 보지 않고 다음 지표
 
 ![부하 테스트 기반 성능 개선 사이클](/assets/images/2026-07-13-high-traffic-event-architecture/load-test-performance-cycle.png)
 
-예를 들어 Consumer Lag이 계속 증가한다면 Consumer 처리 로직의 DB 호출 수, 파티션 수, Consumer 인스턴스 수를 함께 확인해야 한다. DB 조회가 병목이라면 인덱스나 쿼리 구조를 살펴보고, 파티션 부족이 원인이라면 병렬성 증가가 실제로 가능한지 검토해야 한다. 개선 전후 수치는 실제 측정 결과가 있을 때만 기록해야 하며, 현재 학습 자료에는 특정 성능 개선 수치가 없으므로 임의의 숫자는 제시하지 않는다.
+예를 들어 Consumer Lag이 계속 증가한다면 Consumer 처리 로직의 DB 호출 수, 파티션 수, Consumer 인스턴스 수를 함께 확인해야 한다. DB 조회가 병목이라면 인덱스나 쿼리 구조를 살펴보고 파티션 부족이 원인이라면 병렬성 증가가 실제로 가능한지 검토해야 한다. 개선 전후 수치는 실제 측정 결과가 있을 때만 기록해야 하며 현재 학습 자료에는 특정 성능 개선 수치가 없으므로 임의의 숫자는 제시하지 않는다.
 
 ## 12. 학습하며 바뀐 생각
 

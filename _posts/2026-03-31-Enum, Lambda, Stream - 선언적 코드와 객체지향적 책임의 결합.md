@@ -10,7 +10,7 @@ permalink: /posts/enum-lambda-stream/
 
 ## 1. Enum, 상수 집합을 넘어선 상태 도메인 모델
 
-`String`이나 `int` 상수는 값만 전달할 뿐 의도, 즉 타입은 담지 못합니다. Enum은 인스턴스 수가 고정된 특별한 클래스라서 타입 안정성(Type Safety)을 보장합니다.
+`String`이나 `int` 상수는 값만 전달할 뿐 의도, 타입은 담지 못합니다. Enum은 인스턴스 수가 고정된 특별한 클래스라서 타입 안정성(Type Safety)을 보장합니다.
 
 ### 1-1. 실무형 Enum의 조건
 실무에서는 상수 이름 말고도 DB 코드, 설명, 상태 전이 규칙 등을 Enum 안에 응집시켜야 합니다.
@@ -22,7 +22,7 @@ permalink: /posts/enum-lambda-stream/
 ### 1-2. Enum과 전략 패턴 (Strategy Pattern)
 Enum 안에 추상 메서드를 선언하고 상수마다 구현하면 `if-else` 분기 없이 다형성으로 전략 패턴을 구현할 수 있습니다. 새로운 정책을 추가할 때 기존 코드를 건드리지 않으니 OCP(개방-폐쇄 원칙)도 자연스럽게 지켜집니다.
 
-> 추상 메서드 방식도 좋지만, 함수형 인터페이스와 람다를 필드로 활용하면 코드가 한결 간결해집니다. 추상 메서드를 직접 구현하는 방식과 람다를 주입하는 방식 중 무엇이 더 나은지는 실제 구현 코드로 비교해 봤는데, [Java Enum의 추상 메서드와 람다(Lambda) 활용](/posts/java-enum-lambda/) 포스팅에서 자세히 다뤘습니다.
+> 추상 메서드 방식도 좋지만 함수형 인터페이스와 람다를 필드로 활용하면 코드가 한결 간결해집니다. 추상 메서드를 직접 구현하는 방식과 람다를 주입하는 방식 중 무엇이 더 나은지는 실제 구현 코드로 비교해 봤는데, [Java Enum의 추상 메서드와 람다(Lambda) 활용](/posts/java-enum-lambda/) 포스팅에서 자세히 다뤘습니다.
 
 ---
 
@@ -40,9 +40,9 @@ Enum 안에 추상 메서드를 선언하고 상수마다 구현하면 `if-else`
 스트림은 데이터를 저장하는 자료구조가 아니라 데이터 소스 위에서 동작하는 연산 파이프라인입니다.
 
 ### 3-1. 스트림의 3단계 구조
-1.  **Source:** 데이터 시작 (`list.stream()`)
-2.  **Intermediate Operation:** 연산 설계 (`filter`, `map`, `sorted`). 지연 연산(Lazy Evaluation) 특성 덕분에 터미널 연산 전까지 실행되지 않는다.
-3.  **Terminal Operation:** 실제 실행 및 결과 생성 (`toList`, `collect`, `count`). 
+1. **Source:** 데이터 시작 (`list.stream()`)
+2. **Intermediate Operation:** 연산 설계 (`filter`, `map`, `sorted`). 지연 연산(Lazy Evaluation) 특성 덕분에 터미널 연산 전까지 실행되지 않는다.
+3. **Terminal Operation:** 실제 실행 및 결과 생성 (`toList`, `collect`, `count`).
 
 ### 3-2. 스트림의 핵심 동작 원리
 * **Lazy Evaluation:** 필요한 시점까지 계산을 미루어 효율성을 극대화한다.
@@ -51,7 +51,7 @@ Enum 안에 추상 메서드를 선언하고 상수마다 구현하면 `if-else`
 
 ---
 
-## 4. 언제 무엇을 쓸까: Stream vs for-loop
+## 4. 언제 무엇을 쓸까 — Stream vs for-loop
 
 요즘 자바 코딩에서 스트림은 강력하지만 늘 정답은 아닙니다. 상황에 맞게 골라 써야 합니다.
 

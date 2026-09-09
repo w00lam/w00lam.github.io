@@ -10,7 +10,7 @@ permalink: /posts/interrupt-execution-flow/
 
 > CPU가 현재 작업을 멈추고 다른 작업을 처리하는 기능
 
-틀린 설명은 아니지만, 이 정도로는 실제 실행 흐름이 잘 연결되지 않았다.
+틀린 설명은 아니지만 이 정도로는 실제 실행 흐름이 잘 연결되지 않았다.
 
 - CPU는 왜 실행 중인 작업을 중단해야 할까?
 - Interrupt가 발생하면 항상 Context Switching(문맥 교환)이 일어날까?
@@ -21,7 +21,7 @@ permalink: /posts/interrupt-execution-flow/
 
 이 질문들을 따라가며 이해한 Interrupt는 단순히 “작업을 중단하는 기능”이 아니었다.
 
-**CPU가 모든 사건을 직접 확인하지 않고, 필요한 사건이 발생했을 때 Kernel(커널)이 제어권을 얻어 처리할 수 있도록 만드는 메커니즘**에 가까웠다.
+**CPU가 모든 사건을 직접 확인하지 않고 필요한 사건이 발생했을 때 Kernel(커널)이 제어권을 얻어 처리할 수 있도록 만드는 메커니즘**에 가까웠다.
 
 이번 글에서는 Interrupt의 종류를 나열하기보다 CPU, Kernel, I/O, Scheduler, Thread가 어떤 실행 흐름으로 연결되는지 정리해 본다.
 
@@ -42,7 +42,7 @@ I/O 끝났나?
 ...
 ```
 
-이처럼 CPU가 장치의 상태를 반복해서 확인하는 방식을 Polling(폴링)이라고 한다. 구현이 단순하고 특정 상황에서는 유용하지만, I/O가 완료될 때까지 CPU가 확인 작업을 반복해야 한다는 비용이 있다.
+이처럼 CPU가 장치의 상태를 반복해서 확인하는 방식을 Polling(폴링)이라고 한다. 구현이 단순하고 특정 상황에서는 유용하지만 I/O가 완료될 때까지 CPU가 확인 작업을 반복해야 한다는 비용이 있다.
 
 Interrupt를 사용하면 CPU는 완료될 때까지 기다리는 대신 다른 작업을 실행할 수 있다.
 
@@ -58,13 +58,13 @@ CPU가 완료 사실을 인지
 
 핵심은 **CPU가 사건이 발생할 때까지 기다리는 것이 아니라, 사건이 발생하기 전까지 다른 일을 할 수 있다는 점**이다.
 
-다만 “Interrupt를 사용하면 CPU가 아무 비용도 들이지 않는다”는 뜻은 아니다. Interrupt가 발생하면 CPU의 실행 흐름이 Kernel로 바뀌고, Kernel은 장치나 프로세스 상태를 처리해야 한다. 중요한 것은 완료 여부를 확인하는 비용을 계속 지불하는 대신, 실제 사건이 발생했을 때 필요한 처리를 수행한다는 것이다.
+다만 “Interrupt를 사용하면 CPU가 아무 비용도 들이지 않는다”는 뜻은 아니다. Interrupt가 발생하면 CPU의 실행 흐름이 Kernel로 바뀌고 Kernel은 장치나 프로세스 상태를 처리해야 한다. 중요한 것은 완료 여부를 확인하는 비용을 계속 지불하는 대신, 실제 사건이 발생했을 때 필요한 처리를 수행한다는 것이다.
 
 ## 2. Interrupt란 무엇인가
 
 Interrupt는 다음과 같이 정의할 수 있다.
 
-> CPU가 현재 실행 흐름을 잠시 중단하고, 발생한 사건을 처리하기 위한 Interrupt Handler(인터럽트 처리기)로 제어 흐름을 변경하는 메커니즘
+> CPU가 현재 실행 흐름을 잠시 중단하고 발생한 사건을 처리하기 위한 Interrupt Handler(인터럽트 처리기)로 제어 흐름을 변경하는 메커니즘
 
 실행 흐름을 단순화하면 다음과 같다.
 
@@ -82,7 +82,7 @@ Interrupt 처리
 기존 작업 복귀 또는 Scheduler 실행
 ```
 
-여기서 “현재 실행 상태 일부 저장”은 현재 작업을 나중에 이어 실행하기 위한 준비다. 실제로 저장되는 정보와 처리 순서는 CPU 아키텍처와 운영체제에 따라 다르지만, 일반적으로 현재 실행 위치와 권한 수준, 레지스터 같은 실행 문맥이 관련된다.
+여기서 “현재 실행 상태 일부 저장”은 현재 작업을 나중에 이어 실행하기 위한 준비다. 실제로 저장되는 정보와 처리 순서는 CPU 아키텍처와 운영체제에 따라 다르지만 일반적으로 현재 실행 위치와 권한 수준, 레지스터 같은 실행 문맥이 중요하다.
 
 중요한 점은 **Interrupt 자체가 다음 프로세스나 스레드를 선택하는 것은 아니라는 사실**이다.
 
@@ -92,7 +92,7 @@ Interrupt는 Kernel이 CPU의 제어권을 얻어 사건을 처리할 수 있게
 
 ![Interrupt 전체 실행 흐름](/assets/images/2026-08-13-interrupt-execution-flow/interrupt-full-flow.png)
 
-Interrupt가 발생하면 Kernel이 제어권을 얻고, Interrupt Handler가 사건을 처리한다. 이후 Scheduler가 실행될 수 있지만, 항상 실행 대상이 바뀌는 것은 아니다.
+Interrupt가 발생하면 Kernel이 제어권을 얻고 Interrupt Handler가 사건을 처리한다. 이후 Scheduler가 실행될 수 있지만 항상 실행 대상이 바뀌는 것은 아니다.
 
 ## 3. Interrupt의 주요 종류
 
@@ -107,7 +107,7 @@ CPU 외부의 장치가 사건을 알리기 위해 발생시키는 Interrupt다.
 - Keyboard 입력
 - Timer Interrupt
 
-예를 들어 디스크가 요청받은 읽기 작업을 끝내면, 장치가 완료 사실을 알리고 CPU가 이를 처리할 수 있다. 실제 장치와 운영체제의 처리 방식은 다양하지만, “외부 장치에서 발생한 사건이 CPU와 Kernel에 전달된다”는 흐름으로 이해하면 된다.
+예를 들어 디스크가 요청받은 읽기 작업을 끝내면, 장치가 완료 사실을 알리고 CPU가 이를 처리할 수 있다. 실제 장치와 운영체제의 처리 방식은 다양하지만 “외부 장치에서 발생한 사건이 CPU와 Kernel에 전달된다”는 흐름으로 이해하면 된다.
 
 ### Exception(예외)
 
@@ -117,7 +117,7 @@ CPU가 명령어를 실행하는 과정에서 발생하는 사건이다.
 - Page Fault
 - 잘못된 메모리 접근
 
-Hardware Interrupt가 현재 실행 중인 명령어와 직접 관련 없이 외부에서 들어올 수 있는 사건이라면, Exception은 **실행 중인 명령어와 관련해서 발생한다**는 점이 다르다. 따라서 실행한 명령어, 접근한 주소, 현재 권한 같은 실행 문맥이 처리에 중요하다.
+Hardware Interrupt가 현재 실행 중인 명령어와 직접 관련 없이 외부에서 들어올 수 있는 사건이라면, Exception은 **실행 중인 명령어와 관련해서 발생한다**는 점이 다르다. 실행한 명령어, 접근한 주소, 현재 권한 같은 실행 문맥이 처리에 중요하다.
 
 ### System Call(시스템 호출)
 
@@ -135,7 +135,7 @@ Kernel
 Disk / Network
 ```
 
-파일이나 네트워크를 읽는 것처럼 애플리케이션이 직접 처리할 수 없는 작업은 OS에 요청해야 한다. 이때 System Call을 통해 사용자 모드에서 Kernel의 서비스를 요청한다.
+파일이나 네트워크를 읽는 것처럼 애플리케이션이 직접 처리할 수 없는 작업은 OS에 요청해야 한다. 이때 System Call로 사용자 모드에서 Kernel의 서비스를 요청한다.
 
 Hardware Interrupt, Exception, System Call은 모두 완전히 같은 개념은 아니다. 발생 원인과 발생 시점이 다르다. 다만 세 가지 모두 **CPU의 정상적인 실행 흐름을 변경해 Kernel의 처리가 필요해진다**는 관점에서 함께 비교할 수 있다.
 
@@ -161,9 +161,9 @@ Scheduler 실행
 
 > Interrupt가 발생하면 항상 다른 스레드로 Context Switching된다.
 
-Timer Interrupt가 발생하면 Kernel이 CPU 제어권을 얻는다. 그 후 Scheduler가 실행될 수 있지만, Scheduler가 다시 같은 프로세스나 스레드를 선택할 수도 있다. Interrupt Handler 처리 후 기존 실행 흐름으로 그대로 복귀하는 경우도 있다.
+Timer Interrupt가 발생하면 Kernel이 CPU 제어권을 얻는다. 그 후 Scheduler가 실행될 수 있지만 Scheduler가 다시 같은 프로세스나 스레드를 선택할 수도 있다. Interrupt Handler 처리 후 기존 실행 흐름으로 그대로 복귀하는 경우도 있다.
 
-따라서 관계를 다음처럼 구분해야 한다.
+관계를 다음처럼 구분해야 한다.
 
 ```text
 Interrupt
@@ -176,9 +176,9 @@ Kernel이 CPU 제어권 획득
 Context Switching
 ```
 
-즉, **Interrupt ≠ Context Switching**이다.
+**Interrupt ≠ Context Switching**이다.
 
-Context Switching은 현재 실행 상태를 저장하고 다른 실행 흐름의 상태를 복원하는 전환 과정이다. Interrupt는 이 과정을 시작하게 만드는 계기가 될 수 있지만, Interrupt 그 자체가 Context Switching과 같은 개념은 아니다.
+Context Switching은 현재 실행 상태를 저장하고 다른 실행 흐름의 상태를 복원하는 전환 과정이다. Interrupt는 이 과정을 시작하게 만드는 계기가 될 수 있지만 Interrupt 그 자체가 Context Switching과 같은 개념은 아니다.
 
 ### 시각 자료 2 — Interrupt와 Context Switching의 관계
 
@@ -203,7 +203,7 @@ Disk I/O 요청
 Waiting
 ```
 
-Blocking I/O 모델에서는 Thread A가 디스크의 결과를 기다리는 동안 계속 CPU를 사용할 필요가 없다. Kernel은 Thread A를 Waiting 또는 Blocked 상태로 바꾸고, CPU에서 실행할 수 있는 다른 Thread B를 선택할 기회를 얻는다.
+Blocking I/O 모델에서는 Thread A가 디스크의 결과를 기다리는 동안 계속 CPU를 사용할 필요가 없다. Kernel은 Thread A를 Waiting 또는 Blocked 상태로 바꾸고 CPU에서 실행할 수 있는 다른 Thread B를 선택할 기회를 얻는다.
 
 ```text
 CPU
@@ -211,7 +211,7 @@ CPU
 Thread B 실행
 ```
 
-여기서 Thread A가 Waiting이 되었다는 것은 Thread A가 사라졌다는 뜻이 아니다. I/O 요청과 그 결과를 이어서 처리하기 위한 실행 문맥은 유지되며, 작업이 완료되면 다시 실행 가능한 상태가 될 수 있다.
+여기서 Thread A가 Waiting이 되었다는 것은 Thread A가 사라졌다는 뜻이 아니다. I/O 요청과 그 결과를 이어서 처리하기 위한 실행 문맥은 유지되며 작업이 완료되면 다시 실행 가능한 상태가 될 수 있다.
 
 ### 5-2. I/O 완료와 Hardware Interrupt
 
@@ -230,7 +230,7 @@ Thread A
 Waiting → Ready
 ```
 
-Kernel의 장치 드라이버와 I/O 처리 코드는 어떤 요청이 완료되었는지 확인하고, 그 결과를 기다리던 Thread A를 Ready 상태로 깨울 수 있다.
+Kernel의 장치 드라이버와 I/O 처리 코드는 어떤 요청이 완료되었는지 확인하고 그 결과를 기다리던 Thread A를 Ready 상태로 깨울 수 있다.
 
 다만 모든 OS와 장치가 항상 같은 방식으로 동작한다고 단정할 수는 없다. 현대 시스템은 Interrupt와 Polling을 조합하거나, 장치의 완료 큐를 확인하는 방식 등 여러 최적화 방식을 사용한다. 여기서는 운영체제의 기본 실행 흐름을 이해하기 위한 일반적인 모델을 다룬다.
 
@@ -252,13 +252,13 @@ Ready는 실행할 수 있는 상태이지, 지금 CPU에서 실행 중이라는
 Ready → Running
 ```
 
-따라서 I/O 완료와 Thread 실행 사이에는 Scheduler의 선택 과정이 있을 수 있다. 다른 스레드가 이미 CPU를 사용하고 있거나, 우선순위가 높은 작업이 있거나, 현재 CPU와 실행 큐의 상황이 다르면 Thread A가 Ready가 된 직후 바로 실행되지 않을 수 있다.
+I/O 완료와 Thread 실행 사이에는 Scheduler의 선택 과정이 있을 수 있다. 다른 스레드가 이미 CPU를 사용하고 있거나, 우선순위가 높은 작업이 있거나, 현재 CPU와 실행 큐의 상황이 다르면 Thread A가 Ready가 된 직후 바로 실행되지 않을 수 있다.
 
 ### 시각 자료 3 — I/O 요청부터 재실행까지
 
 ![I/O 요청부터 스레드 재실행까지의 상태 전환](/assets/images/2026-08-13-interrupt-execution-flow/io-state-transition.png)
 
-I/O 완료 Interrupt 이후에도 Thread는 먼저 Ready 상태가 되고, Scheduler의 선택을 거쳐 Running 상태가 된다.
+I/O 완료 Interrupt 이후에도 Thread는 먼저 Ready 상태가 되고 Scheduler의 선택을 거쳐 Running 상태가 된다.
 
 ## 6. Kernel이 중심에 있다는 점
 
@@ -292,13 +292,13 @@ Thread State 변경
 Scheduler
 ```
 
-애플리케이션은 System Call을 통해 Kernel에 작업을 요청한다. Kernel은 장치와 프로세스 상태를 관리한다. 장치에서 Interrupt가 발생하면 Kernel은 해당 사건을 처리하고, 필요한 경우 기다리던 스레드의 상태를 변경하거나 Scheduler가 실행될 수 있도록 한다.
+애플리케이션은 System Call로 Kernel에 작업을 요청한다. Kernel은 장치와 프로세스 상태를 관리한다. 장치에서 Interrupt가 발생하면 Kernel은 해당 사건을 처리하고 필요한 경우 기다리던 스레드의 상태를 변경하거나 Scheduler가 실행될 수 있도록 한다.
 
-이 관점에서 Interrupt는 **Hardware와 Kernel, Application 실행 흐름을 연결하는 메커니즘**이라고 볼 수 있다.
+Interrupt는 **Hardware와 Kernel, Application 실행 흐름을 연결하는 메커니즘**이라고 볼 수 있다.
 
 ## 7. Process State와 연결하기
 
-지금까지의 내용을 상태 변화로 묶으면 다음과 같다. `Running`, `Ready`, `Waiting`은 실행 흐름을 설명하기 위한 일반적인 상태 이름이며, 실제 OS의 상태 이름과 세부 전환 조건은 구현에 따라 달라질 수 있다.
+지금까지의 내용을 상태 변화로 묶으면 다음과 같다. `Running`, `Ready`, `Waiting`은 실행 흐름을 설명하기 위한 일반적인 상태 이름이며 실제 OS의 상태 이름과 세부 전환 조건은 구현에 따라 달라질 수 있다.
 
 ```mermaid
 stateDiagram-v2
@@ -310,7 +310,7 @@ stateDiagram-v2
     Running --> [*]: 실행 종료
 ```
 
-각 전환을 다시 정리하면 다음과 같다.
+각 전환을 다시 보면 다음과 같다.
 
 ### Time Slice 종료
 
@@ -392,17 +392,17 @@ Scheduler
 Thread Running
 ```
 
-개발자는 `call()`이 반환될 때까지의 모든 과정을 직접 다루지 않는다. JVM과 라이브러리, OS Kernel이 각자의 역할을 수행하고, Java Thread는 결과를 처리할 수 있는 시점에 다시 실행된다.
+개발자는 `call()`이 반환될 때까지의 모든 과정을 직접 다루지 않는다. JVM과 라이브러리, OS Kernel이 각자의 역할을 수행하고 Java Thread는 결과를 처리할 수 있는 시점에 다시 실행된다.
 
 다만 이 흐름이 모든 JVM 구현과 모든 OS에서 정확히 같은 순서와 방식으로 동작한다고 단정해서는 안 된다. Non-blocking I/O, 비동기 API, Virtual Thread, OS의 네트워크 스택 구현 등에 따라 관찰되는 동작은 달라질 수 있다. 여기서 중요한 것은 특정 구현의 내부 코드를 외우는 것이 아니라, **애플리케이션의 메서드 호출 뒤에 Kernel과 Scheduler를 거치는 실행 흐름이 존재할 수 있다는 관점**이다.
 
-또한 Java의 `Thread.interrupt()`는 Hardware Interrupt와 다른 개념이다.
+Java의 `Thread.interrupt()`는 Hardware Interrupt와 다른 개념이다.
 
 ```java
 thread.interrupt();
 ```
 
-이 메서드는 보통 대상 Java Thread에 인터럽트 요청을 나타내는 상태를 설정하고, 해당 스레드가 대기 중이라면 관련 API가 `InterruptedException`을 발생시키는 식으로 협력적 취소를 지원한다. OS가 장치에서 받는 Hardware Interrupt를 Java 코드가 직접 발생시키는 것과는 전혀 다르다.
+이 메서드는 보통 대상 Java Thread에 인터럽트 요청을 나타내는 상태를 설정하고 해당 스레드가 대기 중이라면 관련 API가 `InterruptedException`을 발생시키는 식으로 협력적 취소를 지원한다. OS가 장치에서 받는 Hardware Interrupt를 Java 코드가 직접 발생시키는 것과는 전혀 다르다.
 
 ## 9. Spring Thread Pool과 연결하기
 
@@ -431,7 +431,7 @@ DB Query나 외부 API 응답을 기다리는 동안 해당 Worker Thread가 CPU
 - **Thread Pool**: 요청 처리를 위한 Worker Thread를 재사용
 - **I/O-bound 작업**: CPU보다 외부 자원 대기 시간이 큰 작업
 
-다만 I/O를 기다린다고 해서 Thread Pool의 스레드가 사라지는 것은 아니다. Blocking 모델에서는 해당 Worker Thread가 요청을 계속 맡은 채 대기할 수 있다. CPU는 다른 스레드로 넘어갈 수 있지만, 애플리케이션 관점에서는 Thread Pool의 자원 하나가 점유되어 있다.
+다만 I/O를 기다린다고 해서 Thread Pool의 스레드가 사라지는 것은 아니다. Blocking 모델에서는 해당 Worker Thread가 요청을 계속 맡은 채 대기할 수 있다. CPU는 다른 스레드로 넘어갈 수 있지만 애플리케이션 관점에서는 Thread Pool의 자원 하나가 점유되어 있다.
 
 그래서 Thread Pool의 적정 크기를 Interrupt 하나만으로 결정할 수는 없다. CPU 코어 수, DB Connection Pool, 외부 API의 처리량과 Rate Limit, 메모리, 타임아웃, 실제 부하를 함께 봐야 한다.
 
@@ -457,13 +457,13 @@ DB Connection Pool = 20
 
 > Interrupt로 Kernel이 CPU 제어권을 얻더라도 실행 대상이 변경되지 않을 수 있다.
 
-Interrupt Handler 처리 후 기존 스레드로 복귀할 수도 있고, Scheduler가 같은 스레드를 다시 선택할 수도 있다. 실행 대상이 실제로 바뀌는 경우에 Context Switching이 발생한다.
+Interrupt Handler 처리 후 기존 스레드로 복귀할 수도 있고 Scheduler가 같은 스레드를 다시 선택할 수도 있다. 실행 대상이 실제로 바뀌는 경우에 Context Switching이 발생한다.
 
 ### 2. I/O가 완료되면 해당 스레드가 바로 실행된다?
 
 일반적으로 바로 Running이 되는 것은 아니다.
 
-> I/O 완료 후에는 보통 Waiting → Ready 상태가 되고, Scheduler가 선택해야 Ready → Running이 된다.
+> I/O 완료 후에는 보통 Waiting → Ready 상태가 되고 Scheduler가 선택해야 Ready → Running이 된다.
 
 Ready는 실행 가능한 상태이고 Running은 현재 CPU에서 실행 중인 상태다. 두 상태를 구분해야 한다.
 
@@ -473,13 +473,13 @@ Ready는 실행 가능한 상태이고 Running은 현재 CPU에서 실행 중인
 
 > Timer 등으로 Interrupt가 발생하면 Kernel이 Scheduling을 수행할 기회를 얻을 수 있다.
 
-Scheduler는 실행 대상을 선택하는 주체다. Timer Interrupt는 일정 시간이 지났음을 Kernel에 알리고, 그 결과 Scheduler가 실행될 수 있는 계기를 제공한다.
+Scheduler는 실행 대상을 선택하는 주체다. Timer Interrupt는 일정 시간이 지났음을 Kernel에 알리고 그 결과 Scheduler가 실행될 수 있는 계기를 제공한다.
 
 ### 4. Java가 직접 Interrupt Handler를 처리한다?
 
 Hardware Interrupt 처리는 OS Kernel과 장치 드라이버의 영역이다. Java 애플리케이션은 그 위의 추상화 수준에서 결과를 경험한다.
 
-`Thread.interrupt()`는 Java Thread에 취소나 중단 의사를 전달하는 협력적 메커니즘이고, 장치가 CPU에 보내는 Hardware Interrupt와는 서로 다른 개념이다.
+`Thread.interrupt()`는 Java Thread에 취소나 중단 의사를 전달하는 협력적 메커니즘이고 장치가 CPU에 보내는 Hardware Interrupt와는 서로 다른 개념이다.
 
 ## 11. 이전 학습 내용과 연결하기
 
@@ -495,7 +495,7 @@ Hardware Interrupt 처리는 OS Kernel과 장치 드라이버의 영역이다. J
 
 > Context Switching이 필요한 경우 현재 CPU 실행 상태를 저장하고 이후 복원할 수 있어야 한다.
 
-PCB나 스레드의 실행 문맥은 전환에 필요한 상태를 관리하는 개념이고, Interrupt는 Kernel이 사건을 처리하도록 CPU의 제어 흐름을 바꾸는 개념이다. 둘은 관련될 수 있지만 같은 개념은 아니다.
+PCB나 스레드의 실행 문맥은 전환에 필요한 상태를 관리하는 개념이고 Interrupt는 Kernel이 사건을 처리하도록 CPU의 제어 흐름을 바꾸는 개념이다. 둘은 관련될 수 있지만 같은 개념은 아니다.
 
 이 블로그에 이미 작성된 글 중에서는 [스레드는 많을수록 좋을까? Context Switching과 Thread Pool의 관계](/posts/thread-pool-context-switching/)와 직접 이어진다. 그 글이 스레드 수와 Context Switching 비용, Thread Pool의 병목을 다뤘다면, 이번 글은 그 실행 흐름에 Interrupt와 I/O 완료 통지가 어떻게 들어오는지 설명한다.
 
@@ -507,9 +507,9 @@ PCB나 스레드의 실행 문맥은 전환에 필요한 상태를 관리하는 
 
 하지만 지금은 다음과 같이 이해하는 편이 더 정확하다고 생각한다.
 
-> CPU가 모든 사건을 직접 확인하지 않고, 필요한 사건이 발생했을 때 Kernel이 제어권을 얻어 처리할 수 있도록 만드는 메커니즘
+> CPU가 모든 사건을 직접 확인하지 않고 필요한 사건이 발생했을 때 Kernel이 제어권을 얻어 처리할 수 있도록 만드는 메커니즘
 
-I/O가 완료되면 Kernel이 이를 인지하고, 대기 중인 스레드를 Waiting에서 Ready로 옮길 수 있다. 그 스레드가 바로 실행되는 것은 아니며, Scheduler의 선택을 거쳐 Running 상태가 된다. Timer Interrupt가 발생해도 항상 다른 스레드로 Context Switching되는 것은 아니다.
+I/O가 완료되면 Kernel이 이를 인지하고 대기 중인 스레드를 Waiting에서 Ready로 옮길 수 있다. 그 스레드가 바로 실행되는 것은 아니며 Scheduler의 선택을 거쳐 Running 상태가 된다. Timer Interrupt가 발생해도 항상 다른 스레드로 Context Switching되는 것은 아니다.
 
 이 흐름을 이해하고 나니 다음 개념들이 각각 떨어진 OS 용어가 아니라 하나의 실행 흐름으로 연결되기 시작했다.
 

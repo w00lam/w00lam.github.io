@@ -26,7 +26,7 @@ permalink: /posts/entitygraph-paging/
 
 ---
 
-## 결론부터 정리하면
+## 핵심은
 
 EntityGraph 자체는 Pageable과 함께 쓸 수 있다. 문제는 컬렉션(ToMany)을 fetch 하는 순간 발생한다.
 
@@ -88,7 +88,7 @@ Todo1 - CommentB
 Todo1 - CommentC
 ```
 
-즉, 엔티티 1개가 row 여러 개로 늘어난다.
+엔티티 1개가 row 여러 개로 늘어난다.
 
 ---
 

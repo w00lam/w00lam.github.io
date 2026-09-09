@@ -39,7 +39,7 @@ permalink: /posts/ai-dev-environment-concepts/
 
 같은 **실행 환경 자체를 제어**한다. 에이전트가 움직일 수 있는 범위를 환경 차원에서 제한하고 통제한다.
 
-즉:
+
 
 - **Instructions**는 "어떻게 행동할지" (What to do)
 - **Harness**는 "어디까지 허용되는지" (Where and how far it can go)
@@ -82,7 +82,7 @@ permalink: /posts/ai-dev-environment-concepts/
 
 같은 프로젝트 컨텍스트를 구조화하는 역할에 더 가까웠다.
 
-즉 Agent OS는:
+Agent OS는:
 - AI 모델 자체도 아니고
 - Harness 자체도 아니라
 
@@ -100,7 +100,7 @@ AI 개발 workflow를 공부해보니, 중요한 건 단순히 모델 성능만�
 
 가 실제 개발 경험에 더 큰 영향을 주고 있었다.
 
-특히 여러 AI 도구를 써보면서, 앞으로는 하나의 AI만 쓰기보다 상황에 따라 역할을 나눠 쓰는 쪽으로 가지 않을까 싶다.
+특히 여러 AI 도구를 써보면서 앞으로는 하나의 AI만 쓰기보다 상황에 따라 역할을 나눠 쓰는 쪽으로 가지 않을까 싶다.
 
 ---
 

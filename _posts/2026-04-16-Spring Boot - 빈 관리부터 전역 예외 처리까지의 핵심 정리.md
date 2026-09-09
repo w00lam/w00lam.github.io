@@ -31,7 +31,7 @@ permalink: /posts/spring-boot-bean-exception/
 ---
 
 ## 3. Bean Validation과 Java Beans의 역사
-DTO에서 `@Valid`가 작동하고 `@Getter`가 필수적인 이유는 자바의 역사와 관련이 있습니다.
+DTO에서 `@Valid`가 작동하고 `@Getter`가 필수적인 이유는 자바의 역사와 맞닿아 있습니다.
 
 * **Java Beans 규약:** 자바 객체(Bean)는 필드 접근 시 `getXXX` 메서드를 사용한다는 관례가 있습니다. `@Valid` 과정에서 필드 값을 읽어올 때 이 Getter를 사용하기 때문에 DTO는 빈이 아님에도 불구하고 이 규약을 따릅니다.
 * **정규식(`@Pattern`):** 복잡한 전화번호나 비밀번호 패턴은 직접 만들기보다 검증된 패턴을 검색하여 적용하는 것이 실무에서 더 효율적입니다.
@@ -49,7 +49,7 @@ DTO에서 `@Valid`가 작동하고 `@Getter`가 필수적인 이유는 자바의
 
 ---
 
-## 실전: 여러 개의 검증 에러 메시지 반환하기
+## 실전 — 여러 개의 검증 에러 메시지 반환하기
 `MethodArgumentNotValidException`이 발생했을 때 클라이언트에게 모든 필드의 에러 사유를 리스트로 반환하는 로직입니다.
 
 ```java
@@ -87,7 +87,7 @@ public class GlobalExceptionHandler {
 
 ---
 
-## 오늘의 회고: 에러 핸들링은 소통이다
+## 오늘의 회고 — 에러 핸들링은 소통이다
 커스텀 에러 핸들링은 단순히 기술적인 예외 처리를 구현하는 과정이 아닙니다. **클라이언트와 소통하는 방식**입니다.
 
 * **500 Internal Server Error를 지양해야 하는 이유**
