@@ -10,7 +10,7 @@ toc: false
   <section class="portfolio-hero" id="portfolio-overview" aria-labelledby="portfolio-hero-title">
     <div class="portfolio-hero-copy">
       <p class="portfolio-eyebrow">BACKEND DEVELOPER · PORTFOLIO</p>
-      <h2 id="portfolio-hero-title">기록하고 배운 내용을 실제 문제에 적용하는 백엔드 개발자입니다.</h2>
+      <h2 id="portfolio-hero-title">클라이밍을 좋아하는 백엔드 개발자 이우람입니다. 목표까지의 루트를 고민하고 직접 시도합니다. 막히면 원인을 확인해 접근을 바꾸고, 더 나은 해결 방법을 찾습니다.</h2>
       <p class="portfolio-hero-lead">
         Java·Spring Boot를 중심으로 동시성, 트랜잭션, 인증, 배포 경계를 설계하고
         테스트 결과로 동작을 확인합니다.
@@ -697,7 +697,7 @@ toc: false
 
   <section class="portfolio-contact" id="portfolio-contact" aria-labelledby="portfolio-contact-title">
     <p class="portfolio-eyebrow">CONTACT</p>
-    <h2 id="portfolio-contact-title">기록하고 배운 내용을 실제 문제에 적용합니다.</h2>
+    <h2 id="portfolio-contact-title">정의한 문제를 직접 시도하고 검증하며, 그 결과를 다음 개선으로 연결합니다.</h2>
     <p>더 자세한 기술 기록은 블로그와 GitHub에서 확인할 수 있습니다.</p>
     <div class="portfolio-project-links">
       <a class="portfolio-button portfolio-button--light" href="https://github.com/w00lam" target="_blank" rel="noopener">GitHub 방문 <i class="fas fa-arrow-up-right-from-square" aria-hidden="true"></i></a>
