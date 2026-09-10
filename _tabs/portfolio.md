@@ -10,7 +10,7 @@ toc: false
   <section class="portfolio-hero" id="portfolio-overview" aria-labelledby="portfolio-hero-title">
     <div class="portfolio-hero-copy">
       <p class="portfolio-eyebrow">BACKEND DEVELOPER · PORTFOLIO</p>
-      <h2 id="portfolio-hero-title">문제와 경계를 먼저 정의하고<br /> 검증 가능한 결과로 연결하는 백엔드 개발자입니다.</h2>
+      <h2 id="portfolio-hero-title">문제와 경계를 먼저 정의하고<br /> 검증 가능한 결과로 연결하는<br /> 백엔드 개발자입니다.</h2>
       <p class="portfolio-hero-lead">
         Java·Spring Boot를 중심으로 동시성, 트랜잭션, 인증, 배포 경계를 설계하고
         테스트 결과로 동작을 확인합니다.
