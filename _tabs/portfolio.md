@@ -697,7 +697,7 @@ toc: false
 
   <section class="portfolio-contact" id="portfolio-contact" aria-labelledby="portfolio-contact-title">
     <p class="portfolio-eyebrow">CONTACT</p>
-    <h2 id="portfolio-contact-title">정의한 문제를 직접 시도하고 검증하며<br /> 그 결과를 다음 개선으로 연결합니다.</h2>
+    <h2 id="portfolio-contact-title">정의한 문제를 직접 풀어보고 검증하며<br /> 그 결과를 다음 개선으로 이어갑니다.</h2>
     <p>더 자세한 기술 기록은 블로그와 GitHub에서 확인할 수 있습니다.</p>
     <div class="portfolio-project-links">
       <a class="portfolio-button portfolio-button--light" href="https://github.com/w00lam" target="_blank" rel="noopener">GitHub 방문 <i class="fas fa-arrow-up-right-from-square" aria-hidden="true"></i></a>
