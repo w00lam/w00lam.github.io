@@ -311,14 +311,14 @@ toc: false
         <p class="portfolio-card-kicker">INFRASTRUCTURE EVIDENCE</p>
         <h3>애플리케이션뿐 아니라 실행 환경도 경계를 나눠 구성했습니다.</h3>
         <p>
-          AWS 요청 흐름은 VPC와 Public·Private Subnet, ALB, EC2, RDS로 나눴습니다.
+          AWS 요청 흐름은 VPC와 Public·Private Subnet, ALB, EC2, RDS(PostgreSQL)로 나눴습니다.
           배포 흐름은 CI/CD·ECR·ASG와 Blue-Green 전환 관점에서 따로 정리했습니다.
         </p>
       </div>
       <figure class="portfolio-architecture-figure portfolio-architecture-figure--wide">
-        <img src="{{ '/assets/images/2026-05-19-posting/aws-request-flow-vpc.png' | relative_url }}" alt="AWS VPC의 Public Subnet과 Private Subnet, ALB, EC2, RDS 요청 흐름" loading="lazy">
+        <img src="{{ '/assets/images/2026-05-19-posting/aws-request-flow-vpc.png' | relative_url }}" alt="AWS VPC의 Public Subnet과 Private Subnet, ALB, EC2, RDS(PostgreSQL) 요청 흐름" loading="lazy">
         <figcaption>
-          VPC 안에서 외부 요청과 데이터베이스 접근을 분리한 구조입니다.
+          VPC 안에서 외부 요청과 PostgreSQL 데이터베이스 접근을 분리한 구조입니다.
           <a class="portfolio-text-link" href="{{ '/posts/how-aws-request-flow-works/' | relative_url }}">구성 기록 보기 <i class="fas fa-arrow-right" aria-hidden="true"></i></a>
         </figcaption>
       </figure>
@@ -484,7 +484,7 @@ toc: false
       <div class="portfolio-queue-heading">
         <p class="portfolio-card-kicker">QUEUE DESIGN</p>
         <h3>대기열 순번은 Redis Sorted Set의 정렬 순서로 보장했습니다.</h3>
-          <p>
+        <p>
             사용자 토큰은 <code>userId</code> member로 저장합니다. 진입 시각은 score로 씁니다.
             rank 조회로 현재 위치를 보여줍니다. 입장시킬 때는 <code>ZPOPMIN</code>으로 가장 앞의 사용자를 꺼내면서 대기열에서도 제거합니다.
             한 테스트 프로세스의 8개 작업과 독립 JVM 2개의 dequeue worker에서도 같은 입장자가 중복으로 빠져나가지 않도록 Redis 원자 연산을 사용했습니다.
