@@ -26,7 +26,6 @@ toc: false
     <a href="#matisson">Project 01</a>
     <a href="#concert-ticketing">Project 02</a>
     <a href="#portfolio-ai">AI Native</a>
-    <a href="#portfolio-delivery">Delivery</a>
     <a href="#portfolio-contact">Contact</a>
   </nav>
 
@@ -693,42 +692,6 @@ toc: false
       <a class="portfolio-text-link" href="https://github.com/team-11st-chat/11th-street/pull/98" target="_blank" rel="noopener">팀 적용 산출물 · 배포 헬스체크 롤백 PR <i class="fas fa-arrow-up-right-from-square" aria-hidden="true"></i></a>
       <a class="portfolio-text-link" href="https://github.com/team-11st-chat/11th-street/commit/613dab07c1065360fdba6f7dab1dcba5afc7b9c3" target="_blank" rel="noopener">팀 적용 산출물 · 롤백 안정성 보강 커밋 <i class="fas fa-arrow-up-right-from-square" aria-hidden="true"></i></a>
       <a class="portfolio-text-link" href="https://github.com/team-11st-chat/11th-street/commit/ce1714355d7dd4c50a187971938b2d69e6fbff7e" target="_blank" rel="noopener">팀 적용 산출물 · 재검증 가능한 부하 결과 기록 <i class="fas fa-arrow-up-right-from-square" aria-hidden="true"></i></a>
-    </div>
-  </section>
-
-  <section class="portfolio-section portfolio-delivery" id="portfolio-delivery" aria-labelledby="portfolio-delivery-title">
-    <div class="portfolio-section-heading">
-      <div>
-        <p class="portfolio-eyebrow">PUBLIC ARTIFACTS · DELIVERY</p>
-        <h2 id="portfolio-delivery-title">설명은 링크와 실행 결과로 확인할 수 있어야 합니다.</h2>
-      </div>
-    </div>
-
-    <div class="portfolio-artifact-grid">
-      <article>
-        <span class="portfolio-card-kicker">RUNNING SITE</span>
-        <h3>현재 포트폴리오</h3>
-        <p>실제 페이지에서 프로젝트 설명과 연결된 산출물을 확인할 수 있습니다.</p>
-        <a class="portfolio-text-link" href="https://w00lam.github.io/portfolio/" target="_blank" rel="noopener">포트폴리오 열기 <i class="fas fa-arrow-up-right-from-square" aria-hidden="true"></i></a>
-      </article>
-      <article>
-        <span class="portfolio-card-kicker">SOURCE</span>
-        <h3>사이트 저장소</h3>
-        <p>Jekyll 페이지·콘텐츠·스타일의 변경 이력과 커밋 흐름을 확인할 수 있습니다.</p>
-        <a class="portfolio-text-link" href="https://github.com/w00lam/w00lam.github.io" target="_blank" rel="noopener">GitHub 저장소 <i class="fas fa-arrow-up-right-from-square" aria-hidden="true"></i></a>
-      </article>
-      <article>
-        <span class="portfolio-card-kicker">CI · DEPLOY</span>
-        <h3>Push에서 GitHub Pages까지</h3>
-        <p>master push를 기준으로 Jekyll 빌드와 Pages 배포가 이어지는 workflow를 공개했습니다.</p>
-        <a class="portfolio-text-link" href="https://github.com/w00lam/w00lam.github.io/blob/master/.github/workflows/jekyll.yml" target="_blank" rel="noopener">배포 workflow <i class="fas fa-arrow-up-right-from-square" aria-hidden="true"></i></a>
-      </article>
-      <article>
-        <span class="portfolio-card-kicker">PROJECT EVIDENCE</span>
-        <h3>설계·테스트·변경 기록</h3>
-        <p>티켓팅 프로젝트의 동시성 보고서, 통합 테스트, 멱등성 구현 커밋을 케이스 스터디에 연결했습니다.</p>
-        <a class="portfolio-text-link" href="#concert-ticketing">티켓팅 근거 보기 <i class="fas fa-arrow-right" aria-hidden="true"></i></a>
-      </article>
     </div>
   </section>
 

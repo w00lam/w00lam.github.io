@@ -148,8 +148,7 @@
 }
 
 .portfolio-evidence-grid,
-.portfolio-capability-grid,
-.portfolio-artifact-grid {
+.portfolio-capability-grid {
   display: grid;
   gap: 0.7rem;
 
@@ -201,22 +200,6 @@
 
   p {
     overflow-wrap: anywhere;
-  }
-
-  .portfolio-text-link {
-    margin-top: auto;
-    padding-top: 1rem;
-  }
-}
-
-.portfolio-delivery {
-  padding: 2rem 0 0.25rem;
-  border-top: 1px solid var(--portfolio-line);
-}
-
-.portfolio-artifact-grid {
-  article {
-    min-height: 12rem;
   }
 
   .portfolio-text-link {
