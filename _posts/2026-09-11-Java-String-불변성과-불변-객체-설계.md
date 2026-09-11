@@ -6,14 +6,7 @@ tags: [Java, String, String Pool, StringBuilder, Immutable Object, Defensive Cop
 permalink: /posts/java-string-immutability-design/
 ---
 
-## 제목 후보
-
-- String은 왜 불변 객체일까?
-- `final`을 붙이면 정말 불변 객체가 될까?
-- String을 따라가며 이해한 불변 객체 설계
-- 참조 공유를 막는 방어적 복사까지, 불변 객체 이해하기
-
-이번 글의 제목은 **Java String은 왜 불변 객체이고, `final`은 왜 충분하지 않을까?**로 정했다. String을 공부하다 보니 문자열의 특징만 외우는 것으로는 부족했다. String Pool과 객체 참조를 이해해야 `==`와 `equals()`의 결과를 설명할 수 있었다. String의 불변성에서 출발해 `final`, 가변 객체, 방어적 복사까지 자연스럽게 이어졌다.
+String을 공부하다 보니 문자열의 특징만 외우는 것으로는 부족했다. String Pool과 객체 참조를 이해해야 `==`와 `equals()`의 결과를 설명할 수 있었다. String의 불변성에서 출발해 `final`, 가변 객체, 방어적 복사까지 자연스럽게 이어졌다.
 
 ## String 비교에서 시작된 질문
 
