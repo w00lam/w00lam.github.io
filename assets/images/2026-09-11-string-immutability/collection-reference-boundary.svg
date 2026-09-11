@@ -1,0 +1,56 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="720" viewBox="0 0 1200 720" role="img" aria-labelledby="title desc">
+  <title id="title">컬렉션 참조 공유와 방어적 복사 비교</title>
+  <desc id="desc">왼쪽은 외부 roles, User.roles, getter가 같은 ArrayList를 공유하는 구조이고, 오른쪽은 List.copyOf로 내부 상태의 소유권을 분리한 구조다.</desc>
+  <defs>
+    <marker id="arrow" markerWidth="12" markerHeight="12" refX="10" refY="6" orient="auto">
+      <path d="M0,0 L12,6 L0,12 Z" fill="#64748b"/>
+    </marker>
+    <filter id="shadow" x="-20%" y="-20%" width="140%" height="140%">
+      <feDropShadow dx="0" dy="6" stdDeviation="8" flood-color="#0f172a" flood-opacity="0.12"/>
+    </filter>
+  </defs>
+
+  <rect width="1200" height="720" fill="#f8fafc"/>
+  <text x="600" y="52" text-anchor="middle" font-family="Arial, 'Noto Sans KR', sans-serif" font-size="30" font-weight="700" fill="#0f172a">컬렉션 참조 공유와 방어적 복사</text>
+  <text x="600" y="86" text-anchor="middle" font-family="Arial, 'Noto Sans KR', sans-serif" font-size="18" fill="#64748b">핵심은 final이 아니라 외부 참조와 내부 상태의 소유권을 분리하는 것이다</text>
+
+  <rect x="45" y="125" width="525" height="525" rx="22" fill="#fff7ed" stroke="#fb923c" stroke-width="3" filter="url(#shadow)"/>
+  <text x="307" y="172" text-anchor="middle" font-family="Arial, 'Noto Sans KR', sans-serif" font-size="24" font-weight="700" fill="#9a3412">참조를 그대로 저장한 경우</text>
+  <rect x="85" y="220" width="170" height="60" rx="12" fill="#0f172a"/>
+  <text x="170" y="259" text-anchor="middle" font-family="Arial, 'Noto Sans KR', sans-serif" font-size="21" font-weight="700" fill="#ffffff">외부 roles</text>
+  <rect x="85" y="345" width="170" height="60" rx="12" fill="#0f172a"/>
+  <text x="170" y="384" text-anchor="middle" font-family="Arial, 'Noto Sans KR', sans-serif" font-size="21" font-weight="700" fill="#ffffff">User.roles</text>
+  <rect x="85" y="470" width="170" height="60" rx="12" fill="#0f172a"/>
+  <text x="170" y="509" text-anchor="middle" font-family="Arial, 'Noto Sans KR', sans-serif" font-size="20" font-weight="700" fill="#ffffff">user.getRoles()</text>
+  <line x1="255" y1="250" x2="350" y2="335" stroke="#c2410c" stroke-width="4" marker-end="url(#arrow)"/>
+  <line x1="255" y1="375" x2="350" y2="365" stroke="#c2410c" stroke-width="4" marker-end="url(#arrow)"/>
+  <line x1="255" y1="500" x2="350" y2="395" stroke="#c2410c" stroke-width="4" marker-end="url(#arrow)"/>
+  <rect x="330" y="300" width="195" height="120" rx="18" fill="#ffffff" stroke="#fb923c" stroke-width="3"/>
+  <text x="427" y="348" text-anchor="middle" font-family="Arial, 'Noto Sans KR', sans-serif" font-size="24" font-weight="700" fill="#9a3412">ArrayList</text>
+  <text x="427" y="382" text-anchor="middle" font-family="Arial, 'Noto Sans KR', sans-serif" font-size="17" fill="#7c2d12">같은 객체</text>
+  <text x="307" y="590" text-anchor="middle" font-family="Arial, 'Noto Sans KR', sans-serif" font-size="17" font-weight="600" fill="#c2410c">외부 add()가 User의 내부 상태를 바꾼다</text>
+
+  <rect x="630" y="125" width="525" height="525" rx="22" fill="#eff6ff" stroke="#60a5fa" stroke-width="3" filter="url(#shadow)"/>
+  <text x="892" y="172" text-anchor="middle" font-family="Arial, 'Noto Sans KR', sans-serif" font-size="24" font-weight="700" fill="#1e3a8a">방어적 복사를 적용한 경우</text>
+  <rect x="670" y="205" width="170" height="60" rx="12" fill="#0f172a"/>
+  <text x="755" y="244" text-anchor="middle" font-family="Arial, 'Noto Sans KR', sans-serif" font-size="21" font-weight="700" fill="#ffffff">외부 roles</text>
+  <rect x="885" y="190" width="190" height="90" rx="16" fill="#ffffff" stroke="#60a5fa" stroke-width="3"/>
+  <text x="980" y="229" text-anchor="middle" font-family="Arial, 'Noto Sans KR', sans-serif" font-size="22" font-weight="700" fill="#1e3a8a">ArrayList A</text>
+  <text x="980" y="257" text-anchor="middle" font-family="Arial, 'Noto Sans KR', sans-serif" font-size="16" fill="#475569">외부 소유</text>
+  <line x1="840" y1="235" x2="885" y2="235" stroke="#64748b" stroke-width="4" marker-end="url(#arrow)"/>
+  <rect x="795" y="315" width="195" height="52" rx="14" fill="#2563eb"/>
+  <text x="892" y="349" text-anchor="middle" font-family="Arial, 'Noto Sans KR', sans-serif" font-size="19" font-weight="700" fill="#ffffff">List.copyOf()</text>
+  <line x1="980" y1="280" x2="980" y2="315" stroke="#64748b" stroke-width="3" marker-end="url(#arrow)"/>
+  <rect x="670" y="450" width="170" height="60" rx="12" fill="#0f172a"/>
+  <text x="755" y="489" text-anchor="middle" font-family="Arial, 'Noto Sans KR', sans-serif" font-size="21" font-weight="700" fill="#ffffff">User.roles</text>
+  <rect x="885" y="400" width="190" height="130" rx="16" fill="#ffffff" stroke="#34d399" stroke-width="3"/>
+  <text x="980" y="443" text-anchor="middle" font-family="Arial, 'Noto Sans KR', sans-serif" font-size="22" font-weight="700" fill="#047857">수정 불가한 List B</text>
+  <text x="980" y="477" text-anchor="middle" font-family="Arial, 'Noto Sans KR', sans-serif" font-size="16" fill="#475569">내부 소유</text>
+  <text x="980" y="505" text-anchor="middle" font-family="Arial, 'Noto Sans KR', sans-serif" font-size="16" fill="#047857">add() 불가</text>
+  <line x1="892" y1="367" x2="940" y2="400" stroke="#64748b" stroke-width="3" marker-end="url(#arrow)"/>
+  <line x1="840" y1="480" x2="885" y2="480" stroke="#64748b" stroke-width="4" marker-end="url(#arrow)"/>
+  <rect x="670" y="560" width="170" height="60" rx="12" fill="#0f172a"/>
+  <text x="755" y="599" text-anchor="middle" font-family="Arial, 'Noto Sans KR', sans-serif" font-size="20" font-weight="700" fill="#ffffff">user.getRoles()</text>
+  <line x1="840" y1="590" x2="885" y2="520" stroke="#64748b" stroke-width="4" marker-end="url(#arrow)"/>
+  <text x="892" y="590" text-anchor="middle" font-family="Arial, 'Noto Sans KR', sans-serif" font-size="17" font-weight="600" fill="#1d4ed8">내부 참조를 외부에서 수정할 수 없다</text>
+</svg>

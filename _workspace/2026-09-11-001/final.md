@@ -47,15 +47,7 @@ String b = "hello";
 
 `new String("hello")`는 다르게 동작한다. `"hello"`라는 리터럴은 String Pool에 존재하지만, `new`는 그 내용을 가진 별도의 String 객체를 새로 만든다. 그래서 `c`는 Pool의 객체가 아니라 새로 생성된 객체를 참조한다.
 
-```mermaid
-flowchart LR
-    A["a"] --> P["String Pool\nhello"]
-    B["b"] --> P
-    C["c"] --> H["Heap의 별도 String 객체\nhello"]
-```
-
-> **이미지 생성 프롬프트:**
-> 기술 블로그에 어울리는 심플한 시스템 다이어그램 스타일. 왼쪽에 변수 `a`, `b`, `c`를 세로로 배치하고, 오른쪽에 `String Pool` 영역과 일반 Heap 영역을 구분한다. `a`와 `b`는 String Pool 안의 동일한 `"hello"` 객체를 가리키고, `c`는 Heap의 별도 `"hello"` String 객체를 가리키는 화살표를 그린다. 같은 문자열 내용과 서로 다른 객체 참조가 대비되도록 표현한다. 흰색 배경, 검정·짙은 남색 선, 강조색은 한 가지 파란색만 사용하고 장식은 배제한다.
+![String Pool과 new String()의 참조 관계를 보여주는 다이어그램](/assets/images/2026-09-11-string-immutability/string-pool-references.svg)
 
 이 결과를 보면 `a`, `b`, `c`는 모두 문자열 내용으로는 `hello`를 갖지만 참조 관계는 같지 않다. `a`와 `b`가 같은 객체를 바라보고 `c`가 별도의 객체를 바라본다는 점을 구분하면 앞의 실행 결과가 설명된다.
 
@@ -102,21 +94,9 @@ value = value + " world";
 
 겉으로는 `value` 안의 문자열이 수정된 것처럼 보인다. 실제로는 기존 String 객체의 내용이 바뀌지 않는다.
 
-```mermaid
-flowchart LR
-    subgraph BEFORE["변경 전"]
-        V1["value"] --> S1["hello"]
-    end
-    subgraph AFTER["변경 후"]
-        S2["hello\n기존 객체"]
-        V2["value"] --> S3["hello world\n새로운 결과 객체"]
-    end
-```
+![String 불변성에 따른 변수 참조 재대입을 보여주는 다이어그램](/assets/images/2026-09-11-string-immutability/string-immutability-assignment.svg)
 
 `value = value + " world"`가 실행되면 `hello world`라는 새로운 문자열 결과가 만들어지고, `value`가 그 결과를 참조하도록 대입된다. 기존 `hello` 객체는 그대로 남는다.
-
-> **이미지 생성 프롬프트:**
-> 기술 블로그용 메모리 구조 다이어그램. 화면을 왼쪽과 오른쪽으로 나누어 왼쪽에는 `value → "hello"`, 오른쪽에는 기존 `"hello"` 객체는 그대로 둔 채 `value → "hello world"`라는 새 객체를 가리키는 구조를 보여준다. 변수의 참조가 이동한 것과 기존 객체의 내부 값은 변하지 않은 것을 굵은 화살표와 짧은 주석으로 강조한다. Java 코드 조각을 작게 배치하되 전체는 단색 선 중심의 깔끔한 인포그래픽으로 구성한다.
 
 여기서 꼭 구분해야 할 것이 있다.
 
@@ -217,15 +197,7 @@ System.out.println(user.getRoles()); // [USER, ADMIN]
 
 `User`의 코드를 호출한 쪽이 `user`의 메서드를 호출하지 않았는데도 내부 역할 목록이 바뀌었다. 생성자에 전달한 List와 `User.roles`가 같은 객체를 가리키고 있기 때문이다.
 
-```mermaid
-flowchart LR
-    R["외부 roles"] --> L["ArrayList"]
-    U["User.roles"] --> L
-    G["user.getRoles()"] --> L
-```
-
-> **이미지 생성 프롬프트:**
-> 심플한 기술 블로그 다이어그램. 왼쪽에 `외부 roles`, 오른쪽에 `User.roles`, 아래에 `user.getRoles()`를 배치하고 세 참조가 하나의 `ArrayList` 객체를 함께 가리키는 구조를 보여준다. 이어서 옆에 안전한 구조를 비교 배치한다. 안전한 구조에서는 외부 `ArrayList A`와 `User.roles`가 가리키는 수정 불가한 `List B`를 분리하고, getter는 내부 List B를 반환하되 외부에서 `add`할 수 없다는 주석을 넣는다. 공유 참조와 복사된 참조의 차이가 한눈에 보이는 흑백·파란색 다이어그램으로 구성한다.
+![컬렉션 참조 공유와 방어적 복사를 비교하는 다이어그램](/assets/images/2026-09-11-string-immutability/collection-reference-boundary.svg)
 
 getter도 같은 문제를 만든다.
 
@@ -357,12 +329,12 @@ JPA 엔티티처럼 생명주기 동안 상태가 바뀌는 객체는 무조건 
 원본/최종본 글자수: 12,376자 / 12,115자
 변경률: 2.1% (기존 학습 맥락을 반영해 도입·연결 문장을 재구성하고, 반복 표현·번역투·기계적인 종결을 의미 보존 범위에서 윤문)
 탐지 건수: A-2 2→0, A-7 1→0, A-10 12→0, C-11 2→0, D-1 3→0, H-1 1→0, I-4 9→1, J-3 1→0
-자체검증: 6/6 통과 — 기술 용어·수치·코드·인용·내부 링크·이미지 프롬프트 보존, 장르·문체 일관성, S1 잔존 없음
+자체검증: 6/6 통과 — 기술 용어·수치·코드·인용·내부 링크·정적 SVG 다이어그램 보존, 장르·문체 일관성, S1 잔존 없음
 등급: A — S1 잔존이 없고 S2 패턴을 허용 범위로 줄였으며, 기존 학습 글을 전제로 한 연속적인 흐름과 기술 블로그 문체를 유지했습니다.
 주요 변경 하이라이트:
 1. `==`와 `equals()`의 차이를 결과 암기가 아니라 변수와 객체의 참조 관계에서 설명
 2. String 연결을 객체 내부 수정이 아닌 새로운 결과 객체와 변수 재대입의 흐름으로 전환
 3. `final` 참조, 불변 객체, 수정 불가 컬렉션의 보호 범위를 표로 분리
-4. 컬렉션 참조 공유와 방어적 복사를 Mermaid·텍스트 구조로 대비
+4. 컬렉션 참조 공유와 방어적 복사를 정적 SVG 다이어그램으로 시각화
 5. 불변성이 적합한 Value Object와 상태 전이가 필요한 엔티티를 구분
 -->
