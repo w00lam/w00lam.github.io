@@ -94,22 +94,16 @@ Vector DB에 데이터를 그냥 넣는다고 검색이 잘 되지는 않습니�
 
 사용자 질문이 들어오면 Vector DB는 어떤 과정을 거쳐 결과를 돌려줄까요? RAG(Retrieval-Augmented Generation) 시스템 관점에서 검색 흐름을 살펴보겠습니다.
 
-```mermaid
-sequenceDiagram
-    participant U as 사용자
-    participant A as 애플리케이션
-    participant E as 임베딩 모델
-    participant V as Vector DB
-    participant L as LLM
 
-    U->>A: "연차 신청은 언제까지 해야 해?"
-    A->>E: 질문을 임베딩해 주세요
-    E-->>A: 질문 벡터 반환
-    A->>V: 질문 벡터와 가까운 청크 top-K 검색
-    V-->>A: 관련 청크와 메타데이터 반환
-    A->>L: 질문 + 검색된 근거 전달
-    L-->>A: 근거 기반 답변 생성
-    A-->>U: 답변과 출처 반환
+```text
+사용자 → 애플리케이션: "연차 신청은 언제까지 해야 해?"
+애플리케이션 → 임베딩 모델: 질문을 벡터로 변환
+임베딩 모델 → 애플리케이션: 질문 벡터 반환
+애플리케이션 → Vector DB: 가까운 청크 top-K 검색
+Vector DB → 애플리케이션: 관련 청크와 메타데이터 반환
+애플리케이션 → LLM: 질문과 검색 근거 전달
+LLM → 애플리케이션: 근거 기반 답변 생성
+애플리케이션 → 사용자: 답변과 출처 반환
 ```
 
 Vector DB 자체의 검색 단계만 보면 아래와 같습니다.

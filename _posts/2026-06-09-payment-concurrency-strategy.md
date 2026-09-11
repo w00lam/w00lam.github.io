@@ -46,25 +46,19 @@ PG 결제 진행
 
 **웹훅을 활용한 결제 흐름 예시:**
 
-```mermaid
-sequenceDiagram
-    actor User
-    participant Client
-    participant PG as Payment Gateway
-    participant Server as Our Server
 
-    User->>Client: 결제 요청
-    Client->>PG: 결제 요청 (사용자 정보, 상품 정보 등)
-    PG->>User: 결제 진행 (카드 정보 입력 등)
-    User->>PG: 결제 완료
-    PG-->>Client: 결제 성공 응답 (리다이렉션 URL 포함)
-    Client->>Server: 결제 완료 페이지 진입 (UX 목적)
-    Note over PG,Server: PG는 결제 성공 시점에
-    PG->>Server: Webhook 전송 (결제 성공 알림)
-    Server->>Server: Webhook 수신 및 결제 상태 '성공'으로 변경
-    Server-->>PG: Webhook 응답 (HTTP 200 OK)
-    Client->>Server: 결제 결과 조회 (선택 사항)
-    Server-->>Client: 결제 결과 응답
+```text
+User → Client: 결제 요청
+Client → Payment Gateway: 결제 요청
+Payment Gateway → User: 결제 진행
+User → Payment Gateway: 결제 완료
+Payment Gateway → Client: 결제 성공 응답 (리다이렉션 URL 포함)
+Client → Our Server: 결제 완료 페이지 진입 (UX 목적)
+Payment Gateway → Our Server: Webhook 전송 (결제 성공 알림)
+Our Server → Our Server: 결제 상태를 '성공'으로 변경
+Our Server → Payment Gateway: Webhook 응답 (HTTP 200 OK)
+Client → Our Server: 결제 결과 조회 (선택 사항)
+Our Server → Client: 결제 결과 응답
 ```
 
 웹훅 덕분에 우리 서버는 사용자의 브라우저나 앱 상태와 무관하게 PG사로부터 직접 결제 성공 알림을 받습니다. 결제 상태의 일관성을 확보하는 데 큰 역할을 하는 지점입니다. 사용자가 결제 완료 페이지에 도달하지 못해도 PG사가 웹훅으로 결제 성공을 알려주므로 상태 불일치 문제를 상당 부분 해소할 수 있습니다.
@@ -83,29 +77,22 @@ sequenceDiagram
 
 그렇다면 결제 상태의 최종 진실은 무엇일까요? **PG사의 결제 조회 API**입니다. 실제 운영 환경에서는 웹훅 수신만으로 결제 상태를 확정하지 않고 다음과 같은 흐름으로 처리하는 것이 일반적입니다.
 
-```mermaid
-sequenceDiagram
-    actor User
-    participant Client
-    participant PG as Payment Gateway
-    participant Server as Our Server
 
-    User->>Client: 결제 요청
-    Client->>PG: 결제 요청
-    PG->>User: 결제 진행
-    User->>PG: 결제 완료
-    PG-->>Client: 결제 성공 응답 (리다이렉션)
-    Client->>Server: 결제 완료 페이지 진입 (UX 목적)
 
-    Note over PG,Server: PG는 결제 성공 시점에
-    PG->>Server: Webhook 전송 (결제 성공 알림)
-    Server->>Server: Webhook 수신
-    Server->>PG: PG 결제 조회 API 호출 (결제 ID)
-    PG-->>Server: 실제 결제 상태 응답 (성공/실패/대기 등)
-    Server->>Server: PG 응답 기반으로 결제 상태 '성공'으로 최종 반영
-    Server-->>PG: Webhook 응답 (HTTP 200 OK)
-    Client->>Server: 결제 결과 조회 (선택 사항)
-    Server-->>Client: 결제 결과 응답
+```text
+User → Client: 결제 요청
+Client → Payment Gateway: 결제 요청
+Payment Gateway → User: 결제 진행
+User → Payment Gateway: 결제 완료
+Payment Gateway → Client: 결제 성공 응답 (리다이렉션)
+Client → Our Server: 결제 완료 페이지 진입 (UX 목적)
+Payment Gateway → Our Server: Webhook 전송
+Our Server → Payment Gateway: 결제 ID로 실제 결제 상태 조회
+Payment Gateway → Our Server: 성공/실패/대기 상태 응답
+Our Server → Our Server: PG 응답 기반으로 결제 상태 최종 반영
+Our Server → Payment Gateway: Webhook 응답 (HTTP 200 OK)
+Client → Our Server: 결제 결과 조회 (선택 사항)
+Our Server → Client: 결제 결과 응답
 ```
 
 웹훅을 수신하면 우리 서버는 해당 웹훅의 `결제 ID`로 PG사의 결제 조회 API를 호출합니다. 이 API로 PG사에 기록된 **실제 결제 상태**를 확인하고 그 결과를 바탕으로 우리 서버의 결제 상태를 최종 반영합니다. 이렇게 하면 웹훅 전송 실패 같은 일시적인 문제가 있어도 PG사의 데이터가 항상 최종 진실(Source of Truth)이 되므로 결제 상태의 일관성과 정확성을 보장할 수 있습니다.

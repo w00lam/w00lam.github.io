@@ -10,12 +10,9 @@ permalink: /posts/spring-ai-chatclient-structured-output/
 
 최근 AI 기술이 발전하면서 소프트웨어를 개발하는 방식도 크게 달라졌습니다. 특히 LLM(Large Language Model)이 등장하면서 개발자는 AI 기능을 애플리케이션에 통합해야 하는 새로운 과제를 맞았습니다. 초기 AI 앱은 대부분 사용자의 질문을 받아 백엔드가 LLM API를 호출하고 그 결과를 문자열 형태로 사용자에게 돌려주는 단순한 형태였습니다.
 
-```mermaid
-flowchart LR
-    U["사용자"] --> A["백엔드"]
-    A --> L["LLM API"]
-    L --> A
-    A --> U
+```text
+사용자 ── 요청 ──▶ 백엔드 ── 호출 ──▶ LLM API
+사용자 ◀─ 응답 ── 백엔드 ◀─ 결과 ── LLM API
 ```
 
 하지만 실제 서비스 환경에서는 이러한 방식만으로는 한계에 부딪히게 됩니다. LLM이 서비스의 특정 도메인 지식(DB 내용, 회사 규정 등)을 알지 못하고 응답이 매번 문자열이라 후속 로직에서 다루기 어렵다는 점, 그리고 프롬프트 관리가 어렵다는 점 등이 대표적인 문제였습니다. 예를 들어, "이 영수증을 회사 경비로 처리할 수 있어?"와 같은 질문에 LLM API만으로는 정확한 답변을 기대하기 어렵습니다.
@@ -113,17 +110,23 @@ Spring AI를 처음 접할 때는 낯선 용어들 때문에 혼란스러울 수
 
 `ChatClient`와 `ChatModel`은 같은 레벨의 개념이 아닙니다. `ChatClient`는 개발자가 애플리케이션 코드에서 직접 사용하는 고수준 API이며 `ChatModel`은 `ChatClient` 뒤에서 실제 LLM 프로바이더와 통신하는 추상화 계층입니다.
 
-```mermaid
-flowchart TD
-    A["내 Spring Boot 코드"] --> B["ChatClient<br/>개발자가 주로 사용하는 fluent API"]
-    B --> C["ChatModel<br/>모델 provider 호출 추상화"]
-    C --> D["OpenAI / Anthropic / Gemini / Ollama ..."]
 
-    B --> B1["prompt()"]
-    B --> B2["system() / user()"]
-    B --> B3["call() / stream()"]
-    B --> B4["content() / entity()"]
-    B --> B5["tools()"]
+```text
+내 Spring Boot 코드
+        │
+        ▼
+ChatClient
+  ├─ prompt()
+  ├─ system() / user()
+  ├─ call() / stream()
+  ├─ content() / entity()
+  └─ tools()
+        │
+        ▼
+ChatModel
+        │
+        ▼
+OpenAI / Anthropic / Gemini / Ollama ...
 ```
 
 | 구분 | `ChatClient` | `ChatModel` |
@@ -182,15 +185,15 @@ public class OpenAiMultimodalAnalysisService implements MultimodalAnalysisServic
 
 AI 호출 로직은 Controller에 직접 넣기보다 별도의 서비스 계층으로 분리하는 편이 좋습니다. 그래야 코드 응집도가 높아지고 테스트하기 쉬워지며 프롬프트나 모델을 바꿀 때도 유연하게 대응할 수 있습니다.
 
-```mermaid
-flowchart TD
-    A["MultimodalController"] --> B["MultimodalAnalysisService"]
-    B --> C["OpenAiMultimodalAnalysisService"]
-    B --> D["MockMultimodalAnalysisService"]
-    C --> E["UploadedMediaFactory"]
-    E --> F["UploadedMedia<br/>Resource + MimeType"]
-    C --> G["ChatClient"]
-    G --> H["OpenAI chat model"]
+```text
+MultimodalController
+        │
+        ▼
+MultimodalAnalysisService
+        ├─▶ OpenAiMultimodalAnalysisService
+        │       ├─▶ UploadedMediaFactory ─▶ UploadedMedia (Resource + MimeType)
+        │       └─▶ ChatClient ─▶ OpenAI chat model
+        └─▶ MockMultimodalAnalysisService
 ```
 
 ## 5. Prompt 설계 — System/User/출력 형식

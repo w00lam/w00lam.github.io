@@ -409,32 +409,5 @@ upstream을 사용하면 내부 서버를 논리적으로 묶을 수 있고 여�
 
 ---
 
-## 글 중간에 넣을 이미지 위치 제안
-
-### 이미지 1. Docker Compose에서 localhost와 service name 차이
-
-`2. Docker Compose 환경에서는 localhost의 의미가 달라진다` 섹션 뒤에 넣으면 좋다. 호스트에 직접 설치된 Nginx의 `localhost:8080`과 컨테이너 안에서 실행 중인 Nginx의 `localhost:8080`이 서로 다른 대상을 가리킨다는 점을 직관적으로 보여줄 수 있다.
-
-### 이미지 2. Nginx upstream 구조
-
-`4. upstream은 내부 서버 그룹을 논리적으로 묶는 설정이다` 섹션 뒤에 넣으면 좋다. `backend`가 Docker 컨테이너 이름이 아니라 Nginx 내부의 upstream 그룹 이름이라는 점을 시각적으로 설명하기 좋다.
-
-### 이미지 3. Load Balancing과 Blue-Green 차이
-
-`6. Load Balancing과 Blue-Green 배포는 다르다` 섹션 뒤에 넣으면 좋다. 여러 서버에 요청을 나눠 보내는 구조와, 하나의 운영 버전에서 다른 버전으로 트래픽을 전환하는 구조를 비교할 수 있다.
-
-### 이미지 4. proxy_set_header 흐름
-
-`9. proxy_set_header는 원본 요청 정보를 전달한다` 섹션 뒤에 넣으면 좋다. Client → Nginx → Spring Boot 흐름에서 Host, IP, Proto 정보가 어떻게 전달되는지 보여주면 `proxy_set_header`의 필요성이 더 잘 드러난다.
 
 ---
-
-## 이미지 생성 프롬프트
-
-### 프롬프트 1. Docker Compose에서 localhost와 service name 차이
-
-> 16:9 기술 블로그용 다이어그램 이미지. 흰색 또는 아주 밝은 배경, 깔끔한 기업 기술 블로그 스타일, 얇은 선, 둥근 박스, 빨간색 포인트 컬러, 과한 3D 금지. 주제는 Docker Compose 환경에서 Nginx의 `localhost:8080`과 `app:8080` 차이. 왼쪽 영역에는 "EC2 Host에 직접 설치된 Nginx", "Spring Boot : 8080", "`proxy_pass http://localhost:8080`", "localhost가 EC2 Host를 가리킴"을 표시한다. 오른쪽 영역에는 "Docker Compose Network", "nginx container", "app container : 8080", "`proxy_pass http://localhost:8080`은 nginx container 자신을 가리킴", "올바른 설정: `proxy_pass http://app:8080`"을 표시한다. 핵심 문구는 "컨테이너 내부의 localhost는 컨테이너 자신이다". 텍스트는 한국어로 작성하고 읽기 쉬운 DevOps 다이어그램 스타일로 구성한다.
-
-### 프롬프트 2. Nginx upstream, Load Balancing, Blue-Green 비교
-
-> 16:9 기술 블로그용 비교 다이어그램 이미지. 흰색 배경, 좌우 비교 레이아웃, 빨간색 포인트 컬러, 얇은 선과 둥근 박스, DevOps 발표자료 느낌. 주제는 Nginx upstream이 Load Balancing과 Blue-Green 배포에서 어떻게 다르게 사용되는지 비교. 왼쪽은 "Load Balancing" 영역으로 구성하고 "Client → Nginx upstream backend" 흐름 아래에 app-blue와 app-green이 둘 다 활성화되어 있으며 요청 화살표가 두 서버로 나뉘는 모습을 보여준다. 문구는 "여러 서버에 요청 분산". 오른쪽은 "Blue-Green 배포" 영역으로 구성하고 "Client → Nginx" 이후 현재는 app-blue로만 트래픽이 전달되고 app-green은 health check 후 전환 대상으로 표시한다. 전환 후 app-green으로 트래픽이 이동하는 화살표를 함께 표시한다. 문구는 "정상 확인 후 트래픽 전환". 핵심 문구는 "Load Balancing은 분산, Blue-Green은 전환". 텍스트는 한국어로 작성한다.

@@ -40,10 +40,14 @@ permalink: /posts/system-call-fork-exec-wait/
 
 정확히는 사용자 코드가 실행되던 CPU의 제어 흐름이 운영체제가 제공하는 커널 코드로 넘어간다. 커널이 요청을 처리한 다음에는 다시 사용자 코드의 실행 지점으로 돌아온다.
 
-```mermaid
-flowchart TD
-    A[User Application\n사용자 코드 실행] -->|System Call 요청| B[Kernel Code\n운영체제 기능 수행]
-    B -->|요청 처리 완료| C[User Application\n다음 사용자 코드 실행]
+```text
+User Application (사용자 코드 실행)
+        │ System Call 요청
+        ▼
+Kernel Code (운영체제 기능 수행)
+        │ 요청 처리 완료
+        ▼
+User Application (다음 사용자 코드 실행)
 ```
 
 `User Mode`와 `Kernel Mode`는 CPU가 현재 어떤 권한 수준에서 어떤 코드를 실행하는지를 설명하는 개념이다. System Call은 사용자 프로그램이 직접 할 수 없는 작업을 운영체제에 요청하고 그 요청을 처리할 수 있도록 제어 흐름을 커널 코드로 전달하는 방법이다.
@@ -179,14 +183,15 @@ Shell 프로세스 자체에서 바로 `exec()`를 호출하면 Shell의 프로�
 
 그래서 일반적인 개념 흐름은 다음과 같다.
 
-```mermaid
-flowchart TD
-    A[Shell Process] -->|fork()| B[Parent Shell]
-    A -->|fork()| C[Child Process]
-    B -->|wait()| D[자식 종료 상태 회수]
-    C -->|exec(java)| E[Java Program 실행]
-    E --> F[자식 프로세스 종료]
-    F --> D
+```text
+Shell Process
+  ├─ fork() → Parent Shell ── wait() ──▶ 자식 종료 상태 회수
+  └─ fork() → Child Process ── exec(java) ──▶ Java Program 실행
+                                                   │
+                                                   ▼
+                                             자식 프로세스 종료
+                                                   │
+                                                   └────────▶ 상태 회수
 ```
 
 1. Shell이 `fork()`로 자식 프로세스를 만든다.

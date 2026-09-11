@@ -70,11 +70,8 @@ Client → Nginx → Spring Boot
 
 그래서 Nginx는 외부 사용자와 내부 애플리케이션 사이의 경계 역할을 한다. 외부에는 표준 포트인 80/443만 열어두고 Spring Boot의 8080 포트는 내부에서만 사용하도록 둘 수 있다.
 
-```mermaid
-flowchart LR
-    A[Client / Browser] --> B[Nginx<br/>80 / 443]
-    B --> C[Spring Boot<br/>8080]
-    C --> D[MySQL / Redis]
+```text
+Client / Browser → Nginx (80 / 443) → Spring Boot (8080) → MySQL / Redis
 ```
 
 ![Nginx Reverse Proxy 구조](/assets/images/2026-07-02-nginx/nginx-reverse-proxy.png)
@@ -262,24 +259,5 @@ Nginx는 외부 사용자와 내부 애플리케이션 사이의 경계이며 Do
 
 ---
 
-## 글 중간에 넣을 이미지 위치 제안
-
-### 이미지 1. Nginx Reverse Proxy 구조
-
-현재 `2. 이 구조를 Reverse Proxy라고 이해했다` 섹션의 Mermaid 다이어그램 아래에 삽입했다. 이 위치에 넣으면 `Client → Nginx → Spring Boot → MySQL / Redis` 흐름을 글 초반에 한 번에 보여줄 수 있다.
-
-### 이미지 2. Nginx가 없는 구조와 있는 구조 비교
-
-현재 `5. HTTPS 처리는 보통 Nginx에서 담당한다` 섹션 뒤에 삽입했다. 8080 직접 접근 방식의 어색함과 Nginx를 둔 구조의 장점을 비교해서 보여주면, 왜 앞단 서버가 필요한지 더 직관적으로 연결된다.
 
 ---
-
-## 이미지 생성 프롬프트
-
-### 프롬프트 1. Nginx Reverse Proxy 구조
-
-> 16:9 technical blog diagram, clean corporate presentation style, white or very light background, thin lines, rounded boxes, red accent color. Show a left-to-right architecture flow with Korean labels: "Client / Browser" → "Nginx Reverse Proxy" → "Spring Boot Application" → "MySQL / Redis". In the Nginx card include small keywords: "80/443", "HTTPS", "proxy_pass", "Routing". In the Spring Boot card include: "8080", "API", "Business Logic". MySQL and Redis should appear as internal resources behind Spring Boot, visually indicating that external users cannot access them directly. Minimal flat vector style, no excessive 3D, clear Korean typography.
-
-### 프롬프트 2. Nginx가 없는 구조와 있는 구조 비교
-
-> 16:9 technical blog comparison diagram, split layout left and right, clean white background, red accent color, thin lines, rounded boxes, professional tech blog style. Left side title in Korean: "Nginx 없는 구조"; show "Client" → "Spring Boot : 8080" and list problems in Korean: "포트 직접 노출", "주소가 어색함", "HTTPS 처리 부담", "배포 전환 어려움". Right side title in Korean: "Nginx가 있는 구조"; show "Client" → "Nginx : 80/443" → "Spring Boot : 8080" and list benefits in Korean: "표준 포트 접근", "내부 포트 숨김", "HTTPS 처리 분리", "배포 전환 지점 확보". Minimal flat vector design, balanced spacing, readable Korean text.

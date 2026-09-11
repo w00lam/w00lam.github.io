@@ -324,9 +324,8 @@ LLM 기반 개발을 할 때 가장 많이 혼동하는 **RAG**와 **Fine-tuning
 
 처음부터 Hybrid Search, Reranking, Multi-Query Rewriting 등 모든 최신 기술을 한꺼번에 구축하려고 하면 백엔드 복잡도가 폭발합니다. 단계별 확장 전략이 필요합니다.
 
-```mermaid
-flowchart LR
-    A[1단계: Core RAG MVP] --> B[2단계: 검색 품질 개선] --> C[3단계: 고도화 & 운영화]
+```text
+1단계: Core RAG MVP → 2단계: 검색 품질 개선 → 3단계: 고도화 및 운영화
 ```
 
 ### 1단계 — Core RAG MVP (최소 기능 제품)

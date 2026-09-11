@@ -171,29 +171,21 @@ WebSocket과 STOMP의 관계는 마치 **도로와 교통 규칙**에 비유할 
 
 Spring에서 STOMP를 사용하면 메시지 처리 흐름이 더욱 구조화됩니다. 다음은 일반적인 STOMP 메시지 처리 흐름입니다.
 
-```mermaid
-sequenceDiagram
-    participant Client
-    participant WebSocket
-    participant STOMPFrame
-    participant ChannelInterceptor
-    participant MessageMapping
-    participant Broker
-    participant Subscriber
 
-    Client->>WebSocket: HTTP Handshake (Upgrade to WebSocket)
-    WebSocket-->>Client: WebSocket Connection Established
-    Client->>STOMPFrame: STOMP CONNECT (with JWT)
-    STOMPFrame->>ChannelInterceptor: PreSend Intercept
-    ChannelInterceptor-->>STOMPFrame: Authenticated Principal
-    STOMPFrame->>MessageMapping: @MessageMapping (if direct message)
-    MessageMapping->>Broker: Send Message to Broker
-    Broker-->>Subscriber: Deliver Message
-    Client->>STOMPFrame: STOMP SUBSCRIBE / SEND
-    STOMPFrame->>ChannelInterceptor: PreSend Intercept
-    ChannelInterceptor-->>STOMPFrame: Authenticated Principal
-    STOMPFrame->>Broker: Send Message to Broker
-    Broker-->>Subscriber: Deliver Message
+```text
+Client → WebSocket: HTTP Handshake (Upgrade to WebSocket)
+WebSocket → Client: WebSocket 연결 완료
+Client → STOMP Frame: STOMP CONNECT (JWT 포함)
+STOMP Frame → ChannelInterceptor: PreSend Intercept
+ChannelInterceptor → STOMP Frame: 인증된 Principal 전달
+STOMP Frame → MessageMapping: 직접 메시지라면 @MessageMapping
+MessageMapping → Broker: 메시지 전달
+Broker → Subscriber: 메시지 전송
+Client → STOMP Frame: STOMP SUBSCRIBE / SEND
+STOMP Frame → ChannelInterceptor: PreSend Intercept
+ChannelInterceptor → STOMP Frame: 인증된 Principal 전달
+STOMP Frame → Broker: 메시지 전달
+Broker → Subscriber: 메시지 전송
 ```
 
 > **핵심 정리**: Spring STOMP는 `ChannelInterceptor`로 메시지 전송 전/후를 가로채고 `@MessageMapping`으로 특정 Destination의 메시지를 처리하며 `Broker`로 구독자에게 메시지를 전달합니다.
@@ -246,22 +238,18 @@ public class WebSocketSecurityConfig implements WebSocketMessageBrokerConfigurer
 
 ### 처리 흐름
 
-```mermaid
-sequenceDiagram
-    participant Client
-    participant ChannelInterceptor
-    participant JWTValidator
-    participant MessageMapping
 
-    Client->>ChannelInterceptor: STOMP Message (CONNECT, SUBSCRIBE, SEND)
-    ChannelInterceptor->>JWTValidator: Intercept and Validate JWT
-    alt JWT Valid
-        JWTValidator-->>ChannelInterceptor: Authentication Success
-        ChannelInterceptor->>MessageMapping: Proceed to Message Handler
-    else JWT Invalid
-        JWTValidator-->>ChannelInterceptor: Authentication Failure
-        ChannelInterceptor-->>Client: Reject Connection / Send Error
-    end
+```text
+Client → ChannelInterceptor: STOMP Message (CONNECT, SUBSCRIBE, SEND)
+ChannelInterceptor → JWTValidator: JWT 검증
+
+[JWT Valid]
+JWTValidator → ChannelInterceptor: Authentication Success
+ChannelInterceptor → MessageMapping: Message Handler로 진행
+
+[JWT Invalid]
+JWTValidator → ChannelInterceptor: Authentication Failure
+ChannelInterceptor → Client: 연결 거부 또는 오류 전송
 ```
 
 > **핵심 정리**: `ChannelInterceptor`는 STOMP 메시지 채널의 최전선에서 메시지를 가로채 JWT 검증 및 인증 처리를 수행하는 핵심 컴포넌트입니다.

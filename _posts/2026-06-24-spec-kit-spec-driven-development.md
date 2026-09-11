@@ -22,13 +22,18 @@ permalink: /posts/spec-kit-spec-driven-development/
 
 README 기준으로 전체 흐름은 대략 다음과 같다.
 
-```mermaid
-flowchart LR
-    A["Constitution<br/>프로젝트 원칙"] --> B["Spec<br/>기능 명세"]
-    B --> C["Clarify<br/>모호한 요구사항 정리"]
-    C --> D["Plan<br/>기술 계획"]
-    D --> E["Tasks<br/>작업 분해"]
-    E --> F["Implementation<br/>구현"]
+```text
+Constitution (프로젝트 원칙)
+        ↓
+Spec (기능 명세)
+        ↓
+Clarify (모호한 요구사항 정리)
+        ↓
+Plan (기술 계획)
+        ↓
+Tasks (작업 분해)
+        ↓
+Implementation (구현)
 ```
 
 초기화는 `specify init`으로 시작한다. 이후 AI 코딩 에이전트 안에서 `/speckit.constitution`, `/speckit.specify`, `/speckit.plan`, `/speckit.tasks` 같은 명령을 사용해 명세와 계획, 작업 목록을 만들어가는 방식이다.

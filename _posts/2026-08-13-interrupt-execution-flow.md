@@ -300,14 +300,11 @@ Interrupt는 **Hardware와 Kernel, Application 실행 흐름을 연결하는 메
 
 지금까지의 내용을 상태 변화로 묶으면 다음과 같다. `Running`, `Ready`, `Waiting`은 실행 흐름을 설명하기 위한 일반적인 상태 이름이며 실제 OS의 상태 이름과 세부 전환 조건은 구현에 따라 달라질 수 있다.
 
-```mermaid
-stateDiagram-v2
-    [*] --> Ready
-    Ready --> Running: Scheduler 선택
-    Running --> Ready: Time Slice 종료 / Timer Interrupt
-    Running --> Waiting: I/O 요청
-    Waiting --> Ready: I/O 완료 Interrupt
-    Running --> [*]: 실행 종료
+```text
+[시작] → Ready ── Scheduler 선택 ──▶ Running
+Running ── Time Slice 종료 / Timer Interrupt ──▶ Ready
+Running ── I/O 요청 ──▶ Waiting ── I/O 완료 Interrupt ──▶ Ready
+Running ── 실행 종료 ──▶ [종료]
 ```
 
 각 전환을 다시 보면 다음과 같다.
