@@ -20,6 +20,8 @@
   <rect x="740" y="120" width="170" height="70" class="box check"/><text x="825" y="155" class="text">equals()</text>
   <path d="M825 190 V260" class="arrow"/>
   <text x="825" y="292" class="small">논리적 동등성 확인</text>
-  <text x="480" y="55" class="small">같은 hashCode라도 equals() 결과가 같다는 뜻은 아니다</text>
-  <text x="480" y="330" class="small">equals()가 true라면 hashCode()도 같아야 한다</text>
+  <rect x="175" y="24" width="610" height="42" rx="21" fill="#f8fafc" stroke="#cbd5e1" stroke-width="2"/>
+  <text x="480" y="45" class="small">같은 hashCode라도 equals()가 true라는 뜻은 아니다</text>
+  <rect x="205" y="306" width="550" height="34" rx="17" fill="#f0fdf4" stroke="#bbf7d0" stroke-width="2"/>
+  <text x="480" y="323" class="small">equals()가 true라면 hashCode()도 같아야 한다</text>
 </svg>
