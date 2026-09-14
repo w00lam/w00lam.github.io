@@ -1,0 +1,33 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="860" height="430" viewBox="0 0 860 430" role="img" aria-labelledby="title desc">
+  <title id="title">Java Collection Framework 구조</title>
+  <desc id="desc">Collection 아래에 List와 Set이 있고, Map은 별도의 계층에 있는 구조</desc>
+  <style>
+    .box { fill: #f8fafc; stroke: #334155; stroke-width: 2; rx: 12; }
+    .root { fill: #dbeafe; stroke: #2563eb; }
+    .map { fill: #fef3c7; stroke: #d97706; }
+    .text { fill: #0f172a; font: 600 22px Arial, sans-serif; text-anchor: middle; dominant-baseline: middle; }
+    .small { fill: #475569; font: 17px Arial, sans-serif; text-anchor: middle; dominant-baseline: middle; }
+    .line { stroke: #64748b; stroke-width: 2.5; fill: none; }
+  </style>
+  <rect width="860" height="430" fill="#ffffff"/>
+  <text x="430" y="38" class="small">Java Collection Framework</text>
+  <rect x="190" y="78" width="180" height="62" class="box root"/>
+  <text x="280" y="109" class="text">Collection</text>
+  <path d="M280 140 V182 M280 182 H150 V216 M280 182 H410 V216" class="line"/>
+  <rect x="60" y="216" width="180" height="62" class="box"/>
+  <text x="150" y="247" class="text">List</text>
+  <rect x="320" y="216" width="180" height="62" class="box"/>
+  <text x="410" y="247" class="text">Set</text>
+  <path d="M150 278 V318 M410 278 V318" class="line"/>
+  <rect x="40" y="318" width="220" height="62" class="box"/>
+  <text x="150" y="349" class="text">ArrayList</text>
+  <rect x="300" y="318" width="220" height="62" class="box"/>
+  <text x="410" y="349" class="text">LinkedList</text>
+  <rect x="570" y="78" width="220" height="62" class="box map"/>
+  <text x="680" y="109" class="text">Map</text>
+  <text x="680" y="170" class="small">별도 계층</text>
+  <path d="M680 140 V216" class="line"/>
+  <rect x="570" y="216" width="220" height="62" class="box"/>
+  <text x="680" y="247" class="text">HashMap</text>
+  <text x="430" y="408" class="small">Map은 Collection을 상속하지 않고 Key–Value 관계를 관리한다</text>
+</svg>
