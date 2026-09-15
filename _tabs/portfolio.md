@@ -23,8 +23,8 @@ toc: false
     <a href="#portfolio-principles">Principles</a>
     <a href="#portfolio-stack">Stack</a>
     <a href="#portfolio-capabilities">Capability</a>
-    <a href="#matisson">Project 01</a>
-    <a href="#concert-ticketing">Project 02</a>
+    <a href="#concert-ticketing">Project 01</a>
+    <a href="#matisson">Project 02</a>
     <a href="#portfolio-ai">AI Native</a>
     <a href="#portfolio-contact">Contact</a>
   </nav>
@@ -187,7 +187,7 @@ toc: false
       <article class="portfolio-project-card portfolio-project-card--matisson">
         <div class="portfolio-project-card-media" aria-hidden="true">
           <div class="portfolio-project-card-brand">
-            <span class="portfolio-project-symbol">01</span>
+            <span class="portfolio-project-symbol">02</span>
             <span class="portfolio-project-type">AI PLACE DISCOVERY</span>
           </div>
           <div class="portfolio-project-card-rail">
@@ -196,7 +196,7 @@ toc: false
         </div>
         <div class="portfolio-project-card-body">
           <div class="portfolio-project-card-meta">
-            <span class="portfolio-card-kicker">PROJECT 01 · 2026.07 - 현재</span>
+            <span class="portfolio-card-kicker">PROJECT 02 · 2026.07 - 현재</span>
             <span class="portfolio-project-status"><i class="fas fa-circle" aria-hidden="true"></i> 진행중</span>
           </div>
           <h3>맛잇온</h3>
@@ -208,7 +208,7 @@ toc: false
       <article class="portfolio-project-card portfolio-project-card--ticketing">
         <div class="portfolio-project-card-media" aria-hidden="true">
           <div class="portfolio-project-card-brand">
-            <span class="portfolio-project-symbol">02</span>
+            <span class="portfolio-project-symbol">01</span>
             <span class="portfolio-project-type">CONCURRENT BOOKING</span>
           </div>
           <div class="portfolio-project-card-rail">
@@ -216,7 +216,7 @@ toc: false
           </div>
         </div>
         <div class="portfolio-project-card-body">
-          <span class="portfolio-card-kicker">PROJECT 02 · 2025.11 - 2026.05</span>
+          <span class="portfolio-card-kicker">PROJECT 01 · 2025.11 - 2026.05</span>
           <h3>콘서트 티켓팅 예약 시스템</h3>
           <p>좌석 경쟁과 결제 재요청을 Redis 분산락과 멱등성으로 제어한 백엔드 프로젝트입니다.</p>
           <a class="portfolio-card-link" href="#concert-ticketing">케이스 스터디 보기 <i class="fas fa-arrow-right" aria-hidden="true"></i></a>
@@ -225,10 +225,11 @@ toc: false
     </div>
   </section>
 
+  <div class="portfolio-project-sections">
   <section class="portfolio-project portfolio-project--matisson" id="matisson" aria-labelledby="matisson-title">
     <div class="portfolio-project-heading">
       <div>
-        <p class="portfolio-eyebrow">PROJECT 01</p>
+        <p class="portfolio-eyebrow">PROJECT 02</p>
         <h2 id="matisson-title">맛잇온</h2>
         <p class="portfolio-project-lead">
           유튜버가 방문한 맛집을 지역·음식 종류·유튜버별로 탐색하는 서비스입니다.
@@ -236,7 +237,7 @@ toc: false
         </p>
         <a class="portfolio-text-link" href="https://masiton.click/restaurants" target="_blank" rel="noopener">서비스 열기 <i class="fas fa-arrow-up-right-from-square" aria-hidden="true"></i></a>
       </div>
-      <span class="portfolio-project-number" aria-hidden="true">01</span>
+      <span class="portfolio-project-number" aria-hidden="true">02</span>
     </div>
 
     <div class="portfolio-project-meta portfolio-project-meta--in-progress">
@@ -361,6 +362,85 @@ toc: false
     <div class="portfolio-additional-cases">
       <article class="portfolio-additional-case">
         <div>
+          <p class="portfolio-card-kicker">SCALE · PUBLIC READ</p>
+          <h3>대규모 공개 조회 부하는 AI 등록 작업과 분리해 측정했습니다.</h3>
+          <p>
+            맛잇온은 티켓팅처럼 좌석 선점 수만 키우는 서비스가 아니므로, 공개 조회 경로의 요청 부하와 AI 자동 등록 Worker의 작업 정합성을
+            서로 다른 기준으로 봤습니다. 운영 검증 참여자 전용 범위에서 <code>200 VU / 80 RPS</code> 부하 프로필을 실행해
+            24,001개 표본에서 5xx 0%, dropped iteration 0건, 백엔드 CPU 약 14.73%를 관찰했습니다.
+            이 수치는 공개 조회 부하의 결과이며, AI Worker의 실제 처리 용량으로 확대 해석하지 않았습니다.
+          </p>
+          <a class="portfolio-text-link" href="https://github.com/team-youngkk/masit-on/blob/main/docs/08-planning/issue-190-operational-performance-result.md" target="_blank" rel="noopener">운영 부하 관찰 결과 <i class="fas fa-arrow-up-right-from-square" aria-hidden="true"></i></a>
+        </div>
+        <div class="portfolio-proof-panel">
+          <span class="portfolio-card-kicker">OBSERVED CONDITION</span>
+          <code>public_read_load = 200 VU / 80 RPS</code>
+          <code>measured_samples = 24,001</code>
+          <code>server_5xx = 0%</code>
+          <code>dropped_iterations = 0</code>
+          <code>backend_cpu_peak ≈ 14.73%</code>
+          <span class="portfolio-proof-status"><i class="fas fa-check" aria-hidden="true"></i> public read load observed</span>
+        </div>
+      </article>
+
+      <article class="portfolio-additional-case">
+        <div>
+          <p class="portfolio-card-kicker">EXTERNAL FAILURE · WIREMOCK</p>
+          <h3>실제 API를 호출하지 않고도 외부 장애와 저장 경계를 검증했습니다.</h3>
+          <p>
+            Kakao·YouTube 실 API는 quota·비용·외부 상태 변화 때문에 자동화 테스트에서 직접 호출하지 않았습니다.
+            Testcontainers로 WireMock을 띄워 정상·빈 결과·429 rate limit·잘못된 JSON·필수 필드 누락·응답 지연(timeout)을 재현했습니다.
+            외부 실패는 <code>EXTERNAL_SERVICE_ERROR</code>로 분류하고, 별도 PostgreSQL 통합 테스트에서는 정식 등록 후 단계의 실패를 주입해
+            후보·맛집·크리에이터·영상·방문 데이터가 모두 0건으로 롤백되는 것까지 확인했습니다.
+          </p>
+          <div class="portfolio-project-links">
+            <a class="portfolio-text-link" href="https://github.com/team-youngkk/masit-on/blob/main/src/test/java/com/masiton/external/ExternalVerificationWireMockFixtureIntegrationTest.java" target="_blank" rel="noopener">WireMock 장애 fixture <i class="fas fa-arrow-up-right-from-square" aria-hidden="true"></i></a>
+            <a class="portfolio-text-link" href="https://github.com/team-youngkk/masit-on/blob/main/src/test/java/com/masiton/acceptance/AdminRegistrationJourneyAcceptanceTest.java" target="_blank" rel="noopener">WireMock 관리자 등록 흐름 <i class="fas fa-arrow-up-right-from-square" aria-hidden="true"></i></a>
+            <a class="portfolio-text-link" href="https://github.com/team-youngkk/masit-on/blob/main/src/test/java/com/masiton/orchestration/application/RegistrationUnitExecutionServiceTest.java" target="_blank" rel="noopener">외부 실패 분류 테스트 <i class="fas fa-arrow-up-right-from-square" aria-hidden="true"></i></a>
+            <a class="portfolio-text-link" href="https://github.com/team-youngkk/masit-on/blob/main/src/test/java/com/masiton/ai/application/AiExtractionResultCommitServicePostgreSqlIntegrationTest.java" target="_blank" rel="noopener">저장 원자성 테스트 <i class="fas fa-arrow-up-right-from-square" aria-hidden="true"></i></a>
+          </div>
+        </div>
+        <div class="portfolio-proof-panel">
+          <span class="portfolio-card-kicker">CHECKED CONDITION</span>
+          <code>test_external_calls = 0</code>
+          <code>failure_fixtures = 429 + malformed + missing + timeout</code>
+          <code>failure_code = EXTERNAL_SERVICE_ERROR</code>
+          <code>rollback_core_entities = 0</code>
+          <span class="portfolio-proof-status"><i class="fas fa-check" aria-hidden="true"></i> external boundary verified</span>
+        </div>
+      </article>
+
+      <article class="portfolio-additional-case">
+        <div>
+          <p class="portfolio-card-kicker">SCALE · AI WORKER</p>
+          <h3>AI 자동 등록은 요청 지연이 아니라 작업 수용과 backlog 소진으로 판정했습니다.</h3>
+          <p>
+            실제 Gemini·Kakao·YouTube quota를 쓰지 않는 격리 환경에서 관리자 AI 작업 200건을 10건/초로 20초 동안 제출했습니다.
+            제출 API는 200건 모두 수용했고 p95는 45.36ms, dropped iteration은 0건이었습니다. 이후 WireMock 외부 검증과 DB 저장을 포함한
+            Worker 처리 구간은 p95 10.18ms·p99 11.88ms였지만, 단일 Worker의 5초 polling 정책 때문에 마지막 작업까지 1,007.7초가 걸렸습니다.
+            모든 작업은 실패 없이 종료됐고, 동일 장소에 대한 199건은 <code>DUPLICATE_CONFLICT</code>로 차단되어 맛집·크리에이터·영상·방문은 각각 한 건만 남았습니다.
+          </p>
+          <div class="portfolio-project-links">
+            <a class="portfolio-text-link" href="https://github.com/team-youngkk/masit-on/blob/main/src/main/java/com/masiton/ai/application/AiExtractionWorkerService.java" target="_blank" rel="noopener">Worker 처리 경계 <i class="fas fa-arrow-up-right-from-square" aria-hidden="true"></i></a>
+            <a class="portfolio-text-link" href="https://github.com/team-youngkk/masit-on/blob/main/src/test/java/com/masiton/ai/infrastructure/persistence/JdbcAiExtractionWorkerStoreIntegrationTest.java" target="_blank" rel="noopener">Worker 동시성·lease 검증 <i class="fas fa-arrow-up-right-from-square" aria-hidden="true"></i></a>
+          </div>
+        </div>
+        <div class="portfolio-proof-panel">
+          <span class="portfolio-card-kicker">CHECKED CONDITION</span>
+          <code>submit_load = 200 jobs / 10 RPS / 20s</code>
+          <code>submit_accepted = 200 / 200</code>
+          <code>submit_p95 = 45.36ms</code>
+          <code>worker_attempt_p95 = 10.18ms</code>
+          <code>worker_attempt_p99 = 11.88ms</code>
+          <code>queue_drain = 1,007.7s</code>
+          <code>terminal = SUCCEEDED 200 / FAILED 0</code>
+          <code>core_resources = 1 / 1 / 1 / 1</code>
+          <span class="portfolio-proof-status"><i class="fas fa-check" aria-hidden="true"></i> async capacity boundary observed</span>
+        </div>
+      </article>
+
+      <article class="portfolio-additional-case">
+        <div>
           <p class="portfolio-card-kicker">OPERATIONS · SECRETS</p>
           <h3>컨테이너 메타데이터에 남는 비밀값을 tmpfs 주입으로 전환했습니다.</h3>
           <p>
@@ -413,8 +493,8 @@ toc: false
       </div>
       <div>
         <p class="portfolio-card-kicker">NEXT ITERATION</p>
-        <h3>API 계약과 운영 지표를 더 앞단에 둡니다.</h3>
-        <p>다음 단계에서는 핵심 요청·응답 스키마를 문서화합니다. 등록 성공률과 외부 검증 실패율도 배포 후에 확인하도록 확장할 계획입니다.</p>
+        <h3>AI Worker는 공개 조회와 다른 용량 기준으로 운영합니다.</h3>
+        <p>공개 조회는 RPS·응답시간으로, AI 자동 등록은 작업 수용률·terminal 실패율·backlog 소진 시간·중복 리소스 수로 판정합니다. 실제 Gemini quota를 사용하기 전에는 이 격리 결과를 기준선으로 삼아 Worker 동시성·재기동 복구·quota hard stop을 별도 게이트로 확인합니다.</p>
       </div>
     </div>
   </section>
@@ -422,14 +502,14 @@ toc: false
   <section class="portfolio-project portfolio-project--ticketing" id="concert-ticketing" aria-labelledby="ticketing-title">
     <div class="portfolio-project-heading">
       <div>
-        <p class="portfolio-eyebrow">PROJECT 02</p>
+        <p class="portfolio-eyebrow">PROJECT 01</p>
         <h2 id="ticketing-title">콘서트 티켓팅 예약 시스템</h2>
         <p class="portfolio-project-lead">
           대기열 진입부터 좌석 예약, 결제까지 이어지는 콘서트 티켓팅 서비스를 백엔드 중심으로 구현했습니다.
           동일 좌석 동시 요청과 결제 재요청을 테스트로 재현했습니다. 중복·정합성 문제도 해결했습니다.
         </p>
       </div>
-      <span class="portfolio-project-number" aria-hidden="true">02</span>
+      <span class="portfolio-project-number" aria-hidden="true">01</span>
     </div>
 
     <div class="portfolio-project-meta">
@@ -480,6 +560,43 @@ toc: false
       </div>
     </div>
 
+    <div class="portfolio-requirements portfolio-data-model" aria-labelledby="ticketing-data-model-title">
+      <div class="portfolio-requirements-heading">
+        <p class="portfolio-card-kicker">DATA MODEL · ERD</p>
+        <h3 id="ticketing-data-model-title">좌석 경쟁과 결제 정합성을 관계와 제약으로 분리했습니다.</h3>
+        <p>
+          공연·회차·좌석을 예약의 기준 자원으로 두고, 예약 상태와 결제 상태를 별도 Entity로 관리했습니다.
+          포인트는 사용자 잔액과 충전·사용 이력을 나눠 기록하며, 예약·결제·포인트 차감은 하나의 커밋 경계에서 확정합니다.
+        </p>
+      </div>
+      <div class="portfolio-requirements-grid">
+        <article>
+          <span>CONCERT → SEAT</span>
+          <strong>공연·회차·좌석</strong>
+          <p><code>concert_date_id</code> 아래 좌석을 묶고, 구역·행·번호 조합으로 같은 좌석 생성을 막습니다.</p>
+        </article>
+        <article>
+          <span>USER → RESERVATION</span>
+          <strong>예약 상태와 임시 점유</strong>
+          <p><code>TEMP_HOLD</code>의 만료 시각을 기준으로 활성 예약을 판정하고 <code>CONFIRMED</code>·<code>CANCELED</code>·<code>EXPIRED</code>로 전이합니다.</p>
+        </article>
+        <article>
+          <span>RESERVATION → PAYMENT</span>
+          <strong>예약당 결제 한 건</strong>
+          <p><code>payment.reservation_id</code>에 unique 제약을 두어 동일 예약의 결제 재요청을 한 건으로 수렴시킵니다.</p>
+        </article>
+        <article>
+          <span>USER → POINT</span>
+          <strong>잔액과 이력 분리</strong>
+          <p><code>users.points</code> 잔액과 <code>POINTS</code>의 <code>CHARGE·USE</code> 이력을 결제 트랜잭션과 함께 관리합니다.</p>
+        </article>
+      </div>
+      <div class="portfolio-project-links">
+        <a class="portfolio-text-link" href="https://github.com/w00lam/concert-ticketing-server/blob/main/docs/erd.md" target="_blank" rel="noopener">ERD·테이블 명세 <i class="fas fa-arrow-up-right-from-square" aria-hidden="true"></i></a>
+        <a class="portfolio-text-link" href="https://github.com/w00lam/concert-ticketing-server/blob/main/docs/database-schema-migrations.md" target="_blank" rel="noopener">스키마 마이그레이션 규칙 <i class="fas fa-arrow-up-right-from-square" aria-hidden="true"></i></a>
+      </div>
+    </div>
+
     <div class="portfolio-queue-design">
       <div class="portfolio-queue-heading">
         <p class="portfolio-card-kicker">QUEUE DESIGN</p>
@@ -509,21 +626,42 @@ toc: false
         </article>
       </div>
       <div class="portfolio-queue-proof">
-        <span class="portfolio-card-kicker">CHECKED CONDITION</span>
-        <code>enqueue_users = 1,000</code>
-        <code>rank_values = [1..1,000]</code>
-        <code>dequeue_workers = 8</code>
-        <code>dequeue_duplicates = 0</code>
-        <code>queue_length_after_dequeue = 0</code>
-        <code>dequeue_throughput_per_second = 4,382.99</code>
-        <code>application_instances = 2</code>
-        <code>dequeue_per_instance = 500</code>
-        <code>multi_instance_duplicates = 0</code>
-        <code>http_dequeue_requests = 1,000</code>
-        <code>http_dequeue_throughput_per_second = 3,378.38</code>
-        <code>http_dequeue_p95_ms = 3.97</code>
-        <code>http_dequeue_p99_ms = 4.88</code>
-        <code>http_dequeue_failure_rate = 0%</code>
+        <div class="portfolio-queue-proof-summary">
+          <p class="portfolio-card-kicker">VERIFICATION SUMMARY</p>
+          <strong>정합성과 성능을 나눠 확인했습니다.</strong>
+        </div>
+        <div class="portfolio-queue-proof-groups">
+          <div class="portfolio-queue-proof-group">
+            <div class="portfolio-queue-proof-group-heading">
+              <span class="portfolio-card-kicker">CONSISTENCY · 대표값</span>
+              <strong class="portfolio-queue-proof-primary"><code>multi_instance_duplicates = 0</code></strong>
+              <span>독립 JVM 2개에서도 같은 입장자가 중복으로 빠지지 않았습니다.</span>
+            </div>
+            <div class="portfolio-queue-proof-support">
+              <code>enqueue_users = 1,000</code>
+              <code>rank_values = [1..1,000]</code>
+              <code>dequeue_workers = 8</code>
+              <code>dequeue_duplicates = 0</code>
+              <code>queue_length_after_dequeue = 0</code>
+              <code>application_instances = 2</code>
+              <code>dequeue_per_instance = 500</code>
+            </div>
+          </div>
+          <div class="portfolio-queue-proof-group">
+            <div class="portfolio-queue-proof-group-heading">
+              <span class="portfolio-card-kicker">PERFORMANCE · 대표값</span>
+              <strong class="portfolio-queue-proof-primary"><code>http_dequeue_p95_ms = 3.97</code></strong>
+              <span>두 애플리케이션 인스턴스에 HTTP 요청 1,000개를 보냈습니다.</span>
+            </div>
+            <div class="portfolio-queue-proof-support">
+              <code>http_dequeue_requests = 1,000</code>
+              <code>dequeue_throughput_per_second = 4,382.99</code>
+              <code>http_dequeue_throughput_per_second = 3,378.38</code>
+              <code>http_dequeue_p99_ms = 4.88</code>
+              <code>http_dequeue_failure_rate = 0%</code>
+            </div>
+          </div>
+        </div>
         <span class="portfolio-proof-status"><i class="fas fa-check" aria-hidden="true"></i> rank, multi-JVM atomic dequeue, and HTTP performance verified</span>
       </div>
     </div>
@@ -552,6 +690,11 @@ toc: false
     <div class="portfolio-proof-grid">
       <div class="portfolio-proof-copy">
         <p class="portfolio-card-kicker">TROUBLESHOOTING</p>
+        <div class="portfolio-proof-highlight">
+          <span class="portfolio-card-kicker">WITHOUT LOCK · CONTROL</span>
+          <strong>동일 좌석 500회 요청에서 예약 3건이 발생했습니다.</strong>
+          <code>without_lock_reservations_at_500 = 3</code>
+        </div>
         <h3>재요청에도 결제·예약 상태를 한 번만 반영했습니다.</h3>
         <p>
           좌석 ID 기준으로 경쟁을 직렬화하고 Redis 락·소유권 토큰·만료 시간을 함께 관리했습니다.
@@ -570,7 +713,6 @@ toc: false
         <code>successful_hold = 1</code>
         <code>active_reservations = 1</code>
         <code>payment_retry_effect = 1</code>
-        <code>without_lock_reservations_at_500 = 3</code>
         <code>same_payment_requests = [100, 500]</code>
         <code>payment_records = 1</code>
         <code>point_deduction = 1</code>
@@ -601,6 +743,7 @@ toc: false
       </div>
     </div>
   </section>
+  </div>
 
   <section class="portfolio-section portfolio-ai" id="portfolio-ai" aria-labelledby="portfolio-ai-title">
     <div class="portfolio-section-heading">
