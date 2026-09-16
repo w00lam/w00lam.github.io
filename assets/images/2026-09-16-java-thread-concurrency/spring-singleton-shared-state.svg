@@ -1,0 +1,55 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="720" viewBox="0 0 1200 720" role="img" aria-labelledby="title desc">
+  <title id="title">Spring Singleton Bean과 공유 상태</title>
+  <desc id="desc">서로 다른 HTTP 요청이 각각 Thread에서 처리되지만 하나의 Spring Singleton CounterService 객체와 mutable count 필드를 공유하는 구조</desc>
+  <defs>
+    <marker id="arrow" markerWidth="10" markerHeight="10" refX="8" refY="5" orient="auto"><path d="M0 0 L10 5 L0 10 Z" fill="#64748b"/></marker>
+  </defs>
+  <style>
+    text { font-family: "Malgun Gothic", "Apple SD Gothic Neo", sans-serif; fill: #24344a; }
+    .title { font-size: 32px; font-weight: 700; }
+    .heading { font-size: 24px; font-weight: 700; }
+    .body { font-size: 20px; }
+    .small { font-size: 18px; fill: #53647a; }
+    .code { font-family: Consolas, "Liberation Mono", monospace; font-size: 22px; }
+    .request { fill: #eef4fd; stroke: #c4d5ed; stroke-width: 2; }
+    .thread { fill: #f8fafc; stroke: #cbd5e1; stroke-width: 2; }
+    .bean { fill: #eef8f4; stroke: #8ebaa7; stroke-width: 2; }
+    .state { fill: #fff7ed; stroke: #fdba74; stroke-width: 2; }
+    .arrow { stroke: #64748b; stroke-width: 3; fill: none; marker-end: url(#arrow); }
+  </style>
+  <rect width="1200" height="720" rx="20" fill="#f8fafc"/>
+  <text x="48" y="58" class="title">요청은 달라도 Bean 객체는 하나일 수 있다</text>
+  <text x="48" y="94" class="body">Singleton 자체가 문제라기보다, 여러 요청이 공유하는 mutable field를 동시에 수정하는 상황이 문제다.</text>
+
+  <rect x="48" y="140" width="260" height="450" rx="18" fill="#f1f5f9" stroke="#cbd5e1" stroke-width="2"/>
+  <text x="178" y="182" text-anchor="middle" class="heading">HTTP 요청</text>
+  <rect x="86" y="230" width="184" height="70" rx="12" class="request"/><text x="178" y="273" text-anchor="middle" class="body">Request A</text>
+  <rect x="86" y="360" width="184" height="70" rx="12" class="request"/><text x="178" y="403" text-anchor="middle" class="body">Request B</text>
+  <rect x="86" y="490" width="184" height="70" rx="12" class="request"/><text x="178" y="533" text-anchor="middle" class="body">Request C</text>
+
+  <rect x="382" y="140" width="270" height="450" rx="18" fill="#f8fafc" stroke="#cbd5e1" stroke-width="2"/>
+  <text x="517" y="182" text-anchor="middle" class="heading">처리 Thread</text>
+  <rect x="420" y="230" width="194" height="70" rx="12" class="thread"/><text x="517" y="273" text-anchor="middle" class="body">Thread A</text>
+  <rect x="420" y="360" width="194" height="70" rx="12" class="thread"/><text x="517" y="403" text-anchor="middle" class="body">Thread B</text>
+  <rect x="420" y="490" width="194" height="70" rx="12" class="thread"/><text x="517" y="533" text-anchor="middle" class="body">Thread C</text>
+
+  <rect x="730" y="140" width="422" height="450" rx="18" class="bean"/>
+  <text x="941" y="182" text-anchor="middle" class="heading">Spring Singleton Bean</text>
+  <text x="941" y="220" text-anchor="middle" class="small">CounterService · 하나의 객체</text>
+  <rect x="785" y="280" width="312" height="180" rx="14" fill="#ffffff" stroke="#8ebaa7" stroke-width="2"/>
+  <text x="941" y="324" text-anchor="middle" class="code">CounterService</text>
+  <line x1="814" y1="348" x2="1068" y2="348" stroke="#dcebe3"/>
+  <text x="814" y="394" class="code">count</text>
+  <rect x="932" y="366" width="120" height="44" rx="8" class="state"/>
+  <text x="992" y="395" text-anchor="middle" class="code">mutable</text>
+  <text x="941" y="516" text-anchor="middle" class="small">여러 Thread가 같은 field를 읽고 수정</text>
+  <text x="941" y="548" text-anchor="middle" class="small">→ Race Condition 가능</text>
+
+  <path d="M270 265 H410" class="arrow"/><path d="M270 395 H410" class="arrow"/><path d="M270 525 H410" class="arrow"/>
+  <path d="M614 265 C670 265 670 310 770 310" class="arrow"/>
+  <path d="M614 395 H770" class="arrow"/>
+  <path d="M614 525 C670 525 670 430 770 430" class="arrow"/>
+
+  <rect x="246" y="634" width="708" height="42" rx="21" fill="#eff6ff" stroke="#bfdbfe" stroke-width="2"/>
+  <text x="600" y="661" text-anchor="middle" class="body">공유 mutable state를 없애거나 필요한 범위만 보호한다.</text>
+</svg>

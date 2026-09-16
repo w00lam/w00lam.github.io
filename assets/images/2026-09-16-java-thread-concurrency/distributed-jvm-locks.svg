@@ -1,0 +1,60 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="760" viewBox="0 0 1200 760" role="img" aria-labelledby="title desc">
+  <title id="title">단일 JVM Lock과 분산 환경</title>
+  <desc id="desc">Client 요청이 Server A와 Server B로 나뉘고 각 JVM이 서로 다른 synchronized Lock을 가진 채 같은 DB에 접근하는 구조</desc>
+  <defs>
+    <marker id="arrow" markerWidth="10" markerHeight="10" refX="8" refY="5" orient="auto"><path d="M0 0 L10 5 L0 10 Z" fill="#64748b"/></marker>
+  </defs>
+  <style>
+    text { font-family: "Malgun Gothic", "Apple SD Gothic Neo", sans-serif; fill: #24344a; }
+    .title { font-size: 32px; font-weight: 700; }
+    .heading { font-size: 24px; font-weight: 700; }
+    .body { font-size: 20px; }
+    .small { font-size: 18px; fill: #53647a; }
+    .server-a { fill: #eef4fd; stroke: #8fb4e6; stroke-width: 2; }
+    .server-b { fill: #f3eefc; stroke: #bba7e2; stroke-width: 2; }
+    .lock-a { fill: #dbeafe; stroke: #60a5fa; stroke-width: 2; }
+    .lock-b { fill: #ede9fe; stroke: #a78bfa; stroke-width: 2; }
+    .db { fill: #eef8f4; stroke: #8ebaa7; stroke-width: 2; }
+    .arrow { stroke: #64748b; stroke-width: 3; fill: none; marker-end: url(#arrow); }
+    .dashed { stroke: #ef4444; stroke-width: 3; stroke-dasharray: 10 8; fill: none; }
+  </style>
+  <rect width="1200" height="760" rx="20" fill="#f8fafc"/>
+  <text x="48" y="58" class="title">JVM 내부 Lock과 시스템 전체의 동시성은 다르다</text>
+  <text x="48" y="94" class="body">각 서버의 synchronized는 자기 JVM 안에서만 공유된다. 서로 다른 JVM의 Lock은 같은 Lock이 아니다.</text>
+
+  <rect x="48" y="150" width="220" height="120" rx="18" fill="#f1f5f9" stroke="#cbd5e1" stroke-width="2"/>
+  <text x="158" y="194" text-anchor="middle" class="heading">Client</text>
+  <text x="158" y="232" text-anchor="middle" class="small">요청 A · 요청 B</text>
+
+  <rect x="390" y="130" width="300" height="250" rx="18" class="server-a"/>
+  <text x="540" y="174" text-anchor="middle" class="heading">Server A · JVM A</text>
+  <rect x="464" y="218" width="152" height="72" rx="12" class="lock-a"/>
+  <text x="540" y="247" text-anchor="middle" class="body">synchronized</text>
+  <text x="540" y="273" text-anchor="middle" class="small">Lock A</text>
+  <text x="540" y="334" text-anchor="middle" class="small">JVM A의 Thread끼리 공유</text>
+
+  <rect x="390" y="430" width="300" height="250" rx="18" class="server-b"/>
+  <text x="540" y="474" text-anchor="middle" class="heading">Server B · JVM B</text>
+  <rect x="464" y="518" width="152" height="72" rx="12" class="lock-b"/>
+  <text x="540" y="547" text-anchor="middle" class="body">synchronized</text>
+  <text x="540" y="573" text-anchor="middle" class="small">Lock B</text>
+  <text x="540" y="634" text-anchor="middle" class="small">JVM B의 Thread끼리 공유</text>
+
+  <rect x="850" y="260" width="280" height="260" rx="18" class="db"/>
+  <text x="990" y="316" text-anchor="middle" class="heading">공유 DB</text>
+  <ellipse cx="990" cy="366" rx="90" ry="24" fill="#ffffff" stroke="#8ebaa7" stroke-width="2"/>
+  <path d="M900 366 V454 C900 480 1080 480 1080 454 V366" fill="#ffffff" stroke="#8ebaa7" stroke-width="2"/>
+  <ellipse cx="990" cy="454" rx="90" ry="24" fill="#ffffff" stroke="#8ebaa7" stroke-width="2"/>
+  <text x="990" y="570" text-anchor="middle" class="small">같은 좌석·재고 상태</text>
+
+  <path d="M268 210 C320 210 328 255 380 255" class="arrow"/>
+  <path d="M268 210 C320 210 328 555 380 555" class="arrow"/>
+  <path d="M690 255 C756 255 778 366 840 366" class="arrow"/>
+  <path d="M690 555 C756 555 778 454 840 454" class="arrow"/>
+
+  <path d="M430 396 H650" class="dashed"/>
+  <text x="540" y="416" text-anchor="middle" class="small" fill="#b91c1c">Lock A ≠ Lock B</text>
+
+  <rect x="190" y="708" width="820" height="42" rx="21" fill="#fee2e2" stroke="#fca5a5" stroke-width="2"/>
+  <text x="600" y="735" text-anchor="middle" class="body">분산 환경에서는 DB·Redis 등 JVM 밖의 동시성 제어도 검토해야 한다.</text>
+</svg>
