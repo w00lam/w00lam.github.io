@@ -1,64 +1,64 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="700" viewBox="0 0 1200 700" role="img" aria-labelledby="title desc">
-  <title id="title">JVM Stack과 Heap의 객체 생명주기</title>
-  <desc id="desc">Thread가 JVM Stack의 Stack Frame을 실행하고, frame 안의 count와 두 참조 변수 user1, user2가 Heap의 동일한 User 객체를 가리키는 구조. 오른쪽에는 Method Area의 클래스 수준 정보가 표시되어 있다.</desc>
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="880" viewBox="0 0 1200 880" role="img" aria-labelledby="title desc">
+  <title id="title">참조는 둘, User 객체는 하나</title>
+  <desc id="desc">한 스레드의 JVM Stack 프레임에 있는 user1과 user2가 Heap의 같은 User 객체를 참조한다. User 객체의 name 필드는 문자열 woolam을 참조한다. Heap과 Method Area는 스레드가 공유한다. 메서드 실행이 끝나면 프레임이 제거되지만 객체는 GC 루트에서 도달할 수 없을 때 GC 대상이 된다. 지역 변수와 참조 관계에 초점을 맞춘 논리적 모델이다.</desc>
   <defs>
-    <marker id="arrow" markerWidth="10" markerHeight="10" refX="8" refY="5" orient="auto" markerUnits="strokeWidth">
-      <path d="M0,0 L10,5 L0,10 z" fill="#64748b"/>
-    </marker>
-    <marker id="blue-arrow" markerWidth="10" markerHeight="10" refX="8" refY="5" orient="auto" markerUnits="strokeWidth">
-      <path d="M0,0 L10,5 L0,10 z" fill="#2563eb"/>
+    <marker id="reference" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto" markerUnits="strokeWidth">
+      <path d="M0 0 L8 4 L0 8 Z" fill="#3b68b1"/>
     </marker>
   </defs>
   <style>
-    .title { fill: #0f172a; font: 700 28px "Segoe UI", "Malgun Gothic", Arial, sans-serif; }
-    .heading { fill: #0f172a; font: 700 23px "Segoe UI", "Malgun Gothic", Arial, sans-serif; }
-    .label { fill: #0f172a; font: 600 20px "Segoe UI", "Malgun Gothic", Arial, sans-serif; }
-    .body { fill: #334155; font: 18px "Segoe UI", "Malgun Gothic", Arial, sans-serif; }
-    .note { fill: #475569; font: 16px "Segoe UI", "Malgun Gothic", Arial, sans-serif; }
-    .frame { fill: #eff6ff; stroke: #2563eb; stroke-width: 3; rx: 16; }
-    .heap { fill: #ecfdf5; stroke: #059669; stroke-width: 3; rx: 16; }
-    .method { fill: #fff7ed; stroke: #ea580c; stroke-width: 3; rx: 16; }
-    .inner { fill: #ffffff; stroke: #94a3b8; stroke-width: 2; rx: 10; }
-    .line { stroke: #64748b; stroke-width: 2.5; fill: none; marker-end: url(#arrow); }
-    .ref-line { stroke: #2563eb; stroke-width: 3; fill: none; marker-end: url(#blue-arrow); }
-    .divider { stroke: #cbd5e1; stroke-width: 2; stroke-dasharray: 7 7; }
+    text { font-family: "Malgun Gothic", "Apple SD Gothic Neo", sans-serif; fill: #24344a; }
+    .title { font-size: 32px; font-weight: 700; }
+    .heading { font-size: 25px; font-weight: 700; }
+    .body { font-size: 20px; }
+    .small { font-size: 18px; fill: #53647a; }
+    .code { font-family: Consolas, "Liberation Mono", monospace; font-size: 22px; }
+    .ref { fill: none; stroke: #3b68b1; stroke-width: 3; marker-end: url(#reference); }
   </style>
+  <rect width="1200" height="880" rx="20" fill="#f8fafc"/>
+  <text x="48" y="62" class="title">참조는 둘, User 객체는 하나</text>
+  <text x="48" y="100" class="body">user2 = user1은 객체를 복제하지 않고, 같은 객체를 가리키는 참조를 복사한다.</text>
 
-  <rect width="1200" height="700" fill="#ffffff"/>
-  <text x="600" y="48" text-anchor="middle" class="title">참조 변수와 실제 객체의 생명주기</text>
+  <rect x="48" y="142" width="410" height="390" rx="18" fill="#eef4fd" stroke="#c4d5ed"/>
+  <text x="76" y="185" class="heading">JVM Stack</text>
+  <text x="76" y="216" class="small">스레드마다 별도로 관리</text>
+  <rect x="76" y="244" width="354" height="258" rx="12" fill="#fff" stroke="#c4d5ed"/>
+  <text x="100" y="282" class="body" font-weight="700">실행 중인 메서드의 프레임</text>
+  <line x1="100" y1="302" x2="406" y2="302" stroke="#e1e8f0"/>
+  <text x="100" y="340" class="code">count</text>
+  <text x="330" y="340" class="code">1</text>
+  <text x="100" y="395" class="code">user1</text>
+  <rect x="285" y="368" width="110" height="38" rx="7" fill="#eef4fd"/>
+  <text x="340" y="394" text-anchor="middle" class="small">참조값</text>
+  <text x="100" y="460" class="code">user2</text>
+  <rect x="285" y="433" width="110" height="38" rx="7" fill="#eef4fd"/>
+  <text x="340" y="459" text-anchor="middle" class="small">참조값</text>
 
-  <text x="72" y="112" class="heading">Thread</text>
-  <path d="M130 106 H180" class="line"/>
+  <rect x="600" y="142" width="552" height="390" rx="18" fill="#eef8f4" stroke="#bcddce"/>
+  <text x="628" y="185" class="heading">Heap</text>
+  <text x="628" y="216" class="small">모든 스레드가 공유 · 객체와 배열</text>
+  <rect x="636" y="282" width="225" height="154" rx="12" fill="#fff" stroke="#8ebaa7" stroke-width="2"/>
+  <text x="748" y="325" text-anchor="middle" class="heading">User 객체</text>
+  <line x1="660" y1="344" x2="837" y2="344" stroke="#dcebe3"/>
+  <text x="663" y="389" class="code">name</text>
+  <circle cx="826" cy="382" r="5" fill="#3b68b1"/>
+  <rect x="924" y="340" width="200" height="96" rx="12" fill="#fff" stroke="#bcddce"/>
+  <text x="1024" y="372" text-anchor="middle" class="small">String 객체</text>
+  <text x="1024" y="408" text-anchor="middle" class="code">"woolam"</text>
+  <path d="M832 382 H917" class="ref"/>
+  <text x="636" y="484" class="small">두 지역 변수가 같은 User 객체를 참조한다.</text>
+  <path d="M395 387 H496 Q512 387 512 371 V326 Q512 310 528 310 H628" class="ref"/>
+  <path d="M395 452 H548 Q564 452 564 436 V392 Q564 376 580 376 H628" class="ref"/>
 
-  <rect x="180" y="82" width="470" height="445" class="frame"/>
-  <text x="415" y="122" text-anchor="middle" class="heading">JVM Stack</text>
-  <rect x="220" y="152" width="390" height="325" class="inner"/>
-  <text x="415" y="190" text-anchor="middle" class="label">Stack Frame: createUser()</text>
+  <rect x="48" y="560" width="1104" height="112" rx="16" fill="#fff" stroke="#d6dee8"/>
+  <text x="76" y="606" class="heading">Method Area</text>
+  <text x="76" y="640" class="small">모든 스레드가 공유</text>
+  <line x1="329" y1="584" x2="329" y2="648" stroke="#d6dee8"/>
+  <text x="365" y="606" class="body">클래스 구조 · 메서드 정보 · 런타임 상수 풀</text>
+  <text x="365" y="640" class="small">개별 User 객체의 상태와 구분되는 클래스 수준 정보</text>
 
-  <text x="260" y="250" class="label">count</text>
-  <text x="555" y="250" text-anchor="end" class="body">= 1</text>
-  <line x1="250" y1="275" x2="580" y2="275" class="divider"/>
-  <text x="260" y="322" class="label">user1</text>
-  <text x="260" y="405" class="label">user2</text>
-  <path d="M340 315 C460 315, 680 315, 810 315" class="ref-line"/>
-  <path d="M340 398 C490 398, 680 375, 810 350" class="ref-line"/>
-  <text x="260" y="455" class="note">지역 참조 변수</text>
-
-  <rect x="760" y="205" width="285" height="240" class="heap"/>
-  <text x="902" y="245" text-anchor="middle" class="heading">Heap</text>
-  <rect x="810" y="285" width="185" height="105" class="inner"/>
-  <text x="902" y="320" text-anchor="middle" class="label">User 객체</text>
-  <text x="902" y="355" text-anchor="middle" class="body">name = "woolam"</text>
-
-  <rect x="760" y="500" width="340" height="125" class="method"/>
-  <text x="930" y="538" text-anchor="middle" class="heading">Method Area</text>
-  <text x="930" y="573" text-anchor="middle" class="body">Class metadata · method information</text>
-  <text x="930" y="600" text-anchor="middle" class="body">static / class-level information</text>
-
-  <path d="M650 270 H735 V250" class="line"/>
-  <text x="682" y="228" text-anchor="middle" class="note">참조값</text>
-  <path d="M650 452 H760 V500" class="line"/>
-  <text x="680" y="480" text-anchor="middle" class="note">클래스 수준 정보</text>
-
-  <text x="600" y="670" text-anchor="middle" class="note">Frame은 메서드 호출과 함께 사라지지만, 객체는 도달 가능성에 따라 GC 대상이 된다</text>
+  <text x="48" y="727" class="heading">메서드 실행이 끝나면?</text>
+  <text x="48" y="766" class="body">프레임은 제거된다. 객체가 곧바로 사라지는 것은 아니다.</text>
+  <text x="48" y="801" class="body">객체는 GC 루트에서 더 이상 도달할 수 없을 때 GC 대상이 된다.</text>
+  <text x="48" y="851" class="small">지역 변수와 참조 관계를 단순화한 논리적 모델 · 실제 메모리 배치를 뜻하지 않음</text>
 </svg>
