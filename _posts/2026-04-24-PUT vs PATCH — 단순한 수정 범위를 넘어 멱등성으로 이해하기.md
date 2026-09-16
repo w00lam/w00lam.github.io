@@ -77,7 +77,7 @@ HTTP Method 선택의 핵심은 **멱등성**이다.
 PUT /users/me
 
 {
-  "nickname": "wooram",
+  "nickname": "woolam",
   "profileImage": "url"
 }
 ```

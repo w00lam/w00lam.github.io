@@ -9,10 +9,10 @@ permalink: /posts/java-jvm-memory-lifecycle/
 Java 코드를 작성하다 보면 다음과 같은 코드를 아무렇지 않게 적는다.
 
 ~~~java
-User user = new User("wooram");
+User user = new User("woolam");
 ~~~
 
-처음에는 이 한 줄을 “User 객체를 만든다”라고만 생각하기 쉽다. 하지만 실제로는 `user`라는 참조 변수와 `new User("wooram")`으로 생성된 객체를 구분해야 한다.
+처음에는 이 한 줄을 “User 객체를 만든다”라고만 생각하기 쉽다. 하지만 실제로는 `user`라는 참조 변수와 `new User("woolam")`으로 생성된 객체를 구분해야 한다.
 
 이 차이를 알고 나니 Stack과 Heap의 역할도 단순한 저장 위치로 보이지 않았다. 메서드가 호출되는 동안만 필요한 값과 객체가 존재하는 동안 유지되는 상태가 달랐고 더 이상 사용하지 않는 객체라도 참조가 남아 있으면 GC가 수거하지 못했다. Spring Bean의 상태 관리 문제도 결국 이 객체와 참조의 관계에서 출발한다.
 
@@ -48,7 +48,7 @@ JVM 명세도 이 영역들의 구체적인 물리적 배치나 구현 방식을
 ~~~java
 public void createUser() {
     int count = 1;
-    User user = new User("wooram");
+    User user = new User("woolam");
 }
 ~~~
 
@@ -58,7 +58,7 @@ public void createUser() {
 
 ~~~java
 int count = 1;
-User user = new User("wooram");
+User user = new User("woolam");
 ~~~
 
 `count`에는 정수 값 `1`이 저장된다. 반면 `user`에는 `User` 객체 자체가 들어가는 것이 아니라 Heap에 생성된 객체를 가리키기 위한 참조값이 저장된다.
@@ -80,11 +80,11 @@ Heap은 클래스의 인스턴스와 배열 같은 객체가 생성되는 영역
 이번에는 다음 코드를 보자.
 
 ~~~java
-User user1 = new User("wooram");
+User user1 = new User("woolam");
 User user2 = user1;
 ~~~
 
-변수 두 개가 보이니 객체도 두 개라고 생각하기 쉽다. 하지만 `new User("wooram")`이 한 번만 실행되었으므로 생성된 `User` 객체는 하나다.
+변수 두 개가 보이니 객체도 두 개라고 생각하기 쉽다. 하지만 `new User("woolam")`이 한 번만 실행되었으므로 생성된 `User` 객체는 하나다.
 
 ~~~text
 Stack
@@ -109,7 +109,7 @@ Stack에는 `user1`과 `user2`라는 두 참조 변수가 있고 Heap에는 하�
 
 ~~~java
 public void createUser() {
-    User user = new User("wooram");
+    User user = new User("woolam");
 }
 ~~~
 
@@ -170,7 +170,7 @@ class User {
 반면 `name`은 각 `User` 객체가 가지는 인스턴스 상태다.
 
 ~~~text
-User 객체 1 ── name = "wooram"
+User 객체 1 ── name = "woolam"
 User 객체 2 ── name = "another-user"
 
 User 클래스 ── totalCount
@@ -213,7 +213,7 @@ class UserService {
 다음 코드를 보자.
 
 ~~~java
-String name = "wooram";
+String name = "woolam";
 ~~~
 
 `name`은 참조 타입 변수이고 String도 JVM이 관리하는 객체다. 변수에는 문자열 객체를 가리키는 참조가 연결된다. String Pool의 동작이나 문자열 리터럴의 공유 규칙은 [String의 불변성과 불변 객체 설계](/posts/java-string-immutability-design/)에서 이미 자세히 다뤘으므로 여기서는 다시 확장하지 않는다.

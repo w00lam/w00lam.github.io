@@ -48,7 +48,7 @@
   <text x="902" y="245" text-anchor="middle" class="heading">Heap</text>
   <rect x="810" y="285" width="185" height="105" class="inner"/>
   <text x="902" y="320" text-anchor="middle" class="label">User 객체</text>
-  <text x="902" y="355" text-anchor="middle" class="body">name = "wooram"</text>
+  <text x="902" y="355" text-anchor="middle" class="body">name = "woolam"</text>
 
   <rect x="760" y="500" width="340" height="125" class="method"/>
   <text x="930" y="538" text-anchor="middle" class="heading">Method Area</text>

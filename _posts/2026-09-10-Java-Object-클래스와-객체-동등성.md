@@ -53,8 +53,8 @@ public class User {
 ```
 
 ```java
-User user1 = new User("wooram");
-User user2 = new User("wooram");
+User user1 = new User("woolam");
+User user2 = new User("woolam");
 
 System.out.println(user1 == user2);
 ```
@@ -65,11 +65,11 @@ System.out.println(user1 == user2);
 false
 ```
 
-두 객체 모두 `name`이 `wooram`인데 왜 `false`일까?
+두 객체 모두 `name`이 `woolam`인데 왜 `false`일까?
 
 참조 타입에서 `==`는 객체 내부의 상태값을 비교하지 않는다. 두 참조 변수가 메모리상 동일한 객체를 가리키는지, 즉 참조 동일성을 확인한다.
 
-`new User("wooram")`가 두 번 실행되면서 `User` 객체도 두 개 만들어졌다. `user1`과 `user2`는 같은 이름을 가진 서로 다른 객체를 바라보고 있으므로 `==`의 결과가 `false`다.
+`new User("woolam")`가 두 번 실행되면서 `User` 객체도 두 개 만들어졌다. `user1`과 `user2`는 같은 이름을 가진 서로 다른 객체를 바라보고 있으므로 `==`의 결과가 `false`다.
 
 반대로 하나의 참조를 다른 변수에 대입하면 결과가 달라진다.
 
@@ -124,8 +124,8 @@ public class User {
 이제 다음 코드는 `true`를 출력한다.
 
 ```java
-User user1 = new User(1L, "wooram");
-User user2 = new User(1L, "wooram");
+User user1 = new User(1L, "woolam");
+User user2 = new User(1L, "woolam");
 
 System.out.println(user1.equals(user2)); // true
 ```
@@ -134,7 +134,7 @@ System.out.println(user1.equals(user2)); // true
 
 여기서 중요한 부분은 `equals()`가 모든 필드를 무조건 비교하는 메서드가 아니라는 점이다. 어떤 상태를 동등성의 기준으로 삼을지는 클래스의 의미와 도메인 규칙에 따라 개발자가 정한다.
 
-예를 들어 이름만으로 같은 사용자를 판단하면 `wooram`이라는 이름을 가진 두 사람이 모두 같은 사용자로 처리될 수 있다. 동명이인 문제가 생기는 이유다. 반면 시스템에서 유일하게 관리되는 ID를 기준으로 삼으면 이름이 달라도 같은 사용자를 표현할 수 있다.
+예를 들어 이름만으로 같은 사용자를 판단하면 `woolam`이라는 이름을 가진 두 사람이 모두 같은 사용자로 처리될 수 있다. 동명이인 문제가 생기는 이유다. 반면 시스템에서 유일하게 관리되는 ID를 기준으로 삼으면 이름이 달라도 같은 사용자를 표현할 수 있다.
 
 따라서 `equals()`를 재정의하기 전에는 다음 질문부터 확인해야 한다.
 
@@ -162,8 +162,8 @@ hashCode()
 ```java
 Set<User> users = new HashSet<>();
 
-users.add(new User(1L, "wooram"));
-users.add(new User(1L, "wooram"));
+users.add(new User(1L, "woolam"));
+users.add(new User(1L, "woolam"));
 
 System.out.println(users.size()); // 보통 2
 ```
@@ -230,8 +230,8 @@ public class User {
 ```java
 Set<User> users = new HashSet<>();
 
-users.add(new User(1L, "wooram"));
-users.add(new User(1L, "wooram"));
+users.add(new User(1L, "woolam"));
+users.add(new User(1L, "woolam"));
 
 System.out.println(users.size()); // 1
 ```
@@ -266,7 +266,7 @@ public String toString() {
 이제 출력 결과는 다음과 같다.
 
 ```text
-User{id=1, name='wooram'}
+User{id=1, name='woolam'}
 ```
 
 다만 모든 필드를 무조건 출력하면 안 된다. `password`, `token`처럼 민감한 정보는 로그나 `toString()`에 포함하지 않는 것이 좋다. 편리한 디버깅보다 정보 노출을 막는 것이 먼저다.

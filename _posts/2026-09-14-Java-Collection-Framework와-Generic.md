@@ -124,8 +124,8 @@ B 앞에 X 삽입
 `HashSet`이 중복을 허용하지 않는다는 말은 단순히 같은 값을 한 번만 저장한다는 뜻이다. 객체가 논리적으로 같은지 판단하는 규칙이 있어야 한다.
 
 ```java
-User user1 = new User(1L, "wooram");
-User user2 = new User(1L, "wooram");
+User user1 = new User(1L, "woolam");
+User user2 = new User(1L, "woolam");
 ```
 
 두 객체가 같은 사용자를 나타낸다고 정했다면 `equals()`가 그 기준을 표현한다. `Object.equals()`의 기본 구현은 참조 동일성을 기준으로 비교하므로, 별도로 만든 `user1`과 `user2`는 필드 값이 같아도 다른 객체로 판단될 수 있다.
@@ -160,7 +160,7 @@ equals()
 
 ```java
 Map<User, String> userMessages = new HashMap<>();
-User user = new User(1L, "wooram");
+User user = new User(1L, "woolam");
 
 userMessages.put(user, "hello");
 user.changeName("new-name");
@@ -171,7 +171,7 @@ String message = userMessages.get(user);
 만약 `hashCode()`가 `name`을 포함하고 `changeName()`이 Key의 이름을 바꾼다면 문제가 생긴다. 저장할 때 계산한 해시 코드와 조회할 때 계산한 해시 코드가 달라져 서로 다른 버킷을 탐색하기 때문이다.
 
 ```text
-저장 시 name = "wooram"
+저장 시 name = "woolam"
         ↓
 기존 hashCode() → Bucket A
 
