@@ -1,0 +1,70 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1600" height="620" viewBox="0 0 1600 620" role="img" aria-labelledby="title desc">
+  <title id="title">Spring HTTP 요청과 응답에서 I/O와 직렬화가 연결되는 흐름</title>
+  <desc id="desc">Client의 JSON HTTP 요청이 Network Input을 통해 서버로 들어와 역직렬화되고, 비즈니스 로직을 거쳐 직렬화된 JSON HTTP 응답으로 Client에 돌아가는 과정</desc>
+  <defs>
+    <marker id="arrow" markerWidth="10" markerHeight="10" refX="8" refY="5" orient="auto"><path d="M0 0 L10 5 L0 10 Z" fill="#64748b"/></marker>
+  </defs>
+  <style>
+    text { font-family: "Malgun Gothic", "Apple SD Gothic Neo", sans-serif; fill: #24344a; }
+    .title { font-size: 32px; font-weight: 700; }
+    .heading { font-size: 22px; font-weight: 700; }
+    .body { font-size: 18px; }
+    .small { font-size: 16px; fill: #53647a; }
+    .io-area { fill: #eef4fd; stroke: #c4d5ed; stroke-width: 2; }
+    .convert-area { fill: #fff7ed; stroke: #fdba74; stroke-width: 2; }
+    .logic-area { fill: #f0fdf4; stroke: #bbf7d0; stroke-width: 2; }
+    .step { fill: #ffffff; stroke: #cbd5e1; stroke-width: 2; }
+    .arrow { stroke: #64748b; stroke-width: 3; fill: none; marker-end: url(#arrow); }
+  </style>
+  <rect width="1600" height="620" rx="20" fill="#f8fafc"/>
+  <text x="48" y="58" class="title">Spring HTTP 요청·응답에서 I/O와 직렬화는 다른 책임을 맡는다</text>
+  <text x="48" y="92" class="body">데이터가 이동하는 영역과 데이터 표현이 바뀌는 영역을 분리해서 보면 Controller 뒤의 흐름이 보인다.</text>
+
+  <rect x="36" y="132" width="352" height="388" rx="18" class="io-area"/>
+  <rect x="1212" y="132" width="352" height="388" rx="18" class="io-area"/>
+  <rect x="408" y="132" width="360" height="388" rx="18" class="convert-area"/>
+  <rect x="792" y="132" width="376" height="388" rx="18" class="logic-area"/>
+
+  <text x="212" y="174" text-anchor="middle" class="heading">I/O 영역</text>
+  <text x="1388" y="174" text-anchor="middle" class="heading">I/O 영역</text>
+  <text x="588" y="174" text-anchor="middle" class="heading">데이터 변환 영역</text>
+  <text x="980" y="174" text-anchor="middle" class="heading">애플리케이션 영역</text>
+
+  <rect x="86" y="220" width="252" height="62" rx="12" class="step"/>
+  <text x="212" y="246" text-anchor="middle" class="body">Client</text>
+  <text x="212" y="269" text-anchor="middle" class="small">HTTP Request + JSON</text>
+  <path d="M212 282 V322" class="arrow"/>
+  <rect x="86" y="330" width="252" height="62" rx="12" class="step"/>
+  <text x="212" y="357" text-anchor="middle" class="body">Network Input</text>
+  <text x="212" y="380" text-anchor="middle" class="small">요청 본문 읽기</text>
+  <path d="M338 361 H402" class="arrow"/>
+
+  <rect x="458" y="220" width="260" height="62" rx="12" class="step"/>
+  <text x="588" y="246" text-anchor="middle" class="body">Deserialization</text>
+  <text x="588" y="269" text-anchor="middle" class="small">JSON → Java Object</text>
+  <path d="M588 282 V322" class="arrow"/>
+  <rect x="458" y="330" width="260" height="62" rx="12" class="step"/>
+  <text x="588" y="357" text-anchor="middle" class="body">CreateUserRequest</text>
+  <text x="588" y="380" text-anchor="middle" class="small">Controller 메서드 인자</text>
+  <path d="M718 361 H786" class="arrow"/>
+
+  <rect x="842" y="220" width="276" height="62" rx="12" class="step"/>
+  <text x="980" y="246" text-anchor="middle" class="body">Business Logic</text>
+  <text x="980" y="269" text-anchor="middle" class="small">서비스 처리</text>
+  <path d="M980 282 V322" class="arrow"/>
+  <rect x="842" y="330" width="276" height="62" rx="12" class="step"/>
+  <text x="980" y="357" text-anchor="middle" class="body">UserResponse</text>
+  <text x="980" y="380" text-anchor="middle" class="small">응답 객체</text>
+  <path d="M1118 361 H1206" class="arrow"/>
+
+  <rect x="1262" y="220" width="252" height="62" rx="12" class="step"/>
+  <text x="1388" y="246" text-anchor="middle" class="body">Serialization</text>
+  <text x="1388" y="269" text-anchor="middle" class="small">Java Object → JSON</text>
+  <path d="M1388 282 V322" class="arrow"/>
+  <rect x="1262" y="330" width="252" height="62" rx="12" class="step"/>
+  <text x="1388" y="357" text-anchor="middle" class="body">Network Output</text>
+  <text x="1388" y="380" text-anchor="middle" class="small">HTTP Response + JSON</text>
+  <path d="M1388 392 V432" class="arrow"/>
+  <rect x="1262" y="440" width="252" height="52" rx="12" class="step"/>
+  <text x="1388" y="472" text-anchor="middle" class="body">Client</text>
+</svg>
