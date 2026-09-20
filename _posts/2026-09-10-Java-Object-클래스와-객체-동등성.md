@@ -287,4 +287,4 @@ User{id=1, name='woolam'}
 참조 타입의 `==`는 객체의 값이 아니라 두 변수가 같은 인스턴스를 가리키는지 비교한다.<br>
 `equals()`는 클래스의 의미에 맞춰 논리적 동등성 기준을 개발자가 정의하는 메서드다.<br>
 `hashCode()`는 해시 기반 자료구조의 탐색 범위를 줄이고, 같은 버킷 안의 최종 판단은 `equals()`가 담당한다.<br>
-따라서 `equals()`가 `true`면 `hashCode()`도 같아야 하지만, `hashCode()`가 같다고 `equals()`가 반드시 `true`인 것은 아니다.
+따라서 `equals()`가 `true`면 `hashCode()`도 같아야 하지만 `hashCode()`가 같다고 `equals()`가 반드시 `true`인 것은 아니다.

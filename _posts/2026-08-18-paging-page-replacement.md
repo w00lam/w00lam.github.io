@@ -331,4 +331,4 @@ GC나 Redis Cache처럼 백엔드 개발에서 자주 접했던 메모리 관련
 5. 빈 Frame이 있으면 바로 적재하고 없을 때 Page Replacement로 Victim Page를 고른다.
 6. FIFO, OPT, LRU처럼 어떤 Victim을 고르느냐에 따라 Page Fault와 I/O 비용이 달라진다.
 
-이 흐름이 연결되면 Main Memory를 단순히 “RAM에 데이터를 올려두는 공간”이 아니라, Virtual Memory와 Physical Memory 사이의 차이를 운영체제가 관리하는 구조로 볼 수 있다.
+이 흐름이 연결되면 Main Memory를 단순히 “RAM에 데이터를 올려두는 공간”이 아니라 Virtual Memory와 Physical Memory 사이의 차이를 운영체제가 관리하는 구조로 볼 수 있다.

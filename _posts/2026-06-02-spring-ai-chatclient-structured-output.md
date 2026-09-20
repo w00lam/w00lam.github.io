@@ -15,7 +15,7 @@ permalink: /posts/spring-ai-chatclient-structured-output/
 사용자 ◀─ 응답 ── 백엔드 ◀─ 결과 ── LLM API
 ```
 
-하지만 실제 서비스 환경에서는 이러한 방식만으로는 한계에 부딪히게 됩니다. LLM이 서비스의 특정 도메인 지식(DB 내용, 회사 규정 등)을 알지 못하고 응답이 매번 문자열이라 후속 로직에서 다루기 어렵다는 점, 그리고 프롬프트 관리가 어렵다는 점 등이 대표적인 문제였습니다. 예를 들어, "이 영수증을 회사 경비로 처리할 수 있어?"와 같은 질문에 LLM API만으로는 정확한 답변을 기대하기 어렵습니다.
+하지만 실제 서비스 환경에서는 이러한 방식만으로는 한계에 부딪히게 됩니다. LLM이 서비스의 특정 도메인 지식(DB 내용, 회사 규정 등)을 알지 못하고 응답이 매번 문자열이라 후속 로직에서 다루기 어렵다는 점, 그리고 프롬프트 관리가 어렵다는 점 등이 대표적인 문제였습니다. 예를 들어 "이 영수증을 회사 경비로 처리할 수 있어?"와 같은 질문에 LLM API만으로는 정확한 답변을 기대하기 어렵습니다.
 
 ### 요즘 AI 앱은 어디로 가는가
 
@@ -34,7 +34,7 @@ permalink: /posts/spring-ai-chatclient-structured-output/
 
 ### LLM API 직접 호출 방식의 한계
 
-LLM API를 직접 호출하는 방식은 초기 개발 단계에서는 간단해 보일 수 있습니다. 예를 들어, 다음과 같은 코드로 LLM과 통신할 수 있습니다.
+LLM API를 직접 호출하는 방식은 초기 개발 단계에서는 간단해 보일 수 있습니다. 예를 들어 다음과 같은 코드로 LLM과 통신할 수 있습니다.
 
 ```java
 String prompt = "사용자의 질문에 답해줘: " + userInput;
@@ -140,7 +140,7 @@ OpenAI / Anthropic / Gemini / Ollama ...
 
 ## 4. ChatClient로 보는 기본 흐름
 
-Spring AI에서 가장 먼저 접하게 되는 API는 `ChatClient`입니다. `ChatClient`는 LLM과의 대화를 위한 유연하고 직관적인 인터페이스를 제공합니다. 예를 들어, 멀티모달(Multimodal) 입력을 처리하는 코드는 다음과 같습니다.
+Spring AI에서 가장 먼저 접하게 되는 API는 `ChatClient`입니다. `ChatClient`는 LLM과의 대화를 위한 유연하고 직관적인 인터페이스를 제공합니다. 예를 들어 멀티모달(Multimodal) 입력을 처리하는 코드는 다음과 같습니다.
 
 ```java
 @Service
@@ -379,7 +379,7 @@ ReceiptExtraction receipt = chatClient.prompt()
 
 ### OutputConverter는 무엇을 해주는가
 
-`OutputConverter`는 LLM이 생성한 **문자열 응답**을 Java에서 다루기 좋은 **객체**로 변환해주는 역할을 합니다. 예를 들어, LLM이 다음과 같은 JSON 문자열을 반환하면,
+`OutputConverter`는 LLM이 생성한 **문자열 응답**을 Java에서 다루기 좋은 **객체**로 변환해주는 역할을 합니다. 예를 들어 LLM이 다음과 같은 JSON 문자열을 반환하면,
 
 ```json
 {
@@ -450,7 +450,7 @@ LLM은 사용자의 질문을 분석하여 `weatherFunction`을 호출해야 한
 
 ### Spring AI와 Agentic Application
 
-Spring AI는 `ChatClient`의 `Tool Calling` 기능으로 Agentic Application의 기반을 제공합니다. LLM이 여러 도구를 조합해 복잡한 작업을 수행하도록 하면, 개발자는 더 지능적이고 자율적인 AI 앱을 만들 수 있습니다. 예를 들어, 사용자가 "이번 달 매출 보고서를 작성해줘"라고 요청하면, LLM은 다음과 같은 일련의 과정을 스스로 수행할 수 있습니다.
+Spring AI는 `ChatClient`의 `Tool Calling` 기능으로 Agentic Application의 기반을 제공합니다. LLM이 여러 도구를 조합해 복잡한 작업을 수행하도록 하면, 개발자는 더 지능적이고 자율적인 AI 앱을 만들 수 있습니다. 예를 들어 사용자가 "이번 달 매출 보고서를 작성해줘"라고 요청하면, LLM은 다음과 같은 일련의 과정을 스스로 수행할 수 있습니다.
 
 1. **데이터 조회 도구 호출**: 데이터베이스에서 매출 데이터를 조회합니다.
 2. **데이터 분석 도구 호출**: 조회된 데이터를 분석하여 주요 지표를 추출합니다.

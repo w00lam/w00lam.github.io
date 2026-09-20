@@ -69,7 +69,7 @@ permalink: /posts/ai-dev-environment-concepts/
 
 쪽에서 더 가볍게 사용할 수 있는 느낌이었다.
 
-결국 AI를 단순히 "더 좋은 모델 하나"로 볼 게 아니라, 각 workflow에 맞게 역할을 나누는 게 중요했다.
+결국 AI를 단순히 "더 좋은 모델 하나"로 볼 게 아니라 각 workflow에 맞게 역할을 나누는 게 중요했다.
 
 ---
 

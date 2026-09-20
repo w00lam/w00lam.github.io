@@ -6,7 +6,7 @@ tags: [Session, JWT, Spring, ArgumentResolver, Cookie]
 permalink: /posts/session-jwt-spring/
 ---
 
-인증은 단순히 문을 여는 일이 아니라, 사용자가 누구인지 안전하고 효율적으로 증명하는 과정입니다.
+인증은 단순히 문을 여는 일이 아니라 사용자가 누구인지 안전하고 효율적으로 증명하는 과정입니다.
 
 세션 방식과 JWT 방식이 어떻게 다른지 살펴보고 스프링 부트에서 인증을 다룰 때 쓰는 도구들을 정리해 봅니다.
 

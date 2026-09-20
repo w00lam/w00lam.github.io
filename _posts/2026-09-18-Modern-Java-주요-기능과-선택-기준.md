@@ -8,7 +8,7 @@ permalink: /posts/modern-java-feature-selection/
 
 어제 [Java I/O의 흐름](/posts/java-io-stream-buffer-serialization-http-flow/)을 공부하면서 데이터를 주고받는 과정과 데이터의 표현을 바꾸는 과정을 나누어 보았다. 오늘은 그 데이터를 코드 안에서 어떻게 표현할지와 관련된 Modern Java 기능을 살펴봤다.
 
-처음에는 새로운 문법을 알게 되면 기존 문법보다 적극적으로 사용하는 것이 좋다고 생각했다. 하지만 `record`, `Optional`, `var`, `sealed`, `switch expression`, `instanceof` pattern matching을 하나씩 비교해 보면서 기준이 조금 달라졌다. 중요한 것은 새 문법의 사용 여부가 아니라, **현재 코드의 의도를 더 정확하게 드러내는지**였다.
+처음에는 새로운 문법을 알게 되면 기존 문법보다 적극적으로 사용하는 것이 좋다고 생각했다. 하지만 `record`, `Optional`, `var`, `sealed`, `switch expression`, `instanceof` pattern matching을 하나씩 비교해 보면서 기준이 조금 달라졌다. 중요한 것은 새 문법의 사용 여부가 아니라 **현재 코드의 의도를 더 정확하게 드러내는지**였다.
 
 ## record — 코드를 줄이는 것보다 역할을 드러내는 문법
 
@@ -47,7 +47,7 @@ public record UserResponse(
 }
 ~~~
 
-Oracle 문서에서 설명하듯 `record`는 고정된 값 집합을 표현하는 데이터 carrier에 가깝다. component에 대응하는 `final` 필드와 accessor, canonical constructor, `equals()`, `hashCode()`, `toString()`이 제공된다. 그래서 모의면접에서 DTO에 `record`를 사용할 수 있겠다고 답한 이유도 단순히 코드가 짧아서가 아니라, 이 객체의 주된 책임이 데이터 전달이라는 점을 코드에 남길 수 있기 때문이었다.
+Oracle 문서에서 설명하듯 `record`는 고정된 값 집합을 표현하는 데이터 carrier에 가깝다. component에 대응하는 `final` 필드와 accessor, canonical constructor, `equals()`, `hashCode()`, `toString()`이 제공된다. 그래서 모의면접에서 DTO에 `record`를 사용할 수 있겠다고 답한 이유도 단순히 코드가 짧아서가 아니라 이 객체의 주된 책임이 데이터 전달이라는 점을 코드에 남길 수 있기 때문이었다.
 
 다만 `record`를 완전한 불변 객체라고 부르면 안 된다. component가 `List`처럼 변경 가능한 객체라면 참조가 가리키는 내부 상태까지 자동으로 불변이 되지는 않는다. Java의 `record`는 얕은 불변성을 제공한다는 점까지 함께 기억해야 한다.
 
@@ -112,7 +112,7 @@ var user = new User("woolam");
 var result = service.execute();
 ~~~
 
-모의면접에서 정리한 기준도 이 부분이었다. 타입을 생략해도 코드의 의미가 바로 읽히는가? 그렇지 않다면 몇 글자를 줄이는 대신 명시적인 타입을 남기는 편이 낫다. `var`를 전부 사용하거나 전부 피하는 것이 아니라, 주변 코드가 타입을 충분히 설명하는지를 먼저 본다.
+모의면접에서 정리한 기준도 이 부분이었다. 타입을 생략해도 코드의 의미가 바로 읽히는가? 그렇지 않다면 몇 글자를 줄이는 대신 명시적인 타입을 남기는 편이 낫다. `var`를 전부 사용하거나 전부 피하는 것이 아니라 주변 코드가 타입을 충분히 설명하는지를 먼저 본다.
 
 ## sealed class — 허용된 타입의 범위를 코드로 선언하기
 

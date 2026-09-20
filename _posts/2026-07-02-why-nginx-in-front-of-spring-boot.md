@@ -199,7 +199,7 @@ REDIS_PORT: 6379
 * Spring Boot는 내부 네트워크에서 MySQL과 Redis를 사용한다.
 * MySQL과 Redis는 외부에 직접 공개하지 않는다.
 
-이 구조를 이해하고 나니 Nginx는 단순히 하나 더 띄우는 서버가 아니라, Docker Compose 배포에서 외부와 내부를 나누는 진입점이라는 생각이 들었다.
+이 구조를 이해하고 나니 Nginx는 단순히 하나 더 띄우는 서버가 아니라 Docker Compose 배포에서 외부와 내부를 나누는 진입점이라는 생각이 들었다.
 
 ---
 
@@ -251,7 +251,7 @@ Spring Boot는 여전히 8080 포트에서 실행된다. Nginx는 80/443 포트�
 
 이번에 내가 이해한 Nginx는 다음과 같다.
 
-> Nginx는 Spring Boot를 대신 실행하는 서버가 아니라, 외부 요청을 먼저 받고 내부 Spring Boot 애플리케이션으로 전달하는 앞단 서버다.
+> Nginx는 Spring Boot를 대신 실행하는 서버가 아니라 외부 요청을 먼저 받고 내부 Spring Boot 애플리케이션으로 전달하는 앞단 서버다.
 
 이렇게 정리하고 나니 `proxy_pass`, `proxy_set_header`, HTTPS 처리, Docker Compose 내부 네트워크, Blue-Green 배포가 서로 따로 떨어진 개념처럼 보이지 않았다.
 

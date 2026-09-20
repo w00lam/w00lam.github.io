@@ -114,7 +114,7 @@ Refresh Token 또한 우리 서버에서 정상적으로 발행한 JWT이므로 
 
 로그아웃 시점에 해당 Access Token의 고유 식별자인 `jti`(JWT ID)를 추출하여 Redis 같은 인메모리 저장소에 Blacklist로 등록해 두고 남은 유효 기간만큼 차단 정책을 적용합니다.
 
-`accessTokenBlacklist.contains(claims.jti())` 검증은 토큰 자체의 구조적 결함이 아니라, **"서버의 운영 상태 및 정책에 의해 즉시 차단 처리된 개별 토큰인가?"**를 감지하는 책임을 갖습니다.
+`accessTokenBlacklist.contains(claims.jti())` 검증은 토큰 자체의 구조적 결함이 아니라 **"서버의 운영 상태 및 정책에 의해 즉시 차단 처리된 개별 토큰인가?"**를 감지하는 책임을 갖습니다.
 
 ---
 

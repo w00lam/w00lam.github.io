@@ -24,7 +24,7 @@ Client → Nginx → Spring Boot
 
 이번 글의 핵심은 다음이다.
 
-> Nginx는 단순히 Spring Boot 앞에서 요청을 넘겨주는 프록시가 아니라, Docker 기반 배포 환경에서 외부 요청과 내부 애플리케이션 구조를 분리하고 upstream으로 로드밸런싱과 Blue-Green 배포 전환 지점이 되며 proxy header로 원본 요청 정보를 애플리케이션에 전달하는 운영 경계다.
+> Nginx는 단순히 Spring Boot 앞에서 요청을 넘겨주는 프록시가 아니라 Docker 기반 배포 환경에서 외부 요청과 내부 애플리케이션 구조를 분리하고 upstream으로 로드밸런싱과 Blue-Green 배포 전환 지점이 되며 proxy header로 원본 요청 정보를 애플리케이션에 전달하는 운영 경계다.
 
 ---
 
@@ -49,7 +49,7 @@ Blue와 Green 중 어느 쪽으로 트래픽을 보내야 하지?
 Spring Boot는 원래 요청이 HTTPS였는지 어떻게 알지?
 ```
 
-이 질문들을 따라가다 보니 Nginx는 단순히 "앞에서 받아서 뒤로 넘기는 서버"가 아니라, 외부 사용자와 내부 컨테이너 구조 사이의 경계라는 생각이 들었다.
+이 질문들을 따라가다 보니 Nginx는 단순히 "앞에서 받아서 뒤로 넘기는 서버"가 아니라 외부 사용자와 내부 컨테이너 구조 사이의 경계라는 생각이 들었다.
 
 ---
 
@@ -132,7 +132,7 @@ app container
 
 이전 [Docker Compose 다음에 Kubernetes가 필요한 이유](/posts/kubernetes-after-docker-compose/) 글에서는 Docker Compose가 단일 EC2 안에서 여러 컨테이너를 함께 실행하기 좋은 현실적인 선택이라고 정리했다. 이번에는 그 Compose 내부에서 컨테이너끼리 어떤 이름으로 연결되는지를 Nginx 설정으로 다시 확인한 셈이다.
 
-Nginx 설정에서 `proxy_pass`는 단순히 URL 하나를 적는 것이 아니라, 외부 요청을 Compose 내부의 어떤 서비스로 넘길지 결정하는 설정이다.
+Nginx 설정에서 `proxy_pass`는 단순히 URL 하나를 적는 것이 아니라 외부 요청을 Compose 내부의 어떤 서비스로 넘길지 결정하는 설정이다.
 
 ---
 
@@ -383,7 +383,7 @@ proxy_set_header X-Forwarded-Proto $scheme;
 
 처음에는 `proxy_set_header`를 부가적인 헤더 설정 정도로 봤다. 하지만 Reverse Proxy를 거치면 원본 요청의 맥락이 흐려질 수 있다. 그 맥락을 애플리케이션에 다시 전달하는 설정이 `proxy_set_header`였다.
 
-> proxy_set_header는 단순히 헤더를 추가하는 설정이 아니라, Reverse Proxy를 거치면서 흐려질 수 있는 원본 요청 정보를 애플리케이션에 전달하는 설정이다.
+> proxy_set_header는 단순히 헤더를 추가하는 설정이 아니라 Reverse Proxy를 거치면서 흐려질 수 있는 원본 요청 정보를 애플리케이션에 전달하는 설정이다.
 
 ---
 
@@ -393,11 +393,11 @@ proxy_set_header X-Forwarded-Proto $scheme;
 
 하지만 Docker Compose 환경에서는 `localhost`의 의미부터 다시 생각해야 했다. Nginx가 컨테이너로 실행 중이라면 `localhost:8080`은 Spring Boot 컨테이너가 아니라 Nginx 컨테이너 자신을 가리킬 수 있다. 그래서 컨테이너 간 통신에는 Compose 서비스 이름을 사용해야 한다.
 
-upstream을 사용하면 내부 서버를 논리적으로 묶을 수 있고 여러 서버로 확장되면 Load Balancing 구조가 된다. 다만 Load Balancing과 Blue-Green 배포는 다르다. Blue-Green 배포에서는 두 서버를 동시에 사용하는 것이 아니라, health check 이후 트래픽 대상을 전환하는 것이 중요하다.
+upstream을 사용하면 내부 서버를 논리적으로 묶을 수 있고 여러 서버로 확장되면 Load Balancing 구조가 된다. 다만 Load Balancing과 Blue-Green 배포는 다르다. Blue-Green 배포에서는 두 서버를 동시에 사용하는 것이 아니라 health check 이후 트래픽 대상을 전환하는 것이 중요하다.
 
 마지막으로 Reverse Proxy 뒤의 Spring Boot는 원본 요청 정보를 직접 알기 어렵기 때문에 `proxy_set_header`로 Host, 실제 IP, HTTPS 여부 같은 정보를 전달해야 한다.
 
-결국 Nginx는 단순한 웹 서버나 프록시가 아니라, 외부 사용자와 내부 컨테이너 기반 애플리케이션 사이에서 트래픽, 배포 전환, 요청 정보를 다루는 운영 경계라고 이해했다.
+결국 Nginx는 단순한 웹 서버나 프록시가 아니라 외부 사용자와 내부 컨테이너 기반 애플리케이션 사이에서 트래픽, 배포 전환, 요청 정보를 다루는 운영 경계라고 이해했다.
 
 ---
 

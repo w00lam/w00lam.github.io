@@ -194,7 +194,7 @@ public class CounterService {
 
 Spring의 기본 Singleton Bean은 하나의 Container 안에서 하나의 인스턴스를 여러 요청이 함께 사용한다. 여러 요청을 처리하는 Thread가 같은 `CounterService` 객체의 `count`를 동시에 수정하면 앞에서 본 Race Condition이 재현된다.
 
-그렇다고 “Singleton Bean은 Thread-safe하지 않다”라고 단정하면 정확하지 않다. Singleton이라는 생명주기 자체가 문제를 만드는 것이 아니라, 여러 요청이 공유하는 객체 안에 변경 가능한 상태를 두고 동시에 수정하는 상황이 문제다.
+그렇다고 “Singleton Bean은 Thread-safe하지 않다”라고 단정하면 정확하지 않다. Singleton이라는 생명주기 자체가 문제를 만드는 것이 아니라 여러 요청이 공유하는 객체 안에 변경 가능한 상태를 두고 동시에 수정하는 상황이 문제다.
 
 ~~~text
 Bean도 Heap에 존재하는 객체다.
@@ -302,7 +302,7 @@ Race Condition이 발생할 수 있는가?
 
 오늘 배운 내용을 한 문장으로 묶으면 이렇다.
 
-> 동시성 문제의 핵심은 Thread가 많다는 사실보다, 여러 Thread가 같은 변경 가능한 상태를 공유하고 그 상태를 바꾸는 연산이 원자적으로 처리되는지에 있다. `synchronized`도 모든 동시성 문제를 해결하는 도구가 아니라, 같은 JVM 안에서 공유 상태의 접근을 제어하는 방법이다.
+> 동시성 문제의 핵심은 Thread가 많다는 사실보다, 여러 Thread가 같은 변경 가능한 상태를 공유하고 그 상태를 바꾸는 연산이 원자적으로 처리되는지에 있다. `synchronized`도 모든 동시성 문제를 해결하는 도구가 아니라 같은 JVM 안에서 공유 상태의 접근을 제어하는 방법이다.
 
 ### 참고 자료 (Sources)
 

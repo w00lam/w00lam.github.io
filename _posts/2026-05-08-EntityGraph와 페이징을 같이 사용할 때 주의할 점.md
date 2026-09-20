@@ -215,7 +215,7 @@ JPA를 공부하면서 느끼는 건 결국 SQL 동작 방식을 이해해야 �
 
 ## 한 줄 정리
 
-> 페이징 문제의 핵심은 EntityGraph가 아니라, 컬렉션 fetch join으로 인해 row 수가 증가하는 구조에 있다.
+> 페이징 문제의 핵심은 EntityGraph가 아니라 컬렉션 fetch join으로 인해 row 수가 증가하는 구조에 있다.
 
 ---
 
