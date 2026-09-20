@@ -1,70 +1,70 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="1600" height="900" viewBox="0 0 1600 900" role="img" aria-labelledby="title desc">
-  <title id="title">코드가 표현하려는 의도에 따른 Modern Java 기능 선택 기준</title>
-  <desc id="desc">가운데의 코드가 표현하려는 의도에서 데이터 전달, 값의 부재, Lazy fallback, 명확한 지역 변수, 제한된 타입 계층, 결과값을 만드는 분기, 타입 검사와 변수 바인딩으로 연결되고 각각 Modern Java 기능을 선택하는 구조</desc>
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="640" viewBox="0 0 1200 640" role="img" aria-labelledby="title desc">
+  <title id="title">코드 의도에 맞춰 Modern Java 기능을 선택하는 기준</title>
+  <desc id="desc">중앙의 코드 의도에서 데이터 전달과 record, 값의 부재와 Optional, 비용 있는 기본값과 orElseGet, 명확한 타입과 var, 제한된 타입 계층과 sealed, 결과를 만드는 분기와 switch expression, 타입 검사와 변수 바인딩 및 instanceof pattern matching으로 연결되는 간결한 다이어그램</desc>
   <defs>
-    <marker id="arrow" markerWidth="10" markerHeight="10" refX="8" refY="5" orient="auto"><path d="M0 0 L10 5 L0 10 Z" fill="#64748b"/></marker>
+    <marker id="arrow" markerWidth="9" markerHeight="9" refX="7" refY="4.5" orient="auto"><path d="M0 0 L9 4.5 L0 9 Z" fill="#64748b"/></marker>
   </defs>
   <style>
     text { font-family: "Malgun Gothic", "Apple SD Gothic Neo", sans-serif; fill: #24344a; }
-    .title { font-size: 34px; font-weight: 700; }
-    .subtitle { font-size: 20px; fill: #53647a; }
-    .center-title { font-size: 30px; font-weight: 700; }
-    .center-body { font-size: 20px; fill: #53647a; }
-    .card-title { font-size: 22px; font-weight: 700; }
-    .card-body { font-size: 19px; fill: #53647a; }
-    .center { fill: #e8f1ff; stroke: #78a9e8; stroke-width: 3; }
-    .card { fill: #ffffff; stroke: #cbd5e1; stroke-width: 2; }
-    .record { fill: #eef8f4; stroke: #8ebaa7; stroke-width: 2; }
-    .optional { fill: #fff7ed; stroke: #fdba74; stroke-width: 2; }
-    .lazy { fill: #f3eefc; stroke: #bba7e2; stroke-width: 2; }
-    .type { fill: #f1f5f9; stroke: #94a3b8; stroke-width: 2; }
-    .sealed { fill: #eef4fd; stroke: #8fb4e6; stroke-width: 2; }
-    .switch { fill: #fff1f2; stroke: #fda4af; stroke-width: 2; }
-    .pattern { fill: #f0fdf4; stroke: #86efac; stroke-width: 2; }
-    .arrow { stroke: #64748b; stroke-width: 3; fill: none; marker-end: url(#arrow); }
+    .title { font-size: 30px; font-weight: 700; }
+    .subtitle { font-size: 17px; fill: #53647a; }
+    .center-title { font-size: 26px; font-weight: 700; }
+    .center-body { font-size: 17px; fill: #53647a; }
+    .card-title { font-size: 19px; font-weight: 700; }
+    .card-body { font-size: 16px; fill: #53647a; }
+    .center { fill: #e8f1ff; stroke: #78a9e8; stroke-width: 2.5; }
+    .record { fill: #eef8f4; stroke: #8ebaa7; }
+    .optional { fill: #fff7ed; stroke: #fdba74; }
+    .lazy { fill: #f3eefc; stroke: #bba7e2; }
+    .type { fill: #f1f5f9; stroke: #94a3b8; }
+    .sealed { fill: #eef4fd; stroke: #8fb4e6; }
+    .switch { fill: #fff1f2; stroke: #fda4af; }
+    .pattern { fill: #f0fdf4; stroke: #86efac; }
+    .card { stroke-width: 1.8; }
+    .arrow { stroke: #94a3b8; stroke-width: 2; fill: none; marker-end: url(#arrow); }
   </style>
-  <rect width="1600" height="900" rx="24" fill="#f8fafc"/>
-  <text x="64" y="64" class="title">Modern Java 기능은 의도에 맞춰 선택한다</text>
-  <text x="64" y="102" class="subtitle">새 문법의 사용 여부보다 현재 코드가 무엇을 표현하려는지 먼저 확인한다.</text>
+  <rect width="1200" height="640" rx="20" fill="#f8fafc"/>
+  <text x="40" y="48" class="title">Modern Java는 코드의 의도에 맞춰 선택한다</text>
+  <text x="40" y="77" class="subtitle">새 문법보다 먼저, 현재 코드가 무엇을 표현하려는지 살펴본다.</text>
 
-  <path d="M800 390 L330 240" class="arrow"/>
-  <path d="M800 390 L800 240" class="arrow"/>
-  <path d="M800 390 L1270 240" class="arrow"/>
-  <path d="M800 510 L330 660" class="arrow"/>
-  <path d="M800 510 L800 660" class="arrow"/>
-  <path d="M800 510 L1270 660" class="arrow"/>
-  <path d="M800 450 L1430 450" class="arrow"/>
+  <path d="M445 305 L162 250" class="arrow"/>
+  <path d="M535 305 L454 250" class="arrow"/>
+  <path d="M665 305 L746 250" class="arrow"/>
+  <path d="M755 305 L1038 250" class="arrow"/>
+  <path d="M480 435 L309 495" class="arrow"/>
+  <path d="M600 435 L600 495" class="arrow"/>
+  <path d="M720 435 L891 495" class="arrow"/>
 
-  <rect x="590" y="350" width="420" height="200" rx="24" class="center"/>
-  <text x="800" y="420" text-anchor="middle" class="center-title">코드가 표현하려는 의도</text>
-  <text x="800" y="462" text-anchor="middle" class="center-body">문법보다 역할과 맥락을 먼저 본다</text>
-  <text x="800" y="498" text-anchor="middle" class="center-body">읽는 사람이 의미를 바로 이해하는가?</text>
+  <rect x="410" y="305" width="380" height="130" rx="20" class="center"/>
+  <text x="600" y="355" text-anchor="middle" class="center-title">코드가 표현하려는 의도</text>
+  <text x="600" y="388" text-anchor="middle" class="center-body">역할과 맥락을 먼저 본다</text>
+  <text x="600" y="414" text-anchor="middle" class="center-body">이 문법이 의미를 더 분명히 하는가?</text>
 
-  <rect x="80" y="150" width="500" height="150" rx="18" class="record"/>
-  <text x="110" y="200" class="card-title">데이터 전달</text>
-  <text x="110" y="244" class="card-body">DTO의 책임이 분명하다 → record</text>
+  <rect x="24" y="130" width="276" height="120" rx="14" class="card record"/>
+  <text x="162" y="176" text-anchor="middle" class="card-title">데이터 전달</text>
+  <text x="162" y="209" text-anchor="middle" class="card-body">DTO 역할이 분명할 때 → record</text>
 
-  <rect x="550" y="150" width="500" height="150" rx="18" class="optional"/>
-  <text x="580" y="200" class="card-title">값의 부재</text>
-  <text x="580" y="244" class="card-body">결과가 없을 수 있다 → Optional</text>
+  <rect x="316" y="130" width="276" height="120" rx="14" class="card optional"/>
+  <text x="454" y="176" text-anchor="middle" class="card-title">값의 부재</text>
+  <text x="454" y="209" text-anchor="middle" class="card-body">결과가 없을 수 있음 → Optional</text>
 
-  <rect x="1020" y="150" width="500" height="150" rx="18" class="lazy"/>
-  <text x="1050" y="200" class="card-title">Lazy fallback</text>
-  <text x="1050" y="244" class="card-body">비용 있는 기본값 → orElseGet()</text>
+  <rect x="608" y="130" width="276" height="120" rx="14" class="card lazy"/>
+  <text x="746" y="176" text-anchor="middle" class="card-title">비용 있는 기본값</text>
+  <text x="746" y="209" text-anchor="middle" class="card-body">필요할 때 생성 → orElseGet()</text>
 
-  <rect x="80" y="600" width="500" height="150" rx="18" class="type"/>
-  <text x="110" y="650" class="card-title">타입이 명확한 지역 변수</text>
-  <text x="110" y="694" class="card-body">우변만으로 타입이 보인다 → var</text>
+  <rect x="900" y="130" width="276" height="120" rx="14" class="card type"/>
+  <text x="1038" y="176" text-anchor="middle" class="card-title">타입이 분명한 지역 변수</text>
+  <text x="1038" y="209" text-anchor="middle" class="card-body">우변에서 타입을 알 수 있음 → var</text>
 
-  <rect x="550" y="600" width="500" height="150" rx="18" class="sealed"/>
-  <text x="580" y="650" class="card-title">제한된 타입 계층</text>
-  <text x="580" y="694" class="card-body">허용된 구현체를 닫는다 → sealed</text>
+  <rect x="171" y="495" width="276" height="120" rx="14" class="card sealed"/>
+  <text x="309" y="541" text-anchor="middle" class="card-title">제한된 타입 계층</text>
+  <text x="309" y="574" text-anchor="middle" class="card-body">허용 구현체를 제한 → sealed</text>
 
-  <rect x="1020" y="600" width="500" height="150" rx="18" class="switch"/>
-  <text x="1050" y="650" class="card-title">결과값을 만드는 분기</text>
-  <text x="1050" y="694" class="card-body">분기 결과를 바로 만든다 → switch expression</text>
+  <rect x="462" y="495" width="276" height="120" rx="14" class="card switch"/>
+  <text x="600" y="541" text-anchor="middle" class="card-title">분기에서 결과값 생성</text>
+  <text x="600" y="574" text-anchor="middle" class="card-body">값을 바로 선택 → switch expression</text>
 
-  <rect x="1110" y="370" width="410" height="150" rx="18" class="pattern"/>
-  <text x="1140" y="420" class="card-title">타입 검사 + 변수 바인딩</text>
-  <text x="1140" y="464" class="card-body">검사와 사용 변수를 함께 표현 → instanceof pattern</text>
+  <rect x="753" y="495" width="276" height="120" rx="14" class="card pattern"/>
+  <text x="891" y="541" text-anchor="middle" class="card-title">타입 검사와 변수 바인딩</text>
+  <text x="891" y="574" text-anchor="middle" class="card-body">instanceof pattern matching</text>
 </svg>

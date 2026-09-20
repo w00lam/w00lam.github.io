@@ -103,7 +103,7 @@ User user = findUser()
 우변만 봐도 타입이 분명한 경우에는 읽는 흐름을 끊지 않을 수 있다.
 
 ~~~java
-var user = new User("wooram");
+var user = new User("woolam");
 ~~~
 
 반대로 메서드 이름만으로 반환 타입을 알기 어려운 코드는 신중해야 한다.
