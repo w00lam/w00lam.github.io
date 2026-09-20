@@ -1,0 +1,39 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="650" viewBox="0 0 1200 650" role="img" aria-labelledby="title desc">
+  <title id="title">직접 생성과 Spring IoC·DI 비교</title>
+  <desc id="desc">왼쪽은 OrderService가 JdbcOrderRepository를 직접 생성하고, 오른쪽은 Spring Container가 두 Bean을 관리하며 OrderRepository 의존 관계를 구성하는 구조다.</desc>
+  <defs>
+    <marker id="arrow" markerWidth="10" markerHeight="10" refX="8" refY="5" orient="auto">
+      <path d="M0,0 L10,5 L0,10 Z" fill="#526477"/>
+    </marker>
+    <marker id="blueArrow" markerWidth="10" markerHeight="10" refX="8" refY="5" orient="auto">
+      <path d="M0,0 L10,5 L0,10 Z" fill="#2478a8"/>
+    </marker>
+  </defs>
+  <rect width="1200" height="650" rx="28" fill="#f5f8fb"/>
+  <text x="600" y="66" text-anchor="middle" font-family="Pretendard, 'Noto Sans KR', sans-serif" font-size="30" font-weight="700" fill="#243447">객체 생성과 의존 관계 연결</text>
+  <rect x="42" y="108" width="518" height="490" rx="22" fill="#ffffff" stroke="#d7e0e8" stroke-width="2"/>
+  <rect x="640" y="108" width="518" height="490" rx="22" fill="#ffffff" stroke="#b9d9ea" stroke-width="2"/>
+  <text x="301" y="156" text-anchor="middle" font-family="Pretendard, 'Noto Sans KR', sans-serif" font-size="23" font-weight="700" fill="#48596b">직접 생성</text>
+  <text x="899" y="156" text-anchor="middle" font-family="Pretendard, 'Noto Sans KR', sans-serif" font-size="23" font-weight="700" fill="#17658c">Spring IoC / DI</text>
+  <rect x="134" y="212" width="334" height="86" rx="14" fill="#eef2f6" stroke="#9aabba" stroke-width="2"/>
+  <text x="301" y="264" text-anchor="middle" font-family="Pretendard, 'Noto Sans KR', sans-serif" font-size="24" font-weight="700" fill="#243447">OrderService</text>
+  <path d="M301 298 L301 381" stroke="#526477" stroke-width="3" marker-end="url(#arrow)"/>
+  <text x="324" y="344" font-family="Pretendard, 'Noto Sans KR', sans-serif" font-size="17" fill="#526477">직접 new</text>
+  <rect x="134" y="397" width="334" height="86" rx="14" fill="#fff3ed" stroke="#e1a27e" stroke-width="2"/>
+  <text x="301" y="449" text-anchor="middle" font-family="Pretendard, 'Noto Sans KR', sans-serif" font-size="22" font-weight="700" fill="#874321">JdbcOrderRepository</text>
+  <text x="301" y="542" text-anchor="middle" font-family="Pretendard, 'Noto Sans KR', sans-serif" font-size="17" fill="#68798b">서비스가 구현체 선택과 생성까지 담당</text>
+  <rect x="690" y="188" width="418" height="370" rx="20" fill="#f7fbfd" stroke="#65a6c7" stroke-width="2.5"/>
+  <rect x="808" y="170" width="182" height="38" rx="18" fill="#2478a8"/>
+  <text x="899" y="196" text-anchor="middle" font-family="Pretendard, 'Noto Sans KR', sans-serif" font-size="18" font-weight="700" fill="#ffffff">Spring Container</text>
+  <rect x="714" y="286" width="188" height="78" rx="14" fill="#eef2f6" stroke="#9aabba" stroke-width="2"/>
+  <text x="808" y="333" text-anchor="middle" font-family="Pretendard, 'Noto Sans KR', sans-serif" font-size="20" font-weight="700" fill="#243447">OrderService Bean</text>
+  <rect x="928" y="286" width="244" height="78" rx="14" fill="#eff8f3" stroke="#75ae8c" stroke-width="2"/>
+  <text x="1050" y="333" text-anchor="middle" font-family="Pretendard, 'Noto Sans KR', sans-serif" font-size="20" font-weight="700" fill="#2d6742">OrderRepository</text>
+  <text x="1050" y="354" text-anchor="middle" font-family="Pretendard, 'Noto Sans KR', sans-serif" font-size="14" fill="#52735d">interface</text>
+  <path d="M902 325 L924 325" stroke="#526477" stroke-width="3" marker-end="url(#arrow)"/>
+  <rect x="928" y="438" width="244" height="78" rx="14" fill="#fff3ed" stroke="#e1a27e" stroke-width="2"/>
+  <text x="1050" y="484" text-anchor="middle" font-family="Pretendard, 'Noto Sans KR', sans-serif" font-size="19" font-weight="700" fill="#874321">JdbcOrderRepository</text>
+  <text x="1050" y="504" text-anchor="middle" font-family="Pretendard, 'Noto Sans KR', sans-serif" font-size="14" fill="#874321">Bean · implements interface</text>
+  <path d="M1050 434 L1050 371" stroke="#2478a8" stroke-width="2.5" stroke-dasharray="7 6" marker-end="url(#blueArrow)"/>
+  <text x="899" y="542" text-anchor="middle" font-family="Pretendard, 'Noto Sans KR', sans-serif" font-size="16" fill="#526477">Container가 Bean을 만들고 의존 관계를 구성</text>
+</svg>
