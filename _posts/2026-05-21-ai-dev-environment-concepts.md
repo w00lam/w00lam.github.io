@@ -8,7 +8,7 @@ permalink: /posts/ai-dev-environment-concepts/
 
 ## 들어가면서
 
-최근 Codex와 Antigravity 기반 AI 개발 환경들을 사용하면서 AI 개발 workflow 자체에 관심이 생겼다. 처음에는 Harness, Instructions, Agent OS, AGENT.md 같은 개념들을 거의 비슷한 의미라고 생각했다. 특히 AGENT.md 같은 규칙 파일도 Harness의 일부라고 생각했는데, 실제로 공부해보니 둘은 역할 자체가 달랐다. AI 에이전트 환경도 내부 동작 원리를 파고들수록 처음 생각과 다르게 보였다.
+최근 Codex와 Antigravity 기반 AI 개발 환경들을 사용하면서 AI 개발 workflow 자체에 관심이 생겼다. 처음에는 Harness, Instructions, Agent OS, AGENT.md 같은 개념들을 거의 비슷한 의미라고 생각했다. 특히 AGENT.md 같은 규칙 파일도 Harness의 일부라고 생각했는데 실제로 공부해보니 둘은 역할 자체가 달랐다. AI 에이전트 환경도 내부 동작 원리를 파고들수록 처음 생각과 다르게 보였다.
 
 ---
 

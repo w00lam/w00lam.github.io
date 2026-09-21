@@ -20,7 +20,7 @@ Client → Nginx → Spring Boot
 
 하지만 Docker Compose, 단일 EC2 배포, GitHub Actions를 이용한 CI/CD, Blue-Green 배포까지 함께 생각하니 Nginx는 단순한 요청 전달자 이상으로 보이기 시작했다.
 
-이전 [CI/CD는 YAML 작성이 아니라 안정적인 배포와 복구를 설계하는 과정이었다](/posts/cicd-design-not-yaml/) 글에서는 GitHub Actions가 이미지를 빌드하고 서버에 배포하는 흐름을 중심으로 봤다. 이번 글에서는 그 이후, 배포된 애플리케이션으로 실제 사용자 요청이 어떻게 전달되고 전환되는지를 Nginx 관점에서 조금 더 깊게 정리해보려 한다.
+이전 [CI/CD는 YAML 작성이 아니라 안정적인 배포와 복구를 설계하는 과정이었다](/posts/cicd-design-not-yaml/) 글에서는 GitHub Actions가 이미지를 빌드하고 서버에 배포하는 흐름을 중심으로 봤다. 이번 글에서는 그 이후 배포된 애플리케이션으로 실제 사용자 요청이 어떻게 전달되고 전환되는지를 Nginx 관점에서 조금 더 깊게 정리해보려 한다.
 
 이번 글의 핵심은 다음이다.
 
@@ -229,7 +229,7 @@ upstream backend {
 
 이 구조에서는 `app-blue`와 `app-green`이 동시에 트래픽을 받는다. 두 애플리케이션이 모두 같은 버전이거나 동시에 트래픽을 받아도 문제가 없는 구조라면 의미가 있다.
 
-반면 Blue-Green 배포에서는 두 서버가 동시에 트래픽을 받는 것이 핵심이 아니다. 현재 운영 버전 하나만 트래픽을 받고 있다가, 새 버전이 준비되면 트래픽 대상을 전환하는 것이 핵심이다.
+반면 Blue-Green 배포에서는 두 서버가 동시에 트래픽을 받는 것이 핵심이 아니다. 현재 운영 버전 하나만 트래픽을 받고 있다가 새 버전이 준비되면 트래픽 대상을 전환하는 것이 핵심이다.
 
 전환 전에는 Blue만 트래픽을 받게 둘 수 있다.
 
@@ -257,7 +257,7 @@ upstream backend {
 
 ![Nginx upstream에서 Load Balancing과 Blue-Green 배포 차이](/assets/images/2026-07-06-nginx-deployment-switching-point/upstream-load-balancing-blue-green.png)
 
-단일 EC2 + Docker Compose 환경에서 Blue-Green을 흉내 낸다면, Nginx는 사용자의 요청을 Blue로 보낼지 Green으로 보낼지 결정하는 전환 지점이 될 수 있다.
+단일 EC2 + Docker Compose 환경에서 Blue-Green을 흉내 낸다면 Nginx는 사용자의 요청을 Blue로 보낼지 Green으로 보낼지 결정하는 전환 지점이 될 수 있다.
 
 ---
 
@@ -331,7 +331,7 @@ Nginx reload
 
 물론 단일 EC2 + Docker Compose 구조에서 이것만으로 완전한 무중단 배포가 항상 보장되는 것은 아니다. 컨테이너 기동 시간, Nginx reload 시점, 애플리케이션 graceful shutdown, 기존 요청 처리, DB 마이그레이션 호환성까지 함께 고려해야 한다.
 
-그래서 "Nginx가 있으면 무중단 배포가 된다"라고 단정하기보다는, Nginx가 무중단 배포 구조로 확장할 수 있는 트래픽 전환 지점을 만든다고 이해하는 것이 더 현실적이다.
+그래서 "Nginx가 있으면 무중단 배포가 된다"라고 단정하기보다는 Nginx가 무중단 배포 구조로 확장할 수 있는 트래픽 전환 지점을 만든다고 이해하는 것이 더 현실적이다.
 
 ---
 

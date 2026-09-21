@@ -107,7 +107,7 @@ CPU 외부의 장치가 사건을 알리기 위해 발생시키는 Interrupt다.
 - Keyboard 입력
 - Timer Interrupt
 
-예를 들어 디스크가 요청받은 읽기 작업을 끝내면, 장치가 완료 사실을 알리고 CPU가 이를 처리할 수 있다. 실제 장치와 운영체제의 처리 방식은 다양하지만 “외부 장치에서 발생한 사건이 CPU와 Kernel에 전달된다”는 흐름으로 이해하면 된다.
+예를 들어 디스크가 요청받은 읽기 작업을 끝내면 장치가 완료 사실을 알리고 CPU가 이를 처리할 수 있다. 실제 장치와 운영체제의 처리 방식은 다양하지만 “외부 장치에서 발생한 사건이 CPU와 Kernel에 전달된다”는 흐름으로 이해하면 된다.
 
 ### Exception(예외)
 
@@ -117,7 +117,7 @@ CPU가 명령어를 실행하는 과정에서 발생하는 사건이다.
 - Page Fault
 - 잘못된 메모리 접근
 
-Hardware Interrupt가 현재 실행 중인 명령어와 직접 관련 없이 외부에서 들어올 수 있는 사건이라면, Exception은 **실행 중인 명령어와 관련해서 발생한다**는 점이 다르다. 실행한 명령어, 접근한 주소, 현재 권한 같은 실행 문맥이 처리에 중요하다.
+Hardware Interrupt가 현재 실행 중인 명령어와 직접 관련 없이 외부에서 들어올 수 있는 사건이라면 Exception은 **실행 중인 명령어와 관련해서 발생한다**는 점이 다르다. 실행한 명령어, 접근한 주소, 현재 권한 같은 실행 문맥이 처리에 중요하다.
 
 ### System Call(시스템 호출)
 
@@ -215,7 +215,7 @@ Thread B 실행
 
 ### 5-2. I/O 완료와 Hardware Interrupt
 
-이후 디스크 작업이 완료되면, 일반적인 장치 주도 방식에서는 다음과 같은 흐름이 이어진다.
+이후 디스크 작업이 완료되면 일반적인 장치 주도 방식에서는 다음과 같은 흐름이 이어진다.
 
 ```text
 Disk I/O 완료
@@ -343,7 +343,7 @@ I/O Completion Interrupt
 Ready
 ```
 
-I/O 완료를 알게 된 Kernel이 대기 중인 스레드를 깨우면, 스레드는 바로 Running이 아니라 Ready가 된다.
+I/O 완료를 알게 된 Kernel이 대기 중인 스레드를 깨우면 스레드는 바로 Running이 아니라 Ready가 된다.
 
 ### Scheduler 선택
 
@@ -494,7 +494,7 @@ Hardware Interrupt 처리는 OS Kernel과 장치 드라이버의 영역이다. J
 
 PCB나 스레드의 실행 문맥은 전환에 필요한 상태를 관리하는 개념이고 Interrupt는 Kernel이 사건을 처리하도록 CPU의 제어 흐름을 바꾸는 개념이다. 둘은 관련될 수 있지만 같은 개념은 아니다.
 
-이 블로그에 이미 작성된 글 중에서는 [스레드는 많을수록 좋을까? Context Switching과 Thread Pool의 관계](/posts/thread-pool-context-switching/)와 직접 이어진다. 그 글이 스레드 수와 Context Switching 비용, Thread Pool의 병목을 다뤘다면, 이번 글은 그 실행 흐름에 Interrupt와 I/O 완료 통지가 어떻게 들어오는지 설명한다.
+이 블로그에 이미 작성된 글 중에서는 [스레드는 많을수록 좋을까? Context Switching과 Thread Pool의 관계](/posts/thread-pool-context-switching/)와 직접 이어진다. 그 글이 스레드 수와 Context Switching 비용, Thread Pool의 병목을 다뤘다면 이번 글은 그 실행 흐름에 Interrupt와 I/O 완료 통지가 어떻게 들어오는지 설명한다.
 
 ## 마무리
 

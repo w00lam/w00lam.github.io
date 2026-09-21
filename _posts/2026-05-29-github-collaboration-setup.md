@@ -69,7 +69,7 @@ PR을 도입한 이유는 다음과 같습니다.
 
 ## Kanban Board로 진행 상황 관리하기 — 어디까지 왔는가?
 
-Issue와 PR이 개별 작업을 관리하는 도구라면, **Kanban Board(GitHub Projects)**는 프로젝트 전체의 흐름을 조망하는 도구입니다.
+Issue와 PR이 개별 작업을 관리하는 도구라면 **Kanban Board(GitHub Projects)**는 프로젝트 전체의 흐름을 조망하는 도구입니다.
 
 우리는 보드를 다음과 같은 상태(Status) 컬럼으로 구성했습니다.
 

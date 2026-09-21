@@ -48,7 +48,7 @@ UUID 저장 방식은 `BINARY(16)`이 아닌 `CHAR(36)` 기반 문자열 형태�
 * 운영 중 디버깅 용이성
 * UUID 값을 바로 확인 가능
 
-이번 프로젝트는 대규모 트래픽 최적화보다는 클라우드 인프라 구성, 운영 환경 경험, 장애 분석 및 디버깅, AWS 기반 배포 구조 이해에 더 초점이 있었기 때문에, 운영 중 가독성과 디버깅 편의성을 우선하여 `CHAR(36)` 기반 문자열 저장 방식을 선택했다.
+이번 프로젝트는 대규모 트래픽 최적화보다는 클라우드 인프라 구성, 운영 환경 경험, 장애 분석 및 디버깅, AWS 기반 배포 구조 이해에 더 초점이 있었기 때문에 운영 중 가독성과 디버깅 편의성을 우선하여 `CHAR(36)` 기반 문자열 저장 방식을 선택했다.
 
 다만 UUID는 `Long`보다 저장 공간 사용량 증가, 인덱스 성능 저하 가능성, 정렬 비효율 등의 단점도 존재함을 인지하고 사용해야 한다.
 
@@ -92,7 +92,7 @@ EC2에서 Spring Boot 프로젝트를 빌드하는 과정에서 `Cannot find a J
 
 ### 3.3. Docker는 “어디서든 실행된다”가 아니라 아키텍처도 맞아야 한다는 점
 
-GitHub Actions 기반 CI/CD를 구축한 뒤, Docker 이미지는 정상적으로 배포되었지만 EC2에서 컨테이너가 계속 재시작되는 문제가 있었다. 로그를 확인해보니 `exec /opt/java/openjdk/bin/java: exec format error`가 발생하고 있었다.
+GitHub Actions 기반 CI/CD를 구축한 뒤 Docker 이미지는 정상적으로 배포되었지만 EC2에서 컨테이너가 계속 재시작되는 문제가 있었다. 로그를 확인해보니 `exec /opt/java/openjdk/bin/java: exec format error`가 발생하고 있었다.
 
 원인은 GitHub Actions 환경(`linux/amd64`)과 EC2 환경(`ARM64(aarch64)`) 간의 아키텍처 불일치였다. 처음에는 Spring 설정이나 환경 변수 문제를 의심했지만 실제로는 Docker 이미지 자체의 플랫폼 차이 문제였다.
 
@@ -102,7 +102,7 @@ GitHub Actions 기반 CI/CD를 구축한 뒤, Docker 이미지는 정상적으�
 
 ALB Health Check가 계속 실패해서 처음에는 Spring Boot 설정 문제, Actuator 설정 문제, 컨테이너 문제 등을 의심했다. 하지만 실제 원인은 애플리케이션 자체가 아니라 EC2와 RDS 간의 연결 실패, RDS Security Group 설정 오류였다.
 
-`Private EC2 SG → RDS SG : 3306 허용` 구조가 되어야 했는데, RDS가 다른 Security Group을 허용하고 있었다. 결국 Spring Boot 부팅 실패, Hibernate Dialect 초기화 실패, `/actuator/health` 실패, ALB Target Group Unhealthy까지 연쇄적으로 발생했다.
+`Private EC2 SG → RDS SG : 3306 허용` 구조가 되어야 했는데 RDS가 다른 Security Group을 허용하고 있었다. 결국 Spring Boot 부팅 실패, Hibernate Dialect 초기화 실패, `/actuator/health` 실패, ALB Target Group Unhealthy까지 연쇄적으로 발생했다.
 
 RDS 인바운드 규칙을 현재 EC2 Security Group 기준으로 고치자 해결됐다. 겉으로는 “ALB가 문제다” 싶었지만 실제로는 네트워크 구조와 Security Group 체이닝, 애플리케이션 부팅 의존성까지 얽혀 있었다.
 
@@ -112,13 +112,13 @@ RDS 인바운드 규칙을 현재 EC2 Security Group 기준으로 고치자 해�
 
 프로필 이미지 업로드 API를 만들 때 처음에는 `@RequestParam MultipartFile`만 떠올렸다. 그런데 파일 업로드는 `multipart/form-data` 구조라서 요청 내부가 여러 개의 part로 나뉜다는 걸 알게 됐다.
 
-그래서 이후에는 `@RequestPart("image") MultipartFile image` 형태로 명확하게 처리했다. 특히 JSON과 파일을 함께 올리는 구조까지 생각하면, 의미도 분명하고 유지보수나 요청 구조 면에서도 `@RequestPart`가 더 낫다고 봤다.
+그래서 이후에는 `@RequestPart("image") MultipartFile image` 형태로 명확하게 처리했다. 특히 JSON과 파일을 함께 올리는 구조까지 생각하면 의미도 분명하고 유지보수나 요청 구조 면에서도 `@RequestPart`가 더 낫다고 봤다.
 
 ---
 
 ## 마무리 정리
 
-클라우드에서 개발하고 운영하다 보니, 코드를 짜고 배포하는 것만으로는 부족했다. 인프라와 네트워크, 배포 파이프라인까지 어느 정도 알아야 문제가 풀렸다. 로컬에서는 그냥 넘어가던 것들이 운영에서는 큰 장애로 번지는 일도 여러 번 겪었다.
+클라우드에서 개발하고 운영하다 보니 코드를 짜고 배포하는 것만으로는 부족했다. 인프라와 네트워크, 배포 파이프라인까지 어느 정도 알아야 문제가 풀렸다. 로컬에서는 그냥 넘어가던 것들이 운영에서는 큰 장애로 번지는 일도 여러 번 겪었다.
 
 이런 경험을 거치면서 개별 기술만이 아니라 문제를 여러 각도에서 보고 시스템 전체를 살피는 눈이 조금씩 생겼다. 앞으로도 계속 부딪쳐 가며 익혀 나가려 한다.
 

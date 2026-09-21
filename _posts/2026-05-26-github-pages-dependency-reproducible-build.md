@@ -37,12 +37,12 @@ Make sure that `gem install sass-embedded -v '1.100.0' --source 'https://rubygem
 
 ## 왜 같은 코드인데 어제는 성공하고 오늘은 실패할 수 있는가?
 
-문제의 핵심은 여기 있었습니다. 제 코드는 그대로였지만 의존성 버전은 바뀌었을 수 있다는 점입니다. GitHub Actions에서 `bundle install`이 실행되면 `Gemfile`에 명시된 의존성을 최신 버전으로 설치하려 합니다. `Gemfile.lock`이 없거나 최신 상태가 아니면, `Gemfile`이 허용하는 범위 안에서 가장 최신 버전을 찾아 설치합니다.
+문제의 핵심은 여기 있었습니다. 제 코드는 그대로였지만 의존성 버전은 바뀌었을 수 있다는 점입니다. GitHub Actions에서 `bundle install`이 실행되면 `Gemfile`에 명시된 의존성을 최신 버전으로 설치하려 합니다. `Gemfile.lock`이 없거나 최신 상태가 아니면 `Gemfile`이 허용하는 범위 안에서 가장 최신 버전을 찾아 설치합니다.
 
 이 과정에서 다음과 같은 문제들이 발생할 수 있습니다.
 
 * **최신 Dependency 자동 설치**: 의존성 라이브러리 개발자들은 버그 수정이나 기능 추가를 위해 지속적으로 새 버전을 릴리스합니다. `bundle install`은 기본적으로 이 최신 버전을 선호합니다.
-* **Dependency Resolution**: 여러 의존성들이 서로 다른 버전의 하위 의존성을 요구할 때, `bundle install`은 이 모든 요구사항을 만족하는 최적의 버전 조합을 찾아야 합니다. 이 과정이 복잡해지면 예상치 못한 버전 충돌이 발생할 수 있습니다.
+* **Dependency Resolution**: 여러 의존성들이 서로 다른 버전의 하위 의존성을 요구할 때 `bundle install`은 이 모든 요구사항을 만족하는 최적의 버전 조합을 찾아야 합니다. 이 과정이 복잡해지면 예상치 못한 버전 충돌이 발생할 수 있습니다.
 * **Version Drift (버전 불일치)**: 어제는 `sass-embedded`의 1.99.0 버전이 최신이었고 `jekyll-sass-converter`와 호환되었지만 오늘은 1.100.0 버전이 릴리스되었고 이 버전이 특정 이유로 `jekyll-sass-converter`와 호환되지 않을 수 있습니다. 이렇게 시간이 지남에 따라 의존성 버전이 변경되어 발생하는 문제를 **버전 불일치(Version Drift)**라고 합니다.
 * **Environment Inconsistency (환경 불일치)**: 로컬 개발 환경에서는 특정 버전의 의존성이 설치되어 있었지만 CI/CD 환경에서는 다른 버전이 설치되면서 빌드 결과가 달라지는 현상입니다.
 
@@ -65,7 +65,7 @@ Make sure that `gem install sass-embedded -v '1.100.0' --source 'https://rubygem
 
 ## 해결 과정 — 버전 고정(Pinning)과 Lockfile 갱신
 
-문제의 원인을 파악한 후, 해결 과정은 다음과 같았습니다.
+문제의 원인을 파악한 후 해결 과정은 다음과 같았습니다.
 
 1. **`sass-embedded` 버전 확인**: 에러 로그의 `sass-embedded (1.100.0)` 설치 실패로 보아 이 버전이 원인이라고 짐작했습니다. `jekyll-sass-converter`와 호환되는 안정적인 버전을 찾아야 했고 검색해 보니 `1.77.8` 버전이 널리 쓰이고 안정적이었습니다.
 2. **`Gemfile`에 버전 고정**: `Gemfile`을 열어 `sass-embedded`의 버전을 `gem 'sass-embedded', '~> 1.77.8'`와 같이 명시적으로 고정했습니다. 버전 범위는 `1.77.8` 이상, `1.78.0` 미만으로 고정됩니다.
@@ -79,7 +79,7 @@ Make sure that `gem install sass-embedded -v '1.100.0' --source 'https://rubygem
 `bundle install`은 단순히 의존성 패키지를 내려받는 명령이 아닙니다. 하는 일이 생각보다 복잡하고 중요합니다.
 
 * **의존성 트리 계산**: `Gemfile`에 명시된 의존성들과 그 하위 의존성들 간의 복잡한 관계를 분석하여 완전한 의존성 트리를 계산합니다.
-* **설치 버전 결정**: 각 의존성에 설정된 `Gemfile`의 버전 범위와 기존 `Gemfile.lock`의 정보를 바탕으로 설치할 정확한 버전을 결정합니다. 만약 `Gemfile.lock`이 없거나 `Gemfile`의 변경으로 인해 갱신이 필요하면, `Gemfile`의 범위 내에서 최신 호환 버전을 찾습니다.
+* **설치 버전 결정**: 각 의존성에 설정된 `Gemfile`의 버전 범위와 기존 `Gemfile.lock`의 정보를 바탕으로 설치할 정확한 버전을 결정합니다. 만약 `Gemfile.lock`이 없거나 `Gemfile`의 변경으로 인해 갱신이 필요하면 `Gemfile`의 범위 내에서 최신 호환 버전을 찾습니다.
 * **Lockfile 생성/갱신**: 이 모든 결정 사항을 `Gemfile.lock` 파일에 기록하여, 다음 빌드 시에는 동일한 의존성 세트가 사용되도록 보장합니다.
 
 이렇게 `bundle install`은 프로젝트의 의존성 환경을 일관되게 유지하고 "재현 가능한 빌드"의 기반을 마련합니다.

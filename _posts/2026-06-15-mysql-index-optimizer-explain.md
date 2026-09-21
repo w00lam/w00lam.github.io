@@ -25,7 +25,7 @@ permalink: /posts/mysql-index-optimizer-explain/
 
 ## 2. EXPLAIN으로 실행 계획 들여다보기
 
-인덱스를 설계했다면, 이제 내 의도대로 동작하는지 확인해야 합니다. MySQL에서는 `EXPLAIN` 명령어로 이를 확인할 수 있습니다. 초보자가 우선적으로 살펴봐야 할 항목은 다음 세 가지입니다.
+인덱스를 설계했다면 이제 내 의도대로 동작하는지 확인해야 합니다. MySQL에서는 `EXPLAIN` 명령어로 이를 확인할 수 있습니다. 초보자가 우선적으로 살펴봐야 할 항목은 다음 세 가지입니다.
 
 | 항목 | 의미 | 확인 기준 |
 | :--- | :--- | :--- |
@@ -65,14 +65,14 @@ ORDER BY created_at DESC
 LIMIT 20;
 ```
 
-이 경우 단순히 `member_id`에만 인덱스를 거는 것보다, 아래와 같이 복합 인덱스를 구성하는 것이 훨씬 효율적입니다.
+이 경우 단순히 `member_id`에만 인덱스를 거는 것보다 아래와 같이 복합 인덱스를 구성하는 것이 훨씬 효율적입니다.
 
 ```sql
 CREATE INDEX idx_orders_member_created_at
 ON orders(member_id, created_at DESC);
 ```
 
-이렇게 하면 `member_id`로 먼저 필터링한 뒤, 이미 정렬된 `created_at` 정보를 바로 사용하여 별도의 정렬 작업 없이 페이징 처리를 할 수 있습니다.
+이렇게 하면 `member_id`로 먼저 필터링한 뒤 이미 정렬된 `created_at` 정보를 바로 사용하여 별도의 정렬 작업 없이 페이징 처리를 할 수 있습니다.
 
 ## 5. 인덱스, 많을수록 좋을까?
 

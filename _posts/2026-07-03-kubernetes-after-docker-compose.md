@@ -86,23 +86,23 @@ Kubernetes: 부족한 1개를 새로 생성해서 3개를 맞춤
 
 이 흐름이 Kubernetes를 이해하는 데 가장 중요하다고 느꼈다.
 
-Docker Compose는 컨테이너를 실행하는 데 초점이 있다면, Kubernetes는 선언한 상태를 계속 유지하는 데 초점이 있다.
+Docker Compose는 컨테이너를 실행하는 데 초점이 있다면 Kubernetes는 선언한 상태를 계속 유지하는 데 초점이 있다.
 
 Kubernetes는 컨테이너를 한 번 실행하고 끝내는 도구가 아니라 선언한 상태를 계속 유지하려고 동작하는 시스템이다.
 
-애플리케이션 Pod가 3개 있어야 한다고 선언했는데 하나가 죽으면, Kubernetes는 다시 하나를 생성해서 3개를 맞추려고 한다. 이 관점이 기존에 Docker Compose를 사용할 때와 가장 크게 다르게 느껴졌다.
+애플리케이션 Pod가 3개 있어야 한다고 선언했는데 하나가 죽으면 Kubernetes는 다시 하나를 생성해서 3개를 맞추려고 한다. 이 관점이 기존에 Docker Compose를 사용할 때와 가장 크게 다르게 느껴졌다.
 
 ---
 
 ## Pod, Deployment, Service로 이해하기
 
-이번에는 Kubernetes의 많은 개념을 모두 보려고 하기보다, 입문 단계에서 가장 기본이 되는 Pod, Deployment, Service를 중심으로 이해했다.
+이번에는 Kubernetes의 많은 개념을 모두 보려고 하기보다 입문 단계에서 가장 기본이 되는 Pod, Deployment, Service를 중심으로 이해했다.
 
 ### Pod
 
 Pod는 Kubernetes에서 컨테이너가 실행되는 최소 단위다.
 
-Spring Boot 애플리케이션을 컨테이너 이미지로 만들었다면, Kubernetes에서는 그 컨테이너가 Pod 안에서 실행된다.
+Spring Boot 애플리케이션을 컨테이너 이미지로 만들었다면 Kubernetes에서는 그 컨테이너가 Pod 안에서 실행된다.
 
 단순하게 생각하면 다음과 같다.
 
@@ -111,7 +111,7 @@ Pod
 └── Spring Boot Container
 ```
 
-Docker Compose에서는 컨테이너 자체를 중심으로 생각했다면, Kubernetes에서는 컨테이너를 직접 다루기보다 Pod라는 단위 안에서 컨테이너가 실행된다고 이해하면 된다.
+Docker Compose에서는 컨테이너 자체를 중심으로 생각했다면 Kubernetes에서는 컨테이너를 직접 다루기보다 Pod라는 단위 안에서 컨테이너가 실행된다고 이해하면 된다.
 
 ### Deployment
 
@@ -158,7 +158,7 @@ Pod C: app=spring-app
 
 이 경우 Service는 `app=spring-app`이라는 Label이 붙은 Pod들에게 요청을 전달할 수 있다.
 
-만약 Pod A가 죽고 Pod D가 새로 생성되더라도, Pod D에 같은 Label이 붙어 있다면 Service는 다시 그 Pod를 대상으로 요청을 전달할 수 있다.
+만약 Pod A가 죽고 Pod D가 새로 생성되더라도 Pod D에 같은 Label이 붙어 있다면 Service는 다시 그 Pod를 대상으로 요청을 전달할 수 있다.
 
 ```text
 Service selector: app=spring-app

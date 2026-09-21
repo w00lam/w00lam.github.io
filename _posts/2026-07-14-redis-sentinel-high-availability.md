@@ -33,7 +33,7 @@ Redis가 한 대뿐이라면 이 노드는 **SPOF(Single Point of Failure), 단�
 
 Redis의 장애 범위는 Redis를 어디에 사용했는지에 따라 달라진다. **중요한 것은 Redis 장애가 서비스 전체 장애인지 아닌지를 단정하는 것이 아니라 Redis 의존 기능별 실패 방식을 미리 정하는 것**이다.
 
-이전에 [Spring Cache의 Key 설계와 동기화 책임](/posts/spring-cache-design-sync-redistemplate/)을 정리했다면, 이번에는 그 캐시 저장소 자체에 장애가 생겼을 때 어떻게 복구 시간을 줄일지로 질문을 확장해 보았다.
+이전에 [Spring Cache의 Key 설계와 동기화 책임](/posts/spring-cache-design-sync-redistemplate/)을 정리했다면 이번에는 그 캐시 저장소 자체에 장애가 생겼을 때 어떻게 복구 시간을 줄일지로 질문을 확장해 보았다.
 
 ![단일 Redis가 SPOF가 되어 Redis 의존 기능에 장애가 전파되는 구조](/assets/images/2026-07-14-redis-sentinel/single-redis-spof.png)
 
@@ -53,7 +53,7 @@ Redis의 장애 범위는 Redis를 어디에 사용했는지에 따라 달라진
                          └──────────> Replica 2
 ```
 
-Primary가 쓰기를 담당하고 Replica가 데이터를 따라가므로, Primary 장애 시 Replica 중 하나를 새 Primary로 **승격할 후보**로 사용할 수 있다. 최신성 요구가 낮은 읽기를 Replica로 보내 Primary의 읽기 부하를 분산할 수도 있다.
+Primary가 쓰기를 담당하고 Replica가 데이터를 따라가므로 Primary 장애 시 Replica 중 하나를 새 Primary로 **승격할 후보**로 사용할 수 있다. 최신성 요구가 낮은 읽기를 Replica로 보내 Primary의 읽기 부하를 분산할 수도 있다.
 
 여기까지 보면 Replica만 추가하면 고가용성이 완성된 것처럼 보인다. 하지만 복제는 데이터를 하나 더 보관하는 문제를 해결했을 뿐, **누가 장애를 판단하고 역할을 바꿀 것인가**라는 문제는 해결하지 않았다.
 
@@ -181,7 +181,7 @@ Sentinel은 가용성을 높이지만 다음을 보장하지 않는다.
 
 Fail-Closed는 Redis 상태가 불확실할 때 주문이나 쿠폰 로직을 그대로 진행하지 않는다는 점에서 안전한 방향이다. 그러나 Sentinel을 추가했다고 락의 상호 배제가 모든 장애 상황에서 완전히 보장되는 것은 아니다.
 
-예를 들어 Primary에 락 키가 만들어진 직후, 그 키가 Replica에 복제되기 전에 Primary가 장애를 일으킬 수 있다. 락 키가 없는 Replica가 새 Primary로 승격되면 다른 요청이 같은 락을 새로 획득할 여지가 생긴다. Redis 공식 분산 락 문서도 비동기 복제와 Failover 조합에서 이러한 경쟁 조건이 상호 배제를 위반할 수 있음을 설명한다.
+예를 들어 Primary에 락 키가 만들어진 직후 그 키가 Replica에 복제되기 전에 Primary가 장애를 일으킬 수 있다. 락 키가 없는 Replica가 새 Primary로 승격되면 다른 요청이 같은 락을 새로 획득할 여지가 생긴다. Redis 공식 분산 락 문서도 비동기 복제와 Failover 조합에서 이러한 경쟁 조건이 상호 배제를 위반할 수 있음을 설명한다.
 
 **Sentinel은 락 서버의 복구 시간을 줄이지만 분산 락을 강한 일관성 시스템으로 바꾸지는 않는다.** 현재의 503 정책과 함께 DB의 고유 제약, 조건부 갱신, 멱등성 같은 최종 방어선을 비즈니스 중요도에 맞게 검토해야 한다.
 
@@ -225,7 +225,7 @@ Sentinel과 Redis Cluster는 모두 장애에 대응하지만 해결 범위가 �
 | 장애 대응 | Sentinel이 감지하고 Replica를 승격 | Cluster 내부에서 장애를 감지하고 Replica를 승격 |
 | 확장 한계 | 단일 Primary의 용량과 쓰기 처리량 한계가 남음 | 여러 Primary로 데이터와 처리량을 분산 가능 |
 
-**Sentinel은 데이터 크기에 따라 키를 여러 노드에 자동 분산하는 샤딩 기술이 아니다.** Primary 하나의 데이터 전체를 Replica가 복제하는 구조이므로, 데이터 용량이나 쓰기 처리량이 단일 Primary의 한계를 넘으면 Redis Cluster 또는 샤딩을 제공하는 관리형 서비스를 검토해야 한다.
+**Sentinel은 데이터 크기에 따라 키를 여러 노드에 자동 분산하는 샤딩 기술이 아니다.** Primary 하나의 데이터 전체를 Replica가 복제하는 구조이므로 데이터 용량이나 쓰기 처리량이 단일 Primary의 한계를 넘으면 Redis Cluster 또는 샤딩을 제공하는 관리형 서비스를 검토해야 한다.
 
 반대로 데이터 규모가 작고 당장의 문제는 Primary 장애 후 수동 복구 시간이라면 Cluster가 항상 더 나은 출발점인 것도 아니다. Cluster는 더 많은 노드와 샤딩 제약, 운영 복잡도가 함께 따라오기 때문이다.
 

@@ -14,7 +14,7 @@ Kubernetes를 처음 보면 용어가 꽤 많다. Pod, Service, Deployment, Repl
 
 이전에 [Docker Compose 다음에 Kubernetes가 필요한 이유](/posts/kubernetes-after-docker-compose/)를 보면서 단일 EC2와 Docker Compose 기반 배포는 작은 서비스에서 충분히 현실적인 선택이라고 봤다. 다만 서버가 여러 대가 되고 컨테이너 수가 늘어나면 "띄우는 것"보다 "계속 원하는 상태로 유지하는 것"이 더 중요해진다.
 
-이번 글에서는 Kubernetes 명령어 사용법보다, Kubernetes가 왜 이런 구조를 갖게 되었는지와 어떤 철학으로 동작하는지를 정리해보려 한다.
+이번 글에서는 Kubernetes 명령어 사용법보다 Kubernetes가 왜 이런 구조를 갖게 되었는지와 어떤 철학으로 동작하는지를 정리해보려 한다.
 
 핵심은 하나다.
 
@@ -33,7 +33,7 @@ Spring Boot Application
   -> Container
 ```
 
-단일 EC2 서버에서 Spring Boot 컨테이너 하나를 실행한다면, 내가 직접 서버에 접속해서 컨테이너를 띄우고 로그를 확인하고 문제가 생기면 다시 실행할 수 있다. Docker Compose를 쓰면 Spring Boot, MySQL, Redis 같은 여러 컨테이너도 하나의 설정 파일로 함께 띄울 수 있다.
+단일 EC2 서버에서 Spring Boot 컨테이너 하나를 실행한다면 내가 직접 서버에 접속해서 컨테이너를 띄우고 로그를 확인하고 문제가 생기면 다시 실행할 수 있다. Docker Compose를 쓰면 Spring Boot, MySQL, Redis 같은 여러 컨테이너도 하나의 설정 파일로 함께 띄울 수 있다.
 
 문제는 서비스가 커졌을 때부터다.
 
@@ -45,11 +45,11 @@ Spring Boot Application
 
 이 질문들은 겉으로 보면 서로 다른 문제처럼 보인다. 하나는 배치 문제이고 하나는 장애 복구 문제이고 하나는 스케일링 문제이며 또 하나는 서비스 디스커버리와 배포 전략 문제다.
 
-하지만 공통점이 있다. 모두 현재 상태를 계속 지켜보다가, 내가 원하는 상태와 다르면 바로잡아야 하는 문제다.
+하지만 공통점이 있다. 모두 현재 상태를 계속 지켜보다가 내가 원하는 상태와 다르면 바로잡아야 하는 문제다.
 
 ![Docker에서 Kubernetes가 필요한 이유](/assets/images/2026-07-08-kubernetes-reconciliation-loop/docker-to-kubernetes-orchestration.png)
 
-Docker가 컨테이너 실행을 쉽게 만들어줬다면, Kubernetes는 여러 서버 위에서 많은 컨테이너를 어떻게 계속 원하는 상태로 운영할 것인가에 초점을 둔다. 그래서 Kubernetes를 이해할 때는 "컨테이너 실행 도구"보다 "컨테이너 운영 시스템"이라는 관점이 더 잘 맞는 것 같다.
+Docker가 컨테이너 실행을 쉽게 만들어줬다면 Kubernetes는 여러 서버 위에서 많은 컨테이너를 어떻게 계속 원하는 상태로 운영할 것인가에 초점을 둔다. 그래서 Kubernetes를 이해할 때는 "컨테이너 실행 도구"보다 "컨테이너 운영 시스템"이라는 관점이 더 잘 맞는 것 같다.
 
 ---
 
@@ -81,7 +81,7 @@ Docker가 컨테이너 실행을 쉽게 만들어줬다면, Kubernetes는 여러
 이 애플리케이션은 항상 3개 떠 있어야 한다.
 ```
 
-Kubernetes는 후자에 가깝다. 사용자가 YAML의 `spec`에 원하는 상태를 선언하면, Kubernetes는 현재 클러스터 상태를 관찰하면서 그 상태에 맞추려고 움직인다.
+Kubernetes는 후자에 가깝다. 사용자가 YAML의 `spec`에 원하는 상태를 선언하면 Kubernetes는 현재 클러스터 상태를 관찰하면서 그 상태에 맞추려고 움직인다.
 
 이 관점은 SQL이나 Spring의 `@Transactional`과도 조금 닮았다. SQL에서 "인덱스를 이렇게 타고, 레코드를 이 순서로 가져와라"를 매번 명령하기보다 "이 조건에 맞는 데이터를 원한다"고 선언하면 DB가 실행 계획을 세운다. `@Transactional`도 매번 commit, rollback 절차를 직접 작성하기보다 "이 범위는 하나의 트랜잭션이어야 한다"고 선언하는 쪽에 가깝다.
 
@@ -120,7 +120,7 @@ Pod 하나가 죽었다면 현재 상태가 달라진 것이다. `replicas`를 3
 
 > 원하는 상태와 현재 상태가 다르다. Controller가 그 차이를 메운다.
 
-이 문장으로 정리하고 나니 Kubernetes가 조금 덜 복잡하게 느껴졌다. 수많은 리소스 이름을 외우기 전에, 이 조정 루프가 Kubernetes의 기본 동작 방식이라는 점을 먼저 잡는 것이 중요하다고 느꼈다.
+이 문장으로 정리하고 나니 Kubernetes가 조금 덜 복잡하게 느껴졌다. 수많은 리소스 이름을 외우기 전에 이 조정 루프가 Kubernetes의 기본 동작 방식이라는 점을 먼저 잡는 것이 중요하다고 느꼈다.
 
 ---
 
@@ -142,7 +142,7 @@ Control Plane은 클러스터의 상태를 판단하고 조정하는 쪽이다. 
 
 API Server는 모든 요청의 단일 관문이다. `kubectl`로 요청하든, CI/CD 파이프라인이 요청하든, Controller가 상태를 갱신하든 모두 API Server를 거쳐 클러스터 상태를 다룬다.
 
-etcd는 클러스터 상태의 단일 진실 역할을 한다. 사용자가 선언한 리소스 정보와 현재 상태 정보가 저장된다. Kubernetes가 선언형 시스템이라면, "무엇이 선언되었는가"를 안정적으로 보관할 저장소가 반드시 필요하다.
+etcd는 클러스터 상태의 단일 진실 역할을 한다. 사용자가 선언한 리소스 정보와 현재 상태 정보가 저장된다. Kubernetes가 선언형 시스템이라면 "무엇이 선언되었는가"를 안정적으로 보관할 저장소가 반드시 필요하다.
 
 Scheduler는 아직 노드가 정해지지 않은 Pod를 보고 어느 Worker Node에 배치할지 결정한다. 이때 노드의 리소스 상황, 제약 조건, 스케줄링 정책 등을 고려한다.
 
@@ -172,15 +172,15 @@ Deployment는 ReplicaSet 위에서 배포 전략을 관리한다. 새 이미지 
 
 그래서 Service가 필요하다.
 
-> Pod는 언제든 죽고 새로 만들어질 수 있기 때문에, 클라이언트는 Pod 자체가 아니라 Service라는 고정된 문을 바라봐야 한다.
+> Pod는 언제든 죽고 새로 만들어질 수 있기 때문에 클라이언트는 Pod 자체가 아니라 Service라는 고정된 문을 바라봐야 한다.
 
 ![Kubernetes Service와 Pod 관계](/assets/images/2026-07-08-kubernetes-reconciliation-loop/service-label-selector.png)
 
-Service는 Label과 Selector를 기준으로 요청을 보낼 Pod를 찾는다. 예를 들어 Service에 `app=my-spring-app`이라는 Selector가 있다면, 같은 Label을 가진 Pod들이 대상이 된다.
+Service는 Label과 Selector를 기준으로 요청을 보낼 Pod를 찾는다. 예를 들어 Service에 `app=my-spring-app`이라는 Selector가 있다면 같은 Label을 가진 Pod들이 대상이 된다.
 
-중요한 점은 Service가 특정 Pod IP에 고정되는 것이 아니라는 점이다. Pod A가 죽고 Pod D가 새로 생기더라도, Pod D가 같은 Label을 달고 있으면 Service는 새 Pod를 대상으로 삼을 수 있다.
+중요한 점은 Service가 특정 Pod IP에 고정되는 것이 아니라는 점이다. Pod A가 죽고 Pod D가 새로 생기더라도 Pod D가 같은 Label을 달고 있으면 Service는 새 Pod를 대상으로 삼을 수 있다.
 
-이 구조를 이해하고 나면 Service가 단순한 로드밸런서라기보다, 변하는 Pod 집합 앞에 고정된 접근 지점을 만들어주는 리소스라는 점이 보인다.
+이 구조를 이해하고 나면 Service가 단순한 로드밸런서라기보다 변하는 Pod 집합 앞에 고정된 접근 지점을 만들어주는 리소스라는 점이 보인다.
 
 ---
 
@@ -190,13 +190,13 @@ Kubernetes를 공부하다 보면 "그러면 이제 모든 프로젝트에 Kuber
 
 Kubernetes는 강력하지만 학습 비용과 운영 복잡도가 크다. 클러스터를 구성하고 네트워크를 이해하고 리소스 요청량과 제한을 잡고 배포 전략과 모니터링까지 챙기려면 단순히 컨테이너 몇 개를 띄우는 것보다 훨씬 많은 운영 지식이 필요하다.
 
-단일 서버에서 작은 MVP를 운영한다면 Docker Compose가 더 적합할 수 있다. Spring Boot 애플리케이션 하나와 MySQL, Redis 정도를 한 EC2에서 운영하는 상황이라면, Kubernetes를 도입하는 것 자체가 오히려 복잡도를 키울 수 있다.
+단일 서버에서 작은 MVP를 운영한다면 Docker Compose가 더 적합할 수 있다. Spring Boot 애플리케이션 하나와 MySQL, Redis 정도를 한 EC2에서 운영하는 상황이라면 Kubernetes를 도입하는 것 자체가 오히려 복잡도를 키울 수 있다.
 
 이전에 [Nginx를 단순 프록시가 아니라 배포 전환 지점으로 이해하기](/posts/nginx-deployment-switching-point/)를 보면서 단일 EC2와 Docker Compose 환경에서도 Nginx를 이용해 Blue-Green 배포 전환 지점을 만들 수 있다는 점을 봤다. 이런 구조는 Kubernetes만큼 일반화된 플랫폼은 아니지만 작은 서비스에서는 충분히 현실적일 수 있다.
 
-반대로 여러 서버에서 많은 컨테이너를 운영해야 하고 잦은 배포와 자동 복구, 스케일링, 서비스 디스커버리가 필요해진다면 Kubernetes의 복잡도를 감수할 가치가 생긴다. Kubernetes는 복잡도를 없애는 도구라기보다, 커진 운영 복잡도를 일관된 원리로 다루게 해주는 플랫폼에 가깝다.
+반대로 여러 서버에서 많은 컨테이너를 운영해야 하고 잦은 배포와 자동 복구, 스케일링, 서비스 디스커버리가 필요해진다면 Kubernetes의 복잡도를 감수할 가치가 생긴다. Kubernetes는 복잡도를 없애는 도구라기보다 커진 운영 복잡도를 일관된 원리로 다루게 해주는 플랫폼에 가깝다.
 
-그래서 지금 내 기준으로는 Kubernetes를 "무조건 좋은 배포 도구"라고 보기보다, 운영 요구사항이 일정 수준 이상 커졌을 때 빛을 발하는 시스템으로 이해하는 편이 더 현실적이다.
+그래서 지금 내 기준으로는 Kubernetes를 "무조건 좋은 배포 도구"라고 보기보다 운영 요구사항이 일정 수준 이상 커졌을 때 빛을 발하는 시스템으로 이해하는 편이 더 현실적이다.
 
 ---
 
@@ -230,6 +230,6 @@ Kubernetes를 처음 볼 때는 Pod, Service, Deployment, Controller 같은 용�
 
 Pod가 죽었을 때 다시 만드는 것도, replicas를 늘렸을 때 Pod를 더 만드는 것도, 새 버전으로 점진적으로 교체하는 것도, Service가 바뀌는 Pod 앞에서 고정된 접근 지점을 제공하는 것도 모두 이 관점과 연결된다.
 
-Kubernetes는 컨테이너를 실행하는 도구라기보다, 컨테이너가 운영되는 상태를 계속 유지하는 시스템이다. 그리고 이 조정 루프를 이해하고 나니 Kubernetes의 많은 구성요소가 단순한 암기 대상이 아니라 하나의 운영 철학을 구현하기 위한 역할들로 보이기 시작했다.
+Kubernetes는 컨테이너를 실행하는 도구라기보다 컨테이너가 운영되는 상태를 계속 유지하는 시스템이다. 그리고 이 조정 루프를 이해하고 나니 Kubernetes의 많은 구성요소가 단순한 암기 대상이 아니라 하나의 운영 철학을 구현하기 위한 역할들로 보이기 시작했다.
 
 물론 모든 프로젝트에 Kubernetes가 필요한 것은 아니다. 작은 서비스에서는 Docker Compose와 단순한 배포 구조가 더 좋은 선택일 수 있다. 다만 여러 서버, 많은 컨테이너, 잦은 배포, 자동 복구와 확장성이 필요해지는 순간에는 Kubernetes가 왜 이런 구조를 가졌는지 조금 더 납득할 수 있을 것 같다.

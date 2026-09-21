@@ -73,7 +73,7 @@ Spring Boot 개발자에게 익숙한 관점에서 Spring AI의 주요 구성요
 * **ChatClient**: 모델 호출을 위한 고수준 API로, 개발자가 주로 사용합니다.
 * **ChatModel**: 실제 모델 프로바이더(OpenAI, Anthropic, Gemini 등)와 통신하는 추상화 계층입니다.
 
->  **핵심**: Spring AI를 사용한다고 해서 기존의 Controller-Service-Repository 계층 구조가 사라지는 것이 아닙니다. AI 호출 역시 외부 의존성이므로, 이를 효과적으로 관리하기 위해 계층을 나누는 것이 중요합니다.
+>  **핵심**: Spring AI를 사용한다고 해서 기존의 Controller-Service-Repository 계층 구조가 사라지는 것이 아닙니다. AI 호출 역시 외부 의존성이므로 이를 효과적으로 관리하기 위해 계층을 나누는 것이 중요합니다.
 
 ### 직접 호출과 Spring AI 비교
 
@@ -375,7 +375,7 @@ ReceiptExtraction receipt = chatClient.prompt()
         .entity(ReceiptExtraction.class);
 ```
 
->  **핵심**: 처음에는 `OutputConverter`를 직접 외우기보다, `content()`는 문자열 응답이고 `entity(...)`는 Java 타입으로 받는 응답이라고 이해하면 됩니다.
+>  **핵심**: 처음에는 `OutputConverter`를 직접 외우기보다 `content()`는 문자열 응답이고 `entity(...)`는 Java 타입으로 받는 응답이라고 이해하면 됩니다.
 
 ### OutputConverter는 무엇을 해주는가
 
@@ -433,7 +433,7 @@ String response = chatClient.prompt()
     .content();
 ```
 
-LLM은 사용자의 질문을 분석하여 `weatherFunction`을 호출해야 한다고 판단하면, 필요한 인자(예: 도시명)를 추출하여 함수를 실행하도록 요청합니다. Spring AI는 이 과정을 자동으로 처리하고 함수 실행 결과를 다시 LLM에 전달하여 최종 답변을 생성하게 합니다.
+LLM은 사용자의 질문을 분석하여 `weatherFunction`을 호출해야 한다고 판단하면 필요한 인자(예: 도시명)를 추출하여 함수를 실행하도록 요청합니다. Spring AI는 이 과정을 자동으로 처리하고 함수 실행 결과를 다시 LLM에 전달하여 최종 답변을 생성하게 합니다.
 
 ## 8. Agentic Application — LLM이 스스로 판단하고 행동하는 앱
 
@@ -450,7 +450,7 @@ LLM은 사용자의 질문을 분석하여 `weatherFunction`을 호출해야 한
 
 ### Spring AI와 Agentic Application
 
-Spring AI는 `ChatClient`의 `Tool Calling` 기능으로 Agentic Application의 기반을 제공합니다. LLM이 여러 도구를 조합해 복잡한 작업을 수행하도록 하면, 개발자는 더 지능적이고 자율적인 AI 앱을 만들 수 있습니다. 예를 들어 사용자가 "이번 달 매출 보고서를 작성해줘"라고 요청하면, LLM은 다음과 같은 일련의 과정을 스스로 수행할 수 있습니다.
+Spring AI는 `ChatClient`의 `Tool Calling` 기능으로 Agentic Application의 기반을 제공합니다. LLM이 여러 도구를 조합해 복잡한 작업을 수행하도록 하면 개발자는 더 지능적이고 자율적인 AI 앱을 만들 수 있습니다. 예를 들어 사용자가 "이번 달 매출 보고서를 작성해줘"라고 요청하면 LLM은 다음과 같은 일련의 과정을 스스로 수행할 수 있습니다.
 
 1. **데이터 조회 도구 호출**: 데이터베이스에서 매출 데이터를 조회합니다.
 2. **데이터 분석 도구 호출**: 조회된 데이터를 분석하여 주요 지표를 추출합니다.

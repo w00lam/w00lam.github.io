@@ -6,7 +6,7 @@ tags: [Nginx, Spring Boot, EC2, Docker Compose, Reverse Proxy, HTTPS, Blue-Green
 permalink: /posts/why-nginx-in-front-of-spring-boot/
 ---
 
-처음 Spring Boot 애플리케이션을 EC2에 배포한다고 생각했을 때, 가장 단순한 구조는 애플리케이션을 실행하고 8080 포트로 직접 접근하는 방식이었다.
+처음 Spring Boot 애플리케이션을 EC2에 배포한다고 생각했을 때 가장 단순한 구조는 애플리케이션을 실행하고 8080 포트로 직접 접근하는 방식이었다.
 
 ```text
 User
@@ -129,7 +129,7 @@ Nginx를 거치면 Spring Boot는 요청을 사용자에게서 직접 받은 것
 * `X-Forwarded-For`: 프록시를 거쳐온 IP 목록
 * `X-Forwarded-Proto`: 원래 요청이 HTTP인지 HTTPS인지
 
-특히 `X-Forwarded-Proto`는 생각보다 중요할 수 있다. 사용자는 HTTPS로 접근했는데 Spring Boot가 내부 HTTP 요청만 보고 있다면, HTTPS 리다이렉트나 OAuth callback URL, Swagger URL 생성, 로그 분석에서 헷갈리는 상황이 생길 수 있기 때문이다.
+특히 `X-Forwarded-Proto`는 생각보다 중요할 수 있다. 사용자는 HTTPS로 접근했는데 Spring Boot가 내부 HTTP 요청만 보고 있다면 HTTPS 리다이렉트나 OAuth callback URL, Swagger URL 생성, 로그 분석에서 헷갈리는 상황이 생길 수 있기 때문이다.
 
 처음에는 `proxy_set_header`가 부가 설정처럼 보였지만 실제 운영 환경에서는 “원래 요청이 어떤 모습이었는지”를 애플리케이션에 전달하는 중요한 역할을 한다.
 
@@ -229,7 +229,7 @@ Nginx
   └── Green : 8081
 ```
 
-기존 버전을 Blue, 새 버전을 Green이라고 보면, Nginx의 `proxy_pass` 대상을 Blue에서 Green으로 바꾸는 방식으로 내부 애플리케이션 버전을 전환할 수 있다.
+기존 버전을 Blue, 새 버전을 Green이라고 보면 Nginx의 `proxy_pass` 대상을 Blue에서 Green으로 바꾸는 방식으로 내부 애플리케이션 버전을 전환할 수 있다.
 
 사용자는 여전히 같은 도메인으로 접근한다. 바뀌는 것은 외부 주소가 아니라 Nginx 뒤쪽의 내부 연결 대상이다.
 
@@ -245,7 +245,7 @@ Nginx
 
 하지만 Spring Boot 애플리케이션을 EC2와 Docker Compose로 배포하는 구조에서 보면 Nginx는 외부 요청을 먼저 받는 앞단 서버에 가깝다.
 
-Spring Boot는 여전히 8080 포트에서 실행된다. Nginx는 80/443 포트에서 요청을 받은 뒤, 내부 Spring Boot 애플리케이션으로 요청을 전달한다.
+Spring Boot는 여전히 8080 포트에서 실행된다. Nginx는 80/443 포트에서 요청을 받은 뒤 내부 Spring Boot 애플리케이션으로 요청을 전달한다.
 
 이 구조 덕분에 사용자는 포트 번호 없이 도메인으로 접근할 수 있다. 그리고 Spring Boot의 애플리케이션 포트는 외부에 직접 노출하지 않을 수 있다.
 

@@ -49,7 +49,7 @@ class SeatTempHoldConcurrencyTest {
 
 ## 예외는 준비 단계에서 터졌다
 
-동시성 로직에는 손도 대기 전에, 테스트 데이터를 준비하는 단계에서 에러가 났다.
+동시성 로직에는 손도 대기 전에 테스트 데이터를 준비하는 단계에서 에러가 났다.
 
 ```java
 protected User createUser() {
@@ -66,7 +66,7 @@ TransactionRequiredException
  → createUser()
 ```
 
-이렇다. 테스트 클래스 전체가 NOT_SUPPORTED라 지금 스레드에는 활성 트랜잭션이 없는데, 그 상태로 EntityManager.flush()를 불렀으니 JPA 규칙을 어긴 셈이다.
+이렇다. 테스트 클래스 전체가 NOT_SUPPORTED라 지금 스레드에는 활성 트랜잭션이 없는데 그 상태로 EntityManager.flush()를 불렀으니 JPA 규칙을 어긴 셈이다.
 
 ## flush는 트랜잭션 안에서만 동작한다
 

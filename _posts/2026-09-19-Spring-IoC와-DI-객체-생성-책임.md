@@ -6,7 +6,7 @@ tags: [Spring, IoC, DI, Bean, Singleton, Thread, TIL]
 permalink: /posts/spring-ioc-di/
 ---
 
-JVM과 Thread를 공부한 뒤 [JVM 메모리 영역](/posts/java-jvm-memory-lifecycle/)과 [Java Thread와 동시성](/posts/java-thread-concurrency-shared-state/)에서 정리한 내용을 떠올리며 Spring 코드를 다시 읽었다. 그중에서도 생성자에 필요한 객체를 적어 두는 이유가 궁금했다. 처음에는 Spring이 객체만 대신 만들어 주는 줄 알았다가, 어제 IoC와 DI를 공부하고 Container가 의존 관계와 생명주기까지 관리한다는 점을 알게 됐다.
+JVM과 Thread를 공부한 뒤 [JVM 메모리 영역](/posts/java-jvm-memory-lifecycle/)과 [Java Thread와 동시성](/posts/java-thread-concurrency-shared-state/)에서 정리한 내용을 떠올리며 Spring 코드를 다시 읽었다. 그중에서도 생성자에 필요한 객체를 적어 두는 이유가 궁금했다. 처음에는 Spring이 객체만 대신 만들어 주는 줄 알았다가 어제 IoC와 DI를 공부하고 Container가 의존 관계와 생명주기까지 관리한다는 점을 알게 됐다.
 
 ## 구현체를 직접 만드는 코드에서 시작했다
 
@@ -80,7 +80,7 @@ Container는 `OrderService`의 생성자 매개변수를 보고 필요한 `Order
 
 생성자 매개변수는 객체가 동작하는 데 필요한 의존성을 코드에 드러낸다. 필요한 값이 없으면 생성할 수 없으니 불완전한 객체가 만들어질 가능성도 낮아진다. 의존 필드를 `final`로 선언하면 생성 후 참조가 바뀌지 않는다는 점도 확인하기 쉽다.
 
-서비스가 `JdbcOrderRepository`가 아니라 `OrderRepository`에 의존하면 구현의 세부사항과 서비스 로직이 분리된다. 저장 방식을 바꾸거나 테스트용 구현체를 넣어도 영향을 받는 코드가 줄어든다. Interface가 언제나 좋은 선택인 것은 아니지만, 구현을 교체하거나 경계를 분리할 이유가 있는 의존 관계에서 도움이 된다.
+서비스가 `JdbcOrderRepository`가 아니라 `OrderRepository`에 의존하면 구현의 세부사항과 서비스 로직이 분리된다. 저장 방식을 바꾸거나 테스트용 구현체를 넣어도 영향을 받는 코드가 줄어든다. Interface가 언제나 좋은 선택인 것은 아니지만 구현을 교체하거나 경계를 분리할 이유가 있는 의존 관계에서 도움이 된다.
 
 실제 백엔드에서도 Controller가 Service를 생성하고, Service가 Repository를 생성하는 대신 필요한 타입을 생성자에 선언한다.
 
@@ -112,7 +112,7 @@ Controller → Service → Repository로 이어지는 각 객체의 역할은 �
 
 Spring Bean도 JVM Heap에서 관리되는 Java 객체다. 기본 Singleton Scope는 하나의 Container가 Bean 정의마다 공유 인스턴스 하나를 관리한다. 클래스 로더마다 인스턴스 하나를 강제하는 GoF Singleton 패턴과 범위가 다르다.
 
-그래서 `@Service`로 등록한 객체를 여러 요청이 함께 사용할 수 있다. 웹 요청을 처리하는 Thread들이 같은 Bean 인스턴스에 접근하는 동안, 요청마다 달라지는 값을 인스턴스 필드에 저장하면 문제가 생긴다.
+그래서 `@Service`로 등록한 객체를 여러 요청이 함께 사용할 수 있다. 웹 요청을 처리하는 Thread들이 같은 Bean 인스턴스에 접근하는 동안 요청마다 달라지는 값을 인스턴스 필드에 저장하면 문제가 생긴다.
 
 ~~~java
 @Service

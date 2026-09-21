@@ -67,7 +67,7 @@ ZREVRANGE product:ranking 0 9 WITHSCORES
 
 ## 3. Kafka는 결제 이후의 책임을 분리한다
 
-결제 서비스가 결제 완료 이벤트를 Kafka에 발행하면, 후속 작업은 각 Consumer가 자신의 목적에 맞게 처리할 수 있다.
+결제 서비스가 결제 완료 이벤트를 Kafka에 발행하면 후속 작업은 각 Consumer가 자신의 목적에 맞게 처리할 수 있다.
 
 ![동기식 처리와 이벤트 기반 처리 비교](/assets/images/2026-07-13-high-traffic-event-architecture/sync-vs-event-driven-architecture.png)
 
@@ -107,7 +107,7 @@ Kafka의 각 구성 요소는 다음처럼 실제 흐름에 연결할 수 있다
 
 반면 서로 다른 Consumer Group은 같은 이벤트를 독립적으로 소비할 수 있다. 랭킹 Consumer Group, 결제 이력 Consumer Group, 배송 Consumer Group이 각각 존재하면 동일한 결제 완료 이벤트가 서로 다른 목적에 맞게 전달된다.
 
-Kafka의 순서 보장은 토픽 전체가 아니라 파티션 내부에서 제공된다. 주문 단위의 순서가 중요하다면 `orderId`를 메시지 key로 사용해 같은 주문의 이벤트가 같은 파티션에 들어가도록 고려할 수 있다. 그래도 재시도 토픽이나 외부 시스템을 거치면 도메인 상태가 역전될 수 있으므로, Consumer가 현재 상태를 검증하는 방어도 필요하다.
+Kafka의 순서 보장은 토픽 전체가 아니라 파티션 내부에서 제공된다. 주문 단위의 순서가 중요하다면 `orderId`를 메시지 key로 사용해 같은 주문의 이벤트가 같은 파티션에 들어가도록 고려할 수 있다. 그래도 재시도 토픽이나 외부 시스템을 거치면 도메인 상태가 역전될 수 있으므로 Consumer가 현재 상태를 검증하는 방어도 필요하다.
 
 ## 5. Spring Boot에서 이벤트를 발행하고 소비하기
 
@@ -155,7 +155,7 @@ public void updateRanking(PaymentCompletedEvent event) {
 
 Offset은 단순히 “읽은 위치”가 아니라 Consumer Group의 처리 진행을 복구하기 위한 기준점이다. 처리 전에 offset을 commit하면 메시지 처리 도중 장애가 발생했을 때 이미 처리한 것으로 간주되어 메시지가 유실될 수 있다.
 
-처리 후 commit하는 방식은 유실 가능성을 줄인다. 그러나 Consumer가 비즈니스 처리를 성공시킨 직후, commit 전에 장애가 발생하면 다음에 같은 메시지를 다시 읽을 수 있다.
+처리 후 commit하는 방식은 유실 가능성을 줄인다. 그러나 Consumer가 비즈니스 처리를 성공시킨 직후 commit 전에 장애가 발생하면 다음에 같은 메시지를 다시 읽을 수 있다.
 
 ```text
 메시지 수신

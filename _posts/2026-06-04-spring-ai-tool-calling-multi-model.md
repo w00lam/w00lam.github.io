@@ -108,11 +108,11 @@ Tool Calling을 효과적으로 활용하기 위한 몇 가지 팁은 다음과 
 
 ## 4. 한 애플리케이션 안에서 여러 모델을 동시에 쓰는 방식
 
-실제 AI 애플리케이션에서는 하나의 AI 모델만 사용하기보다는, 각 작업의 특성에 맞는 여러 모델을 조합하여 사용하는 경우가 많습니다. 예를 들어 이미지 추출에는 멀티모달에 강한 모델을, 긴 정책 판단에는 문맥 유지가 좋은 모델을, Tool Calling에는 도구 호출이 안정적인 모델을 쓰는 식입니다.
+실제 AI 애플리케이션에서는 하나의 AI 모델만 사용하기보다는 각 작업의 특성에 맞는 여러 모델을 조합하여 사용하는 경우가 많습니다. 예를 들어 이미지 추출에는 멀티모달에 강한 모델을, 긴 정책 판단에는 문맥 유지가 좋은 모델을, Tool Calling에는 도구 호출이 안정적인 모델을 쓰는 식입니다.
 
 ![멀티 모델 활용 전략](/assets/images/2026-06-04-spring-ai-practical/multi-model-strategy.png)
 
-Spring AI는 이러한 멀티 모델 전략을 유연하게 지원합니다. `build.gradle`에 필요한 모델 스타터를 추가하고 `application.yml`에서 각 모델의 API 키와 옵션을 설정한 후, `@Configuration` 클래스에서 각 모델별 `ChatClient` Bean을 생성하여 `@Qualifier`로 주입받아 사용하면 됩니다.
+Spring AI는 이러한 멀티 모델 전략을 유연하게 지원합니다. `build.gradle`에 필요한 모델 스타터를 추가하고 `application.yml`에서 각 모델의 API 키와 옵션을 설정한 후 `@Configuration` 클래스에서 각 모델별 `ChatClient` Bean을 생성하여 `@Qualifier`로 주입받아 사용하면 됩니다.
 
 ```java
 dependencies {

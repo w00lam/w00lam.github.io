@@ -56,7 +56,7 @@ class TestcontainersConfiguration {
 
 ### 1. 컨테이너가 안 뜨는 문제
 
-통합 테스트를 실행해도 Docker 컨테이너가 뜨지 않았다. 원인은 단순했지만 찾기는 어려웠다. `TestcontainersConfiguration`은 `test` sourceSet에 있는데, 정작 테스트는 `testIntegration` sourceSet에서 돌아갔던 것이다. **Spring context에 해당 Configuration이 아예 로딩되지 않았다.**
+통합 테스트를 실행해도 Docker 컨테이너가 뜨지 않았다. 원인은 단순했지만 찾기는 어려웠다. `TestcontainersConfiguration`은 `test` sourceSet에 있는데 정작 테스트는 `testIntegration` sourceSet에서 돌아갔던 것이다. **Spring context에 해당 Configuration이 아예 로딩되지 않았다.**
 
 ### 2. Spring Boot + sourceSet 분리의 복잡성
 

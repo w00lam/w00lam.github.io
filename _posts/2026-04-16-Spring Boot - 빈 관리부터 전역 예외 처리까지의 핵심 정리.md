@@ -6,7 +6,7 @@ tags: [Spring, Bean, Validation, ExceptionHandling, Logging]
 permalink: /posts/spring-boot-bean-exception/
 ---
 
-> **"스프링의 자동화 뒤에 숨겨진 원리를 이해하면, 더 견고한 아키텍처를 설계할 수 있습니다."**
+> **"스프링의 자동화 뒤에 숨겨진 원리를 이해하면 더 견고한 아키텍처를 설계할 수 있습니다."**
 
 스프링 부트의 빈 등록 원리, 의존성 주입 우선순위, 클라이언트가 이해하기 쉬운 예외 처리 전략을 한 페이지에 정리했습니다.
 
