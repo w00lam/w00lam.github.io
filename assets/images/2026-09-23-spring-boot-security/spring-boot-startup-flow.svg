@@ -1,0 +1,94 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 1420" role="img" aria-labelledby="title desc">
+  <title id="title">Spring Boot 애플리케이션 실행 흐름</title>
+  <desc id="desc">SpringBootApplication에서 SpringApplication.run, ApplicationContext, Component Scan과 Auto Configuration, Bean 생성과 의존성 주입을 거쳐 Servlet Container가 실행되는 흐름</desc>
+  <defs>
+    <linearGradient id="background" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#f7faff" />
+      <stop offset="1" stop-color="#edf4fb" />
+    </linearGradient>
+    <linearGradient id="accent" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0" stop-color="#2563eb" />
+      <stop offset="1" stop-color="#0f9f95" />
+    </linearGradient>
+    <marker id="arrow" markerWidth="10" markerHeight="10" refX="8" refY="5" orient="auto">
+      <path d="M0,0 L10,5 L0,10 Z" fill="#7186a3" />
+    </marker>
+    <style>
+      text { font-family: "Pretendard", "Noto Sans KR", "Malgun Gothic", sans-serif; }
+      .title { font-size: 36px; font-weight: 750; fill: #10243e; }
+      .sub { font-size: 18px; fill: #52657e; }
+      .section { font-size: 15px; font-weight: 700; letter-spacing: 1.5px; fill: #58708e; }
+      .label { font-size: 23px; font-weight: 700; fill: #172b46; }
+      .detail { font-size: 16px; fill: #51647d; }
+      .small { font-size: 14px; fill: #60738d; }
+      .pill { font-size: 15px; font-weight: 650; fill: #21466f; }
+      .note { font-size: 16px; fill: #6a4d12; }
+      .inverse { fill: #ffffff; }
+      .node { fill: #ffffff; stroke: #d5e0ed; stroke-width: 2; }
+      .flow { fill: none; stroke: #8497af; stroke-width: 3; marker-end: url(#arrow); }
+      .branch { fill: none; stroke: #9aaabd; stroke-width: 3; marker-end: url(#arrow); }
+      .divider { stroke: #d5e0ed; stroke-width: 2; stroke-dasharray: 7 8; }
+    </style>
+  </defs>
+
+  <rect width="1200" height="1420" rx="30" fill="url(#background)" />
+  <text x="600" y="68" text-anchor="middle" class="title">Spring Boot 애플리케이션 실행 흐름</text>
+  <text x="600" y="103" text-anchor="middle" class="sub">설정 클래스에서 Spring Container와 웹 인프라 준비까지</text>
+
+  <rect x="100" y="128" width="1000" height="1208" rx="28" fill="#ffffff" stroke="#c9d7e8" stroke-width="2" />
+  <rect x="100" y="128" width="1000" height="58" rx="28" fill="#eaf1fa" />
+  <path d="M100 158 Q100 128 130 128 H1070 Q1100 128 1100 158 V186 H100 Z" fill="#eaf1fa" />
+  <circle cx="139" cy="157" r="8" fill="#2563eb" />
+  <text x="162" y="163" class="section">SPRING BOOT STARTUP</text>
+
+  <rect x="300" y="214" width="600" height="86" rx="17" fill="#eff6ff" stroke="#bfdbfe" stroke-width="2" />
+  <text x="600" y="249" text-anchor="middle" class="label">@SpringBootApplication</text>
+  <text x="600" y="278" text-anchor="middle" class="detail">설정 · 자동 설정 · 컴포넌트 탐색의 출발점</text>
+  <path d="M600 301 V334" class="flow" />
+
+  <rect x="300" y="344" width="600" height="86" rx="17" class="node" />
+  <text x="600" y="379" text-anchor="middle" class="label">SpringApplication.run()</text>
+  <text x="600" y="408" text-anchor="middle" class="detail">Spring 애플리케이션 부트스트랩 시작</text>
+  <path d="M600 431 V464" class="flow" />
+
+  <rect x="300" y="474" width="600" height="92" rx="17" fill="#f2f7ff" stroke="#c7d8f0" stroke-width="2" />
+  <text x="600" y="511" text-anchor="middle" class="label">ApplicationContext</text>
+  <text x="600" y="541" text-anchor="middle" class="detail">Spring Container · Bean과 의존 관계를 관리</text>
+  <path d="M600 567 V610" class="flow" />
+
+  <rect x="160" y="620" width="390" height="150" rx="18" fill="#f8fbff" stroke="#d5e3f2" stroke-width="2" />
+  <text x="355" y="660" text-anchor="middle" class="label">Component Scan</text>
+  <text x="355" y="692" text-anchor="middle" class="detail">개발자가 작성한 컴포넌트 탐색</text>
+  <rect x="210" y="716" width="290" height="38" rx="19" fill="#e9f2ff" />
+  <text x="355" y="741" text-anchor="middle" class="pill">@Service · @Repository · @Controller</text>
+
+  <rect x="650" y="620" width="390" height="150" rx="18" fill="#f8fbff" stroke="#d5e3f2" stroke-width="2" />
+  <text x="845" y="660" text-anchor="middle" class="label">Auto Configuration</text>
+  <text x="845" y="692" text-anchor="middle" class="detail">클래스패스·설정·기존 Bean 조건 확인</text>
+  <rect x="700" y="716" width="290" height="38" rx="19" fill="#e7f8f2" />
+  <text x="845" y="741" text-anchor="middle" class="pill">조건을 만족하는 설정만 적용</text>
+
+  <path d="M600 567 V594 H355 V616" class="branch" />
+  <path d="M600 567 V594 H845 V616" class="branch" />
+  <path d="M355 774 V810 H600 V842" class="branch" />
+  <path d="M845 774 V810 H600 V842" class="branch" />
+
+  <rect x="300" y="852" width="600" height="94" rx="17" class="node" />
+  <text x="600" y="889" text-anchor="middle" class="label">Bean 생성 및 의존성 주입</text>
+  <text x="600" y="920" text-anchor="middle" class="detail">Container가 객체를 만들고 필요한 의존 관계를 연결</text>
+  <path d="M600 947 V980" class="flow" />
+
+  <rect x="220" y="990" width="760" height="126" rx="18" fill="#f2f7ff" stroke="#c7d8f0" stroke-width="2" />
+  <text x="600" y="1027" text-anchor="middle" class="label">Spring MVC 등 웹 애플리케이션 인프라 준비</text>
+  <text x="600" y="1059" text-anchor="middle" class="detail">요청을 처리할 DispatcherServlet과 관련 구성을 준비</text>
+  <rect x="375" y="1071" width="450" height="30" rx="15" fill="#dceaff" />
+  <text x="600" y="1092" text-anchor="middle" class="pill">ApplicationContext 안에 필요한 Bean과 설정이 모인다</text>
+  <path d="M600 1118 V1151" class="flow" />
+
+  <rect x="300" y="1161" width="600" height="86" rx="17" fill="url(#accent)" />
+  <text x="600" y="1196" text-anchor="middle" class="label inverse">내장 Servlet Container 실행</text>
+  <text x="600" y="1225" text-anchor="middle" class="detail inverse">애플리케이션이 HTTP 요청을 받을 준비 완료</text>
+
+  <line x1="140" y1="1277" x2="1060" y2="1277" class="divider" />
+  <text x="600" y="1308" text-anchor="middle" class="note">Component Scan은 개발자 코드, Auto Configuration은 조건에 맞는 Boot 설정을 대상으로 한다.</text>
+</svg>
