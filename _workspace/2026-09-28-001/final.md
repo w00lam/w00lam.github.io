@@ -6,7 +6,7 @@ tags: [JPA, Spring Data JPA, Hibernate, EntityManager, Dirty Checking, Testing, 
 permalink: /posts/jpa-dirty-checking-test-boundary/
 ---
 
-이전 학습에서 JPA의 영속성 컨텍스트와 플러시, 커밋을 공부했다. 오늘은 그 개념을 외운 문장으로만 설명하지 않고 `UserRepository`와 `UserService.changeName()`이 실제로 동작하는 흐름에 붙여 보려고 했다.
+이전 [JPA 심화 학습에서 영속성 컨텍스트와 조회 최적화](/posts/jpa-persistence-optimization/)를 공부하며 JPA의 영속성 컨텍스트와 플러시를 정리했다. 오늘은 그 개념을 외운 문장으로만 설명하지 않고 `UserRepository`와 `UserService.changeName()`이 실제로 동작하는 흐름에 붙여 보려고 했다.
 
 처음에는 `JpaRepository`가 구현체를 런타임에 제공한다는 점은 알고 있었다. 하지만 그 아래에서 `EntityManager`, Hibernate, JDBC가 각각 어떤 일을 하는지 한 문장으로 설명하려니 막혔다. 조회한 엔티티의 값을 바꾼 뒤 `save()`를 다시 호출하지 않아도 되는 이유도 같은 문제와 이어져 있었다.
 
@@ -121,7 +121,7 @@ public void changeName(String newName) {
 }
 ```
 
-`changeName()`은 “이 객체의 이름을 변경한다”는 의도를 드러낸다. 나중에 빈 문자열을 거부하거나 이름 변경 이력을 남기는 정책이 생기면 메서드 안에서 함께 관리할 수 있다. 이 설계 선택이 Dirty Checking의 필수 조건인 것은 아니다. Hibernate가 추적하는 것은 엔티티의 상태 변화이며, 상태를 바꾸는 문법이 setter인지 도메인 메서드인지가 변경 감지를 켜고 끄는 기준은 아니다.
+`changeName()`은 “이 객체의 이름을 변경한다”는 의도를 드러낸다. 이전에 [테스트 때문에 엔티티에 setter를 추가하면 안 되는 이유](/posts/entity-setter-test/)를 정리하며 살펴본 것처럼, 상태 변경의 책임과 정책을 엔티티 안에 두면 서비스가 필드 조작의 세부 사항을 직접 알 필요가 없다. 나중에 빈 문자열을 거부하거나 이름 변경 이력을 남기는 정책이 생기면 메서드 안에서 함께 관리할 수 있다. 이 설계 선택이 Dirty Checking의 필수 조건인 것은 아니다. Hibernate가 추적하는 것은 엔티티의 상태 변화이며, 상태를 바꾸는 문법이 setter인지 도메인 메서드인지가 변경 감지를 켜고 끄는 기준은 아니다.
 
 ![서비스 트랜잭션에서 User 변경이 플러시와 커밋을 거쳐 별도 트랜잭션 조회로 확인되는 흐름](/assets/images/2026-09-28-jpa-dirty-checking/jpa-dirty-checking-flow.svg)
 
@@ -212,7 +212,7 @@ class UserServiceIntegrationTest {
 
 이 예제는 테스트 메서드가 트랜잭션을 직접 소유하지 않는다. `userService.changeName()`의 `@Transactional`이 실제 서비스 Bean을 통해 적용되고 메서드가 정상 종료되면 서비스 트랜잭션이 커밋된다. 그 뒤 `userRepository.findById()`를 호출해 새 조회 범위에서 값을 읽으므로 커밋된 DB 결과를 확인하는 구조다.
 
-반대로 테스트 메서드나 테스트 클래스에 `@Transactional`을 붙이면 이야기가 달라진다. Spring의 테스트 트랜잭션은 기본적으로 테스트가 끝난 뒤 롤백될 수 있다. 같은 영속성 컨텍스트에서 곧바로 조회한 값은 이미 메모리에 바뀐 엔티티일 수 있고, 플러시 후 조회한 값은 SQL이 실행된 상태를 보여 줄 수 있지만 커밋이 확정됐다는 뜻은 아니다. 커밋 후 새 트랜잭션에서 조회하려면 테스트 트랜잭션을 실제로 종료하고 커밋하도록 구성하거나, 위처럼 서비스 트랜잭션과 조회 트랜잭션을 테스트 메서드의 바깥 경계로 분리해야 한다.([Spring Framework - TestContext Transaction Management](https://docs.spring.io/spring-framework/reference/testing/testcontext-framework/tx.html))
+반대로 테스트 메서드나 테스트 클래스에 `@Transactional`을 붙이면 이야기가 달라진다. 예전에 [JPA 동시성 테스트에서 `TransactionRequiredException`을 만난 이유](/posts/jpa-concurrency-transaction/)를 정리하면서도 테스트 데이터 준비와 실제 경쟁 트랜잭션의 경계를 분리해야 했다. Spring의 테스트 트랜잭션은 기본적으로 테스트가 끝난 뒤 롤백될 수 있다. 같은 영속성 컨텍스트에서 곧바로 조회한 값은 이미 메모리에 바뀐 엔티티일 수 있고, 플러시 후 조회한 값은 SQL이 실행된 상태를 보여 줄 수 있지만 커밋이 확정됐다는 뜻은 아니다. 커밋 후 새 트랜잭션에서 조회하려면 테스트 트랜잭션을 실제로 종료하고 커밋하도록 구성하거나, 위처럼 서비스 트랜잭션과 조회 트랜잭션을 테스트 메서드의 바깥 경계로 분리해야 한다.([Spring Framework - TestContext Transaction Management](https://docs.spring.io/spring-framework/reference/testing/testcontext-framework/tx.html))
 
 확인 범위를 나누면 다음과 같다.
 
@@ -291,7 +291,7 @@ Controller는 요청을 서비스에 전달하고 서비스는 사용자를 조�
 
 <!-- HUMANIZE-SUMMARY
 원본 글자수: 사용자 제공 학습 메모 및 작성 지침 기반의 새 글
-윤문본 글자수: 13,450자
+윤문본 글자수: 13,796자
 변경률: 새 글 작성 후 문장 단위 윤문을 적용해 초안-최종 편집 거리 산출 대상 아님
 탐지/개선: A-1 0→0, A-2 2→1, C-7 2→1, C-11 0→0, D-1 1→0, H-1 2→0, J-3 3→3
 자체검증: 6/6 통과 — 날짜·고유명사·코드·URL 보존, TIL 장르와 격식 유지, S1 잔존 없음, 과윤문 없음, 새 비유 미추가
