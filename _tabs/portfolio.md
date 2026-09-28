@@ -249,7 +249,7 @@ toc: false
     <div class="portfolio-requirements" aria-labelledby="matisson-requirements-title">
       <div class="portfolio-requirements-heading">
         <p class="portfolio-card-kicker">PROBLEM · REQUIREMENTS · API</p>
-        <h3 id="matisson-requirements-title">사용자 탐색 문제를 등록·검증·저장 요구사항으로 나눴습니다.</h3>
+        <h3 id="matisson-requirements-title">탐색 요구사항을 등록·검증·저장으로 나눴습니다.</h3>
       </div>
       <div class="portfolio-requirements-grid">
         <article>
@@ -310,7 +310,7 @@ toc: false
     <div class="portfolio-infra-proof">
       <div class="portfolio-infra-proof-heading">
         <p class="portfolio-card-kicker">INFRASTRUCTURE EVIDENCE</p>
-        <h3>애플리케이션뿐 아니라 실행 환경도 경계를 나눠 구성했습니다.</h3>
+        <h3>애플리케이션과 실행 환경을 분리했습니다.</h3>
         <p>
           AWS 요청 흐름은 VPC와 Public·Private Subnet, ALB, EC2, RDS(PostgreSQL)로 나눴습니다.
           배포 흐름은 CI/CD·ECR·ASG와 Blue-Green 전환 관점에서 따로 정리했습니다.
@@ -600,7 +600,7 @@ toc: false
     <div class="portfolio-queue-design">
       <div class="portfolio-queue-heading">
         <p class="portfolio-card-kicker">QUEUE DESIGN</p>
-        <h3>대기열 순번은 Redis Sorted Set의 정렬 순서로 보장했습니다.</h3>
+        <h3>대기열 순번을 Redis Sorted Set으로 관리했습니다.</h3>
         <p>
             사용자 토큰은 <code>userId</code> member로 저장합니다. 진입 시각은 score로 씁니다.
             rank 조회로 현재 위치를 보여줍니다. 입장시킬 때는 <code>ZPOPMIN</code>으로 가장 앞의 사용자를 꺼내면서 대기열에서도 제거합니다.
