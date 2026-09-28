@@ -217,7 +217,7 @@ toc: false
         </div>
         <div class="portfolio-project-card-body">
           <span class="portfolio-card-kicker">PROJECT 01 · 2025.11 - 2026.05</span>
-          <h3>콘서트 티켓팅 예약 시스템</h3>
+          <h3>콘서트 티켓팅</h3>
           <p>좌석 경쟁과 결제 재요청을 Redis 분산락과 멱등성으로 제어한 백엔드 프로젝트입니다.</p>
           <a class="portfolio-card-link" href="#concert-ticketing">케이스 스터디 보기 <i class="fas fa-arrow-right" aria-hidden="true"></i></a>
         </div>
@@ -289,7 +289,7 @@ toc: false
     <div class="portfolio-case-grid">
       <div class="portfolio-case-copy">
         <p class="portfolio-card-kicker">OVERVIEW</p>
-        <h3>요청을 검증하고 저장 경계를 분리했습니다.</h3>
+        <h3>검증과 저장을 분리했습니다.</h3>
         <p>
           외부 API 검증은 요청 흐름에서 처리했습니다. DB 저장만 필요한 구간에 트랜잭션을 걸었습니다.
           핵심 상태를 확정한 뒤 테스트와 후속 처리는 따로 다뤘습니다.
@@ -338,7 +338,7 @@ toc: false
     <div class="portfolio-proof-grid">
       <div class="portfolio-proof-copy">
         <p class="portfolio-card-kicker">TROUBLESHOOTING</p>
-        <h3>AI 자동 등록의 중복과 부분 저장을 경계 설계로 막았습니다.</h3>
+        <h3>AI 등록 경계를 분리했습니다.</h3>
         <p>
           동일 맛집에 요청이 동시에 들어오면 중복 등록이나 부분 저장이 발생할 수 있었습니다.
           외부 검증과 DB 저장을 분리했습니다. 맛집 단위의 저장만 하나의 작업으로 묶어 실패 범위를 좁혔습니다.
@@ -503,7 +503,7 @@ toc: false
     <div class="portfolio-project-heading">
       <div>
         <p class="portfolio-eyebrow">PROJECT 01</p>
-        <h2 id="ticketing-title">콘서트 티켓팅 예약 시스템</h2>
+        <h2 id="ticketing-title">콘서트 티켓팅</h2>
         <p class="portfolio-project-lead">
           대기열 진입부터 좌석 예약, 결제까지 이어지는 콘서트 티켓팅 서비스를 백엔드 중심으로 구현했습니다.
           동일 좌석 동시 요청과 결제 재요청을 테스트로 재현했습니다. 중복·정합성 문제도 해결했습니다.
