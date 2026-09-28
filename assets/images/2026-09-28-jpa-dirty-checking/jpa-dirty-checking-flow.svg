@@ -1,0 +1,101 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 1660" role="img" aria-labelledby="title desc">
+  <title id="title">JPA User 이름 변경과 Dirty Checking 흐름</title>
+  <desc id="desc">서비스 트랜잭션 시작부터 User 조회, 영속성 컨텍스트 관리, changeName 호출, 플러시와 UPDATE, 커밋, 새 트랜잭션 재조회까지의 흐름</desc>
+  <defs>
+    <linearGradient id="background" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#f8fbff" />
+      <stop offset="1" stop-color="#eef7f4" />
+    </linearGradient>
+    <linearGradient id="persistence" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0" stop-color="#2563eb" />
+      <stop offset="1" stop-color="#0f9f95" />
+    </linearGradient>
+    <linearGradient id="commit" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0" stop-color="#d97706" />
+      <stop offset="1" stop-color="#b45309" />
+    </linearGradient>
+    <marker id="arrow" markerWidth="10" markerHeight="10" refX="8" refY="5" orient="auto">
+      <path d="M0,0 L10,5 L0,10 Z" fill="#7890a6" />
+    </marker>
+    <style>
+      text { font-family: "Pretendard", "Noto Sans KR", "Malgun Gothic", sans-serif; }
+      .title { font-size: 36px; font-weight: 750; fill: #142b42; }
+      .sub { font-size: 18px; fill: #526a7f; }
+      .section { font-size: 15px; font-weight: 700; letter-spacing: 1.4px; fill: #55718a; }
+      .label { font-size: 22px; font-weight: 700; fill: #17314d; }
+      .detail { font-size: 16px; fill: #526a7f; }
+      .small { font-size: 14px; fill: #60788e; }
+      .inverse { fill: #ffffff; }
+      .node { fill: #ffffff; stroke: #cedce9; stroke-width: 2; }
+      .context-node { fill: #eef7ff; stroke: #bfd5ee; stroke-width: 2; }
+      .flush-node { fill: #effaf7; stroke: #b9e4d7; stroke-width: 2; }
+      .commit-node { fill: #fff8eb; stroke: #f1cb91; stroke-width: 2; }
+      .flow { fill: none; stroke: #7890a6; stroke-width: 3; marker-end: url(#arrow); }
+      .divider { stroke: #d4e1ea; stroke-width: 2; stroke-dasharray: 7 8; }
+      .note { font-size: 16px; fill: #6a4d12; }
+    </style>
+  </defs>
+
+  <rect width="1200" height="1660" rx="30" fill="url(#background)" />
+  <text x="600" y="68" text-anchor="middle" class="title">JPA 이름 변경과 Dirty Checking</text>
+  <text x="600" y="103" text-anchor="middle" class="sub">플러시로 DB와 동기화하고 커밋 후 새 트랜잭션에서 결과를 확인하는 흐름</text>
+
+  <rect x="90" y="128" width="1020" height="1458" rx="28" fill="#ffffff" stroke="#c9d9e6" stroke-width="2" />
+  <rect x="90" y="128" width="1020" height="58" rx="28" fill="#eaf2fb" />
+  <path d="M90 158 Q90 128 120 128 H1080 Q1110 128 1110 158 V186 H90 Z" fill="#eaf2fb" />
+  <circle cx="129" cy="157" r="8" fill="#2563eb" />
+  <text x="152" y="163" class="section">SERVICE TRANSACTION → PERSISTENCE → COMMIT → READ BACK</text>
+
+  <rect x="300" y="214" width="600" height="82" rx="17" class="node" />
+  <text x="600" y="249" text-anchor="middle" class="label">서비스 트랜잭션 시작</text>
+  <text x="600" y="278" text-anchor="middle" class="detail">UserService.changeName()의 실행 경계</text>
+  <path d="M600 299 V332" class="flow" />
+
+  <rect x="300" y="342" width="600" height="82" rx="17" class="node" />
+  <text x="600" y="377" text-anchor="middle" class="label">Repository로 User 조회</text>
+  <text x="600" y="406" text-anchor="middle" class="detail">userRepository.findById(userId)</text>
+  <path d="M600 427 V460" class="flow" />
+
+  <rect x="170" y="470" width="860" height="330" rx="22" class="context-node" />
+  <rect x="170" y="470" width="860" height="62" rx="22" fill="url(#persistence)" />
+  <path d="M170 502 Q170 470 202 470 H998 Q1030 470 1030 502 V532 H170 Z" fill="url(#persistence)" />
+  <text x="600" y="510" text-anchor="middle" class="label inverse">영속성 컨텍스트</text>
+
+  <rect x="280" y="568" width="640" height="76" rx="16" fill="#ffffff" stroke="#c3d9ee" stroke-width="2" />
+  <text x="600" y="601" text-anchor="middle" class="label">User를 영속 엔티티로 관리</text>
+  <text x="600" y="628" text-anchor="middle" class="detail">조회 당시 상태를 기준으로 변경을 추적</text>
+  <path d="M600 646 V674" class="flow" />
+
+  <rect x="280" y="684" width="640" height="76" rx="16" fill="#ffffff" stroke="#c3d9ee" stroke-width="2" />
+  <text x="600" y="717" text-anchor="middle" class="label">changeName()으로 상태 변경</text>
+  <text x="600" y="744" text-anchor="middle" class="detail">이름 변경의 의도와 정책을 엔티티 메서드에 표현</text>
+  <path d="M600 762 V795" class="flow" />
+
+  <rect x="170" y="805" width="860" height="310" rx="22" class="flush-node" />
+  <rect x="170" y="805" width="860" height="62" rx="22" fill="#0f9f95" />
+  <path d="M170 837 Q170 805 202 805 H998 Q1030 805 1030 837 V867 H170 Z" fill="#0f9f95" />
+  <text x="600" y="845" text-anchor="middle" class="label inverse">플러시 과정</text>
+
+  <rect x="280" y="903" width="640" height="76" rx="16" fill="#ffffff" stroke="#b9e4d7" stroke-width="2" />
+  <text x="600" y="936" text-anchor="middle" class="label">변경 감지</text>
+  <text x="600" y="963" text-anchor="middle" class="detail">조회 당시 상태와 현재 상태를 비교</text>
+  <path d="M600 981 V1009" class="flow" />
+
+  <rect x="280" y="1019" width="640" height="76" rx="16" fill="#ffffff" stroke="#b9e4d7" stroke-width="2" />
+  <text x="600" y="1052" text-anchor="middle" class="label">UPDATE SQL 실행</text>
+  <text x="600" y="1079" text-anchor="middle" class="detail">DB와 상태를 동기화하지만 커밋 전에는 롤백 가능</text>
+  <path d="M600 1117 V1150" class="flow" />
+
+  <rect x="300" y="1160" width="600" height="82" rx="17" class="commit-node" />
+  <text x="600" y="1195" text-anchor="middle" class="label">커밋으로 변경 확정</text>
+  <text x="600" y="1224" text-anchor="middle" class="detail">서비스 트랜잭션이 정상 종료된 뒤 결과 확정</text>
+  <path d="M600 1245 V1278" class="flow" />
+
+  <rect x="300" y="1288" width="600" height="82" rx="17" class="node" />
+  <text x="600" y="1323" text-anchor="middle" class="label">새 트랜잭션에서 재조회</text>
+  <text x="600" y="1352" text-anchor="middle" class="detail">커밋된 DB 결과를 별도 조회 범위에서 확인</text>
+
+  <line x1="130" y1="1425" x2="1070" y2="1425" class="divider" />
+  <text x="600" y="1460" text-anchor="middle" class="note">플러시 = DB 동기화 · 커밋 = 트랜잭션 결과 확정</text>
+  <text x="600" y="1494" text-anchor="middle" class="small">changeName() 호출 순간에 SQL이 실행되거나 save()가 반드시 필요한 것은 아니다.</text>
+</svg>
