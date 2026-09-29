@@ -1,0 +1,130 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1400 1000" role="img" aria-labelledby="title desc">
+  <title id="title">CPU와 RAM 사이의 명령어 인출과 데이터 읽기·쓰기</title>
+  <desc id="desc">CPU 내부의 PC, IR, MAR, MBR, AC, 제어장치, ALU와 RAM 사이에서 주소, 읽기·쓰기 제어 신호, 실제 값이 서로 다른 방향으로 이동하는 구조</desc>
+  <defs>
+    <linearGradient id="background" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#f7faff" />
+      <stop offset="1" stop-color="#edf4fb" />
+    </linearGradient>
+    <linearGradient id="cpu" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#eaf2ff" />
+      <stop offset="1" stop-color="#f5f9ff" />
+    </linearGradient>
+    <linearGradient id="memory" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#ecfbf7" />
+      <stop offset="1" stop-color="#f6fffc" />
+    </linearGradient>
+    <marker id="arrow-blue" markerWidth="11" markerHeight="11" refX="9" refY="5.5" orient="auto">
+      <path d="M0,0 L11,5.5 L0,11 Z" fill="#2563eb" />
+    </marker>
+    <marker id="arrow-teal" markerWidth="11" markerHeight="11" refX="9" refY="5.5" orient="auto">
+      <path d="M0,0 L11,5.5 L0,11 Z" fill="#0f9f95" />
+    </marker>
+    <marker id="arrow-amber" markerWidth="11" markerHeight="11" refX="9" refY="5.5" orient="auto">
+      <path d="M0,0 L11,5.5 L0,11 Z" fill="#c47b12" />
+    </marker>
+    <style>
+      text { font-family: "Pretendard", "Noto Sans KR", "Malgun Gothic", sans-serif; }
+      .title { font-size: 34px; font-weight: 750; fill: #10243e; }
+      .sub { font-size: 18px; fill: #52657e; }
+      .section { font-size: 15px; font-weight: 700; letter-spacing: 1.5px; fill: #58708e; }
+      .label { font-size: 23px; font-weight: 700; fill: #172b46; }
+      .detail { font-size: 16px; fill: #51647d; }
+      .small { font-size: 14px; fill: #60738d; }
+      .legend { font-size: 16px; font-weight: 650; fill: #21466f; }
+      .note { font-size: 15px; fill: #6a4d12; }
+      .inverse { fill: #ffffff; }
+      .node { fill: #ffffff; stroke: #c9d7e8; stroke-width: 2; }
+      .cpu-node { fill: url(#cpu); stroke: #bfd1ea; stroke-width: 2; }
+      .memory-node { fill: url(#memory); stroke: #b9e1d6; stroke-width: 2; }
+      .internal { fill: none; stroke: #93a8c2; stroke-width: 2.5; marker-end: url(#arrow-blue); }
+      .address { fill: none; stroke: #2563eb; stroke-width: 4; marker-end: url(#arrow-blue); }
+      .control { fill: none; stroke: #c47b12; stroke-width: 4; stroke-dasharray: 12 8; marker-end: url(#arrow-amber); }
+      .data-read { fill: none; stroke: #0f9f95; stroke-width: 4; marker-end: url(#arrow-teal); }
+      .data-write { fill: none; stroke: #0f9f95; stroke-width: 4; marker-end: url(#arrow-teal); }
+      .divider { stroke: #d5e0ed; stroke-width: 2; stroke-dasharray: 7 8; }
+    </style>
+  </defs>
+
+  <rect width="1400" height="1000" rx="28" fill="url(#background)" />
+  <text x="700" y="55" text-anchor="middle" class="title">CPU와 RAM 사이의 명령어·데이터 흐름</text>
+  <text x="700" y="88" text-anchor="middle" class="sub">주소·제어 신호·실제 값은 같은 방향으로만 움직이지 않는다</text>
+
+  <rect x="55" y="125" width="780" height="710" rx="24" fill="url(#cpu)" stroke="#b9cce5" stroke-width="2" />
+  <rect x="85" y="150" width="720" height="48" rx="16" fill="#dce9fb" />
+  <text x="112" y="181" class="section">CPU INTERNAL COMPONENTS</text>
+
+  <rect x="95" y="235" width="190" height="92" rx="16" class="node" />
+  <text x="190" y="273" text-anchor="middle" class="label">PC</text>
+  <text x="190" y="300" text-anchor="middle" class="detail">다음 명령어 주소</text>
+
+  <rect x="330" y="235" width="190" height="92" rx="16" class="node" />
+  <text x="425" y="273" text-anchor="middle" class="label">IR</text>
+  <text x="425" y="300" text-anchor="middle" class="detail">현재 명령어</text>
+
+  <rect x="95" y="390" width="190" height="92" rx="16" class="node" />
+  <text x="190" y="428" text-anchor="middle" class="label">MAR</text>
+  <text x="190" y="455" text-anchor="middle" class="detail">접근할 주소</text>
+
+  <rect x="330" y="390" width="190" height="92" rx="16" class="node" />
+  <text x="425" y="428" text-anchor="middle" class="label">MBR</text>
+  <text x="425" y="455" text-anchor="middle" class="detail">읽거나 쓸 실제 값</text>
+
+  <rect x="95" y="545" width="190" height="92" rx="16" class="node" />
+  <text x="190" y="583" text-anchor="middle" class="label">AC</text>
+  <text x="190" y="610" text-anchor="middle" class="detail">연산 값·결과</text>
+
+  <rect x="330" y="545" width="190" height="92" rx="16" class="cpu-node" />
+  <text x="425" y="583" text-anchor="middle" class="label">제어장치</text>
+  <text x="425" y="610" text-anchor="middle" class="detail">명령어 해석·조정</text>
+
+  <rect x="585" y="390" width="190" height="247" rx="18" class="cpu-node" />
+  <text x="680" y="465" text-anchor="middle" class="label">ALU</text>
+  <text x="680" y="500" text-anchor="middle" class="detail">산술·논리 연산</text>
+  <text x="680" y="548" text-anchor="middle" class="small">레지스터 값을 사용해</text>
+  <text x="680" y="572" text-anchor="middle" class="small">연산 결과를 만든다</text>
+
+  <path d="M285 280 H330" class="internal" />
+  <path d="M190 327 V390" class="internal" />
+  <path d="M425 327 V390" class="internal" />
+  <path d="M425 482 V545" class="internal" />
+  <path d="M285 591 H585" class="internal" />
+  <path d="M520 591 H585" class="internal" />
+  <path d="M520 430 H585" class="internal" />
+
+  <rect x="920" y="125" width="425" height="710" rx="24" fill="url(#memory)" stroke="#b6ddcf" stroke-width="2" />
+  <rect x="950" y="150" width="365" height="48" rx="16" fill="#d8f2eb" />
+  <text x="977" y="181" class="section">MAIN MEMORY · RAM</text>
+
+  <rect x="990" y="240" width="285" height="120" rx="16" class="memory-node" />
+  <text x="1132" y="280" text-anchor="middle" class="label">명령어 영역</text>
+  <text x="1132" y="310" text-anchor="middle" class="detail">RAM[100] = LOAD 501</text>
+  <text x="1132" y="336" text-anchor="middle" class="small">RAM[101] = ADD 503</text>
+
+  <rect x="990" y="430" width="285" height="120" rx="16" class="memory-node" />
+  <text x="1132" y="470" text-anchor="middle" class="label">데이터 영역</text>
+  <text x="1132" y="500" text-anchor="middle" class="detail">RAM[501] = 4</text>
+  <text x="1132" y="526" text-anchor="middle" class="small">RAM[502] = 저장 결과</text>
+
+  <path d="M285 430 H885 V300 H990" class="address" />
+  <text x="650" y="285" text-anchor="middle" class="legend">주소 버스 · CPU → RAM</text>
+
+  <path d="M520 591 H865 V390 H990" class="control" />
+  <text x="710" y="378" text-anchor="middle" class="legend">제어 버스 · 읽기 / 쓰기 신호 · CPU → RAM</text>
+
+  <path d="M990 490 H865 V430 H520" class="data-read" />
+  <text x="720" y="468" text-anchor="middle" class="legend">데이터 버스 · 읽은 실제 값 · RAM → CPU</text>
+
+  <path d="M520 650 H865 V610 H990" class="data-write" />
+  <text x="720" y="690" text-anchor="middle" class="legend">데이터 버스 · 저장할 실제 값 · CPU → RAM</text>
+
+  <line x1="95" y1="740" x2="1305" y2="740" class="divider" />
+  <rect x="100" y="765" width="280" height="43" rx="21" fill="#e7effc" />
+  <text x="240" y="792" text-anchor="middle" class="legend">파랑: 주소</text>
+  <rect x="410" y="765" width="280" height="43" rx="21" fill="#fff2d8" />
+  <text x="550" y="792" text-anchor="middle" class="legend">주황 점선: 제어 신호</text>
+  <rect x="720" y="765" width="280" height="43" rx="21" fill="#e3f7f1" />
+  <text x="860" y="792" text-anchor="middle" class="legend">초록: 실제 값</text>
+  <text x="700" y="885" text-anchor="middle" class="note">읽기: 주소·신호는 CPU → RAM, 실제 값은 RAM → CPU</text>
+  <text x="700" y="914" text-anchor="middle" class="note">쓰기: 주소·신호·실제 값이 CPU → RAM</text>
+</svg>
