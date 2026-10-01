@@ -1,0 +1,88 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1400 860" role="img" aria-labelledby="title desc">
+  <title id="title">고정 소수점과 부동 소수점의 구조</title>
+  <desc id="desc">고정 소수점은 소수점 위치를 미리 정하고 부동 소수점은 부호와 지수와 가수로 값을 표현하는 구조</desc>
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#f7faff"/>
+      <stop offset="1" stop-color="#eef7f5"/>
+    </linearGradient>
+    <linearGradient id="fixed" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#edf4ff"/>
+      <stop offset="1" stop-color="#f8fbff"/>
+    </linearGradient>
+    <linearGradient id="floating" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#eafaf6"/>
+      <stop offset="1" stop-color="#f8fffd"/>
+    </linearGradient>
+    <style>
+      text { font-family: "Pretendard", "Noto Sans KR", "Malgun Gothic", sans-serif; }
+      .title { font-size: 36px; font-weight: 750; fill: #10243e; }
+      .sub { font-size: 19px; fill: #52657e; }
+      .heading { font-size: 25px; font-weight: 750; fill: #172b46; }
+      .label { font-size: 17px; font-weight: 700; fill: #49627e; }
+      .body { font-size: 18px; fill: #40556f; }
+      .small { font-size: 15px; fill: #60738d; }
+      .formula { font-size: 23px; font-weight: 700; fill: #21466f; }
+      .fixed-panel { fill: url(#fixed); stroke: #bfd1ea; stroke-width: 2; }
+      .floating-panel { fill: url(#floating); stroke: #b6ddcf; stroke-width: 2; }
+      .cell { fill: #ffffff; stroke: #cad8e8; stroke-width: 2; }
+      .sign { fill: #fff0cf; stroke: #e8c97f; stroke-width: 2; }
+      .exponent { fill: #dff1ff; stroke: #a9cbe8; stroke-width: 2; }
+      .mantissa { fill: #dff7ef; stroke: #a7d9c7; stroke-width: 2; }
+      .dot { stroke: #d28b18; stroke-width: 4; stroke-dasharray: 7 7; }
+      .divider { stroke: #d5e0ed; stroke-width: 2; stroke-dasharray: 7 8; }
+    </style>
+  </defs>
+  <rect width="1400" height="860" rx="28" fill="url(#bg)"/>
+  <text x="700" y="58" text-anchor="middle" class="title">소수점 위치를 다루는 두 가지 방식</text>
+  <text x="700" y="91" text-anchor="middle" class="sub">고정 소수점은 위치를 약속하고, 부동 소수점은 지수로 위치를 옮긴다</text>
+
+  <rect x="55" y="140" width="610" height="565" rx="26" class="fixed-panel"/>
+  <text x="90" y="190" class="heading">고정 소수점</text>
+  <text x="90" y="224" class="body">소수점 위치를 미리 정해 비트열을 해석한다</text>
+  <text x="90" y="274" class="label">예시: 정수부 4비트 · 소수부 4비트</text>
+  <rect x="90" y="315" width="88" height="78" rx="12" class="cell"/>
+  <rect x="178" y="315" width="88" height="78" rx="12" class="cell"/>
+  <rect x="266" y="315" width="88" height="78" rx="12" class="cell"/>
+  <rect x="354" y="315" width="88" height="78" rx="12" class="cell"/>
+  <line x1="442" y1="300" x2="442" y2="412" class="dot"/>
+  <rect x="455" y="315" width="88" height="78" rx="12" class="cell"/>
+  <rect x="543" y="315" width="88" height="78" rx="12" class="cell"/>
+  <rect x="90" y="315" width="352" height="78" rx="12" fill="none" stroke="#7ba2d4" stroke-width="4"/>
+  <rect x="455" y="315" width="176" height="78" rx="12" fill="none" stroke="#66b99e" stroke-width="4"/>
+  <text x="134" y="365" text-anchor="middle" class="heading">1</text>
+  <text x="222" y="365" text-anchor="middle" class="heading">0</text>
+  <text x="310" y="365" text-anchor="middle" class="heading">1</text>
+  <text x="398" y="365" text-anchor="middle" class="heading">1</text>
+  <text x="499" y="365" text-anchor="middle" class="heading">0</text>
+  <text x="587" y="365" text-anchor="middle" class="heading">1</text>
+  <text x="266" y="432" text-anchor="middle" class="label">정수부 범위</text>
+  <text x="543" y="432" text-anchor="middle" class="label">소수부 정밀도</text>
+  <text x="90" y="505" class="formula">0.0110₂ = 6/16 = 0.375</text>
+  <text x="90" y="560" class="body">소수점 위치와 스케일을</text>
+  <text x="90" y="590" class="body">미리 알고 있어야 같은 비트열을</text>
+  <text x="90" y="620" class="body">같은 값으로 해석할 수 있다.</text>
+  <text x="90" y="673" class="small">한쪽에 더 많은 비트를 쓰면 다른 쪽의 범위가 줄어든다</text>
+
+  <rect x="735" y="140" width="610" height="565" rx="26" class="floating-panel"/>
+  <text x="770" y="190" class="heading">부동 소수점</text>
+  <text x="770" y="224" class="body">부호·지수·가수로 넓은 범위의 값을 표현한다</text>
+  <text x="770" y="274" class="label">정규화된 값: (-1)^부호 × 1.가수부 × 2^지수</text>
+  <rect x="770" y="315" width="110" height="78" rx="12" class="sign"/>
+  <rect x="880" y="315" width="190" height="78" rx="12" class="exponent"/>
+  <rect x="1070" y="315" width="240" height="78" rx="12" class="mantissa"/>
+  <text x="825" y="365" text-anchor="middle" class="heading">부호</text>
+  <text x="975" y="365" text-anchor="middle" class="heading">지수</text>
+  <text x="1190" y="365" text-anchor="middle" class="heading">가수</text>
+  <text x="825" y="430" text-anchor="middle" class="small">양수·음수</text>
+  <text x="975" y="430" text-anchor="middle" class="small">표현 범위·크기</text>
+  <text x="1190" y="430" text-anchor="middle" class="small">정밀도</text>
+  <text x="770" y="505" class="formula">1.011₂ = 1.375</text>
+  <text x="770" y="560" class="body">저장되는 가수부: 011</text>
+  <text x="770" y="590" class="body">앞의 1.은 이미 있다는 전제를 둔다</text>
+  <text x="770" y="650" class="body">지수는 소수점 위치를 옮기고</text>
+  <text x="770" y="680" class="body">가수는 표현을 더 촘촘하게 만든다</text>
+
+  <line x1="90" y1="770" x2="1310" y2="770" class="divider"/>
+  <text x="700" y="813" text-anchor="middle" class="small">범위는 지수와, 정밀도는 가수와 연결된다</text>
+</svg>

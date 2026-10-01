@@ -1,0 +1,115 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 1000" role="img" aria-labelledby="title desc">
+  <title id="title">Hamming 7,4 검사 묶음과 신드롬</title>
+  <desc id="desc">왼쪽부터 1번에서 7번까지의 위치에서 P1 P2 P4가 검사하는 묶음과 신드롬 101이 5번 위치를 가리키는 과정</desc>
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#f8fbff"/>
+      <stop offset="1" stop-color="#eef8f5"/>
+    </linearGradient>
+    <style>
+      text { font-family: "Pretendard", "Noto Sans KR", "Malgun Gothic", sans-serif; }
+      .title { font-size: 36px; font-weight: 750; fill: #10243e; }
+      .sub { font-size: 19px; fill: #52657e; }
+      .heading { font-size: 25px; font-weight: 750; fill: #172b46; }
+      .label { font-size: 18px; font-weight: 700; fill: #49627e; }
+      .body { font-size: 17px; fill: #40556f; }
+      .small { font-size: 15px; fill: #60738d; }
+      .bit { font-size: 25px; font-weight: 750; fill: #172b46; }
+      .cell { fill: #ffffff; stroke: #cad8e8; stroke-width: 2; }
+      .p1 { fill: #eaf2ff; stroke: #8eb2e3; stroke-width: 3; }
+      .p2 { fill: #fff1d8; stroke: #e2b568; stroke-width: 3; }
+      .p4 { fill: #e5f8f0; stroke: #82c6a9; stroke-width: 3; }
+      .error { fill: #ffe6e6; stroke: #dc7777; stroke-width: 3; }
+      .pass { fill: #e9f8ef; stroke: #7fbe91; stroke-width: 2; }
+      .fail { fill: #fff0f0; stroke: #d57979; stroke-width: 2; }
+      .panel { fill: #ffffff; stroke: #c7d8e9; stroke-width: 2; }
+      .divider { stroke: #d5e0ed; stroke-width: 2; stroke-dasharray: 7 8; }
+      .arrow { stroke: #2563eb; stroke-width: 4; fill: none; marker-end: url(#arrow); }
+    </style>
+    <marker id="arrow" markerWidth="12" markerHeight="12" refX="10" refY="6" orient="auto">
+      <path d="M0,0 L12,6 L0,12 Z" fill="#2563eb"/>
+    </marker>
+  </defs>
+  <rect width="1600" height="1000" rx="28" fill="url(#bg)"/>
+  <text x="800" y="58" text-anchor="middle" class="title">Hamming(7,4) 검사 묶음과 신드롬</text>
+  <text x="800" y="91" text-anchor="middle" class="sub">위치 번호의 이진수 비트가 P1·P2·P4 검사와 연결된다</text>
+
+  <rect x="70" y="135" width="1460" height="230" rx="24" class="panel"/>
+  <text x="105" y="180" class="heading">왼쪽부터 위치 1번 → 7번</text>
+  <text x="105" y="214" class="small">수신 코드워드: 1100010 · 5번 위치에서 1이 0으로 바뀐 상태</text>
+
+  <g transform="translate(105 250)">
+    <rect x="0" y="0" width="180" height="55" rx="10" class="cell"/>
+    <rect x="180" y="0" width="180" height="55" rx="10" class="cell"/>
+    <rect x="360" y="0" width="180" height="55" rx="10" class="cell"/>
+    <rect x="540" y="0" width="180" height="55" rx="10" class="cell"/>
+    <rect x="720" y="0" width="180" height="55" rx="10" class="error"/>
+    <rect x="900" y="0" width="180" height="55" rx="10" class="cell"/>
+    <rect x="1080" y="0" width="180" height="55" rx="10" class="cell"/>
+    <text x="90" y="36" text-anchor="middle" class="label">1</text>
+    <text x="270" y="36" text-anchor="middle" class="label">2</text>
+    <text x="450" y="36" text-anchor="middle" class="label">3</text>
+    <text x="630" y="36" text-anchor="middle" class="label">4</text>
+    <text x="810" y="36" text-anchor="middle" class="label">5</text>
+    <text x="990" y="36" text-anchor="middle" class="label">6</text>
+    <text x="1170" y="36" text-anchor="middle" class="label">7</text>
+    <rect x="0" y="65" width="180" height="65" rx="10" class="p1"/>
+    <rect x="180" y="65" width="180" height="65" rx="10" class="p2"/>
+    <rect x="360" y="65" width="180" height="65" rx="10" class="cell"/>
+    <rect x="540" y="65" width="180" height="65" rx="10" class="p4"/>
+    <rect x="720" y="65" width="180" height="65" rx="10" class="cell"/>
+    <rect x="900" y="65" width="180" height="65" rx="10" class="cell"/>
+    <rect x="1080" y="65" width="180" height="65" rx="10" class="cell"/>
+    <text x="90" y="107" text-anchor="middle" class="bit">1</text>
+    <text x="270" y="107" text-anchor="middle" class="bit">1</text>
+    <text x="450" y="107" text-anchor="middle" class="bit">0</text>
+    <text x="630" y="107" text-anchor="middle" class="bit">0</text>
+    <text x="810" y="107" text-anchor="middle" class="bit">0</text>
+    <text x="990" y="107" text-anchor="middle" class="bit">1</text>
+    <text x="1170" y="107" text-anchor="middle" class="bit">0</text>
+    <text x="90" y="164" text-anchor="middle" class="small">P1</text>
+    <text x="270" y="164" text-anchor="middle" class="small">P2</text>
+    <text x="450" y="164" text-anchor="middle" class="small">D1</text>
+    <text x="630" y="164" text-anchor="middle" class="small">P4</text>
+    <text x="810" y="164" text-anchor="middle" class="small">D2 · 오류</text>
+    <text x="990" y="164" text-anchor="middle" class="small">D3</text>
+    <text x="1170" y="164" text-anchor="middle" class="small">D4</text>
+  </g>
+
+  <rect x="70" y="400" width="720" height="455" rx="24" class="panel"/>
+  <text x="105" y="445" class="heading">검사 묶음</text>
+  <text x="105" y="478" class="small">각 행의 위치에서 짝수 패리티를 확인한다</text>
+  <rect x="105" y="515" width="650" height="74" rx="14" class="p1"/>
+  <text x="135" y="561" class="label">P1</text>
+  <text x="235" y="561" class="body">1 · 3 · 5 · 7</text>
+  <text x="525" y="561" class="body">1·0·0·0 → 실패</text>
+  <rect x="105" y="610" width="650" height="74" rx="14" class="p2"/>
+  <text x="135" y="656" class="label">P2</text>
+  <text x="235" y="656" class="body">2 · 3 · 6 · 7</text>
+  <text x="525" y="656" class="body">1·0·1·0 → 통과</text>
+  <rect x="105" y="705" width="650" height="74" rx="14" class="p4"/>
+  <text x="135" y="751" class="label">P4</text>
+  <text x="235" y="751" class="body">4 · 5 · 6 · 7</text>
+  <text x="525" y="751" class="body">0·0·1·0 → 실패</text>
+  <text x="105" y="823" class="small">5번 위치의 이진수 101: P4와 P1에는 포함, P2에는 미포함</text>
+
+  <rect x="840" y="400" width="690" height="455" rx="24" class="panel"/>
+  <text x="880" y="445" class="heading">신드롬으로 오류 위치 읽기</text>
+  <text x="880" y="485" class="body">실패 = 1 · 통과 = 0</text>
+  <rect x="880" y="525" width="165" height="92" rx="14" class="fail"/>
+  <rect x="1065" y="525" width="165" height="92" rx="14" class="pass"/>
+  <rect x="1250" y="525" width="165" height="92" rx="14" class="fail"/>
+  <text x="962" y="562" text-anchor="middle" class="label">S4</text>
+  <text x="962" y="597" text-anchor="middle" class="heading">1</text>
+  <text x="1147" y="562" text-anchor="middle" class="label">S2</text>
+  <text x="1147" y="597" text-anchor="middle" class="heading">0</text>
+  <text x="1332" y="562" text-anchor="middle" class="label">S1</text>
+  <text x="1332" y="597" text-anchor="middle" class="heading">1</text>
+  <path d="M975 660 H1360" class="arrow"/>
+  <text x="1170" y="652" text-anchor="middle" class="formula">S4 S2 S1 = 101₂</text>
+  <rect x="990" y="705" width="390" height="82" rx="18" fill="#eaf2ff" stroke="#8eb2e3" stroke-width="3"/>
+  <text x="1185" y="757" text-anchor="middle" class="heading">101₂ = 5 → 5번 비트 반전</text>
+
+  <line x1="105" y1="910" x2="1495" y2="910" class="divider"/>
+  <text x="800" y="950" text-anchor="middle" class="small">수정: 1100010 → 1100110 · 패리티 위치를 제외한 데이터: 0110</text>
+</svg>
