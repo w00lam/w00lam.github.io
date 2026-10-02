@@ -1,0 +1,74 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1400 820" role="img" aria-labelledby="title desc">
+  <title id="title">Java 바이트코드와 대상 플랫폼별 JVM</title>
+  <desc id="desc">공통 Java 바이트코드를 담은 JAR이 Linux x86-64용 JVM과 CPU 또는 Linux ARM64용 JVM과 CPU에서 실행되는 구조. 바이트코드는 재사용할 수 있지만 JVM 구현체와 네이티브 라이브러리는 대상 환경을 확인해야 한다.</desc>
+  <defs>
+    <linearGradient id="background" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#f7faff" />
+      <stop offset="1" stop-color="#edf4fb" />
+    </linearGradient>
+    <linearGradient id="jar" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#fff5df" />
+      <stop offset="1" stop-color="#fffaf0" />
+    </linearGradient>
+    <linearGradient id="x86" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#eaf2ff" />
+      <stop offset="1" stop-color="#f5f9ff" />
+    </linearGradient>
+    <linearGradient id="arm" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#eafbf7" />
+      <stop offset="1" stop-color="#f4fffc" />
+    </linearGradient>
+    <marker id="arrow-blue" markerWidth="12" markerHeight="12" refX="10" refY="6" orient="auto">
+      <path d="M0,0 L12,6 L0,12 Z" fill="#2563eb" />
+    </marker>
+    <style>
+      text { font-family: "Pretendard", "Noto Sans KR", "Malgun Gothic", sans-serif; }
+      .title { font-size: 34px; font-weight: 750; fill: #10243e; }
+      .sub { font-size: 18px; fill: #52657e; }
+      .section { font-size: 15px; font-weight: 700; letter-spacing: 1.5px; fill: #58708e; }
+      .label { font-size: 24px; font-weight: 700; fill: #172b46; }
+      .detail { font-size: 17px; fill: #51647d; }
+      .small { font-size: 15px; fill: #60738d; }
+      .note { font-size: 16px; fill: #6a4d12; }
+      .node { fill: #fff; stroke: #c9d7e8; stroke-width: 2; }
+      .arrow { fill: none; stroke: #2563eb; stroke-width: 4; marker-end: url(#arrow-blue); }
+      .divider { stroke: #d5e0ed; stroke-width: 2; stroke-dasharray: 7 8; }
+    </style>
+  </defs>
+
+  <rect width="1400" height="820" rx="28" fill="url(#background)" />
+  <text x="700" y="55" text-anchor="middle" class="title">같은 JAR, 서로 다른 실행 환경</text>
+  <text x="700" y="88" text-anchor="middle" class="sub">바이트코드는 재사용할 수 있지만 JVM 구현체는 대상 OS와 CPU에 맞아야 한다</text>
+
+  <rect x="455" y="125" width="490" height="150" rx="24" fill="url(#jar)" stroke="#e5c77d" stroke-width="2" />
+  <text x="700" y="158" text-anchor="middle" class="section">COMMON APPLICATION ARTIFACT</text>
+  <text x="700" y="205" text-anchor="middle" class="label">같은 JAR</text>
+  <text x="700" y="238" text-anchor="middle" class="detail">Java 클래스 파일 · JVM 바이트코드</text>
+
+  <path d="M575 275 V345 H330 V390" class="arrow" />
+  <path d="M825 275 V345 H1070 V390" class="arrow" />
+  <text x="390" y="332" text-anchor="middle" class="small">바이트코드 전달</text>
+  <text x="1010" y="332" text-anchor="middle" class="small">바이트코드 전달</text>
+
+  <rect x="75" y="390" width="510" height="285" rx="24" fill="url(#x86)" stroke="#bfd1ea" stroke-width="2" />
+  <rect x="815" y="390" width="510" height="285" rx="24" fill="url(#arm)" stroke="#b9e1d6" stroke-width="2" />
+
+  <rect x="110" y="425" width="440" height="84" rx="16" class="node" />
+  <text x="330" y="462" text-anchor="middle" class="label">Linux x86-64용 JVM</text>
+  <text x="330" y="490" text-anchor="middle" class="detail">대상 OS와 CPU에 맞는 구현체</text>
+  <path d="M330 509 V550" class="arrow" />
+  <rect x="110" y="550" width="440" height="84" rx="16" fill="#dce9fb" stroke="#bfd1ea" stroke-width="2" />
+  <text x="330" y="587" text-anchor="middle" class="label">x86-64 CPU</text>
+  <text x="330" y="615" text-anchor="middle" class="detail">JVM이 네이티브 동작을 수행</text>
+
+  <rect x="850" y="425" width="440" height="84" rx="16" class="node" />
+  <text x="1070" y="462" text-anchor="middle" class="label">Linux ARM64용 JVM</text>
+  <text x="1070" y="490" text-anchor="middle" class="detail">대상 OS와 CPU에 맞는 구현체</text>
+  <path d="M1070 509 V550" class="arrow" />
+  <rect x="850" y="550" width="440" height="84" rx="16" fill="#d8f2eb" stroke="#b9e1d6" stroke-width="2" />
+  <text x="1070" y="587" text-anchor="middle" class="label">ARM64 CPU</text>
+  <text x="1070" y="615" text-anchor="middle" class="detail">JVM이 네이티브 동작을 수행</text>
+
+  <line x1="105" y1="715" x2="1295" y2="715" class="divider" />
+  <text x="700" y="755" text-anchor="middle" class="note">네이티브 라이브러리를 사용한다면 라이브러리의 OS·CPU 호환성은 별도로 확인해야 한다</text>
+</svg>
