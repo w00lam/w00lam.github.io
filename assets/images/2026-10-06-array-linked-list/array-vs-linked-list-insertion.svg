@@ -1,0 +1,67 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 620" role="img" aria-labelledby="title desc">
+  <title id="title">배열과 연결 리스트의 중간 삽입 비교</title>
+  <desc id="desc">배열은 뒤쪽 요소를 이동하고 연결 리스트는 A와 B 사이에 X를 연결하는 개념도</desc>
+  <defs>
+    <marker id="arrow" markerWidth="10" markerHeight="10" refX="9" refY="5" orient="auto">
+      <path d="M0,0 L10,5 L0,10 z" fill="#4b5563"/>
+    </marker>
+    <style>
+      .bg { fill: #f8fafc; }
+      .title { font: 700 28px sans-serif; fill: #111827; }
+      .label { font: 700 20px sans-serif; fill: #1f2937; }
+      .text { font: 500 17px sans-serif; fill: #374151; }
+      .cell { fill: #dbeafe; stroke: #2563eb; stroke-width: 2; }
+      .new { fill: #fef3c7; stroke: #d97706; stroke-width: 2; }
+      .node { fill: #ede9fe; stroke: #7c3aed; stroke-width: 2; }
+      .arrow { fill: none; stroke: #4b5563; stroke-width: 3; marker-end: url(#arrow); }
+      .move { fill: none; stroke: #dc2626; stroke-width: 3; stroke-dasharray: 8 6; marker-end: url(#arrow); }
+    </style>
+  </defs>
+  <rect class="bg" width="1200" height="620" rx="24"/>
+  <text class="title" x="60" y="58">중간 삽입에서 비용이 생기는 위치</text>
+
+  <text class="label" x="70" y="120">배열: 뒤쪽 요소를 오른쪽으로 이동</text>
+  <text class="text" x="70" y="153">인덱스 1에 X를 넣기 전에 C, B를 한 칸씩 옮긴다</text>
+  <g transform="translate(90 205)">
+    <rect class="cell" x="0" y="0" width="150" height="75" rx="10"/>
+    <rect class="cell" x="150" y="0" width="150" height="75" rx="10"/>
+    <rect class="cell" x="300" y="0" width="150" height="75" rx="10"/>
+    <rect class="cell" x="450" y="0" width="150" height="75" rx="10"/>
+    <text class="label" x="69" y="48">A</text>
+    <text class="label" x="219" y="48">B</text>
+    <text class="label" x="369" y="48">C</text>
+    <text class="label" x="519" y="48">_</text>
+    <path class="move" d="M525 -18 C525 -65 375 -65 375 -18"/>
+    <path class="move" d="M375 -84 C375 -125 225 -125 225 -84"/>
+    <rect class="new" x="150" y="110" width="150" height="75" rx="10"/>
+    <rect class="cell" x="300" y="110" width="150" height="75" rx="10"/>
+    <rect class="cell" x="450" y="110" width="150" height="75" rx="10"/>
+    <rect class="cell" x="0" y="110" width="150" height="75" rx="10"/>
+    <text class="label" x="69" y="158">A</text>
+    <text class="label" x="219" y="158">X</text>
+    <text class="label" x="369" y="158">B</text>
+    <text class="label" x="519" y="158">C</text>
+  </g>
+
+  <text class="label" x="720" y="120">연결 리스트: 연결을 바꾼다</text>
+  <text class="text" x="720" y="153">A와 B 사이에 X를 삽입한다</text>
+  <g transform="translate(735 230)">
+    <rect class="node" x="0" y="0" width="105" height="75" rx="12"/>
+    <rect class="node" x="260" y="0" width="105" height="75" rx="12"/>
+    <text class="label" x="44" y="47">A</text>
+    <text class="label" x="304" y="47">B</text>
+    <path class="arrow" d="M108 37 L255 37"/>
+    <text class="text" x="150" y="22">기존 연결</text>
+
+    <rect class="node" x="0" y="180" width="105" height="75" rx="12"/>
+    <rect class="new" x="130" y="180" width="105" height="75" rx="12"/>
+    <rect class="node" x="260" y="180" width="105" height="75" rx="12"/>
+    <text class="label" x="44" y="227">A</text>
+    <text class="label" x="174" y="227">X</text>
+    <text class="label" x="304" y="227">B</text>
+    <path class="arrow" d="M108 217 L125 217"/>
+    <path class="arrow" d="M238 217 L255 217"/>
+    <text class="text" x="0" y="295">A → X → B</text>
+  </g>
+  <text class="text" x="720" y="575">단, X를 넣을 위치를 먼저 찾는 탐색 비용은 별도로 계산한다</text>
+</svg>

@@ -1,0 +1,57 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 520" role="img" aria-labelledby="title desc">
+  <title id="title">배열의 값 슬롯과 참조 슬롯 비교</title>
+  <desc id="desc">기본형 배열에는 값이 저장되고 참조형 배열에는 별도 객체를 가리키는 참조가 저장되는 개념도</desc>
+  <defs>
+    <marker id="arrow" markerWidth="10" markerHeight="10" refX="9" refY="5" orient="auto">
+      <path d="M0,0 L10,5 L0,10 z" fill="#4b5563"/>
+    </marker>
+    <style>
+      .bg { fill: #f8fafc; }
+      .title { font: 700 28px sans-serif; fill: #111827; }
+      .label { font: 700 20px sans-serif; fill: #1f2937; }
+      .text { font: 500 18px sans-serif; fill: #374151; }
+      .index { font: 500 16px sans-serif; fill: #6b7280; }
+      .value { fill: #dbeafe; stroke: #2563eb; stroke-width: 2; }
+      .ref { fill: #ede9fe; stroke: #7c3aed; stroke-width: 2; }
+      .object { fill: #dcfce7; stroke: #16a34a; stroke-width: 2; }
+      .arrow { fill: none; stroke: #4b5563; stroke-width: 3; marker-end: url(#arrow); }
+    </style>
+  </defs>
+  <rect class="bg" width="1200" height="520" rx="24"/>
+  <text class="title" x="60" y="58">배열 슬롯과 참조 대상은 같은 것이 아니다</text>
+
+  <text class="label" x="70" y="120">기본형 배열</text>
+  <text class="text" x="70" y="153">슬롯에 값이 저장된다</text>
+  <g transform="translate(70 190)">
+    <rect class="value" x="0" y="0" width="150" height="82" rx="10"/>
+    <rect class="value" x="150" y="0" width="150" height="82" rx="10"/>
+    <rect class="value" x="300" y="0" width="150" height="82" rx="10"/>
+    <text class="index" x="68" y="-12">[0]</text>
+    <text class="index" x="218" y="-12">[1]</text>
+    <text class="index" x="368" y="-12">[2]</text>
+    <text class="label" x="59" y="52">10</text>
+    <text class="label" x="209" y="52">20</text>
+    <text class="label" x="359" y="52">30</text>
+  </g>
+
+  <text class="label" x="70" y="350">참조형 배열</text>
+  <text class="text" x="70" y="383">슬롯에는 객체를 가리키는 참조가 저장된다</text>
+  <g transform="translate(70 420)">
+    <rect class="ref" x="0" y="0" width="150" height="70" rx="10"/>
+    <rect class="ref" x="150" y="0" width="150" height="70" rx="10"/>
+    <rect class="ref" x="300" y="0" width="150" height="70" rx="10"/>
+    <text class="index" x="68" y="-12">[0]</text>
+    <text class="index" x="218" y="-12">[1]</text>
+    <text class="index" x="368" y="-12">[2]</text>
+    <text class="text" x="59" y="44">ref A</text>
+    <text class="text" x="209" y="44">null</text>
+    <text class="text" x="359" y="44">ref B</text>
+  </g>
+  <path class="arrow" d="M595 450 C690 450 700 330 780 330"/>
+  <path class="arrow" d="M520 450 C620 450 650 430 780 430"/>
+  <rect class="object" x="780" y="285" width="300" height="88" rx="14"/>
+  <rect class="object" x="780" y="390" width="300" height="88" rx="14"/>
+  <text class="label" x="830" y="340">String 객체 A</text>
+  <text class="label" x="830" y="445">String 객체 B</text>
+  <text class="text" x="780" y="245">배열 밖의 별도 객체</text>
+</svg>
