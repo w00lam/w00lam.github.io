@@ -1,0 +1,58 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 520" role="img" aria-labelledby="title desc">
+  <title id="title">ArrayList의 size와 capacity</title>
+  <desc id="desc">capacity가 6인 내부 배열에서 세 슬롯만 사용하고 공간이 부족하면 더 큰 새 배열로 요소를 복사하는 개념도</desc>
+  <defs>
+    <marker id="arrow" markerWidth="10" markerHeight="10" refX="9" refY="5" orient="auto">
+      <path d="M0,0 L10,5 L0,10 z" fill="#dc2626"/>
+    </marker>
+    <style>
+      .bg { fill: #f8fafc; }
+      .title { font: 700 28px sans-serif; fill: #111827; }
+      .label { font: 700 20px sans-serif; fill: #1f2937; }
+      .text { font: 500 17px sans-serif; fill: #374151; }
+      .used { fill: #dbeafe; stroke: #2563eb; stroke-width: 2; }
+      .empty { fill: #f3f4f6; stroke: #9ca3af; stroke-width: 2; stroke-dasharray: 6 4; }
+      .new { fill: #ede9fe; stroke: #7c3aed; stroke-width: 2; }
+      .route { fill: none; stroke: #dc2626; stroke-width: 4; marker-end: url(#arrow); }
+      .note { fill: #fef3c7; stroke: #d97706; stroke-width: 2; }
+    </style>
+  </defs>
+  <rect class="bg" width="1200" height="520" rx="24"/>
+  <text class="title" x="55" y="58">요소 수와 확보한 공간은 다른 값이다</text>
+  <text class="text" x="55" y="92">초기 용량 6으로 빈 리스트를 만들면 size는 0이고 capacity는 내부 저장 공간을 뜻한다</text>
+
+  <text class="label" x="75" y="145">기존 내부 배열</text>
+  <text class="text" x="75" y="176">size = 3 · capacity = 6</text>
+  <g transform="translate(75 205)">
+    <rect class="used" x="0" y="0" width="125" height="78" rx="10"/>
+    <rect class="used" x="135" y="0" width="125" height="78" rx="10"/>
+    <rect class="used" x="270" y="0" width="125" height="78" rx="10"/>
+    <rect class="empty" x="405" y="0" width="125" height="78" rx="10"/>
+    <rect class="empty" x="540" y="0" width="125" height="78" rx="10"/>
+    <rect class="empty" x="675" y="0" width="125" height="78" rx="10"/>
+    <text class="label" x="53" y="49">10</text><text class="label" x="188" y="49">20</text><text class="label" x="323" y="49">30</text>
+    <text class="text" x="458" y="49">빈 슬롯</text><text class="text" x="593" y="49">빈 슬롯</text><text class="text" x="728" y="49">빈 슬롯</text>
+    <text class="text" x="50" y="112">사용 중인 범위</text>
+    <text class="text" x="475" y="112">여유 공간</text>
+  </g>
+
+  <path class="route" d="M480 370 C540 425 665 425 730 370"/>
+  <text class="label" x="507" y="454">공간 부족</text>
+  <text class="text" x="505" y="480">새 배열 생성 · 기존 요소 복사</text>
+
+  <text class="label" x="845" y="145">더 큰 배열 (설명용)</text>
+  <text class="text" x="845" y="176">성장 크기는 API가 특정 비율로 보장하지 않음</text>
+  <g transform="translate(845 205)">
+    <rect class="new" x="0" y="0" width="95" height="78" rx="10"/>
+    <rect class="new" x="105" y="0" width="95" height="78" rx="10"/>
+    <rect class="new" x="210" y="0" width="95" height="78" rx="10"/>
+    <rect class="empty" x="315" y="0" width="95" height="78" rx="10"/>
+    <rect class="empty" x="420" y="0" width="95" height="78" rx="10"/>
+    <rect class="empty" x="525" y="0" width="95" height="78" rx="10"/>
+    <text class="label" x="37" y="49">10</text><text class="label" x="142" y="49">20</text><text class="label" x="247" y="49">30</text>
+    <text class="text" x="344" y="49">빈 공간</text><text class="text" x="449" y="49">빈 공간</text><text class="text" x="554" y="49">빈 공간</text>
+  </g>
+  <rect class="note" x="845" y="350" width="335" height="76" rx="14"/>
+  <text class="text" x="867" y="381">기존 배열 객체의 길이를 바꾸는 것이 아니라</text>
+  <text class="text" x="867" y="407">새 배열을 만들고 참조를 교체한다</text>
+</svg>

@@ -1,0 +1,62 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1400 650" role="img" aria-labelledby="title desc">
+  <title id="title">Stack Queue Deque의 처리 순서</title>
+  <desc id="desc">A B C를 입력했을 때 Stack은 C B A, FIFO Queue는 A B C 순서로 반환하고 Deque는 양쪽 끝을 사용하는 개념도</desc>
+  <defs>
+    <marker id="arrow" markerWidth="10" markerHeight="10" refX="9" refY="5" orient="auto">
+      <path d="M0,0 L10,5 L0,10 z" fill="#4b5563"/>
+    </marker>
+    <style>
+      .bg { fill: #f8fafc; }
+      .panel { fill: #ffffff; stroke: #cbd5e1; stroke-width: 2; }
+      .title { font: 700 28px sans-serif; fill: #111827; }
+      .heading { font: 700 22px sans-serif; fill: #1f2937; }
+      .text { font: 500 17px sans-serif; fill: #374151; }
+      .cell { fill: #dbeafe; stroke: #2563eb; stroke-width: 2; }
+      .stack { fill: #ede9fe; stroke: #7c3aed; stroke-width: 2; }
+      .deque { fill: #fef3c7; stroke: #d97706; stroke-width: 2; }
+      .arrow { fill: none; stroke: #4b5563; stroke-width: 3; marker-end: url(#arrow); }
+    </style>
+  </defs>
+  <rect class="bg" width="1400" height="650" rx="24"/>
+  <text class="title" x="55" y="58">같은 입력도 처리 규칙에 따라 반환 순서가 달라진다</text>
+  <text class="text" x="55" y="92">입력: A → B → C</text>
+
+  <rect class="panel" x="40" y="125" width="400" height="465" rx="18"/>
+  <text class="heading" x="75" y="170">Stack · LIFO</text>
+  <text class="text" x="75" y="201">같은 끝에 넣고 같은 끝에서 꺼낸다</text>
+  <g transform="translate(125 245)">
+    <rect class="stack" x="0" y="0" width="190" height="72" rx="10"/>
+    <rect class="stack" x="0" y="82" width="190" height="72" rx="10"/>
+    <rect class="stack" x="0" y="164" width="190" height="72" rx="10"/>
+    <text class="heading" x="84" y="46">C</text><text class="heading" x="84" y="128">B</text><text class="heading" x="84" y="210">A</text>
+    <text class="text" x="55" y="-18">top</text>
+  </g>
+  <path class="arrow" d="M225 510 L225 550"/>
+  <text class="text" x="110" y="575">반환: C → B → A</text>
+
+  <rect class="panel" x="500" y="125" width="400" height="465" rx="18"/>
+  <text class="heading" x="535" y="170">FIFO Queue</text>
+  <text class="text" x="535" y="201">뒤에 넣고 앞에서 꺼낸다</text>
+  <g transform="translate(550 320)">
+    <rect class="cell" x="0" y="0" width="100" height="72" rx="10"/>
+    <rect class="cell" x="110" y="0" width="100" height="72" rx="10"/>
+    <rect class="cell" x="220" y="0" width="100" height="72" rx="10"/>
+    <text class="heading" x="42" y="46">A</text><text class="heading" x="152" y="46">B</text><text class="heading" x="262" y="46">C</text>
+    <path class="arrow" d="M-55 36 L-8 36"/><path class="arrow" d="M328 36 L380 36"/>
+    <text class="text" x="-45" y="-18">out</text><text class="text" x="330" y="-18">in</text>
+  </g>
+  <text class="text" x="580" y="575">반환: A → B → C</text>
+
+  <rect class="panel" x="960" y="125" width="400" height="465" rx="18"/>
+  <text class="heading" x="995" y="170">Deque</text>
+  <text class="text" x="995" y="201">앞과 뒤 양쪽을 사용할 수 있다</text>
+  <g transform="translate(1010 320)">
+    <rect class="deque" x="0" y="0" width="100" height="72" rx="10"/>
+    <rect class="deque" x="110" y="0" width="100" height="72" rx="10"/>
+    <rect class="deque" x="220" y="0" width="100" height="72" rx="10"/>
+    <text class="heading" x="42" y="46">A</text><text class="heading" x="152" y="46">B</text><text class="heading" x="262" y="46">C</text>
+    <path class="arrow" d="M50 105 L50 78"/><path class="arrow" d="M270 -33 L270 -6"/>
+    <text class="text" x="-2" y="140">앞쪽 추가·제거</text><text class="text" x="205" y="-52">뒤쪽 추가·제거</text>
+  </g>
+  <text class="text" x="1035" y="575">끝을 어떻게 쓰느냐에 따라 Stack·Queue로 표현</text>
+</svg>
