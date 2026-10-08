@@ -1,0 +1,75 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1400 680" role="img" aria-labelledby="title desc">
+  <title id="title">이진 트리의 종류와 판별 조건</title>
+  <desc id="desc">일반 이진 트리, 정이진 트리, 완전 이진 트리, 포화 이진 트리를 자식 수와 레벨 채움 조건으로 비교한 도식</desc>
+  <defs>
+    <style>
+      .bg { fill: #f8fafc; }
+      .panel { fill: #ffffff; stroke: #cbd5e1; stroke-width: 2; }
+      .title { font: 700 29px sans-serif; fill: #111827; }
+      .panel-title { font: 700 21px sans-serif; fill: #1f2937; }
+      .text { font: 500 16px sans-serif; fill: #475569; }
+      .small { font: 500 14px sans-serif; fill: #64748b; }
+      .node { fill: #fff7ed; stroke: #c2410c; stroke-width: 2; }
+      .node-text { font: 700 17px sans-serif; fill: #9a3412; text-anchor: middle; dominant-baseline: middle; }
+      .line { stroke: #64748b; stroke-width: 3; }
+      .yes { fill: #dcfce7; stroke: #16a34a; }
+      .no { fill: #f1f5f9; stroke: #94a3b8; }
+      .badge { font: 600 13px sans-serif; text-anchor: middle; dominant-baseline: middle; }
+    </style>
+  </defs>
+  <rect class="bg" width="1400" height="680" rx="24"/>
+  <text class="title" x="48" y="54">이진 트리의 종류는 조건이 다르다</text>
+  <text class="text" x="48" y="86">자식 수 조건과 레벨을 채우는 조건은 서로 다른 축이며, 한 트리가 여러 조건을 함께 만족할 수 있다.</text>
+
+  <g transform="translate(30 120)">
+    <rect class="panel" width="315" height="500" rx="18"/>
+    <text class="panel-title" x="22" y="40">일반 이진 트리</text>
+    <text class="small" x="22" y="64">오른쪽 자식만 있는 경우</text>
+    <path class="line" d="M157 154 L220 245"/>
+    <circle class="node" cx="157" cy="140" r="27"/><circle class="node" cx="220" cy="260" r="27"/>
+    <text class="node-text" x="157" y="140">A</text><text class="node-text" x="220" y="260">B</text>
+    <text class="small" x="22" y="320">이진: 자식 최대 2개</text>
+    <rect class="yes" x="20" y="350" width="130" height="34" rx="17"/><text class="badge" x="85" y="367">이진 ✓</text>
+    <rect class="no" x="160" y="350" width="130" height="34" rx="17"/><text class="badge" x="225" y="367">정이진 ✕</text>
+    <rect class="no" x="20" y="394" width="130" height="34" rx="17"/><text class="badge" x="85" y="411">완전 ✕</text>
+    <rect class="no" x="160" y="394" width="130" height="34" rx="17"/><text class="badge" x="225" y="411">포화 ✕</text>
+    <text class="small" x="22" y="466">자식이 하나인 노드도 포함</text>
+  </g>
+
+  <g transform="translate(375 120)">
+    <rect class="panel" width="315" height="500" rx="18"/>
+    <text class="panel-title" x="22" y="40">정이진 트리</text>
+    <text class="small" x="22" y="64">모든 노드의 자식 수가 0 또는 2</text>
+    <path class="line" d="M157 154 L95 245 M157 154 L220 245 M220 274 L185 350 M220 274 L255 350"/>
+    <circle class="node" cx="157" cy="140" r="27"/><circle class="node" cx="95" cy="260" r="27"/><circle class="node" cx="220" cy="260" r="27"/><circle class="node" cx="185" cy="365" r="27"/><circle class="node" cx="255" cy="365" r="27"/>
+    <text class="node-text" x="157" y="140">A</text><text class="node-text" x="95" y="260">B</text><text class="node-text" x="220" y="260">C</text><text class="node-text" x="185" y="365">D</text><text class="node-text" x="255" y="365">E</text>
+    <rect class="yes" x="20" y="405" width="130" height="34" rx="17"/><text class="badge" x="85" y="422">정이진 ✓</text>
+    <rect class="no" x="160" y="405" width="130" height="34" rx="17"/><text class="badge" x="225" y="422">완전 ✕</text>
+    <text class="small" x="22" y="476">마지막 레벨이 왼쪽부터 채워지지 않음</text>
+  </g>
+
+  <g transform="translate(720 120)">
+    <rect class="panel" width="315" height="500" rx="18"/>
+    <text class="panel-title" x="22" y="40">완전 이진 트리</text>
+    <text class="small" x="22" y="64">마지막 레벨을 왼쪽부터 채움</text>
+    <path class="line" d="M157 154 L95 245 M157 154 L220 245 M95 274 L95 350"/>
+    <circle class="node" cx="157" cy="140" r="27"/><circle class="node" cx="95" cy="260" r="27"/><circle class="node" cx="220" cy="260" r="27"/><circle class="node" cx="95" cy="365" r="27"/>
+    <text class="node-text" x="157" y="140">A</text><text class="node-text" x="95" y="260">B</text><text class="node-text" x="220" y="260">C</text><text class="node-text" x="95" y="365">D</text>
+    <rect class="yes" x="20" y="405" width="130" height="34" rx="17"/><text class="badge" x="85" y="422">완전 ✓</text>
+    <rect class="no" x="160" y="405" width="130" height="34" rx="17"/><text class="badge" x="225" y="422">정이진 ✕</text>
+    <text class="small" x="22" y="476">B의 자식이 하나라 정이진 아님</text>
+  </g>
+
+  <g transform="translate(1065 120)">
+    <rect class="panel" width="315" height="500" rx="18"/>
+    <text class="panel-title" x="22" y="40">포화 이진 트리</text>
+    <text class="small" x="22" y="64">모든 레벨이 가득 참</text>
+    <path class="line" d="M157 154 L95 245 M157 154 L220 245 M95 274 L58 350 M95 274 L130 350 M220 274 L185 350 M220 274 L255 350"/>
+    <circle class="node" cx="157" cy="140" r="27"/><circle class="node" cx="95" cy="260" r="27"/><circle class="node" cx="220" cy="260" r="27"/><circle class="node" cx="58" cy="365" r="27"/><circle class="node" cx="130" cy="365" r="27"/><circle class="node" cx="185" cy="365" r="27"/><circle class="node" cx="255" cy="365" r="27"/>
+    <text class="node-text" x="157" y="140">A</text><text class="node-text" x="95" y="260">B</text><text class="node-text" x="220" y="260">C</text><text class="node-text" x="58" y="365">D</text><text class="node-text" x="130" y="365">E</text><text class="node-text" x="185" y="365">F</text><text class="node-text" x="255" y="365">G</text>
+    <rect class="yes" x="20" y="405" width="85" height="34" rx="17"/><text class="badge" x="62" y="422">정이진 ✓</text>
+    <rect class="yes" x="115" y="405" width="85" height="34" rx="17"/><text class="badge" x="157" y="422">완전 ✓</text>
+    <rect class="yes" x="210" y="405" width="85" height="34" rx="17"/><text class="badge" x="252" y="422">포화 ✓</text>
+    <text class="small" x="22" y="476">세 조건을 모두 만족하는 사례</text>
+  </g>
+</svg>

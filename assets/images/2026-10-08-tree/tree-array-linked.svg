@@ -1,0 +1,63 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1300 820" role="img" aria-labelledby="title desc">
+  <title id="title">A부터 F까지 트리의 배열 표현과 연결 표현</title>
+  <desc id="desc">공통 트리 A B C D E F를 배열 0:A 1:B 2:C 3:D 4:E 5:null 6:F와 자식 참조로 비교한 도식</desc>
+  <defs>
+    <style>
+      .bg { fill: #f8fafc; }
+      .panel { fill: #ffffff; stroke: #cbd5e1; stroke-width: 2; }
+      .title { font: 700 29px sans-serif; fill: #111827; }
+      .heading { font: 700 21px sans-serif; fill: #1f2937; }
+      .text { font: 500 16px sans-serif; fill: #475569; }
+      .small { font: 500 14px sans-serif; fill: #64748b; }
+      .node { fill: #fff7ed; stroke: #c2410c; stroke-width: 2; }
+      .node-text { font: 700 18px sans-serif; fill: #9a3412; text-anchor: middle; dominant-baseline: middle; }
+      .line { stroke: #64748b; stroke-width: 3; }
+      .subtree { fill: #eff6ff; stroke: #60a5fa; stroke-width: 2; stroke-dasharray: 8 6; }
+      .cell { fill: #ede9fe; stroke: #7c3aed; stroke-width: 2; }
+      .empty { fill: #f1f5f9; stroke: #94a3b8; stroke-width: 2; stroke-dasharray: 6 5; }
+      .map { fill: none; stroke: #2563eb; stroke-width: 2; stroke-dasharray: 7 6; }
+      .highlight { fill: #fef3c7; stroke: #d97706; stroke-width: 3; }
+      .label { font: 600 13px sans-serif; fill: #1d4ed8; }
+    </style>
+  </defs>
+  <rect class="bg" width="1300" height="820" rx="24"/>
+  <text class="title" x="48" y="52">같은 트리를 배열과 연결 방식으로 표현하기</text>
+  <text class="text" x="48" y="84">A의 오른쪽 자식인 C는 왼쪽 자식 없이 F를 오른쪽 자식으로 가진다.</text>
+
+  <rect class="panel" x="35" y="115" width="610" height="365" rx="18"/>
+  <text class="heading" x="62" y="150">공통 트리</text>
+  <text class="small" x="62" y="175">루트 깊이는 0이며 깊이와 경로 길이는 간선 수로 센다.</text>
+  <rect class="subtree" x="100" y="245" width="270" height="190" rx="18"/>
+  <text class="label" x="112" y="270">B를 루트로 하는 서브트리</text>
+  <path class="line" d="M310 224 L210 300 M310 224 L410 300 M210 326 L155 405 M210 326 L265 405 M410 326 L470 405"/>
+  <circle class="node" cx="310" cy="210" r="32"/><circle class="node" cx="210" cy="315" r="32"/><circle class="node" cx="410" cy="315" r="32"/><circle class="node" cx="155" cy="420" r="32"/><circle class="node" cx="265" cy="420" r="32"/><circle class="node" cx="470" cy="420" r="32"/>
+  <text class="node-text" x="310" y="210">A</text><text class="node-text" x="210" y="315">B</text><text class="node-text" x="410" y="315">C</text><text class="node-text" x="155" y="420">D</text><text class="node-text" x="265" y="420">E</text><text class="node-text" x="470" y="420">F</text>
+  <text class="small" x="285" y="188">루트</text><text class="small" x="170" y="286">부모</text><text class="small" x="422" y="286">형제</text><text class="small" x="125" y="463">리프</text><text class="small" x="235" y="463">리프</text><text class="small" x="440" y="463">리프</text>
+  <text class="small" x="72" y="214">깊이 0</text><text class="small" x="72" y="319">깊이 1</text><text class="small" x="72" y="424">깊이 2</text>
+
+  <rect class="panel" x="665" y="115" width="600" height="365" rx="18"/>
+  <text class="heading" x="692" y="150">연결 방식</text>
+  <text class="text" x="692" y="181">노드의 left·right 참조가 자식 관계를 가리킨다.</text>
+  <rect x="692" y="210" width="545" height="185" rx="14" fill="#f8fafc" stroke="#cbd5e1" stroke-width="2"/>
+  <text class="text" x="718" y="244">A.left → B      A.right → C</text>
+  <text class="text" x="718" y="277">B.left → D      B.right → E</text>
+  <text class="text" x="718" y="310">C.left → null   C.right → F</text>
+  <path class="map" d="M925 300 C980 290 1020 290 1085 310"/>
+  <rect class="highlight" x="1090" y="286" width="116" height="45" rx="10"/>
+  <text class="label" x="1148" y="314" text-anchor="middle">C.right = F</text>
+  <text class="small" x="718" y="355">null은 자식이 없다는 표시다.</text>
+  <text class="small" x="718" y="378">빈 자리에 별도 노드 객체를 만들지 않는다.</text>
+
+  <rect class="panel" x="35" y="515" width="1230" height="260" rx="18"/>
+  <text class="heading" x="62" y="552">0-based 배열 표현</text>
+  <text class="text" x="62" y="580">위치 관계를 보존하므로 C의 왼쪽 자리를 비워 두고 F를 인덱스 6에 둔다.</text>
+  <text class="small" x="75" y="626">인덱스</text>
+  <g transform="translate(155 600)">
+    <rect class="cell" x="0" y="0" width="125" height="64" rx="10"/><rect class="cell" x="135" y="0" width="125" height="64" rx="10"/><rect class="cell" x="270" y="0" width="125" height="64" rx="10"/><rect class="cell" x="405" y="0" width="125" height="64" rx="10"/><rect class="cell" x="540" y="0" width="125" height="64" rx="10"/><rect class="empty" x="675" y="0" width="125" height="64" rx="10"/><rect class="highlight" x="810" y="0" width="125" height="64" rx="10"/>
+    <text class="heading" x="62" y="40" text-anchor="middle">A</text><text class="heading" x="197" y="40" text-anchor="middle">B</text><text class="heading" x="332" y="40" text-anchor="middle">C</text><text class="heading" x="467" y="40" text-anchor="middle">D</text><text class="heading" x="602" y="40" text-anchor="middle">E</text><text class="heading" x="737" y="40" text-anchor="middle">null</text><text class="heading" x="872" y="40" text-anchor="middle">F</text>
+    <text class="text" x="62" y="91" text-anchor="middle">0</text><text class="text" x="197" y="91" text-anchor="middle">1</text><text class="text" x="332" y="91" text-anchor="middle">2</text><text class="text" x="467" y="91" text-anchor="middle">3</text><text class="text" x="602" y="91" text-anchor="middle">4</text><text class="text" x="737" y="91" text-anchor="middle">5</text><text class="text" x="872" y="91" text-anchor="middle">6</text>
+  </g>
+  <text class="label" x="835" y="705">F의 위치: 6</text>
+  <text class="text" x="62" y="742">노드 수 6개 ≠ 배열 길이 7</text>
+  <text class="small" x="325" y="742">인덱스 5는 빈 슬롯이며 실제 빈 노드가 아니다.</text>
+</svg>
