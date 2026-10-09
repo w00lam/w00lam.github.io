@@ -4,14 +4,14 @@
   <style>
     text { font-family: Arial, 'Malgun Gothic', sans-serif; fill: #14213d; }
     .panel { fill: #ffffff; stroke: #b8c7d9; stroke-width: 3; }
-    .title { font-size: 34px; font-weight: 700; }
-    .panel-title { font-size: 28px; font-weight: 700; }
-    .subtitle { font-size: 23px; }
-    .caption { font-size: 24px; font-weight: 700; }
-    .node { fill: #e8f1fb; stroke: #2774d8; stroke-width: 5; }
-    .path { fill: #fff1e6; stroke: #ed8b32; stroke-width: 5; }
-    .edge { stroke: #70839a; stroke-width: 5; fill: none; }
-    .path-edge { stroke: #ed8b32; stroke-width: 7; fill: none; }
+    .title { font-size: 28px; font-weight: 700; }
+    .panel-title { font-size: 24px; font-weight: 700; }
+    .subtitle { font-size: 20px; }
+    .caption { font-size: 20px; font-weight: 700; }
+    .node { fill: #e8f1fb; stroke: #2774d8; stroke-width: 4; }
+    .path { fill: #fff1e6; stroke: #ed8b32; stroke-width: 4; }
+    .edge { stroke: #70839a; stroke-width: 4; fill: none; }
+    .path-edge { stroke: #ed8b32; stroke-width: 5; fill: none; }
   </style>
   <rect width="1000" height="560" fill="#fbfcfe"/>
   <text x="500" y="52" text-anchor="middle" class="title">삽입 순서가 BST의 높이를 바꾼다</text>
@@ -20,9 +20,9 @@
   <text x="255" y="135" text-anchor="middle" class="panel-title">30 → 20 → 10</text>
   <text x="255" y="170" text-anchor="middle" class="subtitle">한쪽 편향 · 높이 2</text>
   <path d="M255 250 L200 282 M200 358 L145 387" class="path-edge"/>
-  <circle cx="255" cy="215" r="38" class="path"/>
-  <circle cx="200" cy="320" r="38" class="path"/>
-  <circle cx="145" cy="425" r="38" class="path"/>
+  <circle cx="255" cy="215" r="32" class="path"/>
+  <circle cx="200" cy="320" r="32" class="path"/>
+  <circle cx="145" cy="425" r="32" class="path"/>
   <text x="255" y="225" text-anchor="middle" class="panel-title">30</text>
   <text x="200" y="330" text-anchor="middle" class="panel-title">20</text>
   <text x="145" y="435" text-anchor="middle" class="panel-title">10</text>
@@ -31,9 +31,9 @@
   <text x="745" y="170" text-anchor="middle" class="subtitle">양쪽 분기 · 높이 1</text>
   <path d="M745 253 L665 315 M745 253 L825 315" class="edge"/>
   <path d="M745 253 L665 315" class="path-edge"/>
-  <circle cx="745" cy="215" r="38" class="node"/>
-  <circle cx="665" cy="350" r="38" class="path"/>
-  <circle cx="825" cy="350" r="38" class="node"/>
+  <circle cx="745" cy="215" r="32" class="node"/>
+  <circle cx="665" cy="350" r="32" class="path"/>
+  <circle cx="825" cy="350" r="32" class="node"/>
   <text x="745" y="225" text-anchor="middle" class="panel-title">20</text>
   <text x="665" y="360" text-anchor="middle" class="panel-title">10</text>
   <text x="825" y="360" text-anchor="middle" class="panel-title">30</text>

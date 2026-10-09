@@ -4,12 +4,12 @@
   <style>
     text { font-family: Arial, 'Malgun Gothic', sans-serif; fill: #14213d; }
     .panel { fill: #ffffff; stroke: #b8c7d9; stroke-width: 3; }
-    .title { font-size: 34px; font-weight: 700; }
-    .panel-title { font-size: 30px; font-weight: 700; }
-    .formula { font-size: 23px; }
-    .label { font-size: 25px; font-weight: 700; }
-    .key { font-size: 23px; font-weight: 700; }
-    .caption { font-size: 23px; font-weight: 700; }
+    .title { font-size: 28px; font-weight: 700; }
+    .panel-title { font-size: 25px; font-weight: 700; }
+    .formula { font-size: 20px; }
+    .label { font-size: 22px; font-weight: 700; }
+    .key { font-size: 20px; font-weight: 700; }
+    .caption { font-size: 20px; font-weight: 700; }
     .bucket { fill: #ffffff; stroke: #8fa9c4; stroke-width: 3; }
     .collision { fill: #fff1e6; stroke: #ed8b32; stroke-width: 4; }
     .moved { fill: #e9f8ef; stroke: #21a45d; stroke-width: 4; }

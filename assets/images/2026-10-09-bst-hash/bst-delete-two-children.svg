@@ -4,14 +4,14 @@
   <style>
     text { font-family: Arial, 'Malgun Gothic', sans-serif; fill: #14213d; }
     .panel { fill: #ffffff; stroke: #b8c7d9; stroke-width: 3; }
-    .title { font-size: 34px; font-weight: 700; }
-    .panel-title { font-size: 29px; font-weight: 700; }
-    .caption { font-size: 23px; font-weight: 700; }
-    .node { fill: #e8f1fb; stroke: #2774d8; stroke-width: 5; }
-    .target { fill: #fff1e6; stroke: #ed8b32; stroke-width: 6; }
-    .replace { fill: #e9f8ef; stroke: #21a45d; stroke-width: 6; }
-    .edge { stroke: #70839a; stroke-width: 5; fill: none; }
-    .dashed { stroke: #ed8b32; stroke-width: 6; stroke-dasharray: 12 10; fill: none; }
+    .title { font-size: 28px; font-weight: 700; }
+    .panel-title { font-size: 24px; font-weight: 700; }
+    .caption { font-size: 20px; font-weight: 700; }
+    .node { fill: #e8f1fb; stroke: #2774d8; stroke-width: 4; }
+    .target { fill: #fff1e6; stroke: #ed8b32; stroke-width: 5; }
+    .replace { fill: #e9f8ef; stroke: #21a45d; stroke-width: 5; }
+    .edge { stroke: #70839a; stroke-width: 4; fill: none; }
+    .dashed { stroke: #ed8b32; stroke-width: 5; stroke-dasharray: 10 9; fill: none; }
   </style>
   <rect width="1100" height="650" fill="#fbfcfe"/>
   <text x="550" y="52" text-anchor="middle" class="title">자식이 둘인 노드 삭제</text>
@@ -20,26 +20,26 @@
   <rect x="745" y="85" width="330" height="535" rx="16" class="panel"/>
   <text x="190" y="135" text-anchor="middle" class="panel-title">삭제 전</text>
   <path d="M190 260 L120 330 M190 260 L260 330 M260 370 L225 445 M225 485 L260 492" class="edge"/>
-  <circle cx="190" cy="220" r="38" class="target"/><text x="190" y="230" text-anchor="middle" class="panel-title">50</text>
-  <circle cx="120" cy="350" r="38" class="node"/><text x="120" y="360" text-anchor="middle" class="panel-title">30</text>
-  <circle cx="260" cy="350" r="38" class="node"/><text x="260" y="360" text-anchor="middle" class="panel-title">80</text>
-  <circle cx="225" cy="465" r="38" class="replace"/><text x="225" y="475" text-anchor="middle" class="panel-title">60</text>
-  <circle cx="260" cy="530" r="38" class="node"/><text x="260" y="540" text-anchor="middle" class="panel-title">70</text>
+  <circle cx="190" cy="220" r="32" class="target"/><text x="190" y="228" text-anchor="middle" class="panel-title">50</text>
+  <circle cx="120" cy="350" r="32" class="node"/><text x="120" y="358" text-anchor="middle" class="panel-title">30</text>
+  <circle cx="260" cy="350" r="32" class="node"/><text x="260" y="358" text-anchor="middle" class="panel-title">80</text>
+  <circle cx="225" cy="465" r="32" class="replace"/><text x="225" y="473" text-anchor="middle" class="panel-title">60</text>
+  <circle cx="260" cy="530" r="32" class="node"/><text x="260" y="538" text-anchor="middle" class="panel-title">70</text>
   <text x="190" y="605" text-anchor="middle" class="caption">50은 자식 2개</text>
   <text x="550" y="135" text-anchor="middle" class="panel-title">60 선택</text>
   <path d="M550 260 L480 330 M550 260 L620 330 M620 370 L585 445 M585 485 L620 492" class="edge"/>
   <path d="M550 220 C505 305 500 385 525 445" class="dashed"/>
-  <circle cx="550" cy="220" r="38" class="target"/><text x="550" y="230" text-anchor="middle" class="panel-title">50</text>
-  <circle cx="480" cy="350" r="38" class="node"/><text x="480" y="360" text-anchor="middle" class="panel-title">30</text>
-  <circle cx="620" cy="350" r="38" class="node"/><text x="620" y="360" text-anchor="middle" class="panel-title">80</text>
-  <circle cx="585" cy="465" r="38" class="replace"/><text x="585" y="475" text-anchor="middle" class="panel-title">60</text>
-  <circle cx="620" cy="530" r="38" class="node"/><text x="620" y="540" text-anchor="middle" class="panel-title">70</text>
+  <circle cx="550" cy="220" r="32" class="target"/><text x="550" y="228" text-anchor="middle" class="panel-title">50</text>
+  <circle cx="480" cy="350" r="32" class="node"/><text x="480" y="358" text-anchor="middle" class="panel-title">30</text>
+  <circle cx="620" cy="350" r="32" class="node"/><text x="620" y="358" text-anchor="middle" class="panel-title">80</text>
+  <circle cx="585" cy="465" r="32" class="replace"/><text x="585" y="473" text-anchor="middle" class="panel-title">60</text>
+  <circle cx="620" cy="530" r="32" class="node"/><text x="620" y="538" text-anchor="middle" class="panel-title">70</text>
   <text x="550" y="605" text-anchor="middle" class="caption" fill="#168048">오른쪽 최솟값</text>
   <text x="910" y="135" text-anchor="middle" class="panel-title">삭제 후</text>
   <path d="M910 260 L840 330 M910 260 L980 330 M980 370 L945 445" class="edge"/>
-  <circle cx="910" cy="220" r="38" class="replace"/><text x="910" y="230" text-anchor="middle" class="panel-title">60</text>
-  <circle cx="840" cy="350" r="38" class="node"/><text x="840" y="360" text-anchor="middle" class="panel-title">30</text>
-  <circle cx="980" cy="350" r="38" class="node"/><text x="980" y="360" text-anchor="middle" class="panel-title">80</text>
-  <circle cx="945" cy="465" r="38" class="node"/><text x="945" y="475" text-anchor="middle" class="panel-title">70</text>
+  <circle cx="910" cy="220" r="32" class="replace"/><text x="910" y="228" text-anchor="middle" class="panel-title">60</text>
+  <circle cx="840" cy="350" r="32" class="node"/><text x="840" y="358" text-anchor="middle" class="panel-title">30</text>
+  <circle cx="980" cy="350" r="32" class="node"/><text x="980" y="358" text-anchor="middle" class="panel-title">80</text>
+  <circle cx="945" cy="465" r="32" class="node"/><text x="945" y="473" text-anchor="middle" class="panel-title">70</text>
   <text x="910" y="605" text-anchor="middle" class="caption">70을 80 아래로 연결</text>
 </svg>
