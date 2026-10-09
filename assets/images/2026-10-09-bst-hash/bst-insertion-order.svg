@@ -1,41 +1,42 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="1000" height="560" viewBox="0 0 1000 560" role="img" aria-labelledby="title desc">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 520" role="img" aria-labelledby="title desc">
   <title id="title">삽입 순서에 따른 BST의 모양</title>
-  <desc id="desc">30, 20, 10을 순서대로 넣은 편향 트리와 20, 10, 30을 넣은 트리를 비교한다. 두 트리에서 10을 찾는 경로를 주황색으로 표시한다.</desc>
-  <style>
-    text { font-family: Arial, 'Malgun Gothic', sans-serif; fill: #14213d; }
-    .panel { fill: #ffffff; stroke: #b8c7d9; stroke-width: 3; }
-    .title { font-size: 28px; font-weight: 700; }
-    .panel-title { font-size: 24px; font-weight: 700; }
-    .subtitle { font-size: 20px; }
-    .caption { font-size: 20px; font-weight: 700; }
-    .node { fill: #e8f1fb; stroke: #2774d8; stroke-width: 4; }
-    .path { fill: #fff1e6; stroke: #ed8b32; stroke-width: 4; }
-    .edge { stroke: #70839a; stroke-width: 4; fill: none; }
-    .path-edge { stroke: #ed8b32; stroke-width: 5; fill: none; }
-  </style>
-  <rect width="1000" height="560" fill="#fbfcfe"/>
-  <text x="500" y="52" text-anchor="middle" class="title">삽입 순서가 BST의 높이를 바꾼다</text>
-  <rect x="35" y="85" width="440" height="450" rx="16" class="panel"/>
-  <rect x="525" y="85" width="440" height="450" rx="16" class="panel"/>
-  <text x="255" y="135" text-anchor="middle" class="panel-title">30 → 20 → 10</text>
-  <text x="255" y="170" text-anchor="middle" class="subtitle">한쪽 편향 · 높이 2</text>
-  <path d="M255 250 L200 282 M200 358 L145 387" class="path-edge"/>
-  <circle cx="255" cy="215" r="32" class="path"/>
-  <circle cx="200" cy="320" r="32" class="path"/>
-  <circle cx="145" cy="425" r="32" class="path"/>
-  <text x="255" y="225" text-anchor="middle" class="panel-title">30</text>
-  <text x="200" y="330" text-anchor="middle" class="panel-title">20</text>
-  <text x="145" y="435" text-anchor="middle" class="panel-title">10</text>
-  <text x="255" y="510" text-anchor="middle" class="caption" fill="#c96f21">10 찾기: 비교 3회 · 이동 2회</text>
-  <text x="745" y="135" text-anchor="middle" class="panel-title">20 → 10 → 30</text>
-  <text x="745" y="170" text-anchor="middle" class="subtitle">양쪽 분기 · 높이 1</text>
-  <path d="M745 253 L665 315 M745 253 L825 315" class="edge"/>
-  <path d="M745 253 L665 315" class="path-edge"/>
-  <circle cx="745" cy="215" r="32" class="node"/>
-  <circle cx="665" cy="350" r="32" class="path"/>
-  <circle cx="825" cy="350" r="32" class="node"/>
-  <text x="745" y="225" text-anchor="middle" class="panel-title">20</text>
-  <text x="665" y="360" text-anchor="middle" class="panel-title">10</text>
-  <text x="825" y="360" text-anchor="middle" class="panel-title">30</text>
-  <text x="745" y="465" text-anchor="middle" class="caption" fill="#c96f21">10 찾기: 비교 2회 · 이동 1회</text>
+  <desc id="desc">30, 20, 10을 순서대로 넣은 편향 트리와 20, 10, 30을 넣은 트리를 비교하고 10을 찾는 경로를 표시한다.</desc>
+  <defs>
+    <style>
+      .bg { fill: #f8fafc; }
+      .panel { fill: #ffffff; stroke: #cbd5e1; stroke-width: 2; }
+      .title { font: 700 29px sans-serif; fill: #111827; }
+      .panel-title { font: 700 21px sans-serif; fill: #1f2937; }
+      .text { font: 500 16px sans-serif; fill: #475569; }
+      .small { font: 500 14px sans-serif; fill: #64748b; }
+      .result { font: 600 15px sans-serif; fill: #1d4ed8; }
+      .node { fill: #fff7ed; stroke: #c2410c; stroke-width: 2; }
+      .node-text { font: 700 17px sans-serif; fill: #9a3412; text-anchor: middle; dominant-baseline: middle; }
+      .line { stroke: #64748b; stroke-width: 3; fill: none; }
+      .search-line { stroke: #2563eb; stroke-width: 4; fill: none; }
+    </style>
+  </defs>
+  <rect class="bg" width="1000" height="520" rx="24"/>
+  <text class="title" x="42" y="52">삽입 순서에 따라 BST의 높이가 달라진다</text>
+
+  <g transform="translate(30 100)">
+    <rect class="panel" width="450" height="370" rx="18"/>
+    <text class="panel-title" x="20" y="35">30 → 20 → 10</text>
+    <text class="small" x="20" y="60">왼쪽으로만 이어지는 편향 트리 · 높이 2</text>
+    <path class="search-line" d="M225 148 L165 177 M165 233 L105 262"/>
+    <circle class="node" cx="225" cy="120" r="28"/><circle class="node" cx="165" cy="205" r="28"/><circle class="node" cx="105" cy="290" r="28"/>
+    <text class="node-text" x="225" y="120">30</text><text class="node-text" x="165" y="205">20</text><text class="node-text" x="105" y="290">10</text>
+    <text class="result" x="20" y="345">10 탐색: 비교 3회 · 이동 2회</text>
+  </g>
+
+  <g transform="translate(520 100)">
+    <rect class="panel" width="450" height="370" rx="18"/>
+    <text class="panel-title" x="20" y="35">20 → 10 → 30</text>
+    <text class="small" x="20" y="60">루트 양쪽으로 나뉘는 트리 · 높이 1</text>
+    <path class="line" d="M225 148 L145 192 M225 148 L305 192"/>
+    <path class="search-line" d="M225 148 L145 192"/>
+    <circle class="node" cx="225" cy="120" r="28"/><circle class="node" cx="145" cy="220" r="28"/><circle class="node" cx="305" cy="220" r="28"/>
+    <text class="node-text" x="225" y="120">20</text><text class="node-text" x="145" y="220">10</text><text class="node-text" x="305" y="220">30</text>
+    <text class="result" x="20" y="345">10 탐색: 비교 2회 · 이동 1회</text>
+  </g>
 </svg>
