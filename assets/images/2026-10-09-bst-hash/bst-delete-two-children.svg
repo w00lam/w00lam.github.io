@@ -1,48 +1,45 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="1400" height="560" viewBox="0 0 1400 560" role="img" aria-labelledby="title desc">
+<svg xmlns="http://www.w3.org/2000/svg" width="1100" height="650" viewBox="0 0 1100 650" role="img" aria-labelledby="title desc">
   <title id="title">자식이 둘인 BST 노드 삭제</title>
-  <desc id="desc">50을 삭제할 때 오른쪽 서브트리의 최솟값 60을 대체 키로 고르고, 원래 60의 오른쪽 자식 70을 80의 왼쪽 자식으로 연결하는 과정을 보여 준다.</desc>
+  <desc id="desc">50을 삭제할 때 오른쪽 서브트리의 최솟값 60을 대체 키로 고르고, 원래 60의 오른쪽 자식 70을 80의 왼쪽 자식으로 연결한다.</desc>
   <style>
-    text { font-family: Arial, 'Malgun Gothic', sans-serif; fill: #243447; }
-    .panel { fill: #ffffff; stroke: #d9e2ec; stroke-width: 2; }
-    .title { font-size: 28px; font-weight: 700; }
-    .label { font-size: 22px; font-weight: 700; }
-    .small { font-size: 19px; }
-    .node { fill: #e8f1fb; stroke: #2f80ed; stroke-width: 3; }
-    .target { fill: #fff1e6; stroke: #f2994a; stroke-width: 4; }
-    .replace { fill: #e9f8ef; stroke: #27ae60; stroke-width: 4; }
-    .edge { stroke: #7b8794; stroke-width: 3; fill: none; }
-    .dashed { stroke: #f2994a; stroke-width: 4; stroke-dasharray: 9 8; fill: none; }
+    text { font-family: Arial, 'Malgun Gothic', sans-serif; fill: #14213d; }
+    .panel { fill: #ffffff; stroke: #b8c7d9; stroke-width: 3; }
+    .title { font-size: 34px; font-weight: 700; }
+    .panel-title { font-size: 29px; font-weight: 700; }
+    .caption { font-size: 23px; font-weight: 700; }
+    .node { fill: #e8f1fb; stroke: #2774d8; stroke-width: 5; }
+    .target { fill: #fff1e6; stroke: #ed8b32; stroke-width: 6; }
+    .replace { fill: #e9f8ef; stroke: #21a45d; stroke-width: 6; }
+    .edge { stroke: #70839a; stroke-width: 5; fill: none; }
+    .dashed { stroke: #ed8b32; stroke-width: 6; stroke-dasharray: 12 10; fill: none; }
   </style>
-  <rect width="1400" height="560" fill="#fbfcfe"/>
-  <text x="700" y="40" text-anchor="middle" class="title">자식이 둘인 노드를 삭제할 때는 대체 키와 남은 연결을 함께 본다</text>
-  <rect x="30" y="75" width="420" height="440" rx="14" class="panel"/>
-  <rect x="490" y="75" width="420" height="440" rx="14" class="panel"/>
-  <rect x="950" y="75" width="420" height="440" rx="14" class="panel"/>
-  <text x="240" y="112" text-anchor="middle" class="label">삭제 전</text>
-  <text x="700" y="112" text-anchor="middle" class="label">대체 키 선택</text>
-  <text x="1160" y="112" text-anchor="middle" class="label">삭제 후</text>
-
-  <path d="M240 185 L160 280 M240 185 L320 280 M320 320 L280 410 M280 450 L320 475" class="edge"/>
-  <circle cx="240" cy="175" r="27" class="target"/><text x="240" y="182" text-anchor="middle" class="label">50</text>
-  <circle cx="160" cy="300" r="27" class="node"/><text x="160" y="307" text-anchor="middle" class="label">30</text>
-  <circle cx="320" cy="300" r="27" class="node"/><text x="320" y="307" text-anchor="middle" class="label">80</text>
-  <circle cx="280" cy="430" r="27" class="replace"/><text x="280" y="437" text-anchor="middle" class="label">60</text>
-  <circle cx="320" cy="490" r="27" class="node"/><text x="320" y="497" text-anchor="middle" class="label">70</text>
-  <text x="240" y="535" text-anchor="middle" class="small">50은 자식이 둘이다</text>
-
-  <path d="M700 185 L620 280 M700 185 L780 280 M780 320 L740 410 M740 410 L780 475" class="edge"/>
-  <path d="M700 175 C700 245 560 330 570 430" class="dashed"/>
-  <circle cx="700" cy="175" r="27" class="target"/><text x="700" y="182" text-anchor="middle" class="label">50</text>
-  <circle cx="620" cy="300" r="27" class="node"/><text x="620" y="307" text-anchor="middle" class="label">30</text>
-  <circle cx="780" cy="300" r="27" class="node"/><text x="780" y="307" text-anchor="middle" class="label">80</text>
-  <circle cx="740" cy="430" r="27" class="replace"/><text x="740" y="437" text-anchor="middle" class="label">60</text>
-  <circle cx="780" cy="490" r="27" class="node"/><text x="780" y="497" text-anchor="middle" class="label">70</text>
-  <text x="700" y="535" text-anchor="middle" class="small" fill="#27ae60">오른쪽 서브트리의 최솟값 = 60</text>
-
-  <path d="M1160 185 L1080 280 M1160 185 L1240 280 M1240 320 L1200 410" class="edge"/>
-  <circle cx="1160" cy="175" r="27" class="replace"/><text x="1160" y="182" text-anchor="middle" class="label">60</text>
-  <circle cx="1080" cy="300" r="27" class="node"/><text x="1080" y="307" text-anchor="middle" class="label">30</text>
-  <circle cx="1240" cy="300" r="27" class="node"/><text x="1240" y="307" text-anchor="middle" class="label">80</text>
-  <circle cx="1200" cy="430" r="27" class="node"/><text x="1200" y="437" text-anchor="middle" class="label">70</text>
-  <text x="1160" y="535" text-anchor="middle" class="small">원래 60의 오른쪽 자식 70을 연결</text>
+  <rect width="1100" height="650" fill="#fbfcfe"/>
+  <text x="550" y="52" text-anchor="middle" class="title">자식이 둘인 노드 삭제</text>
+  <rect x="25" y="85" width="330" height="535" rx="16" class="panel"/>
+  <rect x="385" y="85" width="330" height="535" rx="16" class="panel"/>
+  <rect x="745" y="85" width="330" height="535" rx="16" class="panel"/>
+  <text x="190" y="135" text-anchor="middle" class="panel-title">삭제 전</text>
+  <path d="M190 260 L120 330 M190 260 L260 330 M260 370 L225 445 M225 485 L260 492" class="edge"/>
+  <circle cx="190" cy="220" r="38" class="target"/><text x="190" y="230" text-anchor="middle" class="panel-title">50</text>
+  <circle cx="120" cy="350" r="38" class="node"/><text x="120" y="360" text-anchor="middle" class="panel-title">30</text>
+  <circle cx="260" cy="350" r="38" class="node"/><text x="260" y="360" text-anchor="middle" class="panel-title">80</text>
+  <circle cx="225" cy="465" r="38" class="replace"/><text x="225" y="475" text-anchor="middle" class="panel-title">60</text>
+  <circle cx="260" cy="530" r="38" class="node"/><text x="260" y="540" text-anchor="middle" class="panel-title">70</text>
+  <text x="190" y="605" text-anchor="middle" class="caption">50은 자식 2개</text>
+  <text x="550" y="135" text-anchor="middle" class="panel-title">60 선택</text>
+  <path d="M550 260 L480 330 M550 260 L620 330 M620 370 L585 445 M585 485 L620 492" class="edge"/>
+  <path d="M550 220 C505 305 500 385 525 445" class="dashed"/>
+  <circle cx="550" cy="220" r="38" class="target"/><text x="550" y="230" text-anchor="middle" class="panel-title">50</text>
+  <circle cx="480" cy="350" r="38" class="node"/><text x="480" y="360" text-anchor="middle" class="panel-title">30</text>
+  <circle cx="620" cy="350" r="38" class="node"/><text x="620" y="360" text-anchor="middle" class="panel-title">80</text>
+  <circle cx="585" cy="465" r="38" class="replace"/><text x="585" y="475" text-anchor="middle" class="panel-title">60</text>
+  <circle cx="620" cy="530" r="38" class="node"/><text x="620" y="540" text-anchor="middle" class="panel-title">70</text>
+  <text x="550" y="605" text-anchor="middle" class="caption" fill="#168048">오른쪽 최솟값</text>
+  <text x="910" y="135" text-anchor="middle" class="panel-title">삭제 후</text>
+  <path d="M910 260 L840 330 M910 260 L980 330 M980 370 L945 445" class="edge"/>
+  <circle cx="910" cy="220" r="38" class="replace"/><text x="910" y="230" text-anchor="middle" class="panel-title">60</text>
+  <circle cx="840" cy="350" r="38" class="node"/><text x="840" y="360" text-anchor="middle" class="panel-title">30</text>
+  <circle cx="980" cy="350" r="38" class="node"/><text x="980" y="360" text-anchor="middle" class="panel-title">80</text>
+  <circle cx="945" cy="465" r="38" class="node"/><text x="945" y="475" text-anchor="middle" class="panel-title">70</text>
+  <text x="910" y="605" text-anchor="middle" class="caption">70을 80 아래로 연결</text>
 </svg>
