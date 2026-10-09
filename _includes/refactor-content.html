@@ -156,9 +156,11 @@
       {% assign _wrapper_class = _wrapper_class | append: ' shimmer' %}
     {% endif %}
 
-    <!-- lazy-load images -->
+    <!-- lazy-load images unless the image declares its own loading mode -->
     {% if _lazyload %}
-      {% assign _left = _left | append: ' loading="lazy"' %}
+      {% unless _left contains ' loading=' %}
+        {% assign _left = _left | append: ' loading="lazy"' %}
+      {% endunless %}
     {% endif %}
 
     {% if page.layout == 'home' %}
