@@ -3,9 +3,9 @@
   <desc id="desc">key % bucketCount를 사용할 때 버킷이 5개면 1, 6, 11이 모두 인덱스 1에서 충돌하고, 버킷이 10개가 되면 6은 인덱스 6으로 이동한다.</desc>
   <style>
     text { font-family: Arial, 'Malgun Gothic', sans-serif; fill: #243447; }
-    .title { font-size: 24px; font-weight: 700; }
-    .label { font-size: 18px; font-weight: 700; }
-    .small { font-size: 16px; }
+    .title { font-size: 28px; font-weight: 700; }
+    .label { font-size: 22px; font-weight: 700; }
+    .small { font-size: 19px; }
     .bucket { fill: #ffffff; stroke: #9fb3c8; stroke-width: 2; }
     .key { fill: #e8f1fb; stroke: #2f80ed; stroke-width: 2; }
     .collision { fill: #fff1e6; stroke: #f2994a; stroke-width: 3; }
@@ -15,7 +15,7 @@
   <defs>
     <marker id="arrow" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto"><path d="M0,0 L0,6 L9,3 z" fill="#7b8794"/></marker>
   </defs>
-  <rect width="1400" height="590" fill="#fbfcfe"/>
+  <rect width="1400" height="650" fill="#fbfcfe"/>
   <text x="700" y="40" text-anchor="middle" class="title">학습용 모듈러 해시: 버킷 수가 바뀌면 저장 위치도 다시 계산한다</text>
   <text x="700" y="72" text-anchor="middle" class="small">index = key % bucketCount · 체이닝 예제</text>
 

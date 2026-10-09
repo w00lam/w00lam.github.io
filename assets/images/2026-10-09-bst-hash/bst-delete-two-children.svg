@@ -4,9 +4,9 @@
   <style>
     text { font-family: Arial, 'Malgun Gothic', sans-serif; fill: #243447; }
     .panel { fill: #ffffff; stroke: #d9e2ec; stroke-width: 2; }
-    .title { font-size: 24px; font-weight: 700; }
-    .label { font-size: 18px; font-weight: 700; }
-    .small { font-size: 16px; }
+    .title { font-size: 28px; font-weight: 700; }
+    .label { font-size: 22px; font-weight: 700; }
+    .small { font-size: 19px; }
     .node { fill: #e8f1fb; stroke: #2f80ed; stroke-width: 3; }
     .target { fill: #fff1e6; stroke: #f2994a; stroke-width: 4; }
     .replace { fill: #e9f8ef; stroke: #27ae60; stroke-width: 4; }
