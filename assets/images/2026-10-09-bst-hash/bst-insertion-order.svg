@@ -1,0 +1,45 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="500" viewBox="0 0 1200 500" role="img" aria-labelledby="title desc">
+  <title id="title">삽입 순서에 따른 BST의 모양</title>
+  <desc id="desc">30, 20, 10을 순서대로 넣은 편향 트리와 20, 10, 30을 넣은 균형에 가까운 트리를 비교한다. 두 트리에서 10을 찾는 경로를 주황색으로 표시한다.</desc>
+  <style>
+    text { font-family: Arial, 'Malgun Gothic', sans-serif; fill: #243447; }
+    .panel { fill: #ffffff; stroke: #d9e2ec; stroke-width: 2; }
+    .title { font-size: 24px; font-weight: 700; }
+    .label { font-size: 18px; font-weight: 700; }
+    .small { font-size: 16px; }
+    .node { fill: #e8f1fb; stroke: #2f80ed; stroke-width: 3; }
+    .path { fill: #fff1e6; stroke: #f2994a; stroke-width: 4; }
+    .edge { stroke: #7b8794; stroke-width: 3; fill: none; }
+    .path-edge { stroke: #f2994a; stroke-width: 5; fill: none; }
+  </style>
+  <rect width="1200" height="500" fill="#fbfcfe"/>
+  <text x="600" y="42" text-anchor="middle" class="title">삽입 순서가 BST의 높이와 탐색 경로를 바꾼다</text>
+  <rect x="40" y="75" width="530" height="380" rx="14" class="panel"/>
+  <rect x="630" y="75" width="530" height="380" rx="14" class="panel"/>
+  <text x="305" y="112" text-anchor="middle" class="label">30 → 20 → 10</text>
+  <text x="895" y="112" text-anchor="middle" class="label">20 → 10 → 30</text>
+  <text x="305" y="140" text-anchor="middle" class="small">왼쪽으로만 이어져 높이 h = 2</text>
+  <text x="895" y="140" text-anchor="middle" class="small">루트 양쪽에 자식이 생겨 높이 h = 1</text>
+
+  <path d="M305 190 L225 275" class="path-edge"/>
+  <path d="M225 315 L145 400" class="path-edge"/>
+  <circle cx="305" cy="180" r="28" class="path"/>
+  <circle cx="225" cy="305" r="28" class="path"/>
+  <circle cx="145" cy="410" r="28" class="path"/>
+  <text x="305" y="187" text-anchor="middle" class="label">30</text>
+  <text x="225" y="312" text-anchor="middle" class="label">20</text>
+  <text x="145" y="417" text-anchor="middle" class="label">10</text>
+  <text x="390" y="248" class="small" fill="#f2994a">10을 찾는 비교: 30 → 20 → 10</text>
+  <text x="390" y="276" class="small" fill="#f2994a">비교 3회 · 이동 2회</text>
+
+  <path d="M895 190 L815 285" class="path-edge"/>
+  <path d="M895 190 L975 285" class="edge"/>
+  <circle cx="895" cy="180" r="28" class="node"/>
+  <circle cx="815" cy="315" r="28" class="path"/>
+  <circle cx="975" cy="315" r="28" class="node"/>
+  <text x="895" y="187" text-anchor="middle" class="label">20</text>
+  <text x="815" y="322" text-anchor="middle" class="label">10</text>
+  <text x="975" y="322" text-anchor="middle" class="label">30</text>
+  <text x="895" y="395" text-anchor="middle" class="small" fill="#f2994a">10을 찾는 경로: 20 → 10</text>
+  <text x="895" y="423" text-anchor="middle" class="small" fill="#f2994a">비교 2회 · 이동 1회</text>
+</svg>
