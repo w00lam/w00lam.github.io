@@ -1,54 +1,63 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="1500" height="900" viewBox="0 0 1500 900">
-  <rect width="1500" height="900" fill="#ffffff"/>
+<svg xmlns="http://www.w3.org/2000/svg" width="1500" height="850" viewBox="0 0 1500 850">
+  <rect width="1500" height="850" fill="#f4f6f9"/>
   <style>
-    .title { font: 700 30px 'Malgun Gothic', 'Noto Sans KR', sans-serif; fill: #1f2937; }
-    .panel { font: 700 26px 'Malgun Gothic', 'Noto Sans KR', sans-serif; fill: #111827; }
-    .label { font: 700 23px 'Malgun Gothic', 'Noto Sans KR', sans-serif; fill: #111827; }
-    .small { font: 500 20px 'Malgun Gothic', 'Noto Sans KR', sans-serif; fill: #4b5563; }
-    .node { fill: #f8fafc; stroke: #64748b; stroke-width: 3; }
-    .path { fill: #e0f2fe; stroke: #0284c7; stroke-width: 4; }
-    .hit { fill: #fff7ed; stroke: #f97316; stroke-width: 5; }
-    .edge { stroke: #64748b; stroke-width: 4; fill: none; }
-    .alert { stroke: #dc2626; stroke-width: 5; fill: none; }
-    .end { fill: #f97316; }
+    .title { font: 700 38px 'Malgun Gothic', 'Noto Sans KR', sans-serif; fill: #071b3a; }
+    .subtitle { font: 500 22px 'Malgun Gothic', 'Noto Sans KR', sans-serif; fill: #49627f; }
+    .heading { font: 700 25px 'Malgun Gothic', 'Noto Sans KR', sans-serif; fill: #071b3a; }
+    .label { font: 700 24px 'Malgun Gothic', 'Noto Sans KR', sans-serif; fill: #172b4d; }
+    .small { font: 600 20px 'Malgun Gothic', 'Noto Sans KR', sans-serif; fill: #49627f; }
+    .note { font: 700 21px 'Malgun Gothic', 'Noto Sans KR', sans-serif; fill: #1552d6; }
+    .panel { fill: #ffffff; stroke: #cad5e2; stroke-width: 2.5; }
+    .edge { stroke: #718198; stroke-width: 4; fill: none; }
+    .blue-edge { stroke: #2864dc; stroke-width: 5; fill: none; }
+    .alert-edge { stroke: #d94b4b; stroke-width: 4; fill: none; stroke-dasharray: 9 7; }
+    .root { fill: #ffffff; stroke: #e25716; stroke-width: 3; }
+    .path { fill: #eef4ff; stroke: #2864dc; stroke-width: 4; }
+    .hit { fill: #fff3df; stroke: #e25716; stroke-width: 4; }
+    .ghost { fill: #f8fafc; stroke: #d94b4b; stroke-width: 3; stroke-dasharray: 8 6; }
+    .pill { fill: #fff3df; stroke: #e25716; stroke-width: 2; }
+    .blue-pill { fill: #eef4ff; stroke: #2864dc; stroke-width: 2; }
+    .red-pill { fill: #fff5f5; stroke: #d94b4b; stroke-width: 2; }
   </style>
-  <text x="55" y="58" class="title">그림 3. 접두사 충돌의 두 방향</text>
-  <text x="55" y="98" class="small">중간 노드의 종료 상태와 마지막 노드 아래의 자식 상태를 각각 확인한다.</text>
 
-  <rect x="35" y="140" width="690" height="700" rx="20" fill="#f8fafc" stroke="#cbd5e1" stroke-width="3"/>
-  <rect x="775" y="140" width="690" height="700" rx="20" fill="#f8fafc" stroke="#cbd5e1" stroke-width="3"/>
-  <text x="380" y="190" text-anchor="middle" class="panel">911 저장 후 9112 삽입</text>
-  <text x="1120" y="190" text-anchor="middle" class="panel">9112 저장 후 911 삽입</text>
+  <text x="60" y="70" class="title">접두사 충돌은 두 끝점에서 확인한다</text>
+  <text x="60" y="110" class="subtitle">911과 9112를 넣는 순서에 따라 검사해야 하는 위치가 달라진다.</text>
 
-  <!-- left tree -->
-  <line x1="380" y1="255" x2="380" y2="315" class="edge"/>
-  <line x1="380" y1="375" x2="380" y2="435" class="edge"/>
-  <line x1="380" y1="495" x2="380" y2="555" class="edge"/>
-  <line x1="380" y1="615" x2="380" y2="675" class="alert"/>
-  <circle cx="380" cy="225" r="30" fill="#f1f5f9" stroke="#334155" stroke-width="3"/><text x="380" y="233" text-anchor="middle" class="label">root</text>
-  <rect x="350" y="315" width="60" height="60" rx="12" class="path"/><text x="380" y="354" text-anchor="middle" class="label">9</text>
-  <rect x="350" y="435" width="60" height="60" rx="12" class="path"/><text x="380" y="474" text-anchor="middle" class="label">1</text>
-  <rect x="350" y="555" width="60" height="60" rx="12" class="hit"/><text x="380" y="594" text-anchor="middle" class="label">1</text>
-  <circle cx="380" cy="650" r="9" class="end"/>
-  <text x="455" y="592" class="small">기존 911의 end</text>
-  <text x="455" y="625" class="small">남은 문자 2를 처리하기 전</text>
-  <text x="455" y="658" class="small">종료 지점을 만남</text>
-  <text x="380" y="750" text-anchor="middle" class="small">기존 문자열이 새 문자열의 접두사</text>
+  <rect x="30" y="150" width="690" height="650" rx="24" class="panel"/>
+  <rect x="780" y="150" width="690" height="650" rx="24" class="panel"/>
+  <text x="375" y="180" text-anchor="middle" class="heading">기존 911 → 새 9112</text>
+  <text x="1125" y="180" text-anchor="middle" class="heading">기존 9112 → 새 911</text>
 
-  <!-- right tree -->
-  <line x1="1120" y1="255" x2="1120" y2="315" class="edge"/>
-  <line x1="1120" y1="375" x2="1120" y2="435" class="edge"/>
-  <line x1="1120" y1="495" x2="1120" y2="555" class="edge"/>
-  <line x1="1120" y1="615" x2="1120" y2="675" class="edge"/>
-  <circle cx="1120" cy="225" r="30" fill="#f1f5f9" stroke="#334155" stroke-width="3"/><text x="1120" y="233" text-anchor="middle" class="label">root</text>
-  <rect x="1090" y="315" width="60" height="60" rx="12" class="path"/><text x="1120" y="354" text-anchor="middle" class="label">9</text>
-  <rect x="1090" y="435" width="60" height="60" rx="12" class="path"/><text x="1120" y="474" text-anchor="middle" class="label">1</text>
-  <rect x="1090" y="555" width="60" height="60" rx="12" class="hit"/><text x="1120" y="594" text-anchor="middle" class="label">1</text>
-  <rect x="1090" y="675" width="60" height="60" rx="12" class="path"/><text x="1120" y="714" text-anchor="middle" class="label">2</text>
-  <circle cx="1120" cy="765" r="9" class="end"/>
-  <text x="1140" y="772" class="small">end = true</text>
-  <text x="1195" y="592" class="small">새 문자열 911의 마지막 노드</text>
-  <text x="1195" y="625" class="small">아래에 기존 9112 경로가 남음</text>
-  <text x="1195" y="658" class="small">pass = true인 상태 확인</text>
-  <text x="1120" y="790" text-anchor="middle" class="small">새 문자열이 기존 문자열의 접두사</text>
+  <!-- Existing 911, inserting 9112 -->
+  <line x1="255" y1="260" x2="255" y2="285" class="blue-edge"/>
+  <line x1="255" y1="345" x2="255" y2="365" class="blue-edge"/>
+  <line x1="255" y1="425" x2="255" y2="445" class="blue-edge"/>
+  <line x1="255" y1="505" x2="255" y2="545" class="alert-edge"/>
+  <circle cx="255" cy="225" r="32" class="root"/><text x="255" y="233" text-anchor="middle" class="small">root</text>
+  <rect x="220" y="285" width="70" height="60" rx="14" class="path"/><text x="255" y="324" text-anchor="middle" class="label">9</text>
+  <rect x="220" y="365" width="70" height="60" rx="14" class="path"/><text x="255" y="404" text-anchor="middle" class="label">1</text>
+  <rect x="220" y="445" width="70" height="60" rx="14" class="hit"/><text x="255" y="484" text-anchor="middle" class="label">1</text>
+  <rect x="220" y="545" width="70" height="60" rx="14" class="ghost"/><text x="255" y="584" text-anchor="middle" class="label">2</text>
+  <rect x="335" y="452" width="90" height="34" rx="17" class="pill"/><text x="380" y="476" text-anchor="middle" class="small">end</text>
+  <rect x="350" y="535" width="235" height="86" rx="16" fill="#fff5f5" stroke="#efc3c3" stroke-width="2"/>
+  <text x="375" y="570" class="small">남은 문자 2를 처리하기 전</text>
+  <text x="375" y="602" class="small">기존 911의 end를 만남</text>
+  <text x="375" y="710" class="note">기존 문자열이 새 문자열의 접두사</text>
+
+  <!-- Existing 9112, inserting 911 -->
+  <line x1="1005" y1="260" x2="1005" y2="285" class="blue-edge"/>
+  <line x1="1005" y1="345" x2="1005" y2="365" class="blue-edge"/>
+  <line x1="1005" y1="425" x2="1005" y2="445" class="blue-edge"/>
+  <line x1="1005" y1="505" x2="1005" y2="545" class="blue-edge"/>
+  <circle cx="1005" cy="225" r="32" class="root"/><text x="1005" y="233" text-anchor="middle" class="small">root</text>
+  <rect x="970" y="285" width="70" height="60" rx="14" class="path"/><text x="1005" y="324" text-anchor="middle" class="label">9</text>
+  <rect x="970" y="365" width="70" height="60" rx="14" class="path"/><text x="1005" y="404" text-anchor="middle" class="label">1</text>
+  <rect x="970" y="445" width="70" height="60" rx="14" class="path"/><text x="1005" y="484" text-anchor="middle" class="label">1</text>
+  <rect x="970" y="545" width="70" height="60" rx="14" class="hit"/><text x="1005" y="584" text-anchor="middle" class="label">2</text>
+  <rect x="1085" y="452" width="95" height="34" rx="17" class="blue-pill"/><text x="1132" y="476" text-anchor="middle" class="small">pass</text>
+  <rect x="1085" y="552" width="92" height="34" rx="17" class="pill"/><text x="1131" y="576" text-anchor="middle" class="small">end</text>
+  <rect x="1100" y="625" width="280" height="86" rx="16" fill="#f7faff" stroke="#d5dfeb" stroke-width="2"/>
+  <text x="1125" y="660" class="small">911에서 반복문 종료</text>
+  <text x="1125" y="692" class="small">아래 자식 2가 남아 있음</text>
+  <text x="1125" y="755" text-anchor="middle" class="note">새 문자열이 기존 문자열의 접두사</text>
 </svg>

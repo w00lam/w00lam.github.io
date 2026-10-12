@@ -1,43 +1,57 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="680" viewBox="0 0 1200 680">
-  <rect width="1200" height="680" fill="#ffffff"/>
+<svg xmlns="http://www.w3.org/2000/svg" width="1400" height="760" viewBox="0 0 1400 760">
+  <rect width="1400" height="760" fill="#f4f6f9"/>
   <style>
-    .title { font: 700 30px 'Malgun Gothic', 'Noto Sans KR', sans-serif; fill: #1f2937; }
-    .label { font: 700 24px 'Malgun Gothic', 'Noto Sans KR', sans-serif; fill: #111827; }
-    .small { font: 500 20px 'Malgun Gothic', 'Noto Sans KR', sans-serif; fill: #4b5563; }
-    .node { fill: #f8fafc; stroke: #64748b; stroke-width: 3; }
-    .shared { fill: #e0f2fe; stroke: #0284c7; stroke-width: 4; }
-    .terminal { fill: #fff7ed; stroke: #f97316; stroke-width: 4; }
-    .edge { stroke: #64748b; stroke-width: 4; fill: none; }
-    .end { fill: #f97316; }
+    .title { font: 700 38px 'Malgun Gothic', 'Noto Sans KR', sans-serif; fill: #071b3a; }
+    .subtitle { font: 500 22px 'Malgun Gothic', 'Noto Sans KR', sans-serif; fill: #49627f; }
+    .heading { font: 700 24px 'Malgun Gothic', 'Noto Sans KR', sans-serif; fill: #071b3a; }
+    .label { font: 700 25px 'Malgun Gothic', 'Noto Sans KR', sans-serif; fill: #172b4d; }
+    .small { font: 600 20px 'Malgun Gothic', 'Noto Sans KR', sans-serif; fill: #49627f; }
+    .note { font: 700 22px 'Malgun Gothic', 'Noto Sans KR', sans-serif; fill: #1552d6; }
+    .panel { fill: #ffffff; stroke: #cad5e2; stroke-width: 2.5; }
+    .edge { stroke: #718198; stroke-width: 4; fill: none; }
+    .shared-edge { stroke: #2864dc; stroke-width: 5; fill: none; }
+    .root { fill: #ffffff; stroke: #e25716; stroke-width: 3; }
+    .shared { fill: #eef4ff; stroke: #2864dc; stroke-width: 4; }
+    .terminal { fill: #fff3df; stroke: #e25716; stroke-width: 4; }
+    .pill { fill: #fff3df; stroke: #e25716; stroke-width: 2; }
   </style>
-  <text x="60" y="58" class="title">그림 1. 공통 접두사와 종료 표시</text>
-  <text x="60" y="98" class="small">경로를 공유하는 것과 단어가 끝나는 것은 별도의 상태다.</text>
 
-  <line x1="600" y1="176" x2="600" y2="248" class="edge"/>
-  <line x1="600" y1="312" x2="600" y2="390" class="edge"/>
-  <line x1="600" y1="454" x2="390" y2="532" class="edge"/>
-  <line x1="600" y1="454" x2="810" y2="532" class="edge"/>
+  <text x="60" y="70" class="title">Trie는 경로와 단어 끝을 따로 표시한다</text>
+  <text x="60" y="110" class="subtitle">pen과 pet은 p → e를 공유하지만 e에서 단어가 끝나지는 않는다.</text>
 
-  <circle cx="600" cy="144" r="34" fill="#f1f5f9" stroke="#334155" stroke-width="3"/>
-  <text x="600" y="152" text-anchor="middle" class="label">root</text>
-  <text x="650" y="151" class="small">시작점</text>
+  <rect x="30" y="150" width="1340" height="560" rx="24" class="panel"/>
 
-  <rect x="564" y="248" width="72" height="64" rx="14" class="shared"/>
-  <text x="600" y="289" text-anchor="middle" class="label">p</text>
-  <rect x="564" y="390" width="72" height="64" rx="14" class="shared"/>
-  <text x="600" y="431" text-anchor="middle" class="label">e</text>
+  <line x1="420" y1="260" x2="420" y2="290" class="shared-edge"/>
+  <line x1="420" y1="350" x2="420" y2="390" class="shared-edge"/>
+  <line x1="420" y1="450" x2="310" y2="520" class="edge"/>
+  <line x1="420" y1="450" x2="530" y2="520" class="edge"/>
 
-  <rect x="354" y="532" width="72" height="64" rx="14" class="terminal"/>
-  <text x="390" y="573" text-anchor="middle" class="label">n</text>
-  <circle cx="390" cy="620" r="10" class="end"/>
-  <text x="415" y="628" class="small">end = true</text>
+  <circle cx="420" cy="225" r="35" class="root"/>
+  <text x="420" y="234" text-anchor="middle" class="small">root</text>
+  <rect x="385" y="290" width="70" height="60" rx="14" class="shared"/>
+  <text x="420" y="329" text-anchor="middle" class="label">p</text>
+  <rect x="385" y="390" width="70" height="60" rx="14" class="shared"/>
+  <text x="420" y="429" text-anchor="middle" class="label">e</text>
+  <rect x="275" y="520" width="70" height="60" rx="14" class="terminal"/>
+  <text x="310" y="559" text-anchor="middle" class="label">n</text>
+  <rect x="495" y="520" width="70" height="60" rx="14" class="terminal"/>
+  <text x="530" y="559" text-anchor="middle" class="label">t</text>
+  <rect x="264" y="602" width="92" height="36" rx="18" class="pill"/>
+  <text x="310" y="627" text-anchor="middle" class="small">end</text>
+  <rect x="484" y="602" width="92" height="36" rx="18" class="pill"/>
+  <text x="530" y="627" text-anchor="middle" class="small">end</text>
 
-  <rect x="774" y="532" width="72" height="64" rx="14" class="terminal"/>
-  <text x="810" y="573" text-anchor="middle" class="label">t</text>
-  <circle cx="810" cy="620" r="10" class="end"/>
-  <text x="835" y="628" class="small">end = true</text>
+  <rect x="730" y="220" width="570" height="112" rx="18" fill="#f7faff" stroke="#d5dfeb" stroke-width="2"/>
+  <text x="765" y="262" class="heading">공유 경로</text>
+  <text x="765" y="302" class="small">p → e는 pen과 pet이 함께 지나가는 경로</text>
 
-  <rect x="790" y="360" width="330" height="86" rx="16" fill="#f8fafc" stroke="#cbd5e1" stroke-width="2"/>
-  <text x="815" y="395" class="small">e 노드는 경로에 포함되지만</text>
-  <text x="815" y="425" class="small">end = false 이므로 pe는 단어가 아니다.</text>
+  <rect x="730" y="360" width="570" height="112" rx="18" fill="#fffaf3" stroke="#f1d4aa" stroke-width="2"/>
+  <text x="765" y="402" class="heading">단어 종료</text>
+  <text x="765" y="442" class="small">n과 t에는 end가 있지만 e에는 end가 없음</text>
+
+  <rect x="730" y="500" width="570" height="112" rx="18" fill="#f7faff" stroke="#d5dfeb" stroke-width="2"/>
+  <text x="765" y="542" class="heading">검색 결과</text>
+  <text x="765" y="582" class="small">search(pe) = false · startsWith(pe) = true</text>
+
+  <text x="700" y="675" text-anchor="middle" class="note">경로가 있다고 단어가 저장된 것은 아니다.</text>
 </svg>
