@@ -1,0 +1,71 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1500" height="940" viewBox="0 0 1500 940">
+  <rect width="1500" height="940" fill="#ffffff"/>
+  <style>
+    .title { font: 700 30px 'Malgun Gothic', 'Noto Sans KR', sans-serif; fill: #1f2937; }
+    .panel { font: 700 25px 'Malgun Gothic', 'Noto Sans KR', sans-serif; fill: #111827; }
+    .label { font: 700 24px 'Malgun Gothic', 'Noto Sans KR', sans-serif; fill: #111827; }
+    .small { font: 500 20px 'Malgun Gothic', 'Noto Sans KR', sans-serif; fill: #4b5563; }
+    .node { fill: #f8fafc; stroke: #64748b; stroke-width: 3; }
+    .keep { fill: #e0f2fe; stroke: #0284c7; stroke-width: 4; }
+    .changed { fill: #fff7ed; stroke: #f97316; stroke-width: 4; }
+    .removed { fill: #fef2f2; stroke: #dc2626; stroke-width: 3; stroke-dasharray: 8 6; }
+    .edge { stroke: #64748b; stroke-width: 4; fill: none; }
+    .end { fill: #f97316; }
+  </style>
+  <text x="55" y="58" class="title">그림 2. 공유 경로를 보존하는 삭제</text>
+  <text x="55" y="98" class="small">세 패널은 같은 초기 상태에서 출발한 별도 삭제 사례다.</text>
+
+  <rect x="35" y="135" width="445" height="750" rx="20" fill="#f8fafc" stroke="#cbd5e1" stroke-width="3"/>
+  <rect x="527" y="135" width="445" height="750" rx="20" fill="#f8fafc" stroke="#cbd5e1" stroke-width="3"/>
+  <rect x="1019" y="135" width="445" height="750" rx="20" fill="#f8fafc" stroke="#cbd5e1" stroke-width="3"/>
+  <text x="257" y="185" text-anchor="middle" class="panel">초기: car + care</text>
+  <text x="749" y="185" text-anchor="middle" class="panel">car 삭제</text>
+  <text x="1241" y="185" text-anchor="middle" class="panel">care 삭제</text>
+
+  <!-- panel 1 -->
+  <line x1="257" y1="248" x2="257" y2="315" class="edge"/>
+  <line x1="257" y1="375" x2="257" y2="445" class="edge"/>
+  <line x1="257" y1="505" x2="180" y2="585" class="edge"/>
+  <line x1="257" y1="505" x2="334" y2="585" class="edge"/>
+  <circle cx="257" cy="218" r="30" fill="#f1f5f9" stroke="#334155" stroke-width="3"/>
+  <text x="257" y="226" text-anchor="middle" class="label">root</text>
+  <rect x="227" y="315" width="60" height="60" rx="12" class="keep"/><text x="257" y="354" text-anchor="middle" class="label">c</text>
+  <rect x="227" y="445" width="60" height="60" rx="12" class="keep"/><text x="257" y="484" text-anchor="middle" class="label">a</text>
+  <rect x="150" y="585" width="60" height="60" rx="12" class="changed"/><text x="180" y="624" text-anchor="middle" class="label">r</text>
+  <rect x="304" y="585" width="60" height="60" rx="12" class="keep"/><text x="334" y="624" text-anchor="middle" class="label">e</text>
+  <circle cx="180" cy="680" r="9" class="end"/><text x="199" y="687" class="small">car end</text>
+  <circle cx="334" cy="680" r="9" class="end"/><text x="353" y="687" class="small">care end</text>
+
+  <!-- panel 2 -->
+  <line x1="749" y1="248" x2="749" y2="315" class="edge"/>
+  <line x1="749" y1="375" x2="749" y2="445" class="edge"/>
+  <line x1="749" y1="505" x2="672" y2="585" class="edge"/>
+  <line x1="749" y1="505" x2="826" y2="585" class="edge"/>
+  <circle cx="749" cy="218" r="30" fill="#f1f5f9" stroke="#334155" stroke-width="3"/><text x="749" y="226" text-anchor="middle" class="label">root</text>
+  <rect x="719" y="315" width="60" height="60" rx="12" class="keep"/><text x="749" y="354" text-anchor="middle" class="label">c</text>
+  <rect x="719" y="445" width="60" height="60" rx="12" class="keep"/><text x="749" y="484" text-anchor="middle" class="label">a</text>
+  <rect x="642" y="585" width="60" height="60" rx="12" class="changed"/><text x="672" y="624" text-anchor="middle" class="label">r</text>
+  <rect x="796" y="585" width="60" height="60" rx="12" class="keep"/><text x="826" y="624" text-anchor="middle" class="label">e</text>
+  <text x="672" y="687" text-anchor="middle" class="small">end 해제</text>
+  <circle cx="826" cy="680" r="9" class="end"/><text x="845" y="687" class="small">care 유지</text>
+  <text x="749" y="770" text-anchor="middle" class="small">search(car) = false</text>
+  <text x="749" y="805" text-anchor="middle" class="small">startsWith(car) = true</text>
+  <text x="749" y="840" text-anchor="middle" class="small">search(care) = true</text>
+
+  <!-- panel 3 -->
+  <line x1="1241" y1="248" x2="1241" y2="315" class="edge"/>
+  <line x1="1241" y1="375" x2="1241" y2="445" class="edge"/>
+  <line x1="1241" y1="505" x2="1164" y2="585" class="edge"/>
+  <circle cx="1241" cy="218" r="30" fill="#f1f5f9" stroke="#334155" stroke-width="3"/><text x="1241" y="226" text-anchor="middle" class="label">root</text>
+  <rect x="1211" y="315" width="60" height="60" rx="12" class="keep"/><text x="1241" y="354" text-anchor="middle" class="label">c</text>
+  <rect x="1211" y="445" width="60" height="60" rx="12" class="keep"/><text x="1241" y="484" text-anchor="middle" class="label">a</text>
+  <rect x="1134" y="585" width="60" height="60" rx="12" class="changed"/><text x="1164" y="624" text-anchor="middle" class="label">r</text>
+  <circle cx="1164" cy="680" r="9" class="end"/><text x="1183" y="687" class="small">car 유지</text>
+  <line x1="1241" y1="505" x2="1318" y2="585" class="edge"/>
+  <rect x="1288" y="585" width="60" height="60" rx="12" class="removed"/><text x="1318" y="624" text-anchor="middle" class="label">e</text>
+  <line x1="1318" y1="645" x2="1318" y2="704" stroke="#dc2626" stroke-width="4"/>
+  <line x1="1290" y1="675" x2="1346" y2="675" stroke="#dc2626" stroke-width="4"/>
+  <text x="1241" y="770" text-anchor="middle" class="small">e 연결 제거</text>
+  <text x="1241" y="805" text-anchor="middle" class="small">search(car) = true</text>
+  <text x="1241" y="840" text-anchor="middle" class="small">search(care) = false</text>
+</svg>
