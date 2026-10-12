@@ -39,9 +39,9 @@
   <rect x="220" y="445" width="70" height="60" rx="14" class="hit"/><text x="255" y="484" text-anchor="middle" class="label">1</text>
   <rect x="220" y="545" width="70" height="60" rx="14" class="ghost"/><text x="255" y="584" text-anchor="middle" class="label">2</text>
   <rect x="335" y="452" width="90" height="34" rx="17" class="pill"/><text x="380" y="476" text-anchor="middle" class="small">end</text>
-  <rect x="350" y="535" width="235" height="86" rx="16" fill="#fff5f5" stroke="#efc3c3" stroke-width="2"/>
-  <text x="375" y="570" class="small">남은 문자 2를 처리하기 전</text>
-  <text x="375" y="602" class="small">기존 911의 end를 만남</text>
+  <rect x="350" y="520" width="235" height="100" rx="16" fill="#fff5f5" stroke="#efc3c3" stroke-width="2"/>
+  <text x="375" y="560" class="small">남은 문자: 2</text>
+  <text x="375" y="596" class="small">기존 911의 end 발견</text>
   <text x="375" y="710" class="note">기존 문자열이 새 문자열의 접두사</text>
 
   <!-- Existing 9112, inserting 911 -->
@@ -56,8 +56,8 @@
   <rect x="970" y="545" width="70" height="60" rx="14" class="hit"/><text x="1005" y="584" text-anchor="middle" class="label">2</text>
   <rect x="1085" y="452" width="95" height="34" rx="17" class="blue-pill"/><text x="1132" y="476" text-anchor="middle" class="small">pass</text>
   <rect x="1085" y="552" width="92" height="34" rx="17" class="pill"/><text x="1131" y="576" text-anchor="middle" class="small">end</text>
-  <rect x="1100" y="625" width="280" height="86" rx="16" fill="#f7faff" stroke="#d5dfeb" stroke-width="2"/>
-  <text x="1125" y="660" class="small">911에서 반복문 종료</text>
-  <text x="1125" y="692" class="small">아래 자식 2가 남아 있음</text>
+  <rect x="1180" y="535" width="250" height="100" rx="16" fill="#f7faff" stroke="#d5dfeb" stroke-width="2"/>
+  <text x="1205" y="575" class="small">911에서 반복문 종료</text>
+  <text x="1205" y="611" class="small">아래 child 2 존재</text>
   <text x="1125" y="755" text-anchor="middle" class="note">새 문자열이 기존 문자열의 접두사</text>
 </svg>
