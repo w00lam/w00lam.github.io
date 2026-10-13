@@ -1,32 +1,32 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="1000" height="560" viewBox="0 0 1000 560" role="img" aria-labelledby="title desc">
-  <title id="title">B-Tree insertion and deletion balance operations</title>
-  <desc id="desc">A compact comparison of splitting and promoting a middle key during insertion, and borrowing or merging during deletion.</desc>
+  <title id="title">B-Tree 삽입과 삭제의 균형 조정</title>
+  <desc id="desc">삽입 시 가운데 키를 올려 노드를 분할하고, 삭제 시 키를 빌리거나 병합하는 과정을 보여주는 구조도.</desc>
 
   <rect width="1000" height="560" fill="#f8fafc"/>
-  <text x="40" y="42" fill="#1f2937" font-family="Arial, sans-serif" font-size="26" font-weight="700">B-Tree balance operations</text>
-  <text x="40" y="66" fill="#64748b" font-family="Arial, sans-serif" font-size="14">Keep every path balanced by repairing only the node that violates its limit.</text>
+  <text x="40" y="42" fill="#1f2937" font-family="Arial, sans-serif" font-size="26" font-weight="700">B-Tree 균형 조정</text>
+  <text x="40" y="66" fill="#64748b" font-family="Arial, sans-serif" font-size="14">조건을 위반한 노드만 조정해 모든 경로의 깊이를 맞춘다.</text>
 
   <rect x="40" y="88" width="440" height="432" rx="16" fill="#ffffff" stroke="#dbe3ec" stroke-width="2"/>
-  <text x="64" y="122" fill="#1f2937" font-family="Arial, sans-serif" font-size="20" font-weight="700">INSERT</text>
-  <text x="64" y="146" fill="#64748b" font-family="Arial, sans-serif" font-size="14">Split a full node and promote the middle key</text>
+  <text x="64" y="122" fill="#1f2937" font-family="Arial, sans-serif" font-size="20" font-weight="700">삽입</text>
+  <text x="64" y="146" fill="#64748b" font-family="Arial, sans-serif" font-size="14">가득 찬 노드를 분할하고 가운데 키를 부모로 올린다</text>
 
   <rect x="68" y="178" width="168" height="52" rx="9" fill="#fff2d8" stroke="#c47a16" stroke-width="2"/>
   <text x="152" y="204" text-anchor="middle" dominant-baseline="middle" fill="#7c4a03" font-family="Arial, sans-serif" font-size="16" font-weight="700">20 | 30 | 40</text>
-  <text x="152" y="250" text-anchor="middle" fill="#64748b" font-family="Arial, sans-serif" font-size="13">full node</text>
+  <text x="152" y="250" text-anchor="middle" fill="#64748b" font-family="Arial, sans-serif" font-size="13">가득 찬 노드</text>
 
   <line x1="246" y1="204" x2="296" y2="204" stroke="#64748b" stroke-width="2"/>
   <polygon points="296,204 284,198 284,210" fill="#64748b"/>
-  <text x="271" y="190" text-anchor="middle" fill="#64748b" font-family="Arial, sans-serif" font-size="12">split</text>
+  <text x="271" y="190" text-anchor="middle" fill="#64748b" font-family="Arial, sans-serif" font-size="12">분할</text>
 
   <rect x="306" y="178" width="92" height="52" rx="9" fill="#e9f2ff" stroke="#3578c4" stroke-width="2"/>
   <text x="352" y="204" text-anchor="middle" dominant-baseline="middle" fill="#1d4f91" font-family="Arial, sans-serif" font-size="17" font-weight="700">30</text>
-  <text x="352" y="250" text-anchor="middle" fill="#64748b" font-family="Arial, sans-serif" font-size="13">promote</text>
+  <text x="352" y="250" text-anchor="middle" fill="#64748b" font-family="Arial, sans-serif" font-size="13">승격</text>
 
   <line x1="352" y1="260" x2="352" y2="278" stroke="#3578c4" stroke-width="2"/>
   <polygon points="352,278 346,266 358,266" fill="#3578c4"/>
   <rect x="165" y="288" width="214" height="52" rx="9" fill="#eef5ff" stroke="#3578c4" stroke-width="2"/>
   <text x="272" y="314" text-anchor="middle" dominant-baseline="middle" fill="#1d4f91" font-family="Arial, sans-serif" font-size="16" font-weight="700">10 | 30 | 60</text>
-  <text x="272" y="360" text-anchor="middle" fill="#64748b" font-family="Arial, sans-serif" font-size="13">parent boundary keys</text>
+  <text x="272" y="360" text-anchor="middle" fill="#64748b" font-family="Arial, sans-serif" font-size="13">부모의 경계 키</text>
 
   <line x1="218" y1="340" x2="124" y2="380" stroke="#94a3b8" stroke-width="2"/>
   <line x1="272" y1="340" x2="272" y2="380" stroke="#94a3b8" stroke-width="2"/>
@@ -39,29 +39,29 @@
   <text x="420" y="406" text-anchor="middle" dominant-baseline="middle" fill="#334155" font-family="Arial, sans-serif" font-size="14">70 | 80</text>
 
   <rect x="142" y="456" width="260" height="36" rx="18" fill="#eef5ff"/>
-  <text x="272" y="478" text-anchor="middle" dominant-baseline="middle" fill="#1d4f91" font-family="Arial, sans-serif" font-size="13" font-weight="700">root split → height +1</text>
+  <text x="272" y="478" text-anchor="middle" dominant-baseline="middle" fill="#1d4f91" font-family="Arial, sans-serif" font-size="13" font-weight="700">루트 분할 → 높이 +1</text>
 
   <rect x="520" y="88" width="440" height="432" rx="16" fill="#ffffff" stroke="#dbe3ec" stroke-width="2"/>
-  <text x="544" y="122" fill="#1f2937" font-family="Arial, sans-serif" font-size="20" font-weight="700">DELETE</text>
-  <text x="544" y="146" fill="#64748b" font-family="Arial, sans-serif" font-size="14">Borrow from a sibling; otherwise merge</text>
+  <text x="544" y="122" fill="#1f2937" font-family="Arial, sans-serif" font-size="20" font-weight="700">삭제</text>
+  <text x="544" y="146" fill="#64748b" font-family="Arial, sans-serif" font-size="14">형제에게 빌리고, 안 되면 병합한다</text>
 
-  <text x="544" y="178" fill="#64748b" font-family="Arial, sans-serif" font-size="13" font-weight="700">BORROW</text>
+  <text x="544" y="178" fill="#64748b" font-family="Arial, sans-serif" font-size="13" font-weight="700">재분배</text>
   <rect x="544" y="192" width="92" height="50" rx="8" fill="#fff2d8" stroke="#c47a16" stroke-width="2"/>
   <rect x="770" y="192" width="132" height="50" rx="8" fill="#ffffff" stroke="#64748b" stroke-width="2"/>
   <text x="590" y="217" text-anchor="middle" dominant-baseline="middle" fill="#7c4a03" font-family="Arial, sans-serif" font-size="15" font-weight="700">20</text>
   <text x="836" y="217" text-anchor="middle" dominant-baseline="middle" fill="#334155" font-family="Arial, sans-serif" font-size="15" font-weight="700">30 | 40</text>
   <line x1="646" y1="217" x2="760" y2="217" stroke="#2b8a68" stroke-width="2"/>
   <polygon points="760,217 748,211 748,223" fill="#2b8a68"/>
-  <text x="703" y="207" text-anchor="middle" fill="#2b8a68" font-family="Arial, sans-serif" font-size="12">take one key</text>
+  <text x="703" y="207" text-anchor="middle" fill="#2b8a68" font-family="Arial, sans-serif" font-size="12">키 하나 이동</text>
 
   <rect x="544" y="270" width="132" height="50" rx="8" fill="#e9f7f0" stroke="#2b8a68" stroke-width="2"/>
   <rect x="770" y="270" width="92" height="50" rx="8" fill="#ffffff" stroke="#64748b" stroke-width="2"/>
   <text x="610" y="295" text-anchor="middle" dominant-baseline="middle" fill="#176347" font-family="Arial, sans-serif" font-size="15" font-weight="700">20 | 30</text>
   <text x="816" y="295" text-anchor="middle" dominant-baseline="middle" fill="#334155" font-family="Arial, sans-serif" font-size="15" font-weight="700">40</text>
-  <text x="902" y="295" fill="#64748b" font-family="Arial, sans-serif" font-size="12">balanced</text>
+  <text x="902" y="295" fill="#64748b" font-family="Arial, sans-serif" font-size="12">균형 회복</text>
 
   <line x1="544" y1="356" x2="936" y2="356" stroke="#e2e8f0" stroke-width="1.5"/>
-  <text x="544" y="388" fill="#64748b" font-family="Arial, sans-serif" font-size="13" font-weight="700">MERGE</text>
+  <text x="544" y="388" fill="#64748b" font-family="Arial, sans-serif" font-size="13" font-weight="700">병합</text>
   <rect x="544" y="404" width="82" height="50" rx="8" fill="#fff2d8" stroke="#c47a16" stroke-width="2"/>
   <rect x="650" y="404" width="82" height="50" rx="8" fill="#fff2d8" stroke="#c47a16" stroke-width="2"/>
   <text x="585" y="429" text-anchor="middle" dominant-baseline="middle" fill="#7c4a03" font-family="Arial, sans-serif" font-size="15" font-weight="700">20</text>
@@ -70,5 +70,5 @@
   <polygon points="790,429 778,423 778,435" fill="#c47a16"/>
   <rect x="804" y="404" width="120" height="50" rx="8" fill="#fff7e8" stroke="#c47a16" stroke-width="2"/>
   <text x="864" y="429" text-anchor="middle" dominant-baseline="middle" fill="#7c4a03" font-family="Arial, sans-serif" font-size="14" font-weight="700">20 | 30 | 40</text>
-  <text x="864" y="478" text-anchor="middle" fill="#64748b" font-family="Arial, sans-serif" font-size="13">parent separator joins the nodes</text>
+  <text x="864" y="478" text-anchor="middle" fill="#64748b" font-family="Arial, sans-serif" font-size="13">부모 경계 키와 함께 합친다</text>
 </svg>
