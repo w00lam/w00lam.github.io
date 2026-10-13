@@ -1,0 +1,97 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 760" role="img" aria-labelledby="title desc">
+  <title id="title">B-Tree split, redistribution, and merge</title>
+  <desc id="desc">A compact diagram showing node splitting and promotion on insertion, then redistribution and merge on deletion, including root height changes.</desc>
+  <defs>
+    <marker id="arrow" markerWidth="10" markerHeight="10" refX="8" refY="5" orient="auto" markerUnits="strokeWidth">
+      <path d="M0,0 L10,5 L0,10 Z" fill="#56616f"/>
+    </marker>
+    <marker id="blue-arrow" markerWidth="10" markerHeight="10" refX="8" refY="5" orient="auto" markerUnits="strokeWidth">
+      <path d="M0,0 L10,5 L0,10 Z" fill="#3578c4"/>
+    </marker>
+    <style>
+      .title { font: 700 25px Arial, sans-serif; fill: #1f2933; }
+      .section { font: 700 19px Arial, sans-serif; fill: #34495e; }
+      .label { font: 600 16px Arial, sans-serif; fill: #4b5563; }
+      .small { font: 500 14px Arial, sans-serif; fill: #667085; }
+      .node { fill: #ffffff; stroke: #34495e; stroke-width: 2; rx: 8; }
+      .hot { fill: #fff2d8; stroke: #c47a16; stroke-width: 2; rx: 8; }
+      .promoted { fill: #e9f2ff; stroke: #3578c4; stroke-width: 2; rx: 8; }
+      .line { stroke: #56616f; stroke-width: 2; fill: none; marker-end: url(#arrow); }
+      .blue-line { stroke: #3578c4; stroke-width: 2.5; fill: none; marker-end: url(#blue-arrow); }
+      .divider { stroke: #d8dee6; stroke-width: 1.5; }
+    </style>
+  </defs>
+
+  <rect width="1200" height="760" fill="#fbfcfe"/>
+  <text x="50" y="48" class="title">B-Tree balance operations</text>
+  <line x1="50" y1="70" x2="1150" y2="70" class="divider"/>
+
+  <text x="50" y="108" class="section">Insert → split → promote</text>
+  <text x="50" y="136" class="small">Full node</text>
+  <rect x="50" y="155" width="180" height="54" class="hot"/>
+  <text x="140" y="188" text-anchor="middle" class="label">20 | 30 | 40</text>
+  <path d="M245 182 H320" class="line"/>
+  <text x="282" y="164" text-anchor="middle" class="small">split</text>
+
+  <text x="340" y="136" class="small">Promote middle key</text>
+  <rect x="340" y="155" width="75" height="54" class="promoted"/>
+  <text x="377" y="188" text-anchor="middle" class="label">30</text>
+  <path d="M430 182 H500" class="line"/>
+  <text x="465" y="164" text-anchor="middle" class="small">to parent</text>
+
+  <rect x="520" y="125" width="180" height="54" class="node"/>
+  <text x="610" y="158" text-anchor="middle" class="label">10 | 30 | 60</text>
+  <path d="M610 190 V236 M610 236 H555 M610 236 H665 M555 236 V265 M665 236 V265" class="line"/>
+  <rect x="505" y="270" width="100" height="50" class="node"/>
+  <text x="555" y="301" text-anchor="middle" class="label">10 | 20</text>
+  <rect x="615" y="270" width="100" height="50" class="node"/>
+  <text x="665" y="301" text-anchor="middle" class="label">40</text>
+  <rect x="725" y="270" width="100" height="50" class="node"/>
+  <text x="775" y="301" text-anchor="middle" class="label">70</text>
+  <path d="M700 152 H900" class="blue-line"/>
+  <text x="800" y="140" text-anchor="middle" class="small">root split: h 0 → 1</text>
+  <rect x="920" y="125" width="170" height="54" class="promoted"/>
+  <text x="1005" y="158" text-anchor="middle" class="label">30 (new root)</text>
+  <path d="M1005 190 V235 M1005 235 H955 M1005 235 H1055 M955 235 V265 M1055 235 V265" class="line"/>
+  <rect x="905" y="270" width="100" height="50" class="node"/>
+  <text x="955" y="301" text-anchor="middle" class="label">10 | 20</text>
+  <rect x="1010" y="270" width="100" height="50" class="node"/>
+  <text x="1060" y="301" text-anchor="middle" class="label">40 | 60</text>
+
+  <line x1="50" y1="365" x2="1150" y2="365" class="divider"/>
+  <text x="50" y="404" class="section">Delete → borrow or merge</text>
+  <text x="50" y="432" class="small">Underfull node</text>
+  <rect x="50" y="450" width="110" height="50" class="hot"/>
+  <text x="105" y="481" text-anchor="middle" class="label">20</text>
+  <rect x="175" y="450" width="150" height="50" class="node"/>
+  <text x="250" y="481" text-anchor="middle" class="label">40 | 50</text>
+  <rect x="112" y="530" width="180" height="48" class="promoted"/>
+  <text x="202" y="560" text-anchor="middle" class="label">parent: 30</text>
+  <path d="M160 475 H175" class="line"/>
+  <path d="M250 505 V525" class="blue-line"/>
+  <text x="270" y="522" class="small">borrow</text>
+
+  <rect x="360" y="450" width="110" height="50" class="node"/>
+  <text x="415" y="481" text-anchor="middle" class="label">20 | 30</text>
+  <rect x="485" y="450" width="110" height="50" class="node"/>
+  <text x="540" y="481" text-anchor="middle" class="label">40</text>
+  <path d="M325 475 H355" class="blue-line"/>
+  <text x="340" y="455" text-anchor="middle" class="small">redistribute</text>
+
+  <text x="655" y="432" class="small">No spare key in sibling</text>
+  <rect x="650" y="450" width="110" height="50" class="hot"/>
+  <text x="705" y="481" text-anchor="middle" class="label">20</text>
+  <rect x="775" y="450" width="110" height="50" class="hot"/>
+  <text x="830" y="481" text-anchor="middle" class="label">40</text>
+  <rect x="710" y="530" width="120" height="48" class="promoted"/>
+  <text x="770" y="560" text-anchor="middle" class="label">parent: 30</text>
+  <path d="M760 475 H775" class="line"/>
+  <path d="M705 505 V525" class="line"/>
+  <path d="M830 505 V525" class="line"/>
+  <path d="M890 475 H945" class="line"/>
+  <text x="918" y="455" text-anchor="middle" class="small">merge</text>
+  <rect x="950" y="450" width="170" height="50" class="node"/>
+  <text x="1035" y="481" text-anchor="middle" class="label">20 | 30 | 40</text>
+  <path d="M1035 505 V550" class="blue-line"/>
+  <text x="1035" y="580" text-anchor="middle" class="small">root merge: h 1 → 0</text>
+</svg>
