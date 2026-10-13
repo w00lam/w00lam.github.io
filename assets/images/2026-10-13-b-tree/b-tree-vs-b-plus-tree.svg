@@ -1,66 +1,48 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="700" viewBox="0 0 1200 700" role="img" aria-labelledby="title desc">
+<svg xmlns="http://www.w3.org/2000/svg" width="1000" height="430" viewBox="0 0 1000 430" role="img" aria-labelledby="title desc">
   <title id="title">B-Tree and B+Tree comparison</title>
-  <desc id="desc">Side-by-side comparison showing data can appear in B-Tree internal nodes, while B+Tree keeps index keys in internal nodes and data in linked leaves.</desc>
-  <defs>
-    <marker id="arrow" markerWidth="10" markerHeight="10" refX="8" refY="5" orient="auto" markerUnits="strokeWidth">
-      <path d="M0,0 L10,5 L0,10 Z" fill="#56616f"/>
-    </marker>
-    <marker id="range-arrow" markerWidth="10" markerHeight="10" refX="8" refY="5" orient="auto" markerUnits="strokeWidth">
-      <path d="M0,0 L10,5 L0,10 Z" fill="#2b8a68"/>
-    </marker>
-    <style>
-      .title { font: 700 25px Arial, sans-serif; fill: #1f2933; }
-      .head { font: 700 20px Arial, sans-serif; fill: #34495e; }
-      .label { font: 600 15px Arial, sans-serif; fill: #4b5563; }
-      .small { font: 500 14px Arial, sans-serif; fill: #667085; }
-      .panel { fill: #ffffff; stroke: #d8dee6; stroke-width: 2; rx: 14; }
-      .node { fill: #eef5ff; stroke: #3578c4; stroke-width: 2; rx: 8; }
-      .data { fill: #fff2d8; stroke: #c47a16; stroke-width: 2; rx: 8; }
-      .leaf { fill: #effaf5; stroke: #2b8a68; stroke-width: 2; rx: 8; }
-      .line { stroke: #56616f; stroke-width: 2; fill: none; marker-end: url(#arrow); }
-      .range { stroke: #2b8a68; stroke-width: 2.5; fill: none; marker-end: url(#range-arrow); }
-      .divider { stroke: #d8dee6; stroke-width: 1.5; }
-    </style>
-  </defs>
+  <desc id="desc">A compact comparison showing data can live in B-Tree internal nodes, while B+Tree keeps data in linked leaf nodes.</desc>
 
-  <rect width="1200" height="700" fill="#fbfcfe"/>
-  <text x="50" y="48" class="title">B-Tree vs B+Tree</text>
-  <line x1="50" y1="70" x2="1150" y2="70" class="divider"/>
+  <rect width="1000" height="430" fill="#f8fafc"/>
+  <text x="40" y="42" fill="#1f2937" font-family="Arial, sans-serif" font-size="26" font-weight="700">B-Tree vs B+Tree</text>
+  <text x="40" y="66" fill="#64748b" font-family="Arial, sans-serif" font-size="14">The key difference is where data lives and how a range scan continues.</text>
 
-  <rect x="50" y="100" width="520" height="540" class="panel"/>
-  <rect x="630" y="100" width="520" height="540" class="panel"/>
-  <text x="310" y="140" text-anchor="middle" class="head">B-Tree</text>
-  <text x="890" y="140" text-anchor="middle" class="head">B+Tree</text>
+  <rect x="40" y="88" width="440" height="300" rx="16" fill="#ffffff" stroke="#dbe3ec" stroke-width="2"/>
+  <text x="260" y="120" text-anchor="middle" fill="#1f2937" font-family="Arial, sans-serif" font-size="20" font-weight="700">B-Tree</text>
+  <text x="260" y="142" text-anchor="middle" fill="#64748b" font-family="Arial, sans-serif" font-size="13">keys and data may coexist</text>
 
-  <rect x="205" y="170" width="210" height="55" class="data"/>
-  <text x="310" y="204" text-anchor="middle" class="label">30 | 60 + data</text>
-  <path d="M260 230 V275 M360 230 V275" class="line"/>
-  <rect x="125" y="285" width="155" height="55" class="data"/>
-  <text x="202" y="319" text-anchor="middle" class="label">10 | 20 + data</text>
-  <rect x="335" y="285" width="155" height="55" class="data"/>
-  <text x="412" y="319" text-anchor="middle" class="label">60 | 80 + data</text>
-  <text x="310" y="385" text-anchor="middle" class="small">internal node may end search</text>
-  <path d="M210 440 H470" class="divider"/>
-  <text x="310" y="475" text-anchor="middle" class="small">key and data can coexist</text>
-  <rect x="185" y="505" width="250" height="55" class="data"/>
-  <text x="310" y="539" text-anchor="middle" class="label">data may be at any node</text>
+  <rect x="150" y="158" width="220" height="48" rx="8" fill="#fff2d8" stroke="#c47a16" stroke-width="2"/>
+  <text x="260" y="182" text-anchor="middle" dominant-baseline="middle" fill="#7c4a03" font-family="Arial, sans-serif" font-size="15" font-weight="700">30 | 60 + data</text>
+  <line x1="260" y1="206" x2="260" y2="222" stroke="#94a3b8" stroke-width="2"/>
+  <line x1="260" y1="222" x2="125" y2="222" stroke="#94a3b8" stroke-width="2"/>
+  <line x1="260" y1="222" x2="395" y2="222" stroke="#94a3b8" stroke-width="2"/>
+  <line x1="260" y1="222" x2="260" y2="222" stroke="#94a3b8" stroke-width="2"/>
+  <rect x="72" y="238" width="106" height="48" rx="8" fill="#fff7e8" stroke="#c47a16" stroke-width="2"/>
+  <rect x="207" y="238" width="106" height="48" rx="8" fill="#fff7e8" stroke="#c47a16" stroke-width="2"/>
+  <rect x="342" y="238" width="106" height="48" rx="8" fill="#fff7e8" stroke="#c47a16" stroke-width="2"/>
+  <text x="125" y="262" text-anchor="middle" dominant-baseline="middle" fill="#7c4a03" font-family="Arial, sans-serif" font-size="14" font-weight="700">10 | 20 + data</text>
+  <text x="260" y="262" text-anchor="middle" dominant-baseline="middle" fill="#7c4a03" font-family="Arial, sans-serif" font-size="14" font-weight="700">40 | 50 + data</text>
+  <text x="395" y="262" text-anchor="middle" dominant-baseline="middle" fill="#7c4a03" font-family="Arial, sans-serif" font-size="14" font-weight="700">70 | 80 + data</text>
+  <rect x="125" y="318" width="270" height="34" rx="17" fill="#fff7e8"/>
+  <text x="260" y="339" text-anchor="middle" dominant-baseline="middle" fill="#7c4a03" font-family="Arial, sans-serif" font-size="13" font-weight="700">a match may end at any node</text>
 
-  <rect x="785" y="170" width="210" height="55" class="node"/>
-  <text x="890" y="204" text-anchor="middle" class="label">30 | 60 (index keys)</text>
-  <path d="M840 230 V275 M940 230 V275" class="line"/>
-  <rect x="690" y="285" width="155" height="55" class="leaf"/>
-  <text x="767" y="319" text-anchor="middle" class="label">10 | 20 : data</text>
-  <rect x="865" y="285" width="155" height="55" class="leaf"/>
-  <text x="942" y="319" text-anchor="middle" class="label">30 | 60 : data</text>
-  <text x="890" y="385" text-anchor="middle" class="small">always descend to leaf</text>
-  <path d="M770 370 C790 405 815 405 835 370" class="range"/>
-  <path d="M1025 315 H1080" class="range"/>
-  <text x="1050" y="300" text-anchor="middle" class="small">next leaf</text>
-  <rect x="690" y="440" width="155" height="55" class="leaf"/>
-  <text x="767" y="474" text-anchor="middle" class="label">70 | 80 : data</text>
-  <path d="M865 312 H845" class="range"/>
-  <path d="M845 467 H865" class="range"/>
-  <rect x="865" y="440" width="155" height="55" class="leaf"/>
-  <text x="942" y="474" text-anchor="middle" class="label">90 | 100 : data</text>
-  <text x="890" y="550" text-anchor="middle" class="small">linked leaves → range scan</text>
+  <rect x="520" y="88" width="440" height="300" rx="16" fill="#ffffff" stroke="#dbe3ec" stroke-width="2"/>
+  <text x="740" y="120" text-anchor="middle" fill="#1f2937" font-family="Arial, sans-serif" font-size="20" font-weight="700">B+Tree</text>
+  <text x="740" y="142" text-anchor="middle" fill="#64748b" font-family="Arial, sans-serif" font-size="13">internal keys guide; leaves hold data</text>
+
+  <rect x="630" y="158" width="220" height="48" rx="8" fill="#e9f2ff" stroke="#3578c4" stroke-width="2"/>
+  <text x="740" y="182" text-anchor="middle" dominant-baseline="middle" fill="#1d4f91" font-family="Arial, sans-serif" font-size="15" font-weight="700">30 | 60 (index keys)</text>
+  <line x1="740" y1="206" x2="740" y2="222" stroke="#94a3b8" stroke-width="2"/>
+  <line x1="740" y1="222" x2="605" y2="222" stroke="#94a3b8" stroke-width="2"/>
+  <line x1="740" y1="222" x2="875" y2="222" stroke="#94a3b8" stroke-width="2"/>
+  <rect x="552" y="238" width="106" height="48" rx="8" fill="#e9f7f0" stroke="#2b8a68" stroke-width="2"/>
+  <rect x="687" y="238" width="106" height="48" rx="8" fill="#e9f7f0" stroke="#2b8a68" stroke-width="2"/>
+  <rect x="822" y="238" width="106" height="48" rx="8" fill="#e9f7f0" stroke="#2b8a68" stroke-width="2"/>
+  <text x="605" y="262" text-anchor="middle" dominant-baseline="middle" fill="#176347" font-family="Arial, sans-serif" font-size="14" font-weight="700">10 | 20 : data</text>
+  <text x="740" y="262" text-anchor="middle" dominant-baseline="middle" fill="#176347" font-family="Arial, sans-serif" font-size="14" font-weight="700">30 | 50 : data</text>
+  <text x="875" y="262" text-anchor="middle" dominant-baseline="middle" fill="#176347" font-family="Arial, sans-serif" font-size="14" font-weight="700">70 | 80 : data</text>
+  <line x1="658" y1="298" x2="682" y2="298" stroke="#2b8a68" stroke-width="2"/>
+  <polygon points="682,298 670,292 670,304" fill="#2b8a68"/>
+  <line x1="793" y1="298" x2="817" y2="298" stroke="#2b8a68" stroke-width="2"/>
+  <polygon points="817,298 805,292 805,304" fill="#2b8a68"/>
+  <text x="740" y="339" text-anchor="middle" fill="#176347" font-family="Arial, sans-serif" font-size="13" font-weight="700">linked leaves → easy range scan</text>
 </svg>
