@@ -1,4 +1,4 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 700" role="img" aria-labelledby="title desc">
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="700" viewBox="0 0 1200 700" role="img" aria-labelledby="title desc">
   <title id="title">B-Tree and B+Tree comparison</title>
   <desc id="desc">Side-by-side comparison showing data can appear in B-Tree internal nodes, while B+Tree keeps index keys in internal nodes and data in linked leaves.</desc>
   <defs>

@@ -1,4 +1,4 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 760" role="img" aria-labelledby="title desc">
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="760" viewBox="0 0 1200 760" role="img" aria-labelledby="title desc">
   <title id="title">B-Tree split, redistribution, and merge</title>
   <desc id="desc">A compact diagram showing node splitting and promotion on insertion, then redistribution and merge on deletion, including root height changes.</desc>
   <defs>
