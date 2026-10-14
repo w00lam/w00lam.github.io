@@ -1,0 +1,67 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1280" height="760" viewBox="0 0 1280 760" role="img" aria-labelledby="title desc">
+  <title id="title">회원과 식당의 찜 관계와 복합 UNIQUE 제약조건</title>
+  <desc id="desc">member_restaurants의 member_id는 members.id를, restaurant_id는 restaurants.id를 참조하며, 두 컬럼의 조합에 UNIQUE 제약조건을 둬 같은 찜 관계의 중복을 막는 구조도.</desc>
+
+  <defs>
+    <marker id="arrow-blue" markerWidth="10" markerHeight="10" refX="8" refY="5" orient="auto">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#3578c4"/>
+    </marker>
+    <marker id="arrow-green" markerWidth="10" markerHeight="10" refX="8" refY="5" orient="auto">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#2b8a68"/>
+    </marker>
+  </defs>
+
+  <rect width="1280" height="760" fill="#f8fafc"/>
+  <text x="48" y="52" fill="#1f2937" font-family="Arial, sans-serif" font-size="28" font-weight="700">회원과 식당의 찜 관계</text>
+  <text x="48" y="82" fill="#64748b" font-family="Arial, sans-serif" font-size="15">외래키는 참조 대상의 존재를 확인하고, 복합 UNIQUE는 같은 관계의 중복을 막는다.</text>
+
+  <rect x="48" y="132" width="286" height="372" rx="16" fill="#ffffff" stroke="#dbe3ec" stroke-width="2"/>
+  <rect x="48" y="132" width="286" height="66" rx="16" fill="#e9f2ff"/>
+  <rect x="48" y="182" width="286" height="16" fill="#e9f2ff"/>
+  <text x="74" y="173" fill="#1d4f91" font-family="Arial, sans-serif" font-size="22" font-weight="700">members</text>
+  <text x="74" y="238" fill="#64748b" font-family="Arial, sans-serif" font-size="13">컬럼</text>
+  <line x1="74" y1="252" x2="308" y2="252" stroke="#e2e8f0" stroke-width="1.5"/>
+  <rect x="70" y="270" width="242" height="58" rx="9" fill="#eef5ff" stroke="#3578c4" stroke-width="2"/>
+  <text x="88" y="305" fill="#1d4f91" font-family="Arial, sans-serif" font-size="17" font-weight="700">id</text>
+  <text x="290" y="305" text-anchor="end" fill="#1d4f91" font-family="Arial, sans-serif" font-size="13" font-weight="700">PRIMARY KEY</text>
+  <rect x="70" y="344" width="242" height="52" rx="9" fill="#ffffff" stroke="#cbd5e1" stroke-width="1.5"/>
+  <text x="88" y="376" fill="#334155" font-family="Arial, sans-serif" font-size="16">name</text>
+  <text x="74" y="456" fill="#64748b" font-family="Arial, sans-serif" font-size="13">참조 대상 테이블</text>
+
+  <rect x="404" y="112" width="472" height="420" rx="16" fill="#ffffff" stroke="#dbe3ec" stroke-width="2"/>
+  <rect x="404" y="112" width="472" height="70" rx="16" fill="#e9f7f0"/>
+  <rect x="404" y="166" width="472" height="16" fill="#e9f7f0"/>
+  <text x="432" y="156" fill="#176347" font-family="Arial, sans-serif" font-size="22" font-weight="700">member_restaurants</text>
+  <text x="432" y="224" fill="#64748b" font-family="Arial, sans-serif" font-size="13">찜 관계를 저장하는 테이블</text>
+  <rect x="428" y="244" width="424" height="58" rx="9" fill="#eef5ff" stroke="#3578c4" stroke-width="2"/>
+  <text x="450" y="279" fill="#1d4f91" font-family="Arial, sans-serif" font-size="17" font-weight="700">member_id</text>
+  <text x="828" y="279" text-anchor="end" fill="#1d4f91" font-family="Arial, sans-serif" font-size="13" font-weight="700">FK → members.id</text>
+  <rect x="428" y="318" width="424" height="58" rx="9" fill="#eef5ff" stroke="#3578c4" stroke-width="2"/>
+  <text x="450" y="353" fill="#1d4f91" font-family="Arial, sans-serif" font-size="17" font-weight="700">restaurant_id</text>
+  <text x="828" y="353" text-anchor="end" fill="#1d4f91" font-family="Arial, sans-serif" font-size="13" font-weight="700">FK → restaurants.id</text>
+  <rect x="428" y="412" width="424" height="76" rx="10" fill="#fff7e8" stroke="#c47a16" stroke-width="2"/>
+  <text x="640" y="442" text-anchor="middle" fill="#7c4a03" font-family="Arial, sans-serif" font-size="18" font-weight="700">UNIQUE (member_id, restaurant_id)</text>
+  <text x="640" y="468" text-anchor="middle" fill="#7c4a03" font-family="Arial, sans-serif" font-size="13">같은 회원·식당 조합의 중복을 거절</text>
+
+  <rect x="946" y="132" width="286" height="372" rx="16" fill="#ffffff" stroke="#dbe3ec" stroke-width="2"/>
+  <rect x="946" y="132" width="286" height="66" rx="16" fill="#e9f2ff"/>
+  <rect x="946" y="182" width="286" height="16" fill="#e9f2ff"/>
+  <text x="972" y="173" fill="#1d4f91" font-family="Arial, sans-serif" font-size="22" font-weight="700">restaurants</text>
+  <text x="972" y="238" fill="#64748b" font-family="Arial, sans-serif" font-size="13">컬럼</text>
+  <line x1="972" y1="252" x2="1206" y2="252" stroke="#e2e8f0" stroke-width="1.5"/>
+  <rect x="968" y="270" width="242" height="58" rx="9" fill="#eef5ff" stroke="#3578c4" stroke-width="2"/>
+  <text x="986" y="305" fill="#1d4f91" font-family="Arial, sans-serif" font-size="17" font-weight="700">id</text>
+  <text x="1188" y="305" text-anchor="end" fill="#1d4f91" font-family="Arial, sans-serif" font-size="13" font-weight="700">PRIMARY KEY</text>
+  <rect x="968" y="344" width="242" height="52" rx="9" fill="#ffffff" stroke="#cbd5e1" stroke-width="1.5"/>
+  <text x="986" y="376" fill="#334155" font-family="Arial, sans-serif" font-size="16">name</text>
+  <text x="972" y="456" fill="#64748b" font-family="Arial, sans-serif" font-size="13">참조 대상 테이블</text>
+
+  <line x1="428" y1="273" x2="350" y2="273" stroke="#3578c4" stroke-width="2.5" marker-end="url(#arrow-blue)"/>
+  <text x="388" y="255" text-anchor="middle" fill="#3578c4" font-family="Arial, sans-serif" font-size="13" font-weight="700">참조</text>
+  <line x1="852" y1="347" x2="938" y2="347" stroke="#3578c4" stroke-width="2.5" marker-end="url(#arrow-blue)"/>
+  <text x="895" y="329" text-anchor="middle" fill="#3578c4" font-family="Arial, sans-serif" font-size="13" font-weight="700">참조</text>
+
+  <rect x="112" y="590" width="1056" height="92" rx="16" fill="#fff7e8" stroke="#c47a16" stroke-width="2"/>
+  <text x="640" y="628" text-anchor="middle" fill="#7c4a03" font-family="Arial, sans-serif" font-size="20" font-weight="700">외래키만 있으면 같은 찜 관계가 여러 번 들어갈 수 있다</text>
+  <text x="640" y="658" text-anchor="middle" fill="#7c4a03" font-family="Arial, sans-serif" font-size="15">UNIQUE (member_id, restaurant_id)가 두 컬럼의 조합을 하나의 규칙으로 묶는다.</text>
+</svg>
