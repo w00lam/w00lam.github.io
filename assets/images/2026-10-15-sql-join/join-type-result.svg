@@ -1,0 +1,56 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1400" height="980" viewBox="0 0 1400 980" role="img" aria-labelledby="title desc">
+  <title id="title">INNER JOIN과 LEFT JOIN의 결과 행 비교</title>
+  <desc id="desc">restaurant의 세 행과 visit의 네 행을 restaurant.id와 visit.restaurant_id로 연결했을 때 INNER JOIN은 네 행, LEFT JOIN은 방문 기록이 없는 파스타집의 NULL 행을 포함해 다섯 행이 되는 과정을 보여 주는 그림.</desc>
+
+  <rect width="1400" height="980" fill="#f8fafc"/>
+  <text x="56" y="58" fill="#1f2937" font-family="Arial, 'Malgun Gothic', sans-serif" font-size="30" font-weight="700">JOIN 종류가 결과 행을 바꾸는 방식</text>
+  <text x="56" y="91" fill="#64748b" font-family="Arial, 'Malgun Gothic', sans-serif" font-size="16">ON r.id = v.restaurant_id를 기준으로 같은 예제 데이터를 연결했다.</text>
+
+  <rect x="56" y="132" width="350" height="360" rx="16" fill="#ffffff" stroke="#dbe3ec" stroke-width="2"/>
+  <rect x="56" y="132" width="350" height="64" rx="16" fill="#e9f2ff"/>
+  <rect x="56" y="180" width="350" height="16" fill="#e9f2ff"/>
+  <text x="82" y="173" fill="#1d4f91" font-family="Arial, 'Malgun Gothic', sans-serif" font-size="23" font-weight="700">restaurant</text>
+  <text x="82" y="230" fill="#64748b" font-family="Arial, 'Malgun Gothic', sans-serif" font-size="14">id · name</text>
+  <line x1="82" y1="244" x2="380" y2="244" stroke="#e2e8f0" stroke-width="1.5"/>
+  <text x="94" y="284" fill="#334155" font-family="Arial, 'Malgun Gothic', sans-serif" font-size="18">1 · 국밥집</text>
+  <text x="94" y="332" fill="#334155" font-family="Arial, 'Malgun Gothic', sans-serif" font-size="18">2 · 초밥집</text>
+  <text x="94" y="380" fill="#334155" font-family="Arial, 'Malgun Gothic', sans-serif" font-size="18">3 · 파스타집</text>
+  <text x="82" y="450" fill="#64748b" font-family="Arial, 'Malgun Gothic', sans-serif" font-size="14">왼쪽 테이블 · 3행</text>
+
+  <rect x="994" y="132" width="350" height="360" rx="16" fill="#ffffff" stroke="#dbe3ec" stroke-width="2"/>
+  <rect x="994" y="132" width="350" height="64" rx="16" fill="#e9f7f0"/>
+  <rect x="994" y="180" width="350" height="16" fill="#e9f7f0"/>
+  <text x="1020" y="173" fill="#176347" font-family="Arial, 'Malgun Gothic', sans-serif" font-size="23" font-weight="700">visit</text>
+  <text x="1020" y="230" fill="#64748b" font-family="Arial, 'Malgun Gothic', sans-serif" font-size="14">restaurant_id · youtuber</text>
+  <line x1="1020" y1="244" x2="1318" y2="244" stroke="#e2e8f0" stroke-width="1.5"/>
+  <text x="1032" y="284" fill="#334155" font-family="Arial, 'Malgun Gothic', sans-serif" font-size="18">1 · 철수</text>
+  <text x="1032" y="332" fill="#334155" font-family="Arial, 'Malgun Gothic', sans-serif" font-size="18">1 · 영희</text>
+  <text x="1032" y="380" fill="#334155" font-family="Arial, 'Malgun Gothic', sans-serif" font-size="18">2 · 철수</text>
+  <text x="1032" y="428" fill="#334155" font-family="Arial, 'Malgun Gothic', sans-serif" font-size="18">2 · 민수</text>
+  <text x="1020" y="468" fill="#64748b" font-family="Arial, 'Malgun Gothic', sans-serif" font-size="14">오른쪽 테이블 · 4행</text>
+
+  <line x1="430" y1="292" x2="970" y2="292" stroke="#3578c4" stroke-width="3" stroke-dasharray="10 9"/>
+  <text x="700" y="276" text-anchor="middle" fill="#3578c4" font-family="Arial, 'Malgun Gothic', sans-serif" font-size="16" font-weight="700">r.id = v.restaurant_id</text>
+
+  <rect x="56" y="548" width="624" height="346" rx="16" fill="#ffffff" stroke="#3578c4" stroke-width="2"/>
+  <rect x="56" y="548" width="624" height="70" rx="16" fill="#eef5ff"/>
+  <rect x="56" y="602" width="624" height="16" fill="#eef5ff"/>
+  <text x="84" y="592" fill="#1d4f91" font-family="Arial, 'Malgun Gothic', sans-serif" font-size="23" font-weight="700">INNER JOIN · 4행</text>
+  <text x="84" y="656" fill="#334155" font-family="Arial, 'Malgun Gothic', sans-serif" font-size="18">국밥집 · 철수</text>
+  <text x="84" y="700" fill="#334155" font-family="Arial, 'Malgun Gothic', sans-serif" font-size="18">국밥집 · 영희</text>
+  <text x="84" y="744" fill="#334155" font-family="Arial, 'Malgun Gothic', sans-serif" font-size="18">초밥집 · 철수</text>
+  <text x="84" y="788" fill="#334155" font-family="Arial, 'Malgun Gothic', sans-serif" font-size="18">초밥집 · 민수</text>
+  <rect x="84" y="820" width="558" height="46" rx="9" fill="#fff7e8"/>
+  <text x="363" y="849" text-anchor="middle" fill="#7c4a03" font-family="Arial, 'Malgun Gothic', sans-serif" font-size="15">일치하는 조합만 반환 · 파스타집 제외</text>
+
+  <rect x="720" y="548" width="624" height="346" rx="16" fill="#ffffff" stroke="#2b8a68" stroke-width="2"/>
+  <rect x="720" y="548" width="624" height="70" rx="16" fill="#e9f7f0"/>
+  <rect x="720" y="602" width="624" height="16" fill="#e9f7f0"/>
+  <text x="748" y="592" fill="#176347" font-family="Arial, 'Malgun Gothic', sans-serif" font-size="23" font-weight="700">LEFT JOIN · 5행</text>
+  <text x="748" y="656" fill="#334155" font-family="Arial, 'Malgun Gothic', sans-serif" font-size="18">국밥집 · 철수</text>
+  <text x="748" y="700" fill="#334155" font-family="Arial, 'Malgun Gothic', sans-serif" font-size="18">국밥집 · 영희</text>
+  <text x="748" y="744" fill="#334155" font-family="Arial, 'Malgun Gothic', sans-serif" font-size="18">초밥집 · 철수</text>
+  <text x="748" y="788" fill="#334155" font-family="Arial, 'Malgun Gothic', sans-serif" font-size="18">초밥집 · 민수</text>
+  <text x="748" y="832" fill="#b45309" font-family="Arial, 'Malgun Gothic', sans-serif" font-size="18" font-weight="700">파스타집 · NULL</text>
+  <text x="1072" y="868" text-anchor="middle" fill="#176347" font-family="Arial, 'Malgun Gothic', sans-serif" font-size="15">왼쪽 행 보존 · 대응 행이 없으면 NULL</text>
+</svg>

@@ -1,0 +1,55 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1400" height="930" viewBox="0 0 1400 930" role="img" aria-labelledby="title desc">
+  <title id="title">ON과 WHERE에 철수 조건을 작성했을 때의 LEFT JOIN 결과</title>
+  <desc id="desc">같은 restaurant와 visit 데이터에서 철수 조건을 ON에 두면 세 음식점이 보존되고, WHERE에 두면 JOIN 결과에서 NULL과 다른 유튜버 행이 제거되어 두 음식점만 남는 과정을 비교한 그림.</desc>
+
+  <rect width="1400" height="930" fill="#f8fafc"/>
+  <text x="56" y="58" fill="#1f2937" font-family="Arial, 'Malgun Gothic', sans-serif" font-size="30" font-weight="700">같은 조건도 ON과 WHERE의 위치에 따라 결과가 달라진다</text>
+  <text x="56" y="91" fill="#64748b" font-family="Arial, 'Malgun Gothic', sans-serif" font-size="16">restaurant와 visit를 LEFT JOIN하고 유튜버가 ‘철수’인 기록만 확인한다.</text>
+
+  <rect x="56" y="132" width="624" height="690" rx="18" fill="#ffffff" stroke="#3578c4" stroke-width="2"/>
+  <rect x="56" y="132" width="624" height="72" rx="18" fill="#eef5ff"/>
+  <rect x="56" y="188" width="624" height="16" fill="#eef5ff"/>
+  <text x="86" y="178" fill="#1d4f91" font-family="Arial, 'Malgun Gothic', sans-serif" font-size="24" font-weight="700">조건을 ON에 작성</text>
+  <text x="86" y="236" fill="#334155" font-family="Consolas, monospace" font-size="16">ON r.id = v.restaurant_id</text>
+  <text x="86" y="264" fill="#334155" font-family="Consolas, monospace" font-size="16">AND v.youtuber = '철수'</text>
+
+  <rect x="86" y="302" width="564" height="82" rx="12" fill="#f8fafc" stroke="#cbd5e1" stroke-width="1.5"/>
+  <text x="368" y="334" text-anchor="middle" fill="#64748b" font-family="Arial, 'Malgun Gothic', sans-serif" font-size="14">1. 매칭할 오른쪽 후보를 철수로 제한</text>
+  <text x="368" y="362" text-anchor="middle" fill="#334155" font-family="Arial, 'Malgun Gothic', sans-serif" font-size="16" font-weight="700">LEFT JOIN의 왼쪽 행 보존은 유지</text>
+  <line x1="368" y1="386" x2="368" y2="432" stroke="#3578c4" stroke-width="3" marker-end="url(#arrow-blue)"/>
+
+  <rect x="86" y="454" width="564" height="252" rx="12" fill="#ffffff" stroke="#3578c4" stroke-width="2"/>
+  <text x="112" y="490" fill="#1d4f91" font-family="Arial, 'Malgun Gothic', sans-serif" font-size="20" font-weight="700">최종 결과 · 3행</text>
+  <text x="112" y="540" fill="#334155" font-family="Arial, 'Malgun Gothic', sans-serif" font-size="18">국밥집 · 철수</text>
+  <text x="112" y="584" fill="#334155" font-family="Arial, 'Malgun Gothic', sans-serif" font-size="18">초밥집 · 철수</text>
+  <text x="112" y="628" fill="#b45309" font-family="Arial, 'Malgun Gothic', sans-serif" font-size="18" font-weight="700">파스타집 · NULL</text>
+  <text x="112" y="676" fill="#176347" font-family="Arial, 'Malgun Gothic', sans-serif" font-size="15">오른쪽에서 철수 기록을 못 찾은 왼쪽 행도 남는다.</text>
+
+  <rect x="720" y="132" width="624" height="690" rx="18" fill="#ffffff" stroke="#c47a16" stroke-width="2"/>
+  <rect x="720" y="132" width="624" height="72" rx="18" fill="#fff7e8"/>
+  <rect x="720" y="188" width="624" height="16" fill="#fff7e8"/>
+  <text x="750" y="178" fill="#7c4a03" font-family="Arial, 'Malgun Gothic', sans-serif" font-size="24" font-weight="700">조건을 WHERE에 작성</text>
+  <text x="750" y="236" fill="#334155" font-family="Consolas, monospace" font-size="16">ON r.id = v.restaurant_id</text>
+  <text x="750" y="264" fill="#334155" font-family="Consolas, monospace" font-size="16">WHERE v.youtuber = '철수'</text>
+
+  <rect x="750" y="302" width="564" height="82" rx="12" fill="#f8fafc" stroke="#cbd5e1" stroke-width="1.5"/>
+  <text x="1032" y="334" text-anchor="middle" fill="#64748b" font-family="Arial, 'Malgun Gothic', sans-serif" font-size="14">1. 일반적인 LEFT JOIN을 먼저 수행</text>
+  <text x="1032" y="362" text-anchor="middle" fill="#334155" font-family="Arial, 'Malgun Gothic', sans-serif" font-size="16" font-weight="700">2. 완성된 결과에 WHERE 적용</text>
+  <line x1="1032" y1="386" x2="1032" y2="432" stroke="#c47a16" stroke-width="3" marker-end="url(#arrow-orange)"/>
+
+  <rect x="750" y="454" width="564" height="252" rx="12" fill="#ffffff" stroke="#c47a16" stroke-width="2"/>
+  <text x="776" y="490" fill="#7c4a03" font-family="Arial, 'Malgun Gothic', sans-serif" font-size="20" font-weight="700">최종 결과 · 2행</text>
+  <text x="776" y="540" fill="#334155" font-family="Arial, 'Malgun Gothic', sans-serif" font-size="18">국밥집 · 철수</text>
+  <text x="776" y="584" fill="#334155" font-family="Arial, 'Malgun Gothic', sans-serif" font-size="18">초밥집 · 철수</text>
+  <text x="776" y="628" fill="#b45309" font-family="Arial, 'Malgun Gothic', sans-serif" font-size="18" font-weight="700">영희·민수·NULL 행 제거</text>
+  <text x="776" y="676" fill="#7c4a03" font-family="Arial, 'Malgun Gothic', sans-serif" font-size="15">오른쪽 컬럼이 NULL인 행은 WHERE 조건을 만족하지 않는다.</text>
+
+  <defs>
+    <marker id="arrow-blue" markerWidth="10" markerHeight="10" refX="8" refY="5" orient="auto">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#3578c4"/>
+    </marker>
+    <marker id="arrow-orange" markerWidth="10" markerHeight="10" refX="8" refY="5" orient="auto">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#c47a16"/>
+    </marker>
+  </defs>
+</svg>
