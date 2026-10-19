@@ -1,0 +1,78 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1500" height="900" viewBox="0 0 1500 900" role="img" aria-labelledby="title desc">
+  <title id="title">음식점과 영상 정보의 정규화 분해</title>
+  <desc id="desc">분해 전 음식점·영상·유튜버 정보의 함수 종속성과 분해 후 Restaurant, RestaurantVideo, Video, YouTuber 테이블을 보여 주는 구조도.</desc>
+  <defs>
+    <marker id="arrow-blue" markerWidth="10" markerHeight="10" refX="8" refY="5" orient="auto"><path d="M 0 0 L 10 5 L 0 10 z" fill="#3578c4"/></marker>
+    <marker id="arrow-green" markerWidth="10" markerHeight="10" refX="8" refY="5" orient="auto"><path d="M 0 0 L 10 5 L 0 10 z" fill="#2b8a68"/></marker>
+  </defs>
+  <rect width="1500" height="900" fill="#f8fafc"/>
+  <text x="50" y="56" fill="#1f2937" font-family="Arial, 'Malgun Gothic', sans-serif" font-size="30" font-weight="700">함수 종속성에 따라 정보를 분해하는 과정</text>
+  <text x="50" y="90" fill="#64748b" font-family="Arial, 'Malgun Gothic', sans-serif" font-size="16">한 사실은 그 사실을 결정하는 키가 있는 테이블에서 관리하고 관계는 연결 테이블에 둔다.</text>
+
+  <rect x="50" y="132" width="360" height="540" rx="16" fill="#ffffff" stroke="#dbe3ec" stroke-width="2"/>
+  <rect x="50" y="132" width="360" height="66" rx="16" fill="#fff7e8"/><rect x="50" y="182" width="360" height="16" fill="#fff7e8"/>
+  <text x="78" y="174" fill="#7c4a03" font-family="Arial, 'Malgun Gothic', sans-serif" font-size="21" font-weight="700">분해 전 · 통합 구조</text>
+  <text x="78" y="238" fill="#334155" font-family="Arial, 'Malgun Gothic', sans-serif" font-size="17" font-weight="700">RestaurantVideoDetail</text>
+  <text x="78" y="282" fill="#334155" font-family="Arial, 'Malgun Gothic', sans-serif" font-size="16">restaurant_id</text>
+  <text x="78" y="320" fill="#334155" font-family="Arial, 'Malgun Gothic', sans-serif" font-size="16">restaurant_name</text>
+  <text x="78" y="358" fill="#334155" font-family="Arial, 'Malgun Gothic', sans-serif" font-size="16">video_id</text>
+  <text x="78" y="396" fill="#334155" font-family="Arial, 'Malgun Gothic', sans-serif" font-size="16">video_title</text>
+  <text x="78" y="434" fill="#334155" font-family="Arial, 'Malgun Gothic', sans-serif" font-size="16">youtuber_id</text>
+  <text x="78" y="472" fill="#334155" font-family="Arial, 'Malgun Gothic', sans-serif" font-size="16">youtuber_name</text>
+  <rect x="76" y="520" width="308" height="92" rx="10" fill="#fff7e8" stroke="#c47a16" stroke-width="1.5"/>
+  <text x="230" y="556" text-anchor="middle" fill="#7c4a03" font-family="Arial, 'Malgun Gothic', sans-serif" font-size="15" font-weight="700">서로 다른 사실이</text>
+  <text x="230" y="582" text-anchor="middle" fill="#7c4a03" font-family="Arial, 'Malgun Gothic', sans-serif" font-size="15" font-weight="700">한 행에 반복된다</text>
+
+  <rect x="470" y="132" width="390" height="540" rx="16" fill="#ffffff" stroke="#dbe3ec" stroke-width="2"/>
+  <rect x="470" y="132" width="390" height="66" rx="16" fill="#eef5ff"/><rect x="470" y="182" width="390" height="16" fill="#eef5ff"/>
+  <text x="498" y="174" fill="#1d4f91" font-family="Arial, 'Malgun Gothic', sans-serif" font-size="21" font-weight="700">함수 종속성</text>
+  <text x="498" y="250" fill="#3578c4" font-family="Arial, 'Malgun Gothic', sans-serif" font-size="17" font-weight="700">restaurant_id → restaurant_name</text>
+  <text x="498" y="306" fill="#3578c4" font-family="Arial, 'Malgun Gothic', sans-serif" font-size="17" font-weight="700">video_id → video_title,</text>
+  <text x="498" y="332" fill="#3578c4" font-family="Arial, 'Malgun Gothic', sans-serif" font-size="17" font-weight="700">video_id → youtuber_id</text>
+  <text x="498" y="388" fill="#2b8a68" font-family="Arial, 'Malgun Gothic', sans-serif" font-size="17" font-weight="700">youtuber_id → youtuber_name</text>
+  <line x1="498" y1="424" x2="832" y2="424" stroke="#e2e8f0" stroke-width="1.5"/>
+  <rect x="498" y="462" width="334" height="112" rx="10" fill="#e9f7f0" stroke="#2b8a68" stroke-width="1.5"/>
+  <text x="665" y="500" text-anchor="middle" fill="#176347" font-family="Arial, 'Malgun Gothic', sans-serif" font-size="15" font-weight="700">결정하는 키를 따라</text>
+  <text x="665" y="528" text-anchor="middle" fill="#176347" font-family="Arial, 'Malgun Gothic', sans-serif" font-size="15" font-weight="700">사실의 관리 위치를 나눈다</text>
+
+  <line x1="420" y1="370" x2="462" y2="370" stroke="#3578c4" stroke-width="3" marker-end="url(#arrow-blue)"/>
+  <text x="441" y="350" text-anchor="middle" fill="#3578c4" font-family="Arial, 'Malgun Gothic', sans-serif" font-size="13" font-weight="700">분석</text>
+  <line x1="870" y1="370" x2="912" y2="370" stroke="#2b8a68" stroke-width="3" marker-end="url(#arrow-green)"/>
+  <text x="891" y="350" text-anchor="middle" fill="#2b8a68" font-family="Arial, 'Malgun Gothic', sans-serif" font-size="13" font-weight="700">분해</text>
+
+  <rect x="922" y="120" width="528" height="700" rx="16" fill="#ffffff" stroke="#dbe3ec" stroke-width="2"/>
+  <rect x="922" y="120" width="528" height="66" rx="16" fill="#e9f7f0"/><rect x="922" y="170" width="528" height="16" fill="#e9f7f0"/>
+  <text x="950" y="162" fill="#176347" font-family="Arial, 'Malgun Gothic', sans-serif" font-size="21" font-weight="700">분해 후 · 정규화 구조</text>
+
+  <rect x="950" y="218" width="214" height="168" rx="12" fill="#ffffff" stroke="#3578c4" stroke-width="2"/>
+  <rect x="950" y="218" width="214" height="48" rx="12" fill="#eef5ff"/><rect x="950" y="254" width="214" height="12" fill="#eef5ff"/>
+  <text x="970" y="250" fill="#1d4f91" font-family="Arial, 'Malgun Gothic', sans-serif" font-size="17" font-weight="700">Restaurant</text>
+  <text x="970" y="300" fill="#1d4f91" font-family="Arial, 'Malgun Gothic', sans-serif" font-size="14" font-weight="700">restaurant_id PK</text>
+  <text x="970" y="336" fill="#334155" font-family="Arial, 'Malgun Gothic', sans-serif" font-size="14">restaurant_name</text>
+  <text x="970" y="364" fill="#64748b" font-family="Arial, 'Malgun Gothic', sans-serif" font-size="13">음식점의 사실</text>
+
+  <rect x="1190" y="218" width="232" height="168" rx="12" fill="#ffffff" stroke="#3578c4" stroke-width="2"/>
+  <rect x="1190" y="218" width="232" height="48" rx="12" fill="#eef5ff"/><rect x="1190" y="254" width="232" height="12" fill="#eef5ff"/>
+  <text x="1210" y="250" fill="#1d4f91" font-family="Arial, 'Malgun Gothic', sans-serif" font-size="17" font-weight="700">Video</text>
+  <text x="1210" y="300" fill="#1d4f91" font-family="Arial, 'Malgun Gothic', sans-serif" font-size="14" font-weight="700">video_id PK</text>
+  <text x="1210" y="336" fill="#334155" font-family="Arial, 'Malgun Gothic', sans-serif" font-size="14">video_title</text>
+  <text x="1210" y="364" fill="#1d4f91" font-family="Arial, 'Malgun Gothic', sans-serif" font-size="14" font-weight="700">youtuber_id FK</text>
+
+  <rect x="950" y="444" width="472" height="154" rx="12" fill="#ffffff" stroke="#c47a16" stroke-width="2"/>
+  <rect x="950" y="444" width="472" height="52" rx="12" fill="#fff7e8"/><rect x="950" y="484" width="472" height="12" fill="#fff7e8"/>
+  <text x="972" y="478" fill="#7c4a03" font-family="Arial, 'Malgun Gothic', sans-serif" font-size="17" font-weight="700">RestaurantVideo · 연결 테이블</text>
+  <text x="972" y="530" fill="#1d4f91" font-family="Arial, 'Malgun Gothic', sans-serif" font-size="14" font-weight="700">restaurant_id FK</text>
+  <text x="972" y="562" fill="#1d4f91" font-family="Arial, 'Malgun Gothic', sans-serif" font-size="14" font-weight="700">video_id FK</text>
+  <text x="972" y="586" fill="#7c4a03" font-family="Arial, 'Malgun Gothic', sans-serif" font-size="13">PK (restaurant_id, video_id)</text>
+
+  <rect x="950" y="654" width="472" height="112" rx="12" fill="#ffffff" stroke="#2b8a68" stroke-width="2"/>
+  <rect x="950" y="654" width="472" height="48" rx="12" fill="#e9f7f0"/><rect x="950" y="690" width="472" height="12" fill="#e9f7f0"/>
+  <text x="972" y="686" fill="#176347" font-family="Arial, 'Malgun Gothic', sans-serif" font-size="17" font-weight="700">YouTuber</text>
+  <text x="972" y="732" fill="#1d4f91" font-family="Arial, 'Malgun Gothic', sans-serif" font-size="14" font-weight="700">youtuber_id PK</text>
+  <text x="1190" y="732" fill="#334155" font-family="Arial, 'Malgun Gothic', sans-serif" font-size="14">youtuber_name</text>
+
+  <line x1="1057" y1="386" x2="1057" y2="436" stroke="#3578c4" stroke-width="2.5" marker-end="url(#arrow-blue)"/>
+  <line x1="1306" y1="386" x2="1306" y2="436" stroke="#3578c4" stroke-width="2.5" marker-end="url(#arrow-blue)"/>
+  <line x1="1306" y1="654" x2="1306" y2="606" stroke="#2b8a68" stroke-width="2.5" marker-end="url(#arrow-green)"/>
+  <text x="750" y="858" text-anchor="middle" fill="#64748b" font-family="Arial, 'Malgun Gothic', sans-serif" font-size="15">PK는 대상을 식별하고 FK는 참조를 표현하며 연결 테이블의 복합 PK는 같은 관계의 중복을 막는다.</text>
+</svg>

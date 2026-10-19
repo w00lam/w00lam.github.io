@@ -1,0 +1,72 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1500" height="980" viewBox="0 0 1500 980" role="img" aria-labelledby="title desc">
+  <title id="title">무손실 분해와 종속성 보존의 차이</title>
+  <desc id="desc">대표 영상이라는 별도 업무 가정에서 분해 전 후보키와 함수 종속성, 분해 후 JOIN 복원 경로와 PK·FK만으로 대표 영상 규칙을 강제하지 못하는 반례를 보여 주는 구조도.</desc>
+  <defs>
+    <marker id="arrow-blue" markerWidth="10" markerHeight="10" refX="8" refY="5" orient="auto"><path d="M 0 0 L 10 5 L 0 10 z" fill="#3578c4"/></marker>
+    <marker id="arrow-green" markerWidth="10" markerHeight="10" refX="8" refY="5" orient="auto"><path d="M 0 0 L 10 5 L 0 10 z" fill="#2b8a68"/></marker>
+    <marker id="arrow-red" markerWidth="10" markerHeight="10" refX="8" refY="5" orient="auto"><path d="M 0 0 L 10 5 L 0 10 z" fill="#c2410c"/></marker>
+  </defs>
+  <rect width="1500" height="980" fill="#f8fafc"/>
+  <text x="50" y="56" fill="#1f2937" font-family="Arial, 'Malgun Gothic', sans-serif" font-size="30" font-weight="700">대표 영상 관계에서 두 성질을 나누어 확인하기</text>
+  <text x="50" y="90" fill="#64748b" font-family="Arial, 'Malgun Gothic', sans-serif" font-size="16">일반적인 RestaurantVideo가 아니라 “음식점·유튜버 조합마다 대표 영상은 하나”라는 별도 학습용 가정이다.</text>
+
+  <rect x="50" y="132" width="410" height="430" rx="16" fill="#ffffff" stroke="#dbe3ec" stroke-width="2"/>
+  <rect x="50" y="132" width="410" height="66" rx="16" fill="#fff7e8"/><rect x="50" y="182" width="410" height="16" fill="#fff7e8"/>
+  <text x="78" y="174" fill="#7c4a03" font-family="Arial, 'Malgun Gothic', sans-serif" font-size="20" font-weight="700">분해 전 · 대표 영상 관계</text>
+  <text x="78" y="236" fill="#334155" font-family="Arial, 'Malgun Gothic', sans-serif" font-size="16" font-weight="700">RestaurantFeaturedVideo</text>
+  <text x="78" y="278" fill="#3578c4" font-family="Arial, 'Malgun Gothic', sans-serif" font-size="15" font-weight="700">video_id → youtuber_id</text>
+  <text x="78" y="318" fill="#3578c4" font-family="Arial, 'Malgun Gothic', sans-serif" font-size="15" font-weight="700">(restaurant_id, youtuber_id)</text>
+  <text x="78" y="344" fill="#3578c4" font-family="Arial, 'Malgun Gothic', sans-serif" font-size="15" font-weight="700">→ video_id</text>
+  <line x1="78" y1="372" x2="432" y2="372" stroke="#e2e8f0" stroke-width="1.5"/>
+  <text x="78" y="410" fill="#64748b" font-family="Arial, 'Malgun Gothic', sans-serif" font-size="14">후보키</text>
+  <text x="78" y="444" fill="#176347" font-family="Arial, 'Malgun Gothic', sans-serif" font-size="14" font-weight="700">(restaurant_id, youtuber_id)</text>
+  <text x="78" y="478" fill="#176347" font-family="Arial, 'Malgun Gothic', sans-serif" font-size="14" font-weight="700">(restaurant_id, video_id)</text>
+  <rect x="76" y="506" width="358" height="36" rx="9" fill="#eef5ff" stroke="#3578c4" stroke-width="1.5"/>
+  <text x="255" y="529" text-anchor="middle" fill="#1d4f91" font-family="Arial, 'Malgun Gothic', sans-serif" font-size="13" font-weight="700">video_id는 단독 슈퍼키가 아니다</text>
+
+  <line x1="472" y1="350" x2="522" y2="350" stroke="#3578c4" stroke-width="3" marker-end="url(#arrow-blue)"/>
+  <text x="497" y="330" text-anchor="middle" fill="#3578c4" font-family="Arial, 'Malgun Gothic', sans-serif" font-size="13" font-weight="700">분해</text>
+
+  <rect x="532" y="132" width="410" height="430" rx="16" fill="#ffffff" stroke="#dbe3ec" stroke-width="2"/>
+  <rect x="532" y="132" width="410" height="66" rx="16" fill="#e9f7f0"/><rect x="532" y="182" width="410" height="16" fill="#e9f7f0"/>
+  <text x="560" y="174" fill="#176347" font-family="Arial, 'Malgun Gothic', sans-serif" font-size="20" font-weight="700">분해 후 · 두 테이블</text>
+  <rect x="560" y="224" width="354" height="116" rx="11" fill="#ffffff" stroke="#3578c4" stroke-width="2"/>
+  <rect x="560" y="224" width="354" height="46" rx="11" fill="#eef5ff"/><rect x="560" y="258" width="354" height="12" fill="#eef5ff"/>
+  <text x="582" y="256" fill="#1d4f91" font-family="Arial, 'Malgun Gothic', sans-serif" font-size="18" font-weight="700">Video</text>
+  <text x="582" y="300" fill="#1d4f91" font-family="Arial, 'Malgun Gothic', sans-serif" font-size="14" font-weight="700">video_id PK</text>
+  <text x="760" y="300" fill="#1d4f91" font-family="Arial, 'Malgun Gothic', sans-serif" font-size="14" font-weight="700">youtuber_id</text>
+  <rect x="560" y="378" width="354" height="148" rx="11" fill="#ffffff" stroke="#c47a16" stroke-width="2"/>
+  <rect x="560" y="378" width="354" height="46" rx="11" fill="#fff7e8"/><rect x="560" y="412" width="354" height="12" fill="#fff7e8"/>
+  <text x="582" y="410" fill="#7c4a03" font-family="Arial, 'Malgun Gothic', sans-serif" font-size="16" font-weight="700">RestaurantFeaturedVideo</text>
+  <text x="582" y="456" fill="#334155" font-family="Arial, 'Malgun Gothic', sans-serif" font-size="14">restaurant_id</text>
+  <text x="582" y="488" fill="#1d4f91" font-family="Arial, 'Malgun Gothic', sans-serif" font-size="14" font-weight="700">video_id FK</text>
+  <text x="582" y="514" fill="#7c4a03" font-family="Arial, 'Malgun Gothic', sans-serif" font-size="13">PK (restaurant_id, video_id)</text>
+  <line x1="737" y1="340" x2="737" y2="370" stroke="#3578c4" stroke-width="2.5" marker-end="url(#arrow-blue)"/>
+  <text x="755" y="360" fill="#3578c4" font-family="Arial, 'Malgun Gothic', sans-serif" font-size="12" font-weight="700">FK 연결</text>
+
+  <rect x="1014" y="132" width="436" height="430" rx="16" fill="#ffffff" stroke="#dbe3ec" stroke-width="2"/>
+  <rect x="1014" y="132" width="436" height="66" rx="16" fill="#e9f7f0"/><rect x="1014" y="182" width="436" height="16" fill="#e9f7f0"/>
+  <text x="1042" y="174" fill="#176347" font-family="Arial, 'Malgun Gothic', sans-serif" font-size="20" font-weight="700">무손실 복원</text>
+  <text x="1042" y="236" fill="#334155" font-family="Arial, 'Malgun Gothic', sans-serif" font-size="14">공통 속성: video_id</text>
+  <text x="1042" y="270" fill="#334155" font-family="Arial, 'Malgun Gothic', sans-serif" font-size="14">Video.video_id는 PK</text>
+  <line x1="1042" y1="300" x2="1422" y2="300" stroke="#e2e8f0" stroke-width="1.5"/>
+  <text x="1042" y="340" fill="#2b8a68" font-family="Arial, 'Malgun Gothic', sans-serif" font-size="16" font-weight="700">RestaurantFeaturedVideo</text>
+  <text x="1042" y="372" fill="#2b8a68" font-family="Arial, 'Malgun Gothic', sans-serif" font-size="16" font-weight="700">JOIN Video ON video_id</text>
+  <line x1="1232" y1="390" x2="1232" y2="424" stroke="#2b8a68" stroke-width="2.5" marker-end="url(#arrow-green)"/>
+  <rect x="1042" y="440" width="380" height="88" rx="10" fill="#e9f7f0" stroke="#2b8a68" stroke-width="1.5"/>
+  <text x="1232" y="476" text-anchor="middle" fill="#176347" font-family="Arial, 'Malgun Gothic', sans-serif" font-size="14" font-weight="700">원래의 restaurant_id와</text>
+  <text x="1232" y="502" text-anchor="middle" fill="#176347" font-family="Arial, 'Malgun Gothic', sans-serif" font-size="14" font-weight="700">youtuber_id를 복원할 수 있다</text>
+
+  <rect x="50" y="626" width="1400" height="286" rx="16" fill="#ffffff" stroke="#c2410c" stroke-width="2"/>
+  <rect x="50" y="626" width="1400" height="64" rx="16" fill="#fff1eb"/><rect x="50" y="674" width="1400" height="16" fill="#fff1eb"/>
+  <text x="78" y="668" fill="#9a3412" font-family="Arial, 'Malgun Gothic', sans-serif" font-size="20" font-weight="700">종속성 보존은 별도 확인이 필요하다</text>
+  <text x="78" y="730" fill="#334155" font-family="Arial, 'Malgun Gothic', sans-serif" font-size="14">Video: V101 → Y01, V103 → Y01</text>
+  <text x="78" y="764" fill="#334155" font-family="Arial, 'Malgun Gothic', sans-serif" font-size="14">연결 테이블: (R01, V101), (R01, V103)</text>
+  <text x="78" y="800" fill="#c2410c" font-family="Arial, 'Malgun Gothic', sans-serif" font-size="15" font-weight="700">PK·FK는 통과하지만 JOIN 결과에 (R01, Y01)의 대표 영상이 두 개 생긴다.</text>
+  <line x1="1040" y1="728" x2="1040" y2="790" stroke="#c2410c" stroke-width="2.5" stroke-dasharray="7 6" marker-end="url(#arrow-red)"/>
+  <text x="1066" y="750" fill="#9a3412" font-family="Arial, 'Malgun Gothic', sans-serif" font-size="13" font-weight="700">강제되지 않음</text>
+  <rect x="1100" y="718" width="320" height="136" rx="11" fill="#fff1eb" stroke="#c2410c" stroke-width="1.5"/>
+  <text x="1260" y="756" text-anchor="middle" fill="#9a3412" font-family="Arial, 'Malgun Gothic', sans-serif" font-size="14" font-weight="700">(restaurant_id, youtuber_id)</text>
+  <text x="1260" y="784" text-anchor="middle" fill="#9a3412" font-family="Arial, 'Malgun Gothic', sans-serif" font-size="14" font-weight="700">→ video_id</text>
+  <text x="1260" y="816" text-anchor="middle" fill="#9a3412" font-family="Arial, 'Malgun Gothic', sans-serif" font-size="13">추가 규칙 또는 검증 필요</text>
+</svg>
