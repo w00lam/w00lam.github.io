@@ -1,0 +1,49 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1500" height="900" viewBox="0 0 1500 900" role="img" aria-labelledby="title desc">
+  <title id="title">복합 인덱스의 정렬 순서와 조회 범위</title>
+  <desc id="desc">region_id, category_id, created_at DESC 순서의 복합 인덱스에서 지역과 카테고리가 고정된 구간을 최신순으로 읽는 모습과, 카테고리 조건이 빠지면 지역 전체의 created_at 순서를 바로 보장하지 못하는 비교도.</desc>
+  <defs>
+    <marker id="arrow-blue" markerWidth="10" markerHeight="10" refX="8" refY="5" orient="auto"><path d="M 0 0 L 10 5 L 0 10 z" fill="#3578c4"/></marker>
+    <marker id="arrow-orange" markerWidth="10" markerHeight="10" refX="8" refY="5" orient="auto"><path d="M 0 0 L 10 5 L 0 10 z" fill="#c47a16"/></marker>
+  </defs>
+  <rect width="1500" height="900" fill="#f8fafc"/>
+  <text x="48" y="54" fill="#1f2937" font-family="Arial, 'Malgun Gothic', sans-serif" font-size="30" font-weight="700">복합 인덱스는 컬럼마다 따로 정렬되지 않는다</text>
+  <text x="48" y="88" fill="#64748b" font-family="Arial, 'Malgun Gothic', sans-serif" font-size="16">앞의 값으로 묶은 뒤 그 안에서 다음 컬럼의 순서가 이어진다. 조회 조건이 어느 구간을 고정하는지 함께 봐야 한다.</text>
+
+  <rect x="48" y="130" width="1404" height="350" rx="16" fill="#ffffff" stroke="#dbe3ec" stroke-width="2"/>
+  <rect x="48" y="130" width="1404" height="64" rx="16" fill="#eef5ff"/><rect x="48" y="178" width="1404" height="16" fill="#eef5ff"/>
+  <text x="78" y="171" fill="#1d4f91" font-family="Arial, 'Malgun Gothic', sans-serif" font-size="22" font-weight="700">idx_restaurant_region_category_created</text>
+  <text x="78" y="224" fill="#334155" font-family="Arial, 'Malgun Gothic', sans-serif" font-size="15" font-weight="700">정렬 키</text>
+  <rect x="78" y="246" width="350" height="62" rx="10" fill="#dcecff" stroke="#3578c4" stroke-width="2"/>
+  <text x="253" y="285" text-anchor="middle" fill="#1d4f91" font-family="Arial, 'Malgun Gothic', sans-serif" font-size="18" font-weight="700">region_id</text>
+  <rect x="438" y="246" width="350" height="62" rx="10" fill="#e9f7f0" stroke="#2b8a68" stroke-width="2"/>
+  <text x="613" y="285" text-anchor="middle" fill="#176347" font-family="Arial, 'Malgun Gothic', sans-serif" font-size="18" font-weight="700">category_id</text>
+  <rect x="798" y="246" width="350" height="62" rx="10" fill="#fff7e8" stroke="#c47a16" stroke-width="2"/>
+  <text x="973" y="285" text-anchor="middle" fill="#7c4a03" font-family="Arial, 'Malgun Gothic', sans-serif" font-size="18" font-weight="700">created_at DESC</text>
+  <text x="1172" y="282" fill="#64748b" font-family="Arial, 'Malgun Gothic', sans-serif" font-size="14">→ 먼저 지역</text>
+  <text x="1172" y="306" fill="#64748b" font-family="Arial, 'Malgun Gothic', sans-serif" font-size="14">→ 같은 지역 안에서 카테고리</text>
+  <text x="1172" y="330" fill="#64748b" font-family="Arial, 'Malgun Gothic', sans-serif" font-size="14">→ 같은 조합 안에서 최신순</text>
+
+  <text x="78" y="366" fill="#334155" font-family="Arial, 'Malgun Gothic', sans-serif" font-size="15" font-weight="700">인덱스의 작은 예</text>
+  <rect x="78" y="388" width="1270" height="54" rx="8" fill="#ffffff" stroke="#cbd5e1" stroke-width="1.5"/>
+  <text x="100" y="422" fill="#334155" font-family="Arial, 'Malgun Gothic', sans-serif" font-size="15">(17, 3, 2026-10-20) → (17, 3, 2026-10-18) → (17, 3, 2026-10-12)</text>
+  <text x="1000" y="422" fill="#2b8a68" font-family="Arial, 'Malgun Gothic', sans-serif" font-size="15" font-weight="700">← 최신순으로 읽기</text>
+
+  <line x1="48" y1="520" x2="1452" y2="520" stroke="#dbe3ec" stroke-width="2"/>
+  <text x="48" y="570" fill="#1f2937" font-family="Arial, 'Malgun Gothic', sans-serif" font-size="22" font-weight="700">조건이 달라지면 읽을 수 있는 순서도 달라진다</text>
+
+  <rect x="48" y="608" width="660" height="216" rx="16" fill="#ffffff" stroke="#2b8a68" stroke-width="2"/>
+  <rect x="48" y="608" width="660" height="56" rx="16" fill="#e9f7f0"/><rect x="48" y="652" width="660" height="12" fill="#e9f7f0"/>
+  <text x="76" y="645" fill="#176347" font-family="Arial, 'Malgun Gothic', sans-serif" font-size="18" font-weight="700">region_id = 17 AND category_id = 3</text>
+  <text x="76" y="706" fill="#334155" font-family="Arial, 'Malgun Gothic', sans-serif" font-size="15">앞의 두 컬럼이 고정된다</text>
+  <rect x="76" y="728" width="588" height="54" rx="8" fill="#dff5e8" stroke="#2b8a68" stroke-width="2"/>
+  <text x="370" y="762" text-anchor="middle" fill="#176347" font-family="Arial, 'Malgun Gothic', sans-serif" font-size="15" font-weight="700">해당 구간에서 created_at DESC로 LIMIT 20</text>
+  <line x1="76" y1="798" x2="664" y2="798" stroke="#2b8a68" stroke-width="4" marker-end="url(#arrow-blue)"/>
+
+  <rect x="792" y="608" width="660" height="216" rx="16" fill="#ffffff" stroke="#c47a16" stroke-width="2"/>
+  <rect x="792" y="608" width="660" height="56" rx="16" fill="#fff7e8"/><rect x="792" y="652" width="660" height="12" fill="#fff7e8"/>
+  <text x="820" y="645" fill="#7c4a03" font-family="Arial, 'Malgun Gothic', sans-serif" font-size="18" font-weight="700">region_id = 17</text>
+  <text x="820" y="706" fill="#334155" font-family="Arial, 'Malgun Gothic', sans-serif" font-size="15">category_id가 고정되지 않는다</text>
+  <rect x="820" y="728" width="588" height="54" rx="8" fill="#fff1d6" stroke="#c47a16" stroke-width="2"/>
+  <text x="1114" y="762" text-anchor="middle" fill="#7c4a03" font-family="Arial, 'Malgun Gothic', sans-serif" font-size="15" font-weight="700">지역 전체가 created_at 순서라고 바로 볼 수 없음</text>
+  <text x="750" y="868" text-anchor="middle" fill="#64748b" font-family="Arial, 'Malgun Gothic', sans-serif" font-size="15">자주 쓰는 조회가 다르면 (region_id, created_at DESC)도 후보로 검토하고 실행계획으로 확인한다.</text>
+</svg>

@@ -1,0 +1,55 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1500" height="850" viewBox="0 0 1500 850" role="img" aria-labelledby="title desc">
+  <title id="title">중복 저장으로 생기는 갱신 이상과 테이블 분리</title>
+  <desc id="desc">분리 전 RestaurantVideo 테이블에서 같은 음식점 이름이 반복되고 일부 행만 달빛면옥으로 바뀐 상태와, 분리 후 Restaurant와 RestaurantVideo가 음식점 정보와 연결 관계를 나누어 관리하는 구조를 보여 주는 도식.</desc>
+  <defs>
+    <marker id="arrow-blue" markerWidth="10" markerHeight="10" refX="8" refY="5" orient="auto"><path d="M 0 0 L 10 5 L 0 10 z" fill="#3578c4"/></marker>
+    <marker id="arrow-green" markerWidth="10" markerHeight="10" refX="8" refY="5" orient="auto"><path d="M 0 0 L 10 5 L 0 10 z" fill="#2b8a68"/></marker>
+  </defs>
+  <rect width="1500" height="850" fill="#f8fafc"/>
+  <text x="48" y="54" fill="#1f2937" font-family="Arial, 'Malgun Gothic', sans-serif" font-size="30" font-weight="700">같은 사실을 여러 행에서 관리하면 갱신 이상이 생긴다</text>
+  <text x="48" y="88" fill="#64748b" font-family="Arial, 'Malgun Gothic', sans-serif" font-size="16">음식점 정보와 영상 연결을 나누면 이름은 Restaurant에서 한 번만 수정하고 관계는 RestaurantVideo에서 관리한다.</text>
+
+  <rect x="48" y="128" width="560" height="596" rx="16" fill="#ffffff" stroke="#dbe3ec" stroke-width="2"/>
+  <rect x="48" y="128" width="560" height="68" rx="16" fill="#fff7e8"/><rect x="48" y="180" width="560" height="16" fill="#fff7e8"/>
+  <text x="78" y="171" fill="#7c4a03" font-family="Arial, 'Malgun Gothic', sans-serif" font-size="22" font-weight="700">분리 전 · RestaurantVideoDetail</text>
+  <text x="78" y="226" fill="#64748b" font-family="Arial, 'Malgun Gothic', sans-serif" font-size="14">음식점 사실과 영상 연결이 한 테이블에 함께 있다</text>
+  <rect x="76" y="254" width="504" height="54" rx="8" fill="#eef5ff" stroke="#cbd5e1" stroke-width="1.5"/>
+  <text x="96" y="288" fill="#334155" font-family="Arial, 'Malgun Gothic', sans-serif" font-size="15" font-weight="700">restaurant_id</text><text x="560" y="288" text-anchor="end" fill="#64748b" font-family="Arial, 'Malgun Gothic', sans-serif" font-size="14">R01</text>
+  <rect x="76" y="318" width="504" height="54" rx="8" fill="#fff7e8" stroke="#c47a16" stroke-width="2"/>
+  <text x="96" y="352" fill="#7c4a03" font-family="Arial, 'Malgun Gothic', sans-serif" font-size="15" font-weight="700">restaurant_name</text><text x="560" y="352" text-anchor="end" fill="#7c4a03" font-family="Arial, 'Malgun Gothic', sans-serif" font-size="15" font-weight="700">달빛국수</text>
+  <rect x="76" y="382" width="504" height="54" rx="8" fill="#eef5ff" stroke="#cbd5e1" stroke-width="1.5"/>
+  <text x="96" y="416" fill="#334155" font-family="Arial, 'Malgun Gothic', sans-serif" font-size="15" font-weight="700">video_id</text><text x="560" y="416" text-anchor="end" fill="#64748b" font-family="Arial, 'Malgun Gothic', sans-serif" font-size="14">V101</text>
+  <rect x="76" y="446" width="504" height="54" rx="8" fill="#fff7e8" stroke="#c47a16" stroke-width="2"/>
+  <text x="96" y="480" fill="#7c4a03" font-family="Arial, 'Malgun Gothic', sans-serif" font-size="15" font-weight="700">restaurant_name</text><text x="560" y="480" text-anchor="end" fill="#7c4a03" font-family="Arial, 'Malgun Gothic', sans-serif" font-size="15" font-weight="700">달빛면옥</text>
+  <rect x="76" y="510" width="504" height="54" rx="8" fill="#eef5ff" stroke="#cbd5e1" stroke-width="1.5"/>
+  <text x="96" y="544" fill="#334155" font-family="Arial, 'Malgun Gothic', sans-serif" font-size="15" font-weight="700">video_id</text><text x="560" y="544" text-anchor="end" fill="#64748b" font-family="Arial, 'Malgun Gothic', sans-serif" font-size="14">V103</text>
+  <rect x="76" y="594" width="504" height="94" rx="10" fill="#fff7e8" stroke="#c47a16" stroke-width="2"/>
+  <text x="328" y="630" text-anchor="middle" fill="#7c4a03" font-family="Arial, 'Malgun Gothic', sans-serif" font-size="16" font-weight="700">한 음식점의 이름이 행마다 반복된다</text>
+  <text x="328" y="658" text-anchor="middle" fill="#7c4a03" font-family="Arial, 'Malgun Gothic', sans-serif" font-size="14">일부 행만 수정하면 서로 다른 이름이 남는다</text>
+
+  <line x1="628" y1="426" x2="872" y2="426" stroke="#3578c4" stroke-width="3" marker-end="url(#arrow-blue)"/>
+  <text x="750" y="404" text-anchor="middle" fill="#3578c4" font-family="Arial, 'Malgun Gothic', sans-serif" font-size="14" font-weight="700">정보와 관계를 분리</text>
+
+  <rect x="892" y="128" width="560" height="596" rx="16" fill="#ffffff" stroke="#dbe3ec" stroke-width="2"/>
+  <rect x="892" y="128" width="560" height="68" rx="16" fill="#e9f7f0"/><rect x="892" y="180" width="560" height="16" fill="#e9f7f0"/>
+  <text x="922" y="171" fill="#176347" font-family="Arial, 'Malgun Gothic', sans-serif" font-size="22" font-weight="700">분리 후 · 책임을 나누어 관리</text>
+  <rect x="922" y="232" width="230" height="210" rx="12" fill="#ffffff" stroke="#3578c4" stroke-width="2"/>
+  <rect x="922" y="232" width="230" height="48" rx="12" fill="#eef5ff"/><rect x="922" y="268" width="230" height="12" fill="#eef5ff"/>
+  <text x="944" y="264" fill="#1d4f91" font-family="Arial, 'Malgun Gothic', sans-serif" font-size="18" font-weight="700">Restaurant</text>
+  <text x="944" y="320" fill="#1d4f91" font-family="Arial, 'Malgun Gothic', sans-serif" font-size="14" font-weight="700">restaurant_id PK</text>
+  <text x="944" y="356" fill="#334155" font-family="Arial, 'Malgun Gothic', sans-serif" font-size="14">name: 달빛국수</text>
+  <text x="944" y="394" fill="#64748b" font-family="Arial, 'Malgun Gothic', sans-serif" font-size="13">이름은 여기서 한 번 관리</text>
+  <rect x="1190" y="232" width="230" height="210" rx="12" fill="#ffffff" stroke="#c47a16" stroke-width="2"/>
+  <rect x="1190" y="232" width="230" height="48" rx="12" fill="#fff7e8"/><rect x="1190" y="268" width="230" height="12" fill="#fff7e8"/>
+  <text x="1212" y="264" fill="#7c4a03" font-family="Arial, 'Malgun Gothic', sans-serif" font-size="18" font-weight="700">RestaurantVideo</text>
+  <text x="1212" y="320" fill="#1d4f91" font-family="Arial, 'Malgun Gothic', sans-serif" font-size="14" font-weight="700">restaurant_id FK</text>
+  <text x="1212" y="356" fill="#1d4f91" font-family="Arial, 'Malgun Gothic', sans-serif" font-size="14" font-weight="700">video_id FK</text>
+  <text x="1212" y="394" fill="#64748b" font-family="Arial, 'Malgun Gothic', sans-serif" font-size="13">실제 연결만 저장</text>
+  <line x1="1152" y1="336" x2="1182" y2="336" stroke="#2b8a68" stroke-width="2.5" marker-end="url(#arrow-green)"/>
+  <text x="1167" y="318" text-anchor="middle" fill="#2b8a68" font-family="Arial, 'Malgun Gothic', sans-serif" font-size="12" font-weight="700">참조</text>
+  <rect x="922" y="492" width="498" height="164" rx="12" fill="#e9f7f0" stroke="#2b8a68" stroke-width="2"/>
+  <text x="1171" y="532" text-anchor="middle" fill="#176347" font-family="Arial, 'Malgun Gothic', sans-serif" font-size="17" font-weight="700">이름을 바꿀 때</text>
+  <text x="1171" y="566" text-anchor="middle" fill="#176347" font-family="Arial, 'Malgun Gothic', sans-serif" font-size="15">Restaurant의 R01 한 행만 수정한다</text>
+  <text x="1171" y="596" text-anchor="middle" fill="#176347" font-family="Arial, 'Malgun Gothic', sans-serif" font-size="15">연결 관계는 그대로 남는다</text>
+  <text x="750" y="808" text-anchor="middle" fill="#64748b" font-family="Arial, 'Malgun Gothic', sans-serif" font-size="15">분리는 모든 정합성을 자동으로 해결하는 방법이 아니라 사실과 관계의 관리 책임을 나누는 방법이다.</text>
+</svg>
