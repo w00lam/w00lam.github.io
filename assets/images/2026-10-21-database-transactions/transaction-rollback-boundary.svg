@@ -1,0 +1,53 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1500" height="900" viewBox="0 0 1500 900" role="img" aria-labelledby="title desc">
+  <title id="title">자동 커밋과 명시적 트랜잭션의 롤백 범위 비교</title>
+  <desc id="desc">음식점 저장은 성공하고 영상 연결 저장은 외래키 오류로 실패하는 같은 상황에서 자동 커밋은 음식점만 남길 수 있고 명시적 트랜잭션은 ROLLBACK으로 앞선 저장까지 취소하는 흐름을 비교한다.</desc>
+  <defs>
+    <marker id="arrow-blue" markerWidth="10" markerHeight="10" refX="8" refY="5" orient="auto"><path d="M 0 0 L 10 5 L 0 10 z" fill="#3578c4"/></marker>
+    <marker id="arrow-green" markerWidth="10" markerHeight="10" refX="8" refY="5" orient="auto"><path d="M 0 0 L 10 5 L 0 10 z" fill="#2b8a68"/></marker>
+    <marker id="arrow-orange" markerWidth="10" markerHeight="10" refX="8" refY="5" orient="auto"><path d="M 0 0 L 10 5 L 0 10 z" fill="#c47a16"/></marker>
+  </defs>
+  <rect width="1500" height="900" fill="#f8fafc"/>
+  <text x="48" y="54" fill="#1f2937" font-family="Arial, 'Malgun Gothic', sans-serif" font-size="30" font-weight="700">같은 실패라도 트랜잭션 경계에 따라 남는 결과가 달라진다</text>
+  <text x="48" y="88" fill="#64748b" font-family="Arial, 'Malgun Gothic', sans-serif" font-size="16">음식점 101 저장은 성공하고 존재하지 않는 영상 999 연결은 실패하는 상황을 비교한다.</text>
+
+  <rect x="48" y="128" width="650" height="644" rx="16" fill="#ffffff" stroke="#dbe3ec" stroke-width="2"/>
+  <rect x="48" y="128" width="650" height="70" rx="16" fill="#fff7e8"/><rect x="48" y="182" width="650" height="16" fill="#fff7e8"/>
+  <text x="78" y="171" fill="#7c4a03" font-family="Arial, 'Malgun Gothic', sans-serif" font-size="22" font-weight="700">여러 SQL을 하나로 묶지 않음</text>
+  <text x="78" y="232" fill="#64748b" font-family="Arial, 'Malgun Gothic', sans-serif" font-size="14">자동 커밋 모드에서 각 문장이 별도 트랜잭션으로 확정</text>
+
+  <rect x="78" y="268" width="590" height="88" rx="12" fill="#eef5ff" stroke="#3578c4" stroke-width="2"/>
+  <text x="104" y="304" fill="#1d4f91" font-family="Arial, 'Malgun Gothic', sans-serif" font-size="17" font-weight="700">1. restaurant INSERT</text>
+  <text x="104" y="334" fill="#334155" font-family="Arial, 'Malgun Gothic', sans-serif" font-size="15">성공 → 음식점 101 커밋</text>
+  <line x1="373" y1="356" x2="373" y2="396" stroke="#3578c4" stroke-width="3" marker-end="url(#arrow-blue)"/>
+  <rect x="78" y="410" width="590" height="104" rx="12" fill="#fff1d6" stroke="#c47a16" stroke-width="2"/>
+  <text x="104" y="446" fill="#7c4a03" font-family="Arial, 'Malgun Gothic', sans-serif" font-size="17" font-weight="700">2. restaurant_video INSERT</text>
+  <text x="104" y="476" fill="#7c4a03" font-family="Arial, 'Malgun Gothic', sans-serif" font-size="15">실패 → video_id 999 외래키 오류</text>
+  <text x="104" y="500" fill="#7c4a03" font-family="Arial, 'Malgun Gothic', sans-serif" font-size="14">앞선 커밋까지 자동으로 취소되지 않음</text>
+  <rect x="78" y="558" width="590" height="146" rx="12" fill="#fff7e8" stroke="#c47a16" stroke-width="2"/>
+  <text x="373" y="598" text-anchor="middle" fill="#7c4a03" font-family="Arial, 'Malgun Gothic', sans-serif" font-size="18" font-weight="700">최종 상태</text>
+  <text x="373" y="634" text-anchor="middle" fill="#7c4a03" font-family="Arial, 'Malgun Gothic', sans-serif" font-size="16">음식점 101은 남음</text>
+  <text x="373" y="668" text-anchor="middle" fill="#7c4a03" font-family="Arial, 'Malgun Gothic', sans-serif" font-size="16">영상 연결은 없음</text>
+
+  <line x1="736" y1="450" x2="764" y2="450" stroke="#94a3b8" stroke-width="3" marker-end="url(#arrow-blue)"/>
+
+  <rect x="802" y="128" width="650" height="644" rx="16" fill="#ffffff" stroke="#dbe3ec" stroke-width="2"/>
+  <rect x="802" y="128" width="650" height="70" rx="16" fill="#e9f7f0"/><rect x="802" y="182" width="650" height="16" fill="#e9f7f0"/>
+  <text x="832" y="171" fill="#176347" font-family="Arial, 'Malgun Gothic', sans-serif" font-size="22" font-weight="700">하나의 트랜잭션으로 묶음</text>
+  <text x="832" y="232" fill="#64748b" font-family="Arial, 'Malgun Gothic', sans-serif" font-size="14">BEGIN부터 COMMIT 또는 ROLLBACK까지 하나의 성공 단위</text>
+
+  <rect x="832" y="268" width="590" height="70" rx="12" fill="#eef5ff" stroke="#3578c4" stroke-width="2"/>
+  <text x="1127" y="310" text-anchor="middle" fill="#1d4f91" font-family="Arial, 'Malgun Gothic', sans-serif" font-size="17" font-weight="700">BEGIN</text>
+  <line x1="1127" y1="338" x2="1127" y2="372" stroke="#3578c4" stroke-width="3" marker-end="url(#arrow-blue)"/>
+  <rect x="832" y="386" width="590" height="104" rx="12" fill="#eef5ff" stroke="#3578c4" stroke-width="2"/>
+  <text x="858" y="422" fill="#1d4f91" font-family="Arial, 'Malgun Gothic', sans-serif" font-size="17" font-weight="700">1. 음식점 저장</text>
+  <text x="858" y="452" fill="#334155" font-family="Arial, 'Malgun Gothic', sans-serif" font-size="15">성공했지만 아직 최종 확정 전</text>
+  <line x1="1127" y1="490" x2="1127" y2="524" stroke="#3578c4" stroke-width="3" marker-end="url(#arrow-blue)"/>
+  <rect x="832" y="538" width="590" height="104" rx="12" fill="#fff1d6" stroke="#c47a16" stroke-width="2"/>
+  <text x="858" y="574" fill="#7c4a03" font-family="Arial, 'Malgun Gothic', sans-serif" font-size="17" font-weight="700">2. 영상 연결 실패</text>
+  <text x="858" y="604" fill="#7c4a03" font-family="Arial, 'Malgun Gothic', sans-serif" font-size="15">외래키 오류 → ROLLBACK</text>
+  <line x1="1127" y1="642" x2="1127" y2="678" stroke="#c47a16" stroke-width="3" marker-end="url(#arrow-orange)"/>
+  <rect x="832" y="692" width="590" height="54" rx="12" fill="#e9f7f0" stroke="#2b8a68" stroke-width="2"/>
+  <text x="1127" y="726" text-anchor="middle" fill="#176347" font-family="Arial, 'Malgun Gothic', sans-serif" font-size="17" font-weight="700">음식점 저장도 함께 취소</text>
+
+  <text x="750" y="842" text-anchor="middle" fill="#64748b" font-family="Arial, 'Malgun Gothic', sans-serif" font-size="15">두 작업을 함께 성공시켜야 하는지는 SQL의 수가 아니라 업무의 성공 조건으로 정한다.</text>
+</svg>
