@@ -1,0 +1,61 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1500" height="920" viewBox="0 0 1500 920" role="img" aria-labelledby="title desc">
+  <title id="title">활성 운영자 업무 규칙과 SERIALIZABLE의 결과 보장</title>
+  <desc id="desc">활성 운영자가 두 명인 초기 상태에서 두 트랜잭션이 각각 다른 운영자를 비활성화할 때 REPEATABLE READ에서는 두 작업이 모두 커밋해 규칙을 깨는 결과가 가능하고 SERIALIZABLE에서는 직렬 실행으로 설명할 수 없는 결과가 허용되지 않아 한 트랜잭션이 실패할 수 있음을 비교한다.</desc>
+  <defs>
+    <marker id="arrow-blue" markerWidth="10" markerHeight="10" refX="8" refY="5" orient="auto"><path d="M 0 0 L 10 5 L 0 10 z" fill="#3578c4"/></marker>
+    <marker id="arrow-green" markerWidth="10" markerHeight="10" refX="8" refY="5" orient="auto"><path d="M 0 0 L 10 5 L 0 10 z" fill="#2b8a68"/></marker>
+    <marker id="arrow-orange" markerWidth="10" markerHeight="5" refX="8" refY="2.5" orient="auto"><path d="M 0 0 L 10 2.5 L 0 5 z" fill="#c47a16"/></marker>
+  </defs>
+  <rect width="1500" height="920" fill="#f8fafc"/>
+  <text x="48" y="52" fill="#1f2937" font-family="Arial, 'Malgun Gothic', sans-serif" font-size="30" font-weight="700">반복해서 읽는 보장과 직렬 실행 결과의 보장은 다르다</text>
+  <text x="48" y="86" fill="#64748b" font-family="Arial, 'Malgun Gothic', sans-serif" font-size="16">업무 규칙: 활성 운영자는 최소 한 명 남아야 한다. 초기 상태에는 운영자 A와 B가 모두 활성이다.</text>
+
+  <rect x="48" y="122" width="1404" height="112" rx="14" fill="#ffffff" stroke="#dbe3ec" stroke-width="2"/>
+  <text x="76" y="158" fill="#475569" font-family="Arial, 'Malgun Gothic', sans-serif" font-size="16" font-weight="700">공통 초기 상태</text>
+  <rect x="76" y="174" width="270" height="40" rx="9" fill="#e9f7f0" stroke="#2b8a68" stroke-width="2"/>
+  <text x="211" y="200" text-anchor="middle" fill="#176347" font-family="Arial, 'Malgun Gothic', sans-serif" font-size="15">운영자 A · 활성</text>
+  <line x1="360" y1="194" x2="408" y2="194" stroke="#94a3b8" stroke-width="3" marker-end="url(#arrow-blue)"/>
+  <rect x="426" y="174" width="270" height="40" rx="9" fill="#e9f7f0" stroke="#2b8a68" stroke-width="2"/>
+  <text x="561" y="200" text-anchor="middle" fill="#176347" font-family="Arial, 'Malgun Gothic', sans-serif" font-size="15">운영자 B · 활성</text>
+  <line x1="710" y1="194" x2="758" y2="194" stroke="#94a3b8" stroke-width="3" marker-end="url(#arrow-blue)"/>
+  <rect x="776" y="174" width="616" height="40" rx="9" fill="#eef5ff" stroke="#3578c4" stroke-width="2"/>
+  <text x="1084" y="200" text-anchor="middle" fill="#1d4f91" font-family="Arial, 'Malgun Gothic', sans-serif" font-size="15">T1과 T2가 각각 활성 운영자 2명을 확인</text>
+
+  <rect x="48" y="268" width="672" height="544" rx="16" fill="#ffffff" stroke="#dbe3ec" stroke-width="2"/>
+  <rect x="48" y="268" width="672" height="70" rx="16" fill="#fff7e8"/><rect x="48" y="322" width="672" height="16" fill="#fff7e8"/>
+  <text x="82" y="311" fill="#7c4a03" font-family="Arial, 'Malgun Gothic', sans-serif" font-size="23" font-weight="700">REPEATABLE READ</text>
+  <text x="82" y="370" fill="#64748b" font-family="Arial, 'Malgun Gothic', sans-serif" font-size="14">두 트랜잭션이 안정적인 스냅샷을 읽어도 업무 규칙은 별도</text>
+
+  <rect x="82" y="400" width="270" height="84" rx="12" fill="#eef5ff" stroke="#3578c4" stroke-width="2"/>
+  <text x="217" y="434" text-anchor="middle" fill="#1d4f91" font-family="Arial, 'Malgun Gothic', sans-serif" font-size="16" font-weight="700">T1: 활성 2명 확인</text>
+  <text x="217" y="462" text-anchor="middle" fill="#475569" font-family="Arial, 'Malgun Gothic', sans-serif" font-size="14">운영자 A 비활성화</text>
+  <rect x="368" y="400" width="270" height="84" rx="12" fill="#eef5ff" stroke="#3578c4" stroke-width="2"/>
+  <text x="503" y="434" text-anchor="middle" fill="#1d4f91" font-family="Arial, 'Malgun Gothic', sans-serif" font-size="16" font-weight="700">T2: 활성 2명 확인</text>
+  <text x="503" y="462" text-anchor="middle" fill="#475569" font-family="Arial, 'Malgun Gothic', sans-serif" font-size="14">운영자 B 비활성화</text>
+  <line x1="217" y1="484" x2="217" y2="528" stroke="#c47a16" stroke-width="3" marker-end="url(#arrow-orange)"/>
+  <line x1="503" y1="484" x2="503" y2="528" stroke="#c47a16" stroke-width="3" marker-end="url(#arrow-orange)"/>
+  <rect x="82" y="544" width="556" height="112" rx="12" fill="#fff1d6" stroke="#c47a16" stroke-width="2"/>
+  <text x="360" y="580" text-anchor="middle" fill="#7c4a03" font-family="Arial, 'Malgun Gothic', sans-serif" font-size="17" font-weight="700">T1 COMMIT + T2 COMMIT</text>
+  <text x="360" y="610" text-anchor="middle" fill="#7c4a03" font-family="Arial, 'Malgun Gothic', sans-serif" font-size="15">서로 다른 행을 변경하면 모두 커밋 가능</text>
+  <text x="360" y="638" text-anchor="middle" fill="#7c4a03" font-family="Arial, 'Malgun Gothic', sans-serif" font-size="15" font-weight="700">활성 운영자 0명 → 업무 규칙 위반</text>
+
+  <rect x="780" y="268" width="672" height="544" rx="16" fill="#ffffff" stroke="#dbe3ec" stroke-width="2"/>
+  <rect x="780" y="268" width="672" height="70" rx="16" fill="#e9f7f0"/><rect x="780" y="322" width="672" height="16" fill="#e9f7f0"/>
+  <text x="814" y="311" fill="#176347" font-family="Arial, 'Malgun Gothic', sans-serif" font-size="23" font-weight="700">SERIALIZABLE</text>
+  <text x="814" y="370" fill="#64748b" font-family="Arial, 'Malgun Gothic', sans-serif" font-size="14">성공한 결과가 어떤 직렬 실행 순서와 같아야 함</text>
+
+  <rect x="814" y="400" width="270" height="84" rx="12" fill="#eef5ff" stroke="#3578c4" stroke-width="2"/>
+  <text x="949" y="434" text-anchor="middle" fill="#1d4f91" font-family="Arial, 'Malgun Gothic', sans-serif" font-size="16" font-weight="700">T1: 활성 2명 확인</text>
+  <text x="949" y="462" text-anchor="middle" fill="#475569" font-family="Arial, 'Malgun Gothic', sans-serif" font-size="14">운영자 A 비활성화</text>
+  <rect x="1100" y="400" width="270" height="84" rx="12" fill="#eef5ff" stroke="#3578c4" stroke-width="2"/>
+  <text x="1235" y="434" text-anchor="middle" fill="#1d4f91" font-family="Arial, 'Malgun Gothic', sans-serif" font-size="16" font-weight="700">T2: 활성 2명 확인</text>
+  <text x="1235" y="462" text-anchor="middle" fill="#475569" font-family="Arial, 'Malgun Gothic', sans-serif" font-size="14">운영자 B 비활성화</text>
+  <line x1="949" y1="484" x2="949" y2="528" stroke="#c47a16" stroke-width="3" marker-end="url(#arrow-orange)"/>
+  <line x1="1235" y1="484" x2="1235" y2="528" stroke="#c47a16" stroke-width="3" marker-end="url(#arrow-orange)"/>
+  <rect x="814" y="544" width="556" height="112" rx="12" fill="#fef2f2" stroke="#c75b5b" stroke-width="2"/>
+  <text x="1092" y="580" text-anchor="middle" fill="#9f3b3b" font-family="Arial, 'Malgun Gothic', sans-serif" font-size="17" font-weight="700">두 작업이 모두 커밋하는 결과는 불가</text>
+  <text x="1092" y="610" text-anchor="middle" fill="#7f1d1d" font-family="Arial, 'Malgun Gothic', sans-serif" font-size="15">직렬 실행으로 설명할 수 없는 결과를 만들기 때문</text>
+  <text x="1092" y="638" text-anchor="middle" fill="#9f3b3b" font-family="Arial, 'Malgun Gothic', sans-serif" font-size="15" font-weight="700">한 트랜잭션이 직렬화 실패할 수 있음</text>
+
+  <text x="750" y="866" text-anchor="middle" fill="#64748b" font-family="Arial, 'Malgun Gothic', sans-serif" font-size="15">SERIALIZABLE은 모든 트랜잭션을 한 줄로 실행하는 것이 아니라 직렬 실행과 같은 결과만 성공시키는 보장이다.</text>
+</svg>
