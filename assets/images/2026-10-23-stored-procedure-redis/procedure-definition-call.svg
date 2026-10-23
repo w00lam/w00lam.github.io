@@ -1,0 +1,53 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1500" height="900" viewBox="0 0 1500 900" role="img" aria-labelledby="title desc">
+  <title id="title">저장 프로시저의 정의와 호출</title>
+  <desc id="desc">프로시저 본문은 데이터베이스에 미리 정의하고 애플리케이션은 호출할 때 프로시저 이름과 입력값을 전달하는 흐름을 보여준다.</desc>
+  <defs>
+    <marker id="arrow-blue" markerWidth="10" markerHeight="10" refX="8" refY="5" orient="auto"><path d="M 0 0 L 10 5 L 0 10 z" fill="#3578c4"/></marker>
+    <marker id="arrow-green" markerWidth="10" markerHeight="10" refX="8" refY="5" orient="auto"><path d="M 0 0 L 10 5 L 0 10 z" fill="#2b8a68"/></marker>
+    <marker id="arrow-orange" markerWidth="10" markerHeight="10" refX="8" refY="5" orient="auto"><path d="M 0 0 L 10 5 L 0 10 z" fill="#c47a16"/></marker>
+  </defs>
+  <rect width="1500" height="900" fill="#f8fafc"/>
+  <text x="48" y="54" fill="#1f2937" font-family="Arial, 'Malgun Gothic', sans-serif" font-size="30" font-weight="700">정의할 때 본문을 저장하고 호출할 때 이름과 인수를 전달한다</text>
+  <text x="48" y="88" fill="#64748b" font-family="Arial, 'Malgun Gothic', sans-serif" font-size="16">프로시저 전체를 호출할 때마다 다시 보내는 흐름이 아니라 DB에 저장된 작업을 호출하는 흐름이다.</text>
+
+  <rect x="48" y="132" width="1404" height="168" rx="16" fill="#ffffff" stroke="#dbe3ec" stroke-width="2"/>
+  <text x="78" y="171" fill="#475569" font-family="Arial, 'Malgun Gothic', sans-serif" font-size="17" font-weight="700">정의 시점</text>
+  <rect x="78" y="198" width="330" height="62" rx="12" fill="#eef5ff" stroke="#3578c4" stroke-width="2"/>
+  <text x="243" y="224" text-anchor="middle" fill="#1d4f91" font-family="Arial, 'Malgun Gothic', sans-serif" font-size="16" font-weight="700">DB 관리자 또는 배포 작업</text>
+  <text x="243" y="248" text-anchor="middle" fill="#334155" font-family="Arial, 'Malgun Gothic', sans-serif" font-size="14">CREATE PROCEDURE</text>
+  <line x1="428" y1="229" x2="494" y2="229" stroke="#3578c4" stroke-width="3" marker-end="url(#arrow-blue)"/>
+  <rect x="512" y="184" width="866" height="90" rx="12" fill="#e9f7f0" stroke="#2b8a68" stroke-width="2"/>
+  <text x="545" y="218" fill="#176347" font-family="Arial, 'Malgun Gothic', sans-serif" font-size="17" font-weight="700">데이터베이스에 저장된 프로시저</text>
+  <text x="545" y="246" fill="#334155" font-family="Arial, 'Malgun Gothic', sans-serif" font-size="15">add_amount의 본문과 매개변수 정의를 보관</text>
+
+  <rect x="48" y="344" width="1404" height="424" rx="16" fill="#ffffff" stroke="#dbe3ec" stroke-width="2"/>
+  <text x="78" y="386" fill="#475569" font-family="Arial, 'Malgun Gothic', sans-serif" font-size="17" font-weight="700">호출 시점</text>
+
+  <rect x="78" y="430" width="340" height="128" rx="12" fill="#eef5ff" stroke="#3578c4" stroke-width="2"/>
+  <text x="248" y="467" text-anchor="middle" fill="#1d4f91" font-family="Arial, 'Malgun Gothic', sans-serif" font-size="17" font-weight="700">애플리케이션</text>
+  <text x="248" y="502" text-anchor="middle" fill="#334155" font-family="Arial, 'Malgun Gothic', sans-serif" font-size="15">CALL add_amount(5, 10, NULL)</text>
+  <text x="248" y="529" text-anchor="middle" fill="#64748b" font-family="Arial, 'Malgun Gothic', sans-serif" font-size="13">이름과 인수만 전달</text>
+
+  <line x1="438" y1="494" x2="558" y2="494" stroke="#3578c4" stroke-width="3" marker-end="url(#arrow-blue)"/>
+  <text x="498" y="470" text-anchor="middle" fill="#64748b" font-family="Arial, 'Malgun Gothic', sans-serif" font-size="14">호출</text>
+
+  <rect x="578" y="408" width="430" height="184" rx="14" fill="#e9f7f0" stroke="#2b8a68" stroke-width="2"/>
+  <text x="793" y="449" text-anchor="middle" fill="#176347" font-family="Arial, 'Malgun Gothic', sans-serif" font-size="19" font-weight="700">DB 내부 실행</text>
+  <text x="793" y="487" text-anchor="middle" fill="#334155" font-family="Arial, 'Malgun Gothic', sans-serif" font-size="15">저장된 본문을 찾아 실행</text>
+  <text x="793" y="520" text-anchor="middle" fill="#334155" font-family="Arial, 'Malgun Gothic', sans-serif" font-size="15">p_total: 10 → 15</text>
+  <text x="793" y="553" text-anchor="middle" fill="#334155" font-family="Arial, 'Malgun Gothic', sans-serif" font-size="15">p_added: 5</text>
+
+  <line x1="1028" y1="494" x2="1148" y2="494" stroke="#2b8a68" stroke-width="3" marker-end="url(#arrow-green)"/>
+  <text x="1088" y="470" text-anchor="middle" fill="#64748b" font-family="Arial, 'Malgun Gothic', sans-serif" font-size="14">결과</text>
+
+  <rect x="1168" y="430" width="248" height="128" rx="12" fill="#fff7e8" stroke="#c47a16" stroke-width="2"/>
+  <text x="1292" y="467" text-anchor="middle" fill="#7c4a03" font-family="Arial, 'Malgun Gothic', sans-serif" font-size="17" font-weight="700">호출자에게 반환</text>
+  <text x="1292" y="502" text-anchor="middle" fill="#334155" font-family="Arial, 'Malgun Gothic', sans-serif" font-size="15">출력 결과 행</text>
+  <text x="1292" y="529" text-anchor="middle" fill="#7c4a03" font-family="Arial, 'Malgun Gothic', sans-serif" font-size="14">15, 5</text>
+
+  <rect x="78" y="638" width="1338" height="84" rx="12" fill="#fff7e8" stroke="#c47a16" stroke-width="2"/>
+  <text x="747" y="672" text-anchor="middle" fill="#7c4a03" font-family="Arial, 'Malgun Gothic', sans-serif" font-size="17" font-weight="700">호출마다 프로시저 본문 전체를 전송하는 것이 아니다</text>
+  <text x="747" y="699" text-anchor="middle" fill="#475569" font-family="Arial, 'Malgun Gothic', sans-serif" font-size="14">본문은 정의 단계에서 DB에 저장되고 CALL은 저장된 작업을 가리킨다.</text>
+
+  <text x="750" y="842" text-anchor="middle" fill="#64748b" font-family="Arial, 'Malgun Gothic', sans-serif" font-size="15">정의와 호출을 나누면 실행 위치와 전달되는 값의 범위를 구분할 수 있다.</text>
+</svg>
