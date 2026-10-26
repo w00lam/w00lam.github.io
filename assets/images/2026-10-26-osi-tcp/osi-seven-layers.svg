@@ -1,0 +1,59 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1000" height="780" viewBox="0 0 1000 780" role="img" aria-labelledby="title desc">
+  <title id="title">OSI 7계층과 데이터 단위</title>
+  <desc id="desc">응용 계층에서 물리 계층까지의 OSI 7계층과 각 계층의 데이터 단위를 보여 주는 도식</desc>
+  <defs>
+    <marker id="arrow" viewBox="0 0 10 10" refX="5" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#53657a" />
+    </marker>
+    <style>
+      .title { font: 700 28px Arial, 'Malgun Gothic', sans-serif; fill: #172b4d; }
+      .subtitle { font: 400 16px Arial, 'Malgun Gothic', sans-serif; fill: #53657a; }
+      .layer { font: 700 20px Arial, 'Malgun Gothic', sans-serif; fill: #172b4d; }
+      .unit { font: 600 17px Arial, 'Malgun Gothic', sans-serif; fill: #24425f; }
+      .side { font: 600 16px Arial, 'Malgun Gothic', sans-serif; fill: #53657a; }
+      .note { font: 400 15px Arial, 'Malgun Gothic', sans-serif; fill: #53657a; }
+    </style>
+  </defs>
+
+  <rect width="1000" height="780" fill="#ffffff" />
+  <text x="500" y="45" text-anchor="middle" class="title">OSI 7계층과 데이터 단위</text>
+  <text x="500" y="72" text-anchor="middle" class="subtitle">송신 측에서는 위에서 아래로, 수신 측에서는 아래에서 위로 흐름을 이해한다</text>
+
+  <line x1="110" y1="118" x2="110" y2="688" stroke="#8a99aa" stroke-width="2" marker-end="url(#arrow)" />
+  <text x="110" y="105" text-anchor="middle" class="side">하위 계층</text>
+  <text x="110" y="724" text-anchor="middle" class="side">물리 전송</text>
+
+  <line x1="890" y1="688" x2="890" y2="118" stroke="#8a99aa" stroke-width="2" marker-end="url(#arrow)" />
+  <text x="890" y="105" text-anchor="middle" class="side">응용 데이터</text>
+  <text x="890" y="724" text-anchor="middle" class="side">상위 계층</text>
+
+  <rect x="190" y="102" width="620" height="68" rx="10" fill="#e7f0fb" stroke="#6e9ac6" stroke-width="2" />
+  <text x="225" y="143" class="layer">7. 응용 계층</text>
+  <text x="775" y="143" text-anchor="end" class="unit">데이터</text>
+
+  <rect x="190" y="184" width="620" height="68" rx="10" fill="#eaf4f1" stroke="#71a798" stroke-width="2" />
+  <text x="225" y="225" class="layer">6. 표현 계층</text>
+  <text x="775" y="225" text-anchor="end" class="unit">데이터</text>
+
+  <rect x="190" y="266" width="620" height="68" rx="10" fill="#f1f5e8" stroke="#a6b979" stroke-width="2" />
+  <text x="225" y="307" class="layer">5. 세션 계층</text>
+  <text x="775" y="307" text-anchor="end" class="unit">데이터</text>
+
+  <rect x="190" y="348" width="620" height="68" rx="10" fill="#fff4dc" stroke="#d5aa50" stroke-width="2" />
+  <text x="225" y="389" class="layer">4. 전송 계층</text>
+  <text x="775" y="389" text-anchor="end" class="unit">TCP 세그먼트 · UDP 데이터그램</text>
+
+  <rect x="190" y="430" width="620" height="68" rx="10" fill="#fff0e6" stroke="#d08c63" stroke-width="2" />
+  <text x="225" y="471" class="layer">3. 네트워크 계층</text>
+  <text x="775" y="471" text-anchor="end" class="unit">패킷</text>
+
+  <rect x="190" y="512" width="620" height="68" rx="10" fill="#f4eafa" stroke="#a68ac5" stroke-width="2" />
+  <text x="225" y="553" class="layer">2. 데이터 링크 계층</text>
+  <text x="775" y="553" text-anchor="end" class="unit">프레임</text>
+
+  <rect x="190" y="594" width="620" height="68" rx="10" fill="#f0f1f3" stroke="#8993a0" stroke-width="2" />
+  <text x="225" y="635" class="layer">1. 물리 계층</text>
+  <text x="775" y="635" text-anchor="end" class="unit">비트</text>
+
+  <text x="500" y="766" text-anchor="middle" class="note">데이터 → 세그먼트·데이터그램 → 패킷 → 프레임 → 비트</text>
+</svg>
