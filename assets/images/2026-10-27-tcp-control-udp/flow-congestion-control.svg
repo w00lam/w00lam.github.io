@@ -1,0 +1,53 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="650" viewBox="0 0 1200 650" role="img" aria-labelledby="title desc">
+  <title id="title">흐름 제어와 혼잡 제어가 보호하는 대상</title>
+  <desc id="desc">왼쪽은 수신 버퍼와 rwnd가 수신 측을 보호하는 모습을, 오른쪽은 네트워크 경로의 병목과 cwnd가 경로의 혼잡을 조절하는 모습을 보여 준다.</desc>
+  <style>
+    .title { font: 700 30px Arial, sans-serif; fill: #1f2937; }
+    .heading { font: 700 25px Arial, sans-serif; fill: #111827; }
+    .label { font: 600 21px Arial, sans-serif; fill: #1f2937; }
+    .body { font: 400 19px Arial, sans-serif; fill: #374151; }
+    .small { font: 400 17px Arial, sans-serif; fill: #4b5563; }
+  </style>
+  <rect width="1200" height="650" fill="#f8fafc"/>
+  <text x="600" y="52" text-anchor="middle" class="title">전송량을 조절하지만 보호 대상은 다르다</text>
+
+  <rect x="50" y="90" width="525" height="500" rx="20" fill="#eff6ff" stroke="#60a5fa" stroke-width="3"/>
+  <text x="312" y="135" text-anchor="middle" class="heading">흐름 제어</text>
+  <text x="312" y="167" text-anchor="middle" class="label">수신 측 버퍼를 보호</text>
+  <rect x="92" y="220" width="180" height="180" rx="10" fill="#ffffff" stroke="#2563eb" stroke-width="3"/>
+  <text x="182" y="255" text-anchor="middle" class="label">수신 버퍼</text>
+  <rect x="115" y="280" width="134" height="30" fill="#bfdbfe"/>
+  <rect x="115" y="315" width="134" height="30" fill="#bfdbfe"/>
+  <rect x="115" y="350" width="134" height="30" fill="#dbeafe"/>
+  <text x="182" y="425" text-anchor="middle" class="small">남은 공간이 rwnd로 알려짐</text>
+  <line x1="292" y1="310" x2="405" y2="310" stroke="#2563eb" stroke-width="6"/>
+  <polygon points="405,310 385,298 385,322" fill="#2563eb"/>
+  <text x="350" y="287" text-anchor="middle" class="label">rwnd</text>
+  <rect x="420" y="220" width="110" height="180" rx="10" fill="#ffffff" stroke="#2563eb" stroke-width="3"/>
+  <text x="475" y="255" text-anchor="middle" class="label">송신</text>
+  <rect x="442" y="280" width="66" height="25" fill="#93c5fd"/>
+  <rect x="442" y="312" width="66" height="25" fill="#93c5fd"/>
+  <rect x="442" y="344" width="66" height="25" fill="#93c5fd"/>
+  <text x="312" y="485" text-anchor="middle" class="body">수신 버퍼가 가득 차면</text>
+  <text x="312" y="515" text-anchor="middle" class="body">송신 가능한 범위를 줄인다</text>
+
+  <rect x="625" y="90" width="525" height="500" rx="20" fill="#fff7ed" stroke="#fb923c" stroke-width="3"/>
+  <text x="887" y="135" text-anchor="middle" class="heading">혼잡 제어</text>
+  <text x="887" y="167" text-anchor="middle" class="label">네트워크 경로를 보호</text>
+  <circle cx="690" cy="310" r="36" fill="#fed7aa" stroke="#ea580c" stroke-width="3"/>
+  <text x="690" y="318" text-anchor="middle" class="label">송신</text>
+  <line x1="728" y1="310" x2="793" y2="310" stroke="#ea580c" stroke-width="6"/>
+  <polygon points="793,310 773,298 773,322" fill="#ea580c"/>
+  <rect x="805" y="245" width="165" height="130" rx="12" fill="#ffffff" stroke="#ea580c" stroke-width="3"/>
+  <text x="887" y="285" text-anchor="middle" class="label">혼잡한 병목</text>
+  <line x1="835" y1="320" x2="940" y2="320" stroke="#fb923c" stroke-width="8"/>
+  <line x1="835" y1="340" x2="940" y2="340" stroke="#fb923c" stroke-width="8"/>
+  <line x1="835" y1="360" x2="940" y2="360" stroke="#fb923c" stroke-width="8"/>
+  <line x1="975" y1="310" x2="1040" y2="310" stroke="#ea580c" stroke-width="6"/>
+  <polygon points="1040,310 1020,298 1020,322" fill="#ea580c"/>
+  <circle cx="1080" cy="310" r="36" fill="#fed7aa" stroke="#ea580c" stroke-width="3"/>
+  <text x="1080" y="318" text-anchor="middle" class="label">수신</text>
+  <text x="887" y="435" text-anchor="middle" class="label">cwnd</text>
+  <text x="887" y="467" text-anchor="middle" class="body">경로에 주입할 데이터 양을 조절</text>
+  <text x="887" y="515" text-anchor="middle" class="body">혼잡하면 증가 폭을 완만하게 한다</text>
+</svg>

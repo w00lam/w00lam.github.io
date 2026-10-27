@@ -1,0 +1,35 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="470" viewBox="0 0 1200 470" role="img" aria-labelledby="title desc">
+  <title id="title">UDP 데이터그램의 8바이트 헤더</title>
+  <desc id="desc">UDP 헤더는 출발지 포트, 목적지 포트, 길이, 체크섬 네 개의 16비트 필드로 구성되며 데이터 영역이 이어진다.</desc>
+  <style>
+    .title { font: 700 30px Arial, sans-serif; fill: #1f2937; }
+    .label { font: 700 22px Arial, sans-serif; fill: #111827; }
+    .small { font: 400 18px Arial, sans-serif; fill: #374151; }
+    .bit { font: 400 16px Arial, sans-serif; fill: #6b7280; }
+  </style>
+  <rect width="1200" height="470" fill="#f8fafc"/>
+  <text x="600" y="50" text-anchor="middle" class="title">UDP 데이터그램 형식</text>
+  <text x="115" y="92" text-anchor="middle" class="bit">0</text>
+  <text x="385" y="92" text-anchor="middle" class="bit">16</text>
+  <text x="655" y="92" text-anchor="middle" class="bit">32</text>
+  <text x="925" y="92" text-anchor="middle" class="bit">48</text>
+  <text x="1085" y="92" text-anchor="middle" class="bit">64</text>
+  <rect x="70" y="110" width="270" height="115" fill="#dbeafe" stroke="#2563eb" stroke-width="3"/>
+  <rect x="340" y="110" width="270" height="115" fill="#dbeafe" stroke="#2563eb" stroke-width="3"/>
+  <rect x="610" y="110" width="270" height="115" fill="#ffedd5" stroke="#ea580c" stroke-width="3"/>
+  <rect x="880" y="110" width="270" height="115" fill="#fef3c7" stroke="#d97706" stroke-width="3"/>
+  <text x="205" y="160" text-anchor="middle" class="label">출발지 포트</text>
+  <text x="475" y="160" text-anchor="middle" class="label">목적지 포트</text>
+  <text x="745" y="160" text-anchor="middle" class="label">길이</text>
+  <text x="1015" y="160" text-anchor="middle" class="label">체크섬</text>
+  <text x="205" y="195" text-anchor="middle" class="small">16비트</text>
+  <text x="475" y="195" text-anchor="middle" class="small">16비트</text>
+  <text x="745" y="195" text-anchor="middle" class="small">16비트</text>
+  <text x="1015" y="195" text-anchor="middle" class="small">16비트</text>
+  <rect x="70" y="225" width="1080" height="105" fill="#ecfdf5" stroke="#059669" stroke-width="3"/>
+  <text x="610" y="275" text-anchor="middle" class="label">데이터</text>
+  <text x="610" y="310" text-anchor="middle" class="small">Length = UDP 헤더 8바이트 + 데이터 길이</text>
+  <line x1="745" y1="340" x2="745" y2="385" stroke="#ea580c" stroke-width="3"/>
+  <polygon points="745,400 735,382 755,382" fill="#ea580c"/>
+  <text x="745" y="435" text-anchor="middle" class="small">길이 필드는 헤더와 데이터를 모두 포함한다</text>
+</svg>
