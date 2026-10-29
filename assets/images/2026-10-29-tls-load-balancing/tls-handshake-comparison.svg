@@ -1,0 +1,84 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1400" height="900" viewBox="0 0 1400 900" role="img" aria-labelledby="title desc">
+  <title id="title">TLS 1.2 ECDHE와 TLS 1.3 인증서 기반 핸드셰이크 비교</title>
+  <desc id="desc">두 레인에서 TLS 1.2 ECDHE의 ServerKeyExchange와 ClientKeyExchange 흐름 및 master_secret 파생, TLS 1.3의 key_share와 인증서 기반 메시지 및 HKDF 키 스케줄을 비교한다.</desc>
+  <style>
+    .title { font: 700 30px Arial, sans-serif; fill: #1f2937; }
+    .lane { font: 700 25px Arial, sans-serif; fill: #111827; }
+    .head { font: 700 20px Arial, sans-serif; fill: #111827; }
+    .label { font: 600 18px Arial, sans-serif; fill: #1f2937; }
+    .small { font: 400 16px Arial, sans-serif; fill: #4b5563; }
+    .note { font: 400 15px Arial, sans-serif; fill: #374151; }
+  </style>
+  <defs>
+    <marker id="blue-arrow" markerWidth="10" markerHeight="10" refX="9" refY="3" orient="auto" markerUnits="strokeWidth">
+      <path d="M0,0 L0,6 L9,3 z" fill="#2563eb"/>
+    </marker>
+    <marker id="orange-arrow" markerWidth="10" markerHeight="10" refX="9" refY="3" orient="auto" markerUnits="strokeWidth">
+      <path d="M0,0 L0,6 L9,3 z" fill="#ea580c"/>
+    </marker>
+    <marker id="gray-arrow" markerWidth="10" markerHeight="10" refX="9" refY="3" orient="auto" markerUnits="strokeWidth">
+      <path d="M0,0 L0,6 L9,3 z" fill="#6b7280"/>
+    </marker>
+  </defs>
+  <rect width="1400" height="900" fill="#f8fafc"/>
+  <text x="700" y="48" text-anchor="middle" class="title">TLS 버전에 따라 키 교환 메시지와 키 파생 흐름이 달라진다</text>
+
+  <rect x="35" y="78" width="645" height="780" rx="20" fill="#eff6ff" stroke="#60a5fa" stroke-width="3"/>
+  <rect x="720" y="78" width="645" height="780" rx="20" fill="#fff7ed" stroke="#fb923c" stroke-width="3"/>
+  <text x="357" y="120" text-anchor="middle" class="lane">TLS 1.2 ECDHE 예시</text>
+  <text x="1042" y="120" text-anchor="middle" class="lane">TLS 1.3 인증서 기반</text>
+  <text x="205" y="160" text-anchor="middle" class="head">Client</text>
+  <text x="510" y="160" text-anchor="middle" class="head">Server</text>
+  <text x="890" y="160" text-anchor="middle" class="head">Client</text>
+  <text x="1195" y="160" text-anchor="middle" class="head">Server</text>
+  <line x1="205" y1="175" x2="205" y2="785" stroke="#93c5fd" stroke-width="3"/>
+  <line x1="510" y1="175" x2="510" y2="785" stroke="#93c5fd" stroke-width="3"/>
+  <line x1="890" y1="175" x2="890" y2="785" stroke="#fdba74" stroke-width="3"/>
+  <line x1="1195" y1="175" x2="1195" y2="785" stroke="#fdba74" stroke-width="3"/>
+
+  <line x1="230" y1="215" x2="485" y2="215" stroke="#2563eb" stroke-width="3" marker-end="url(#blue-arrow)"/>
+  <text x="357" y="207" text-anchor="middle" class="label">ClientHello + client_random</text>
+  <line x1="485" y1="265" x2="230" y2="265" stroke="#2563eb" stroke-width="3" marker-end="url(#blue-arrow)"/>
+  <text x="357" y="257" text-anchor="middle" class="label">ServerHello + server_random</text>
+  <line x1="485" y1="315" x2="230" y2="315" stroke="#2563eb" stroke-width="3" marker-end="url(#blue-arrow)"/>
+  <text x="357" y="307" text-anchor="middle" class="label">Certificate</text>
+  <line x1="485" y1="365" x2="230" y2="365" stroke="#2563eb" stroke-width="3" marker-end="url(#blue-arrow)"/>
+  <text x="357" y="357" text-anchor="middle" class="label">ServerKeyExchange</text>
+  <line x1="485" y1="415" x2="230" y2="415" stroke="#2563eb" stroke-width="3" marker-end="url(#blue-arrow)"/>
+  <text x="357" y="407" text-anchor="middle" class="label">ServerHelloDone</text>
+  <line x1="230" y1="465" x2="485" y2="465" stroke="#2563eb" stroke-width="3" marker-end="url(#blue-arrow)"/>
+  <text x="357" y="457" text-anchor="middle" class="label">ClientKeyExchange</text>
+  <rect x="85" y="510" width="570" height="104" rx="12" fill="#dbeafe" stroke="#2563eb" stroke-width="2"/>
+  <text x="370" y="542" text-anchor="middle" class="label">공유 비밀값 = pre_master_secret</text>
+  <text x="370" y="570" text-anchor="middle" class="small">+ client_random + server_random</text>
+  <text x="370" y="596" text-anchor="middle" class="label">→ master_secret → 방향별 통신 키</text>
+  <line x1="230" y1="665" x2="485" y2="665" stroke="#2563eb" stroke-width="3" marker-end="url(#blue-arrow)"/>
+  <text x="357" y="657" text-anchor="middle" class="label">ChangeCipherSpec + Finished</text>
+  <line x1="485" y1="715" x2="230" y2="715" stroke="#2563eb" stroke-width="3" marker-end="url(#blue-arrow)"/>
+  <text x="357" y="707" text-anchor="middle" class="label">ChangeCipherSpec + Finished</text>
+  <text x="370" y="770" text-anchor="middle" class="note">Finished 확인 후 애플리케이션 데이터 보호</text>
+  <text x="370" y="800" text-anchor="middle" class="note">※ master_secret은 TLS 1.2 자료의 명칭</text>
+
+  <line x1="915" y1="215" x2="1170" y2="215" stroke="#ea580c" stroke-width="3" marker-end="url(#orange-arrow)"/>
+  <text x="1042" y="207" text-anchor="middle" class="label">ClientHello + key_share</text>
+  <line x1="1170" y1="265" x2="915" y2="265" stroke="#ea580c" stroke-width="3" marker-end="url(#orange-arrow)"/>
+  <text x="1042" y="257" text-anchor="middle" class="label">ServerHello + key_share</text>
+  <rect x="770" y="315" width="570" height="86" rx="12" fill="#ffedd5" stroke="#ea580c" stroke-width="2"/>
+  <text x="1055" y="348" text-anchor="middle" class="label">공유 비밀값 → HKDF</text>
+  <text x="1055" y="378" text-anchor="middle" class="small">핸드셰이크 트래픽 키 파생</text>
+  <line x1="1170" y1="445" x2="915" y2="445" stroke="#ea580c" stroke-width="3" marker-end="url(#orange-arrow)"/>
+  <text x="1042" y="437" text-anchor="middle" class="label">EncryptedExtensions</text>
+  <line x1="1170" y1="495" x2="915" y2="495" stroke="#ea580c" stroke-width="3" marker-end="url(#orange-arrow)"/>
+  <text x="1042" y="487" text-anchor="middle" class="label">Certificate</text>
+  <line x1="1170" y1="545" x2="915" y2="545" stroke="#ea580c" stroke-width="3" marker-end="url(#orange-arrow)"/>
+  <text x="1042" y="537" text-anchor="middle" class="label">CertificateVerify</text>
+  <text x="1042" y="565" text-anchor="middle" class="note">인증서의 개인키 보유 증명</text>
+  <line x1="1170" y1="615" x2="915" y2="615" stroke="#ea580c" stroke-width="3" marker-end="url(#orange-arrow)"/>
+  <text x="1042" y="607" text-anchor="middle" class="label">Finished</text>
+  <text x="1042" y="635" text-anchor="middle" class="note">핸드셰이크 무결성·키 설정 확인</text>
+  <line x1="915" y1="685" x2="1170" y2="685" stroke="#ea580c" stroke-width="3" marker-end="url(#orange-arrow)"/>
+  <text x="1042" y="677" text-anchor="middle" class="label">Finished</text>
+  <rect x="770" y="730" width="570" height="76" rx="12" fill="#ffedd5" stroke="#ea580c" stroke-width="2"/>
+  <text x="1055" y="762" text-anchor="middle" class="label">HKDF → 애플리케이션 트래픽 키</text>
+  <text x="1055" y="790" text-anchor="middle" class="small">파생된 대칭키로 애플리케이션 데이터 보호</text>
+</svg>
