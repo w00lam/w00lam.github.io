@@ -1,0 +1,67 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1500" height="720" viewBox="0 0 1500 720" role="img" aria-labelledby="title desc">
+  <title id="title">Blocking I/O와 Selector 기반 Non-Blocking I/O 비교</title>
+  <desc id="desc">왼쪽은 InputStream.read()를 호출한 스레드가 입력을 기다리는 흐름이고 오른쪽은 Selector가 여러 채널의 준비 상태를 확인한 뒤 애플리케이션이 준비된 채널을 처리하는 흐름이다.</desc>
+  <style>
+    .title { font: 700 30px Arial, "Malgun Gothic", sans-serif; fill: #111827; }
+    .lane { font: 700 24px Arial, "Malgun Gothic", sans-serif; fill: #111827; }
+    .head { font: 700 19px Arial, "Malgun Gothic", sans-serif; fill: #111827; }
+    .label { font: 600 17px Arial, "Malgun Gothic", sans-serif; fill: #1f2937; }
+    .body { font: 400 16px Arial, "Malgun Gothic", sans-serif; fill: #374151; }
+    .note { font: 600 16px Arial, "Malgun Gothic", sans-serif; fill: #7c2d12; }
+    .muted { font: 400 15px Arial, "Malgun Gothic", sans-serif; fill: #6b7280; }
+  </style>
+  <defs>
+    <marker id="blue-arrow" markerWidth="11" markerHeight="11" refX="9" refY="3.5" orient="auto" markerUnits="strokeWidth">
+      <path d="M0,0 L0,7 L10,3.5 z" fill="#2563eb"/>
+    </marker>
+    <marker id="orange-arrow" markerWidth="11" markerHeight="11" refX="9" refY="3.5" orient="auto" markerUnits="strokeWidth">
+      <path d="M0,0 L0,7 L10,3.5 z" fill="#ea580c"/>
+    </marker>
+    <marker id="gray-arrow" markerWidth="11" markerHeight="11" refX="9" refY="3.5" orient="auto" markerUnits="strokeWidth">
+      <path d="M0,0 L0,7 L10,3.5 z" fill="#9ca3af"/>
+    </marker>
+  </defs>
+
+  <rect width="1500" height="720" fill="#f8fafc"/>
+  <text x="750" y="46" text-anchor="middle" class="title">I/O 호출이 데이터를 기다리는 방식은 서로 다르다</text>
+
+  <rect x="35" y="78" width="690" height="590" rx="20" fill="#eff6ff" stroke="#60a5fa" stroke-width="3"/>
+  <rect x="775" y="78" width="690" height="590" rx="20" fill="#fff7ed" stroke="#fb923c" stroke-width="3"/>
+
+  <text x="380" y="120" text-anchor="middle" class="lane">Blocking I/O</text>
+  <text x="1120" y="120" text-anchor="middle" class="lane">Selector 기반 Non-Blocking I/O</text>
+
+  <rect x="95" y="165" width="570" height="76" rx="12" fill="#ffffff" stroke="#93c5fd" stroke-width="2"/>
+  <text x="380" y="195" text-anchor="middle" class="head">호출 스레드</text>
+  <text x="380" y="220" text-anchor="middle" class="body">InputStream.read() 호출</text>
+
+  <line x1="380" y1="241" x2="380" y2="307" stroke="#2563eb" stroke-width="3" marker-end="url(#blue-arrow)"/>
+  <rect x="95" y="320" width="570" height="118" rx="12" fill="#dbeafe" stroke="#60a5fa" stroke-width="2"/>
+  <text x="380" y="353" text-anchor="middle" class="head">입력 데이터 대기</text>
+  <text x="380" y="380" text-anchor="middle" class="body">같은 스레드는 다음 줄을 실행하지 못함</text>
+  <text x="380" y="407" text-anchor="middle" class="muted">데이터 도착 · 스트림 종료 · 예외 중 하나까지 반환을 기다림</text>
+
+  <line x1="380" y1="438" x2="380" y2="504" stroke="#2563eb" stroke-width="3" marker-end="url(#blue-arrow)"/>
+  <rect x="95" y="517" width="570" height="76" rx="12" fill="#ffffff" stroke="#93c5fd" stroke-width="2"/>
+  <text x="380" y="548" text-anchor="middle" class="head">read() 반환</text>
+  <text x="380" y="574" text-anchor="middle" class="body">그 다음 줄의 처리 실행</text>
+
+  <rect x="825" y="165" width="590" height="76" rx="12" fill="#ffffff" stroke="#fdba74" stroke-width="2"/>
+  <text x="1120" y="195" text-anchor="middle" class="head">여러 SelectableChannel</text>
+  <text x="1120" y="220" text-anchor="middle" class="body">채널을 Non-Blocking 모드로 등록</text>
+
+  <line x1="1120" y1="241" x2="1120" y2="307" stroke="#ea580c" stroke-width="3" marker-end="url(#orange-arrow)"/>
+  <rect x="825" y="320" width="590" height="118" rx="12" fill="#ffedd5" stroke="#fb923c" stroke-width="2"/>
+  <text x="1120" y="353" text-anchor="middle" class="head">Selector.select()</text>
+  <text x="1120" y="380" text-anchor="middle" class="body">여러 채널의 읽기·쓰기 준비 상태 확인</text>
+  <text x="1120" y="407" text-anchor="middle" class="note">Selector.select()는 기다릴 수 있음</text>
+
+  <line x1="1120" y1="438" x2="1120" y2="504" stroke="#ea580c" stroke-width="3" marker-end="url(#orange-arrow)"/>
+  <rect x="825" y="517" width="590" height="76" rx="12" fill="#ffffff" stroke="#fdba74" stroke-width="2"/>
+  <text x="1120" y="548" text-anchor="middle" class="head">준비된 채널을 애플리케이션이 처리</text>
+  <text x="1120" y="574" text-anchor="middle" class="body">채널을 얻어 실제 read() · write() 수행</text>
+
+  <line x1="735" y1="310" x2="765" y2="310" stroke="#9ca3af" stroke-width="2" stroke-dasharray="6 6" marker-end="url(#gray-arrow)"/>
+  <text x="750" y="295" text-anchor="middle" class="muted">비교</text>
+  <text x="1120" y="635" text-anchor="middle" class="note">준비 상태 알림 ≠ I/O 완료</text>
+</svg>
