@@ -1,0 +1,40 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 420" role="img" aria-labelledby="title desc">
+  <title id="title">TDD 사이클</title>
+  <desc id="desc">테스트 작성, 구현과 통과 확인, 리팩토링, 재검증이 반복되는 흐름</desc>
+  <defs>
+    <marker id="arrow" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto" markerUnits="strokeWidth">
+      <path d="M0,0 L0,6 L9,3 z" fill="#64748b" />
+    </marker>
+    <style>
+      .box { stroke-width: 2; rx: 18; }
+      .label { font-family: Arial, "Malgun Gothic", sans-serif; font-size: 25px; font-weight: 700; text-anchor: middle; }
+      .sub { font-family: Arial, "Malgun Gothic", sans-serif; font-size: 18px; text-anchor: middle; }
+      .arrow { fill: none; stroke: #64748b; stroke-width: 3; marker-end: url(#arrow); }
+    </style>
+  </defs>
+
+  <rect width="1200" height="420" fill="#f8fafc" />
+  <text x="600" y="48" class="label" fill="#0f172a">TDD: 기대 동작을 먼저 표현하고 반복해서 검증한다</text>
+
+  <rect x="70" y="145" width="220" height="120" class="box" fill="#dbeafe" stroke="#3b82f6" />
+  <text x="180" y="190" class="label" fill="#1e3a8a">테스트 작성</text>
+  <text x="180" y="225" class="sub" fill="#1e40af">기대 입력과 결과 표현</text>
+
+  <rect x="350" y="145" width="220" height="120" class="box" fill="#dcfce7" stroke="#22c55e" />
+  <text x="460" y="190" class="label" fill="#14532d">구현</text>
+  <text x="460" y="225" class="sub" fill="#166534">테스트를 통과하도록 작성</text>
+
+  <rect x="630" y="145" width="220" height="120" class="box" fill="#fef3c7" stroke="#f59e0b" />
+  <text x="740" y="190" class="label" fill="#78350f">리팩토링</text>
+  <text x="740" y="225" class="sub" fill="#92400e">동작을 유지하며 구조 개선</text>
+
+  <rect x="910" y="145" width="220" height="120" class="box" fill="#fce7f3" stroke="#ec4899" />
+  <text x="1020" y="190" class="label" fill="#831843">재검증</text>
+  <text x="1020" y="225" class="sub" fill="#9d174d">기존 기대 동작 확인</text>
+
+  <path d="M290 205 H340" class="arrow" />
+  <path d="M570 205 H620" class="arrow" />
+  <path d="M850 205 H900" class="arrow" />
+  <path d="M1020 290 C1020 360 180 360 180 290" class="arrow" />
+  <text x="600" y="390" class="sub" fill="#475569">새로운 동작을 추가할 때도 기대 결과부터 다시 시작한다</text>
+</svg>
