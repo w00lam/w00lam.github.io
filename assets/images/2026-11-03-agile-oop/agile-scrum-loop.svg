@@ -1,0 +1,55 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1400 520" role="img" aria-labelledby="title desc">
+  <title id="title">애자일과 Scrum의 반복 흐름</title>
+  <desc id="desc">Product Backlog에서 Sprint Backlog를 정하고 Sprint를 진행한 뒤 결과물을 검토하고 피드백을 Product Backlog에 반영하는 흐름</desc>
+  <defs>
+    <marker id="arrow" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto" markerUnits="strokeWidth">
+      <path d="M0,0 L0,6 L9,3 z" fill="#64748b" />
+    </marker>
+    <style>
+      .bg { fill: #f8fafc; }
+      .box { stroke-width: 2; rx: 18; }
+      .title { font: 700 30px Arial, "Malgun Gothic", sans-serif; fill: #0f172a; text-anchor: middle; }
+      .label { font: 700 23px Arial, "Malgun Gothic", sans-serif; text-anchor: middle; }
+      .sub { font: 500 17px Arial, "Malgun Gothic", sans-serif; text-anchor: middle; }
+      .note { font: 600 16px Arial, "Malgun Gothic", sans-serif; fill: #475569; }
+      .arrow { fill: none; stroke: #64748b; stroke-width: 3; marker-end: url(#arrow); }
+      .loop { fill: none; stroke: #2563eb; stroke-width: 3; marker-end: url(#arrow); }
+    </style>
+  </defs>
+
+  <rect class="bg" width="1400" height="520" rx="24" />
+  <text class="title" x="700" y="52">백로그에서 피드백까지 짧게 반복한다</text>
+
+  <rect class="box" x="50" y="145" width="235" height="125" fill="#dbeafe" stroke="#3b82f6" />
+  <text class="label" x="167" y="190" fill="#1e3a8a">Product Backlog</text>
+  <text class="sub" x="167" y="224" fill="#1e40af">제품 요구사항·우선순위</text>
+
+  <rect class="box" x="330" y="145" width="235" height="125" fill="#dcfce7" stroke="#22c55e" />
+  <text class="label" x="447" y="190" fill="#14532d">Sprint Backlog</text>
+  <text class="sub" x="447" y="224" fill="#166534">이번 Sprint의 작업</text>
+
+  <rect class="box" x="610" y="145" width="235" height="125" fill="#fef3c7" stroke="#f59e0b" />
+  <text class="label" x="727" y="190" fill="#78350f">Sprint</text>
+  <text class="sub" x="727" y="224" fill="#92400e">짧은 반복 개발 주기</text>
+
+  <rect class="box" x="890" y="145" width="235" height="125" fill="#fce7f3" stroke="#ec4899" />
+  <text class="label" x="1007" y="190" fill="#831843">결과물 검토</text>
+  <text class="sub" x="1007" y="224" fill="#9d174d">고객 피드백 확인</text>
+
+  <rect class="box" x="1170" y="145" width="180" height="125" fill="#ede9fe" stroke="#8b5cf6" />
+  <text class="label" x="1260" y="190" fill="#4c1d95">다음 작업</text>
+  <text class="sub" x="1260" y="224" fill="#6d28d9">우선순위 조정</text>
+
+  <path class="arrow" d="M285 207 H320" />
+  <path class="arrow" d="M565 207 H600" />
+  <path class="arrow" d="M845 207 H880" />
+  <path class="arrow" d="M1125 207 H1160" />
+  <path class="loop" d="M1260 305 C1260 415 167 415 167 305" />
+  <text class="note" x="700" y="452" text-anchor="middle">검토한 피드백을 Product Backlog에 반영하고 다음 Sprint를 조정한다</text>
+
+  <rect x="72" y="320" width="360" height="55" rx="14" fill="#ffffff" stroke="#94a3b8" stroke-dasharray="6 5" />
+  <text class="note" x="92" y="354">Product Owner: 요구사항 우선순위 결정</text>
+
+  <rect x="860" y="320" width="340" height="55" rx="14" fill="#ffffff" stroke="#94a3b8" stroke-dasharray="6 5" />
+  <text class="note" x="880" y="354">Burn Down Chart: 시간·남은 작업량 확인</text>
+</svg>
