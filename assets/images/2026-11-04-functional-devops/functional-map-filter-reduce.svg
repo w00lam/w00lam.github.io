@@ -1,0 +1,44 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1400 520" role="img" aria-labelledby="title desc">
+  <title id="title">함수형 프로그래밍의 데이터 처리 흐름</title>
+  <desc id="desc">입력 데이터가 filter에서 선택되고 map에서 변환된 뒤 reduce에서 하나의 결과로 누적되는 흐름</desc>
+  <defs>
+    <marker id="arrow" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto" markerUnits="strokeWidth">
+      <path d="M0,0 L0,6 L9,3 z" fill="#64748b" />
+    </marker>
+    <style>
+      .bg { fill: #f8fafc; }
+      .box { stroke-width: 2; rx: 18; }
+      .title { font: 700 30px Arial, "Malgun Gothic", sans-serif; fill: #0f172a; text-anchor: middle; }
+      .label { font: 700 25px Arial, "Malgun Gothic", sans-serif; text-anchor: middle; }
+      .sub { font: 500 18px Arial, "Malgun Gothic", sans-serif; text-anchor: middle; }
+      .note { font: 600 17px Arial, "Malgun Gothic", sans-serif; fill: #475569; text-anchor: middle; }
+      .arrow { fill: none; stroke: #64748b; stroke-width: 3; marker-end: url(#arrow); }
+    </style>
+  </defs>
+
+  <rect class="bg" width="1400" height="520" rx="24" />
+  <text class="title" x="700" y="55">데이터를 선택하고, 변환하고, 하나로 누적한다</text>
+
+  <rect class="box" x="55" y="150" width="240" height="125" fill="#dbeafe" stroke="#3b82f6" />
+  <text class="label" x="175" y="198" fill="#1e3a8a">입력 데이터</text>
+  <text class="sub" x="175" y="235" fill="#1e40af">여러 항목의 목록</text>
+
+  <rect class="box" x="375" y="150" width="240" height="125" fill="#fce7f3" stroke="#ec4899" />
+  <text class="label" x="495" y="198" fill="#831843">filter</text>
+  <text class="sub" x="495" y="235" fill="#9d174d">조건에 맞게 선택</text>
+
+  <rect class="box" x="695" y="150" width="240" height="125" fill="#dcfce7" stroke="#22c55e" />
+  <text class="label" x="815" y="198" fill="#14532d">map</text>
+  <text class="sub" x="815" y="235" fill="#166534">각 항목을 변환</text>
+
+  <rect class="box" x="1015" y="150" width="300" height="125" fill="#fef3c7" stroke="#f59e0b" />
+  <text class="label" x="1165" y="198" fill="#78350f">reduce</text>
+  <text class="sub" x="1165" y="235" fill="#92400e">하나의 결과로 누적</text>
+
+  <path class="arrow" d="M295 212 H365" />
+  <path class="arrow" d="M615 212 H685" />
+  <path class="arrow" d="M935 212 H1005" />
+
+  <rect x="265" y="350" width="870" height="72" rx="18" fill="#ffffff" stroke="#94a3b8" stroke-dasharray="7 6" />
+  <text class="note" x="700" y="393">각 단계의 결과가 다음 함수의 입력이 되어 전체 흐름을 이룬다</text>
+</svg>
