@@ -1,0 +1,54 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1400 700" role="img" aria-labelledby="title desc">
+  <title id="title">수평 확장 시 DB 연결과 Redis 락 공유</title>
+  <desc id="desc">여러 애플리케이션 인스턴스의 커넥션 풀 상한이 DB 연결량에 합산되고, 모든 인스턴스가 공통 Redis에서 분산 락 상태를 공유한다</desc>
+  <defs>
+    <marker id="arrow" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto" markerUnits="strokeWidth">
+      <path d="M0,0 L0,6 L9,3 z" fill="#64748b" />
+    </marker>
+    <style>
+      .bg { fill: #f8fafc; }
+      .title { font: 700 30px Arial, "Malgun Gothic", sans-serif; fill: #0f172a; text-anchor: middle; }
+      .label { font: 700 23px Arial, "Malgun Gothic", sans-serif; text-anchor: middle; }
+      .sub { font: 500 17px Arial, "Malgun Gothic", sans-serif; text-anchor: middle; }
+      .note { font: 600 18px Arial, "Malgun Gothic", sans-serif; text-anchor: middle; }
+      .arrow { fill: none; stroke: #64748b; stroke-width: 3; marker-end: url(#arrow); }
+      .dashed { fill: none; stroke: #94a3b8; stroke-width: 2; stroke-dasharray: 8 7; }
+      .box { stroke-width: 2; rx: 18; }
+    </style>
+  </defs>
+  <rect class="bg" width="1400" height="700" rx="24" />
+  <text class="title" x="700" y="58">앱 증설은 DB 연결 상한과 공유 락 범위를 함께 바꾼다</text>
+
+  <rect class="box" x="65" y="120" width="250" height="120" fill="#dbeafe" stroke="#3b82f6" />
+  <text class="label" x="190" y="168" fill="#1e3a8a">앱 인스턴스 A</text>
+  <text class="sub" x="190" y="205" fill="#1e40af">커넥션 풀 최대 N</text>
+
+  <rect class="box" x="65" y="300" width="250" height="120" fill="#dbeafe" stroke="#3b82f6" />
+  <text class="label" x="190" y="348" fill="#1e3a8a">앱 인스턴스 B</text>
+  <text class="sub" x="190" y="385" fill="#1e40af">커넥션 풀 최대 N</text>
+
+  <rect class="box" x="65" y="480" width="250" height="120" fill="#dbeafe" stroke="#3b82f6" />
+  <text class="label" x="190" y="528" fill="#1e3a8a">앱 인스턴스 ...</text>
+  <text class="sub" x="190" y="565" fill="#1e40af">인스턴스마다 풀 보유</text>
+
+  <rect class="box" x="480" y="235" width="330" height="180" fill="#fef3c7" stroke="#f59e0b" />
+  <text class="label" x="645" y="288" fill="#78350f">DB</text>
+  <text class="sub" x="645" y="326" fill="#92400e">전체 연결 상한을 함께 부담</text>
+  <text class="sub" x="645" y="360" fill="#92400e">N × 인스턴스 수</text>
+
+  <path class="arrow" d="M315 180 H465" />
+  <path class="arrow" d="M315 360 H465" />
+  <path class="arrow" d="M315 540 C380 540 400 400 465 365" />
+
+  <rect class="box" x="980" y="235" width="330" height="180" fill="#fce7f3" stroke="#ec4899" />
+  <text class="label" x="1145" y="288" fill="#831843">공통 Redis</text>
+  <text class="sub" x="1145" y="326" fill="#9d174d">분산 락 상태 저장</text>
+  <text class="sub" x="1145" y="360" fill="#9d174d">모든 인스턴스가 같은 키 확인</text>
+
+  <path class="arrow" d="M315 210 C600 120 780 180 965 280" />
+  <path class="arrow" d="M315 390 C600 430 780 430 965 350" />
+  <path class="arrow" d="M315 505 C610 580 780 470 965 375" />
+
+  <rect x="360" y="635" width="680" height="36" rx="14" fill="#ffffff" stroke="#94a3b8" stroke-dasharray="7 6" />
+  <text class="note" x="700" y="659" fill="#475569">DB 연결은 합산되고, 락 상태는 공통 Redis에서 공유된다</text>
+</svg>
