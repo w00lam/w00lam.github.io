@@ -1,0 +1,75 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1400 660" role="img" aria-labelledby="title desc">
+  <title id="title">브라우저가 웹 자원을 화면의 픽셀로 바꾸는 흐름</title>
+  <desc id="desc">URL 입력 뒤 자원 요청과 응답, HTML과 CSS 파싱, DOM과 계산된 스타일, 렌더 트리, Layout, Paint를 거쳐 픽셀이 표시되는 과정을 나타낸다. 응답 스트림을 받는 동안 파싱과 점진적 렌더링이 진행될 수 있다.</desc>
+  <defs>
+    <style>
+      .bg { fill: #f8fafc; }
+      .title { font: 700 30px Arial, "Malgun Gothic", sans-serif; fill: #0f172a; text-anchor: middle; }
+      .label { font: 700 20px Arial, "Malgun Gothic", sans-serif; text-anchor: middle; }
+      .sub { font: 500 16px Arial, "Malgun Gothic", sans-serif; text-anchor: middle; }
+      .note { font: 600 17px Arial, "Malgun Gothic", sans-serif; text-anchor: middle; }
+      .arrow { stroke: #64748b; stroke-width: 3; fill: none; marker-end: url(#arrowhead); }
+      .box { stroke-width: 2; rx: 16; }
+    </style>
+    <marker id="arrowhead" markerWidth="10" markerHeight="10" refX="9" refY="5" orient="auto">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#64748b" />
+    </marker>
+  </defs>
+
+  <rect class="bg" width="1400" height="660" rx="24" />
+  <text class="title" x="700" y="54">브라우저는 응답을 해석해 픽셀로 표시한다</text>
+
+  <rect class="box" x="45" y="130" width="140" height="130" fill="#dbeafe" stroke="#3b82f6" />
+  <text class="label" x="115" y="180" fill="#1e3a8a">URL 입력</text>
+  <text class="sub" x="115" y="216" fill="#1e40af">주소와 경로</text>
+
+  <rect class="box" x="210" y="130" width="150" height="130" fill="#e0f2fe" stroke="#0284c7" />
+  <text class="label" x="285" y="180" fill="#0c4a6e">요청·응답</text>
+  <text class="sub" x="285" y="216" fill="#075985">HTML, CSS, 이미지</text>
+
+  <rect class="box" x="385" y="130" width="155" height="130" fill="#ede9fe" stroke="#8b5cf6" />
+  <text class="label" x="462" y="180" fill="#4c1d95">HTML 파싱</text>
+  <text class="sub" x="462" y="216" fill="#5b21b6">DOM 생성</text>
+
+  <rect class="box" x="565" y="130" width="155" height="130" fill="#fce7f3" stroke="#ec4899" />
+  <text class="label" x="642" y="180" fill="#831843">CSS 파싱</text>
+  <text class="sub" x="642" y="216" fill="#9d174d">계산된 스타일</text>
+
+  <rect class="box" x="745" y="130" width="155" height="130" fill="#fae8ff" stroke="#c026d3" />
+  <text class="label" x="822" y="180" fill="#701a75">렌더 트리</text>
+  <text class="sub" x="822" y="216" fill="#86198f">표시 대상 모델</text>
+
+  <rect class="box" x="925" y="130" width="140" height="130" fill="#dcfce7" stroke="#22c55e" />
+  <text class="label" x="995" y="180" fill="#14532d">Layout</text>
+  <text class="sub" x="995" y="216" fill="#166534">크기·위치</text>
+
+  <rect class="box" x="1090" y="130" width="140" height="130" fill="#fef3c7" stroke="#f59e0b" />
+  <text class="label" x="1160" y="180" fill="#78350f">Paint</text>
+  <text class="sub" x="1160" y="216" fill="#92400e">색·글자·테두리</text>
+
+  <rect class="box" x="1255" y="130" width="100" height="130" fill="#ffedd5" stroke="#f97316" />
+  <text class="label" x="1305" y="180" fill="#7c2d12">픽셀</text>
+  <text class="sub" x="1305" y="216" fill="#9a3412">화면 표시</text>
+
+  <path class="arrow" d="M 185 195 H 205" />
+  <path class="arrow" d="M 360 195 H 380" />
+  <path class="arrow" d="M 540 195 H 560" />
+  <path class="arrow" d="M 720 195 H 740" />
+  <path class="arrow" d="M 900 195 H 920" />
+  <path class="arrow" d="M 1065 195 H 1085" />
+  <path class="arrow" d="M 1230 195 H 1250" />
+
+  <rect x="95" y="350" width="1210" height="170" rx="20" fill="#ffffff" stroke="#94a3b8" stroke-width="2" />
+  <text class="note" x="700" y="397" fill="#334155">HTML 응답은 전체 도착을 기다리지 않고 도착한 부분부터 파싱될 수 있다</text>
+  <path d="M 260 442 H 1140" stroke="#38bdf8" stroke-width="12" stroke-linecap="round" opacity="0.35" />
+  <circle cx="355" cy="442" r="14" fill="#0284c7" />
+  <circle cx="610" cy="442" r="14" fill="#8b5cf6" />
+  <circle cx="865" cy="442" r="14" fill="#c026d3" />
+  <circle cx="1120" cy="442" r="14" fill="#f97316" />
+  <text class="sub" x="355" y="482" fill="#0c4a6e">받은 HTML</text>
+  <text class="sub" x="610" y="482" fill="#5b21b6">파싱된 구조</text>
+  <text class="sub" x="865" y="482" fill="#86198f">표시 준비</text>
+  <text class="sub" x="1120" y="482" fill="#9a3412">준비된 부분 표시</text>
+
+  <text class="sub" x="700" y="590" fill="#475569">DOM → 렌더 트리 → Layout → Paint는 이해를 돕는 단순화된 모델이다</text>
+</svg>
