@@ -1,4 +1,4 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 620" role="img" aria-labelledby="title desc">
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="620" viewBox="0 0 1200 620" role="img" aria-labelledby="title desc">
   <title id="title">배열과 연결 리스트의 중간 삽입 비교</title>
   <desc id="desc">배열은 뒤쪽 요소를 이동하고 연결 리스트는 A와 B 사이에 X를 연결하는 개념도</desc>
   <defs>

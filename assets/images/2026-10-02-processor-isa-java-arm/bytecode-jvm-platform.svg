@@ -1,4 +1,4 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1400 820" role="img" aria-labelledby="title desc">
+<svg xmlns="http://www.w3.org/2000/svg" width="1400" height="820" viewBox="0 0 1400 820" role="img" aria-labelledby="title desc">
   <title id="title">Java 바이트코드와 대상 플랫폼별 JVM</title>
   <desc id="desc">공통 Java 바이트코드를 담은 JAR이 Linux x86-64용 JVM과 CPU 또는 Linux ARM64용 JVM과 CPU에서 실행되는 구조. 바이트코드는 재사용할 수 있지만 JVM 구현체와 네이티브 라이브러리는 대상 환경을 확인해야 한다.</desc>
   <defs>

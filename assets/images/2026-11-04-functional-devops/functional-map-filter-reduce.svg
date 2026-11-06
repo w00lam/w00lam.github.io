@@ -1,4 +1,4 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1400 520" role="img" aria-labelledby="title desc">
+<svg xmlns="http://www.w3.org/2000/svg" width="1400" height="520" viewBox="0 0 1400 520" role="img" aria-labelledby="title desc">
   <title id="title">함수형 프로그래밍의 데이터 처리 흐름</title>
   <desc id="desc">입력 데이터가 filter에서 선택되고 map에서 변환된 뒤 reduce에서 하나의 결과로 누적되는 흐름</desc>
   <defs>

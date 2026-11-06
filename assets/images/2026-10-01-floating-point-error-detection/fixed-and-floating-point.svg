@@ -1,4 +1,4 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1400 860" role="img" aria-labelledby="title desc">
+<svg xmlns="http://www.w3.org/2000/svg" width="1400" height="860" viewBox="0 0 1400 860" role="img" aria-labelledby="title desc">
   <title id="title">고정 소수점과 부동 소수점의 구조</title>
   <desc id="desc">고정 소수점은 소수점 위치를 미리 정하고 부동 소수점은 부호와 지수와 가수로 값을 표현하는 구조</desc>
   <defs>

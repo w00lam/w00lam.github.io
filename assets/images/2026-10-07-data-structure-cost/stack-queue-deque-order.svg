@@ -1,4 +1,4 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1400 650" role="img" aria-labelledby="title desc">
+<svg xmlns="http://www.w3.org/2000/svg" width="1400" height="650" viewBox="0 0 1400 650" role="img" aria-labelledby="title desc">
   <title id="title">Stack Queue Deque의 처리 순서</title>
   <desc id="desc">A B C를 입력했을 때 Stack은 C B A, FIFO Queue는 A B C 순서로 반환하고 Deque는 양쪽 끝을 사용하는 개념도</desc>
   <defs>

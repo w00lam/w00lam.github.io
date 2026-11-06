@@ -1,4 +1,4 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 760" role="img" aria-labelledby="title desc">
+<svg xmlns="http://www.w3.org/2000/svg" width="900" height="760" viewBox="0 0 900 760" role="img" aria-labelledby="title desc">
   <title id="title">A부터 F까지 트리의 네 가지 순회</title>
   <desc id="desc">같은 A B C D E F 트리를 전위, 중위, 후위, 레벨 순회로 방문한 번호와 결과</desc>
   <defs>

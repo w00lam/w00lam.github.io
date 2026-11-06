@@ -1,4 +1,4 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 1000" role="img" aria-labelledby="title desc">
+<svg xmlns="http://www.w3.org/2000/svg" width="1600" height="1000" viewBox="0 0 1600 1000" role="img" aria-labelledby="title desc">
   <title id="title">Hamming 7,4 검사 묶음과 신드롬</title>
   <desc id="desc">왼쪽부터 1번에서 7번까지의 위치에서 P1 P2 P4가 검사하는 묶음과 신드롬 101이 5번 위치를 가리키는 과정</desc>
   <defs>

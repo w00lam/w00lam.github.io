@@ -1,4 +1,4 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1100 640" role="img" aria-labelledby="title desc">
+<svg xmlns="http://www.w3.org/2000/svg" width="1100" height="640" viewBox="0 0 1100 640" role="img" aria-labelledby="title desc">
   <title id="title">학습용 모듈러 해시의 충돌과 리사이징</title>
   <desc id="desc">key % bucketCount를 사용할 때 버킷이 5개면 1, 6, 11이 인덱스 1에서 충돌하고, 버킷이 10개가 되면 6은 인덱스 6으로 이동한다.</desc>
   <defs>

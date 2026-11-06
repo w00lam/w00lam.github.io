@@ -1,4 +1,4 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1400 660" role="img" aria-labelledby="title desc">
+<svg xmlns="http://www.w3.org/2000/svg" width="1400" height="660" viewBox="0 0 1400 660" role="img" aria-labelledby="title desc">
   <title id="title">브라우저가 웹 자원을 화면의 픽셀로 바꾸는 흐름</title>
   <desc id="desc">URL 입력 뒤 자원 요청과 응답, HTML과 CSS 파싱, DOM과 계산된 스타일, 렌더 트리, Layout, Paint를 거쳐 픽셀이 표시되는 과정을 나타낸다. 응답 스트림을 받는 동안 파싱과 점진적 렌더링이 진행될 수 있다.</desc>
   <defs>

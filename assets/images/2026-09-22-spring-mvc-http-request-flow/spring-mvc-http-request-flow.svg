@@ -1,4 +1,4 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 1540" role="img" aria-labelledby="title desc">
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="1540" viewBox="0 0 1200 1540" role="img" aria-labelledby="title desc">
   <title id="title">Spring MVC의 JSON HTTP 요청 처리 흐름</title>
   <desc id="desc">Client의 JSON 요청이 Servlet Container와 DispatcherServlet을 거쳐 HandlerMapping, HandlerAdapter, ArgumentResolver, HttpMessageConverter와 Jackson을 지나 Controller에 도착하고 JSON 응답으로 돌아가는 흐름</desc>
   <defs>

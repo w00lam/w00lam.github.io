@@ -1,4 +1,4 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 1320" role="img" aria-labelledby="title desc">
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="1320" viewBox="0 0 1200 1320" role="img" aria-labelledby="title desc">
   <title id="title">Annotation과 Reflection에서 Spring Bean 생명주기까지</title>
   <desc id="desc">개발자 코드의 Annotation 메타데이터를 Spring Component Scan이 확인해 BeanDefinition을 만들고 객체 생성과 의존성 주입, 초기화, Scope에 따른 사용과 소멸 Callback으로 이어진다. Java Reflection은 런타임 정보를 확인하는 방법 중 하나다.</desc>
   <defs>

@@ -1,4 +1,4 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1400 700" role="img" aria-labelledby="title desc">
+<svg xmlns="http://www.w3.org/2000/svg" width="1400" height="700" viewBox="0 0 1400 700" role="img" aria-labelledby="title desc">
   <title id="title">객체지향 설계와 의존성</title>
   <desc id="desc">관련 상태와 기능이 객체에 모이고 고수준 정책이 추상 타입에 의존하며 구체 구현체가 추상 타입을 구현하는 관계</desc>
   <defs>

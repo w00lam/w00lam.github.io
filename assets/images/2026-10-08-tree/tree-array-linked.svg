@@ -1,4 +1,4 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1300 820" role="img" aria-labelledby="title desc">
+<svg xmlns="http://www.w3.org/2000/svg" width="1300" height="820" viewBox="0 0 1300 820" role="img" aria-labelledby="title desc">
   <title id="title">A부터 F까지 트리의 배열 표현과 연결 표현</title>
   <desc id="desc">공통 트리 A B C D E F를 배열 0:A 1:B 2:C 3:D 4:E 5:null 6:F와 자식 참조로 비교한 도식</desc>
   <defs>

@@ -1,4 +1,4 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1400 680" role="img" aria-labelledby="title desc">
+<svg xmlns="http://www.w3.org/2000/svg" width="1400" height="680" viewBox="0 0 1400 680" role="img" aria-labelledby="title desc">
   <title id="title">이진 트리의 종류와 판별 조건</title>
   <desc id="desc">일반 이진 트리, 정이진 트리, 완전 이진 트리, 포화 이진 트리를 자식 수와 레벨 채움 조건으로 비교한 도식</desc>
   <defs>

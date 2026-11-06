@@ -1,4 +1,4 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 1420" role="img" aria-labelledby="title desc">
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="1420" viewBox="0 0 1200 1420" role="img" aria-labelledby="title desc">
   <title id="title">Spring Boot 애플리케이션 실행 흐름</title>
   <desc id="desc">SpringBootApplication에서 SpringApplication.run, ApplicationContext, Component Scan과 Auto Configuration, Bean 생성과 의존성 주입을 거쳐 Servlet Container가 실행되는 흐름</desc>
   <defs>

@@ -1,4 +1,4 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 430" role="img" aria-labelledby="title desc">
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="430" viewBox="0 0 1200 430" role="img" aria-labelledby="title desc">
   <title id="title">연결 리스트의 인덱스 7 탐색</title>
   <desc id="desc">인덱스 0부터 9까지 연결된 이중 연결 리스트에서 tail인 9부터 8, 7로 이동하는 경로</desc>
   <defs>

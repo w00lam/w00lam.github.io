@@ -1,4 +1,4 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 720" role="img" aria-labelledby="title desc">
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="720" viewBox="0 0 1200 720" role="img" aria-labelledby="title desc">
   <title id="title">Spring server thread pool bottleneck</title>
   <desc id="desc">Three hundred Tomcat worker threads feed a Spring application, but only thirty database connections are available, so requests wait before the database.</desc>
   <defs>

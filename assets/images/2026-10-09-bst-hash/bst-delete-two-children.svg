@@ -1,4 +1,4 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1120 680" role="img" aria-labelledby="title desc">
+<svg xmlns="http://www.w3.org/2000/svg" width="1120" height="680" viewBox="0 0 1120 680" role="img" aria-labelledby="title desc">
   <title id="title">자식이 둘인 BST 노드 삭제</title>
   <desc id="desc">50을 삭제할 때 오른쪽 서브트리의 최솟값 60을 선택하고, 원래 60의 오른쪽 자식 70을 80의 왼쪽 자식으로 연결한다.</desc>
   <defs>

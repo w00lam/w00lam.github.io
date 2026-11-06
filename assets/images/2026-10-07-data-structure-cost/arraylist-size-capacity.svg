@@ -1,4 +1,4 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 520" role="img" aria-labelledby="title desc">
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="520" viewBox="0 0 1200 520" role="img" aria-labelledby="title desc">
   <title id="title">ArrayList의 size와 capacity</title>
   <desc id="desc">capacity가 6인 내부 배열에서 세 슬롯만 사용하고 공간이 부족하면 더 큰 새 배열로 요소를 복사하는 개념도</desc>
   <defs>
