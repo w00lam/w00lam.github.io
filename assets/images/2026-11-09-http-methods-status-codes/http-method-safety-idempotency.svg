@@ -1,78 +1,89 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="1400" height="800" viewBox="0 0 1400 800" role="img" aria-labelledby="title desc">
+<svg xmlns="http://www.w3.org/2000/svg" width="1400" height="900" viewBox="0 0 1400 900" role="img" aria-labelledby="title desc">
   <title id="title">HTTP 메서드의 역할과 안전성 및 멱등성 비교</title>
-  <desc id="desc">GET, HEAD, POST, PUT, PATCH, DELETE의 대표 역할을 비교하고 안전성과 멱등성 여부를 표시한다. PATCH는 구현 방식에 따라 멱등성이 달라질 수 있다.</desc>
+  <desc id="desc">GET, HEAD, POST, PUT, PATCH, DELETE를 카드형으로 비교한다. 각 카드에는 대표 역할과 안전성 및 멱등성을 표시하고 PATCH는 조건부 멱등성임을 설명한다.</desc>
   <defs>
     <style>
       .bg { fill: #f8fafc; }
-      .title { font: 700 30px Arial, "Malgun Gothic", sans-serif; fill: #0f172a; text-anchor: middle; }
-      .head { font: 700 18px Arial, "Malgun Gothic", sans-serif; text-anchor: middle; }
-      .method { font: 700 24px Arial, "Malgun Gothic", sans-serif; text-anchor: middle; }
-      .label { font: 600 17px Arial, "Malgun Gothic", sans-serif; text-anchor: middle; }
-      .sub { font: 500 16px Arial, "Malgun Gothic", sans-serif; text-anchor: middle; }
+      .title { font: 700 32px Arial, "Malgun Gothic", sans-serif; fill: #0f172a; text-anchor: middle; }
+      .subtitle { font: 500 17px Arial, "Malgun Gothic", sans-serif; fill: #64748b; text-anchor: middle; }
+      .method { font: 700 26px Arial, "Malgun Gothic", sans-serif; }
+      .role { font: 600 19px Arial, "Malgun Gothic", sans-serif; fill: #1e293b; }
+      .detail { font: 500 16px Arial, "Malgun Gothic", sans-serif; fill: #64748b; }
+      .chip { font: 700 15px Arial, "Malgun Gothic", sans-serif; text-anchor: middle; }
       .note { font: 600 17px Arial, "Malgun Gothic", sans-serif; text-anchor: middle; }
-      .box { stroke-width: 2; rx: 16; }
-      .grid { stroke: #cbd5e1; stroke-width: 2; }
+      .small { font: 500 15px Arial, "Malgun Gothic", sans-serif; text-anchor: middle; }
+      .card { stroke-width: 2; rx: 24; }
+      .pill { rx: 14; }
     </style>
   </defs>
 
-  <rect class="bg" width="1400" height="800" rx="24" />
-  <text class="title" x="700" y="54">HTTP 메서드는 요청의 의미에 따라 성질이 달라진다</text>
+  <rect class="bg" width="1400" height="900" rx="28" />
+  <text class="title" x="700" y="58">HTTP 메서드는 요청의 의미에 따라 성질이 달라진다</text>
+  <text class="subtitle" x="700" y="91">안전성은 서버 상태 변경을 요청하지 않는 성질이고 멱등성은 의도된 효과가 반복해도 같은 성질이다</text>
 
-  <rect x="55" y="105" width="1290" height="58" rx="14" fill="#e2e8f0" />
-  <text class="head" x="170" y="141" fill="#334155">메서드</text>
-  <text class="head" x="430" y="141" fill="#334155">대표 역할</text>
-  <text class="head" x="900" y="141" fill="#334155">안전성</text>
-  <text class="head" x="1140" y="141" fill="#334155">멱등성</text>
+  <rect class="card" x="55" y="135" width="405" height="245" fill="#ffffff" stroke="#93c5fd" />
+  <rect x="82" y="163" width="92" height="48" rx="14" fill="#dbeafe" />
+  <text class="method" x="101" y="197" fill="#1d4ed8">GET</text>
+  <text class="role" x="82" y="252">리소스 표현 조회</text>
+  <text class="detail" x="82" y="282">서버 상태 변경을 요청하지 않음</text>
+  <rect class="pill" x="82" y="314" width="118" height="36" fill="#dcfce7" />
+  <text class="chip" x="141" y="337" fill="#166534">안전 · 예</text>
+  <rect class="pill" x="214" y="314" width="142" height="36" fill="#dcfce7" />
+  <text class="chip" x="285" y="337" fill="#166534">멱등 · 예</text>
 
-  <line class="grid" x1="55" y1="163" x2="1345" y2="163" />
-  <line class="grid" x1="285" y1="105" x2="285" y2="655" />
-  <line class="grid" x1="690" y1="105" x2="690" y2="655" />
-  <line class="grid" x1="1040" y1="105" x2="1040" y2="655" />
+  <rect class="card" x="497" y="135" width="405" height="245" fill="#ffffff" stroke="#7dd3fc" />
+  <rect x="524" y="163" width="112" height="48" rx="14" fill="#e0f2fe" />
+  <text class="method" x="543" y="197" fill="#0369a1">HEAD</text>
+  <text class="role" x="524" y="252">메타데이터 확인</text>
+  <text class="detail" x="524" y="282">GET과 같은 대상, 응답 본문 없음</text>
+  <rect class="pill" x="524" y="314" width="118" height="36" fill="#dcfce7" />
+  <text class="chip" x="583" y="337" fill="#166534">안전 · 예</text>
+  <rect class="pill" x="656" y="314" width="142" height="36" fill="#dcfce7" />
+  <text class="chip" x="727" y="337" fill="#166534">멱등 · 예</text>
 
-  <rect class="box" x="55" y="163" width="1290" height="82" fill="#dbeafe" stroke="#3b82f6" />
-  <text class="method" x="170" y="213" fill="#1e3a8a">GET</text>
-  <text class="label" x="487" y="202" fill="#1e3a8a">리소스 표현 조회</text>
-  <text class="sub" x="487" y="226" fill="#1e40af">서버 상태 변경을 요청하지 않음</text>
-  <text class="label" x="865" y="213" fill="#1e3a8a">예</text>
-  <text class="label" x="1190" y="213" fill="#1e3a8a">예</text>
+  <rect class="card" x="939" y="135" width="405" height="245" fill="#ffffff" stroke="#f9a8d4" />
+  <rect x="966" y="163" width="116" height="48" rx="14" fill="#fce7f3" />
+  <text class="method" x="985" y="197" fill="#be185d">POST</text>
+  <text class="role" x="966" y="252">데이터 제출과 처리 요청</text>
+  <text class="detail" x="966" y="282">생성 외의 작업에도 사용</text>
+  <rect class="pill" x="966" y="314" width="128" height="36" fill="#fee2e2" />
+  <text class="chip" x="1030" y="337" fill="#b91c1c">안전 · 아니오</text>
+  <rect class="pill" x="1108" y="314" width="155" height="36" fill="#fee2e2" />
+  <text class="chip" x="1185" y="337" fill="#b91c1c">멱등 · 아니오</text>
 
-  <rect class="box" x="55" y="245" width="1290" height="82" fill="#e0f2fe" stroke="#0284c7" />
-  <text class="method" x="170" y="295" fill="#0c4a6e">HEAD</text>
-  <text class="label" x="487" y="284" fill="#0c4a6e">GET과 같은 대상의 메타데이터 확인</text>
-  <text class="sub" x="487" y="308" fill="#075985">응답 본문 없음</text>
-  <text class="label" x="865" y="295" fill="#0c4a6e">예</text>
-  <text class="label" x="1190" y="295" fill="#0c4a6e">예</text>
+  <rect class="card" x="55" y="415" width="405" height="245" fill="#ffffff" stroke="#86efac" />
+  <rect x="82" y="443" width="101" height="48" rx="14" fill="#dcfce7" />
+  <text class="method" x="101" y="477" fill="#15803d">PUT</text>
+  <text class="role" x="82" y="532">표현을 생성하거나 교체</text>
+  <text class="detail" x="82" y="562">지정한 상태로 맞추는 요청</text>
+  <rect class="pill" x="82" y="594" width="128" height="36" fill="#fee2e2" />
+  <text class="chip" x="146" y="617" fill="#b91c1c">안전 · 아니오</text>
+  <rect class="pill" x="224" y="594" width="142" height="36" fill="#dcfce7" />
+  <text class="chip" x="295" y="617" fill="#166534">멱등 · 예</text>
 
-  <rect class="box" x="55" y="327" width="1290" height="82" fill="#fce7f3" stroke="#ec4899" />
-  <text class="method" x="170" y="377" fill="#831843">POST</text>
-  <text class="label" x="487" y="366" fill="#831843">데이터 제출과 서버 처리 요청</text>
-  <text class="sub" x="487" y="390" fill="#9d174d">생성 외의 작업에도 사용</text>
-  <text class="label" x="865" y="377" fill="#831843">아니오</text>
-  <text class="label" x="1190" y="377" fill="#831843">아니오</text>
+  <rect class="card" x="497" y="415" width="405" height="245" fill="#ffffff" stroke="#d8b4fe" />
+  <rect x="524" y="443" width="145" height="48" rx="14" fill="#fae8ff" />
+  <text class="method" x="543" y="477" fill="#a21caf">PATCH</text>
+  <text class="role" x="524" y="532">부분 변경 적용</text>
+  <text class="detail" x="524" y="562">변경 방식에 따라 멱등성이 달라짐</text>
+  <rect class="pill" x="524" y="594" width="128" height="36" fill="#fee2e2" />
+  <text class="chip" x="588" y="617" fill="#b91c1c">안전 · 아니오</text>
+  <rect class="pill" x="666" y="594" width="184" height="36" fill="#fef3c7" />
+  <text class="chip" x="758" y="617" fill="#92400e">멱등 · 조건부</text>
 
-  <rect class="box" x="55" y="409" width="1290" height="82" fill="#dcfce7" stroke="#22c55e" />
-  <text class="method" x="170" y="459" fill="#14532d">PUT</text>
-  <text class="label" x="487" y="448" fill="#14532d">대상 리소스의 표현 생성·교체</text>
-  <text class="sub" x="487" y="472" fill="#166534">지정한 상태로 맞추는 요청</text>
-  <text class="label" x="865" y="459" fill="#14532d">아니오</text>
-  <text class="label" x="1190" y="459" fill="#14532d">예</text>
+  <rect class="card" x="939" y="415" width="405" height="245" fill="#ffffff" stroke="#fcd34d" />
+  <rect x="966" y="443" width="141" height="48" rx="14" fill="#fef3c7" />
+  <text class="method" x="985" y="477" fill="#b45309">DELETE</text>
+  <text class="role" x="966" y="532">리소스와 연결 제거 요청</text>
+  <text class="detail" x="966" y="562">물리적 삭제 여부는 서버 구현에 따름</text>
+  <rect class="pill" x="966" y="594" width="128" height="36" fill="#fee2e2" />
+  <text class="chip" x="1030" y="617" fill="#b91c1c">안전 · 아니오</text>
+  <rect class="pill" x="1108" y="594" width="142" height="36" fill="#dcfce7" />
+  <text class="chip" x="1179" y="617" fill="#166534">멱등 · 예</text>
 
-  <rect class="box" x="55" y="491" width="1290" height="82" fill="#fae8ff" stroke="#c026d3" />
-  <text class="method" x="170" y="541" fill="#701a75">PATCH</text>
-  <text class="label" x="487" y="530" fill="#701a75">리소스에 부분 변경 적용</text>
-  <text class="sub" x="487" y="554" fill="#86198f">변경 방식에 따라 결과가 달라짐</text>
-  <text class="label" x="865" y="541" fill="#701a75">아니오</text>
-  <text class="label" x="1190" y="530" fill="#701a75">조건부</text>
-  <text class="sub" x="1190" y="554" fill="#86198f">메서드 자체는 보장하지 않음</text>
-
-  <rect class="box" x="55" y="573" width="1290" height="82" fill="#fef3c7" stroke="#f59e0b" />
-  <text class="method" x="170" y="623" fill="#78350f">DELETE</text>
-  <text class="label" x="487" y="612" fill="#78350f">대상 리소스와 연결 제거 요청</text>
-  <text class="sub" x="487" y="636" fill="#92400e">물리적 삭제 여부는 서버 구현에 따름</text>
-  <text class="label" x="865" y="623" fill="#78350f">아니오</text>
-  <text class="label" x="1190" y="623" fill="#78350f">예</text>
-
-  <rect x="155" y="695" width="1090" height="62" rx="16" fill="#ffffff" stroke="#94a3b8" stroke-dasharray="7 6" />
-  <text class="note" x="700" y="720" fill="#475569">안전성은 보안이 아니며 멱등성은 응답 코드가 항상 같다는 뜻이 아니다</text>
-  <text class="sub" x="700" y="744" fill="#64748b">PATCH는 같은 변경을 설정하는 방식이라면 멱등적으로 설계할 수 있다</text>
+  <rect x="145" y="716" width="1110" height="112" rx="22" fill="#ffffff" stroke="#cbd5e1" />
+  <circle cx="190" cy="772" r="17" fill="#f59e0b" />
+  <text class="note" x="700" y="760" fill="#334155">PATCH는 메서드 자체로 멱등성을 보장하지 않는다</text>
+  <text class="small" x="700" y="791" fill="#64748b">값을 특정 상태로 설정하는 변경은 반복해도 같은 결과가 될 수 있지만</text>
+  <text class="small" x="700" y="814" fill="#64748b">값을 1씩 증가시키는 변경은 요청할 때마다 결과가 달라진다</text>
 </svg>

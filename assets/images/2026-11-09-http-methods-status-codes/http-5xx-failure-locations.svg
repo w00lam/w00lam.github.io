@@ -1,71 +1,82 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="1400" height="820" viewBox="0 0 1400 820" role="img" aria-labelledby="title desc">
   <title id="title">HTTP 5xx 오류가 발생하는 요청 경로상의 위치</title>
-  <desc id="desc">Client, Gateway 또는 Reverse Proxy, Application Server 사이의 요청 흐름에서 500, 502, 503, 504 오류가 어떤 상황을 나타내는지 비교한다. 503은 게이트웨이에서도 반환할 수 있다.</desc>
+  <desc id="desc">Client, Gateway 또는 Reverse Proxy, Application Server 사이의 요청 흐름을 보여주고 500, 502, 503, 504가 어떤 상황인지 네 개의 카드로 구분한다. 503은 게이트웨이에서도 반환할 수 있다.</desc>
   <defs>
     <style>
       .bg { fill: #f8fafc; }
-      .title { font: 700 30px Arial, "Malgun Gothic", sans-serif; fill: #0f172a; text-anchor: middle; }
+      .title { font: 700 32px Arial, "Malgun Gothic", sans-serif; fill: #0f172a; text-anchor: middle; }
+      .subtitle { font: 500 17px Arial, "Malgun Gothic", sans-serif; fill: #64748b; text-anchor: middle; }
       .node { font: 700 23px Arial, "Malgun Gothic", sans-serif; text-anchor: middle; }
-      .sub { font: 500 17px Arial, "Malgun Gothic", sans-serif; text-anchor: middle; }
-      .label { font: 700 18px Arial, "Malgun Gothic", sans-serif; text-anchor: middle; }
-      .note { font: 600 16px Arial, "Malgun Gothic", sans-serif; text-anchor: middle; }
-      .box { stroke-width: 2; rx: 18; }
-      .flow { stroke: #64748b; stroke-width: 4; fill: none; marker-end: url(#arrowhead); }
-      .error { stroke-width: 3; fill: none; marker-end: url(#errorhead); stroke-dasharray: 10 8; }
+      .nodeSub { font: 500 16px Arial, "Malgun Gothic", sans-serif; text-anchor: middle; }
+      .code { font: 700 27px Arial, "Malgun Gothic", sans-serif; }
+      .name { font: 700 17px Arial, "Malgun Gothic", sans-serif; }
+      .body { font: 500 16px Arial, "Malgun Gothic", sans-serif; }
+      .legend { font: 600 16px Arial, "Malgun Gothic", sans-serif; text-anchor: middle; }
+      .nodeBox { stroke-width: 2; rx: 22; }
+      .card { stroke-width: 2; rx: 20; }
+      .arrow { stroke: #64748b; stroke-width: 4; fill: none; marker-end: url(#arrowhead); }
+      .connector { stroke-width: 3; fill: none; stroke-dasharray: 8 8; }
     </style>
     <marker id="arrowhead" markerWidth="11" markerHeight="11" refX="10" refY="5.5" orient="auto">
       <path d="M 0 0 L 11 5.5 L 0 11 z" fill="#64748b" />
     </marker>
-    <marker id="errorhead" markerWidth="11" markerHeight="11" refX="10" refY="5.5" orient="auto">
-      <path d="M 0 0 L 11 5.5 L 0 11 z" fill="#dc2626" />
-    </marker>
   </defs>
 
-  <rect class="bg" width="1400" height="820" rx="24" />
-  <text class="title" x="700" y="54">5xx 오류는 요청 경로의 실패 지점을 함께 봐야 한다</text>
+  <rect class="bg" width="1400" height="820" rx="28" />
+  <text class="title" x="700" y="56">5xx 오류는 요청 경로의 실패 지점을 함께 봐야 한다</text>
+  <text class="subtitle" x="700" y="88">Client → Gateway / Reverse Proxy → Application Server</text>
 
-  <rect class="box" x="70" y="135" width="260" height="150" fill="#dbeafe" stroke="#3b82f6" />
-  <text class="node" x="200" y="195" fill="#1e3a8a">Client</text>
-  <text class="sub" x="200" y="232" fill="#1e40af">요청을 보내는 주체</text>
+  <rect class="nodeBox" x="55" y="135" width="290" height="142" fill="#dbeafe" stroke="#60a5fa" />
+  <text class="node" x="200" y="192" fill="#1e3a8a">Client</text>
+  <text class="nodeSub" x="200" y="230" fill="#1e40af">요청을 보내는 주체</text>
 
-  <rect class="box" x="555" y="135" width="290" height="150" fill="#e0f2fe" stroke="#0284c7" />
-  <text class="node" x="700" y="183" fill="#0c4a6e">Gateway</text>
-  <text class="sub" x="700" y="216" fill="#075985">Reverse Proxy</text>
-  <text class="sub" x="700" y="248" fill="#075985">상위 서버로 요청 전달</text>
+  <rect class="nodeBox" x="555" y="135" width="290" height="142" fill="#e0f2fe" stroke="#38bdf8" />
+  <text class="node" x="700" y="185" fill="#0c4a6e">Gateway</text>
+  <text class="nodeSub" x="700" y="216" fill="#075985">Reverse Proxy</text>
+  <text class="nodeSub" x="700" y="245" fill="#075985">상위 서버로 전달</text>
 
-  <rect class="box" x="1070" y="135" width="260" height="150" fill="#ede9fe" stroke="#8b5cf6" />
-  <text class="node" x="1200" y="195" fill="#4c1d95">Application</text>
-  <text class="sub" x="1200" y="232" fill="#5b21b6">요청 처리와 응답 생성</text>
+  <rect class="nodeBox" x="1055" y="135" width="290" height="142" fill="#ede9fe" stroke="#a78bfa" />
+  <text class="node" x="1200" y="192" fill="#4c1d95">Application Server</text>
+  <text class="nodeSub" x="1200" y="230" fill="#5b21b6">요청 처리와 응답 생성</text>
 
-  <path class="flow" d="M 330 210 H 545" />
-  <path class="flow" d="M 855 210 H 1060" />
-  <text class="note" x="438" y="188" fill="#475569">요청</text>
-  <text class="note" x="960" y="188" fill="#475569">상위 요청</text>
+  <path class="arrow" d="M 345 206 H 545" />
+  <path class="arrow" d="M 845 206 H 1045" />
+  <text class="nodeSub" x="445" y="185" fill="#475569">요청</text>
+  <text class="nodeSub" x="945" y="185" fill="#475569">상위 요청</text>
 
-  <rect class="box" x="1010" y="350" width="340" height="145" fill="#fee2e2" stroke="#dc2626" />
-  <text class="label" x="1180" y="390" fill="#991b1b">500 Internal Server Error</text>
-  <text class="sub" x="1180" y="428" fill="#991b1b">애플리케이션 서버 내부 처리 실패</text>
-  <text class="sub" x="1180" y="458" fill="#b91c1c">예상하지 못한 예외 등</text>
-  <path class="error" d="M 1200 285 V 340" />
+  <rect class="card" x="55" y="390" width="300" height="220" fill="#fff7ed" stroke="#fb923c" />
+  <text class="code" x="82" y="438" fill="#c2410c">503</text>
+  <text class="name" x="82" y="472" fill="#9a3412">Service Unavailable</text>
+  <text class="body" x="82" y="518" fill="#7c2d12">서버가 일시적으로</text>
+  <text class="body" x="82" y="544" fill="#7c2d12">요청을 처리할 수 없음</text>
+  <text class="body" x="82" y="578" fill="#9a3412">게이트웨이에서도 반환 가능</text>
+  <path class="connector" d="M 200 277 V 380" stroke="#f97316" />
 
-  <rect class="box" x="425" y="350" width="400" height="145" fill="#ffedd5" stroke="#f97316" />
-  <text class="label" x="625" y="390" fill="#9a3412">502 Bad Gateway</text>
-  <text class="sub" x="625" y="428" fill="#9a3412">게이트웨이가 상위 서버에서</text>
-  <text class="sub" x="625" y="458" fill="#c2410c">유효하지 않은 응답을 받음</text>
-  <path class="error" d="M 1060 250 C 940 290 840 315 825 390" />
+  <rect class="card" x="382" y="390" width="300" height="220" fill="#fef2f2" stroke="#f87171" />
+  <text class="code" x="409" y="438" fill="#b91c1c">502</text>
+  <text class="name" x="409" y="472" fill="#991b1b">Bad Gateway</text>
+  <text class="body" x="409" y="518" fill="#7f1d1d">게이트웨이가 상위 서버에서</text>
+  <text class="body" x="409" y="544" fill="#7f1d1d">유효하지 않은 응답을 받음</text>
+  <text class="body" x="409" y="578" fill="#991b1b">응답을 받았지만 해석할 수 없음</text>
+  <path class="connector" d="M 700 277 V 380" stroke="#ef4444" />
 
-  <rect class="box" x="65" y="610" width="390" height="135" fill="#fef3c7" stroke="#f59e0b" />
-  <text class="label" x="260" y="648" fill="#78350f">503 Service Unavailable</text>
-  <text class="sub" x="260" y="685" fill="#92400e">서버가 일시적으로 요청을 처리할 수 없음</text>
-  <text class="sub" x="260" y="715" fill="#a16207">게이트웨이에서도 반환 가능</text>
-  <path d="M 560 285 C 430 350 350 470 290 600" stroke="#d97706" stroke-width="3" fill="none" stroke-dasharray="10 8" marker-end="url(#errorhead)" />
+  <rect class="card" x="710" y="390" width="300" height="220" fill="#fdf4ff" stroke="#e879f9" />
+  <text class="code" x="737" y="438" fill="#a21caf">504</text>
+  <text class="name" x="737" y="472" fill="#86198f">Gateway Timeout</text>
+  <text class="body" x="737" y="518" fill="#701a75">게이트웨이가 상위 서버의</text>
+  <text class="body" x="737" y="544" fill="#701a75">응답을 제시간에 받지 못함</text>
+  <text class="body" x="737" y="578" fill="#86198f">기다림이 제한 시간을 넘음</text>
+  <path class="connector" d="M 845 277 C 845 320 860 338 860 380" stroke="#d946ef" />
 
-  <rect class="box" x="890" y="610" width="440" height="135" fill="#fce7f3" stroke="#ec4899" />
-  <text class="label" x="1110" y="648" fill="#831843">504 Gateway Timeout</text>
-  <text class="sub" x="1110" y="685" fill="#9d174d">게이트웨이가 상위 서버의 응답을</text>
-  <text class="sub" x="1110" y="715" fill="#be185d">정해진 시간 안에 받지 못함</text>
-  <path d="M 855 260 C 900 370 1030 430 1110 600" stroke="#db2777" stroke-width="3" fill="none" stroke-dasharray="10 8" marker-end="url(#errorhead)" />
+  <rect class="card" x="1045" y="390" width="300" height="220" fill="#fef2f2" stroke="#fca5a5" />
+  <text class="code" x="1072" y="438" fill="#dc2626">500</text>
+  <text class="name" x="1072" y="472" fill="#b91c1c">Internal Server Error</text>
+  <text class="body" x="1072" y="518" fill="#7f1d1d">애플리케이션 서버 내부의</text>
+  <text class="body" x="1072" y="544" fill="#7f1d1d">예상하지 못한 처리 실패</text>
+  <text class="body" x="1072" y="578" fill="#991b1b">더 적절한 5xx가 없을 때</text>
+  <path class="connector" d="M 1200 277 V 380" stroke="#ef4444" />
 
-  <rect x="430" y="535" width="450" height="48" rx="14" fill="#ffffff" stroke="#94a3b8" stroke-dasharray="7 6" />
-  <text class="note" x="655" y="565" fill="#475569">502는 받은 응답이 잘못됨 · 504는 응답을 제때 받지 못함</text>
+  <rect x="218" y="672" width="964" height="70" rx="18" fill="#ffffff" stroke="#cbd5e1" />
+  <text class="legend" x="700" y="700" fill="#334155">502 = 응답을 받았지만 유효하지 않음 · 504 = 응답을 제때 받지 못함</text>
+  <text class="legend" x="700" y="725" fill="#64748b">503은 특정 구성요소에만 고정된 코드가 아니라 일시적인 처리 불가 상태를 나타낸다</text>
 </svg>
