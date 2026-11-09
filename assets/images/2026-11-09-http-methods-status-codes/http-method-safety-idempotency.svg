@@ -1,0 +1,78 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1400" height="800" viewBox="0 0 1400 800" role="img" aria-labelledby="title desc">
+  <title id="title">HTTP 메서드의 역할과 안전성 및 멱등성 비교</title>
+  <desc id="desc">GET, HEAD, POST, PUT, PATCH, DELETE의 대표 역할을 비교하고 안전성과 멱등성 여부를 표시한다. PATCH는 구현 방식에 따라 멱등성이 달라질 수 있다.</desc>
+  <defs>
+    <style>
+      .bg { fill: #f8fafc; }
+      .title { font: 700 30px Arial, "Malgun Gothic", sans-serif; fill: #0f172a; text-anchor: middle; }
+      .head { font: 700 18px Arial, "Malgun Gothic", sans-serif; text-anchor: middle; }
+      .method { font: 700 24px Arial, "Malgun Gothic", sans-serif; text-anchor: middle; }
+      .label { font: 600 17px Arial, "Malgun Gothic", sans-serif; text-anchor: middle; }
+      .sub { font: 500 16px Arial, "Malgun Gothic", sans-serif; text-anchor: middle; }
+      .note { font: 600 17px Arial, "Malgun Gothic", sans-serif; text-anchor: middle; }
+      .box { stroke-width: 2; rx: 16; }
+      .grid { stroke: #cbd5e1; stroke-width: 2; }
+    </style>
+  </defs>
+
+  <rect class="bg" width="1400" height="800" rx="24" />
+  <text class="title" x="700" y="54">HTTP 메서드는 요청의 의미에 따라 성질이 달라진다</text>
+
+  <rect x="55" y="105" width="1290" height="58" rx="14" fill="#e2e8f0" />
+  <text class="head" x="170" y="141" fill="#334155">메서드</text>
+  <text class="head" x="430" y="141" fill="#334155">대표 역할</text>
+  <text class="head" x="900" y="141" fill="#334155">안전성</text>
+  <text class="head" x="1140" y="141" fill="#334155">멱등성</text>
+
+  <line class="grid" x1="55" y1="163" x2="1345" y2="163" />
+  <line class="grid" x1="285" y1="105" x2="285" y2="655" />
+  <line class="grid" x1="690" y1="105" x2="690" y2="655" />
+  <line class="grid" x1="1040" y1="105" x2="1040" y2="655" />
+
+  <rect class="box" x="55" y="163" width="1290" height="82" fill="#dbeafe" stroke="#3b82f6" />
+  <text class="method" x="170" y="213" fill="#1e3a8a">GET</text>
+  <text class="label" x="487" y="202" fill="#1e3a8a">리소스 표현 조회</text>
+  <text class="sub" x="487" y="226" fill="#1e40af">서버 상태 변경을 요청하지 않음</text>
+  <text class="label" x="865" y="213" fill="#1e3a8a">예</text>
+  <text class="label" x="1190" y="213" fill="#1e3a8a">예</text>
+
+  <rect class="box" x="55" y="245" width="1290" height="82" fill="#e0f2fe" stroke="#0284c7" />
+  <text class="method" x="170" y="295" fill="#0c4a6e">HEAD</text>
+  <text class="label" x="487" y="284" fill="#0c4a6e">GET과 같은 대상의 메타데이터 확인</text>
+  <text class="sub" x="487" y="308" fill="#075985">응답 본문 없음</text>
+  <text class="label" x="865" y="295" fill="#0c4a6e">예</text>
+  <text class="label" x="1190" y="295" fill="#0c4a6e">예</text>
+
+  <rect class="box" x="55" y="327" width="1290" height="82" fill="#fce7f3" stroke="#ec4899" />
+  <text class="method" x="170" y="377" fill="#831843">POST</text>
+  <text class="label" x="487" y="366" fill="#831843">데이터 제출과 서버 처리 요청</text>
+  <text class="sub" x="487" y="390" fill="#9d174d">생성 외의 작업에도 사용</text>
+  <text class="label" x="865" y="377" fill="#831843">아니오</text>
+  <text class="label" x="1190" y="377" fill="#831843">아니오</text>
+
+  <rect class="box" x="55" y="409" width="1290" height="82" fill="#dcfce7" stroke="#22c55e" />
+  <text class="method" x="170" y="459" fill="#14532d">PUT</text>
+  <text class="label" x="487" y="448" fill="#14532d">대상 리소스의 표현 생성·교체</text>
+  <text class="sub" x="487" y="472" fill="#166534">지정한 상태로 맞추는 요청</text>
+  <text class="label" x="865" y="459" fill="#14532d">아니오</text>
+  <text class="label" x="1190" y="459" fill="#14532d">예</text>
+
+  <rect class="box" x="55" y="491" width="1290" height="82" fill="#fae8ff" stroke="#c026d3" />
+  <text class="method" x="170" y="541" fill="#701a75">PATCH</text>
+  <text class="label" x="487" y="530" fill="#701a75">리소스에 부분 변경 적용</text>
+  <text class="sub" x="487" y="554" fill="#86198f">변경 방식에 따라 결과가 달라짐</text>
+  <text class="label" x="865" y="541" fill="#701a75">아니오</text>
+  <text class="label" x="1190" y="530" fill="#701a75">조건부</text>
+  <text class="sub" x="1190" y="554" fill="#86198f">메서드 자체는 보장하지 않음</text>
+
+  <rect class="box" x="55" y="573" width="1290" height="82" fill="#fef3c7" stroke="#f59e0b" />
+  <text class="method" x="170" y="623" fill="#78350f">DELETE</text>
+  <text class="label" x="487" y="612" fill="#78350f">대상 리소스와 연결 제거 요청</text>
+  <text class="sub" x="487" y="636" fill="#92400e">물리적 삭제 여부는 서버 구현에 따름</text>
+  <text class="label" x="865" y="623" fill="#78350f">아니오</text>
+  <text class="label" x="1190" y="623" fill="#78350f">예</text>
+
+  <rect x="155" y="695" width="1090" height="62" rx="16" fill="#ffffff" stroke="#94a3b8" stroke-dasharray="7 6" />
+  <text class="note" x="700" y="720" fill="#475569">안전성은 보안이 아니며 멱등성은 응답 코드가 항상 같다는 뜻이 아니다</text>
+  <text class="sub" x="700" y="744" fill="#64748b">PATCH는 같은 변경을 설정하는 방식이라면 멱등적으로 설계할 수 있다</text>
+</svg>
