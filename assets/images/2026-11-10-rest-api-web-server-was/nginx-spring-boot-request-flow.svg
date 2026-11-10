@@ -1,4 +1,4 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="1400" height="1260" viewBox="0 0 1400 1260" role="img" aria-labelledby="title desc">
+<svg xmlns="http://www.w3.org/2000/svg" width="1400" height="1360" viewBox="0 0 1400 1360" role="img" aria-labelledby="title desc">
   <title id="title">Nginx와 Spring Boot 내장 Tomcat의 요청 처리 흐름</title>
   <desc id="desc">클라이언트의 HTTPS 요청이 Nginx Reverse Proxy를 거쳐 Spring Boot, Embedded Tomcat, DispatcherServlet, Controller, Service, Repository, Database로 전달되고 응답이 역방향으로 돌아오는 흐름</desc>
   <defs>
@@ -24,7 +24,7 @@
     </marker>
   </defs>
 
-  <rect class="bg" width="1400" height="1260" rx="28" />
+  <rect class="bg" width="1400" height="1360" rx="28" />
   <text class="title" x="700" y="58">Nginx와 Spring Boot 요청 처리 흐름</text>
   <text class="subtitle" x="700" y="91">Nginx는 전달을 담당하고 Tomcat과 Spring MVC는 애플리케이션 요청을 실행한다</text>
 
@@ -40,7 +40,7 @@
 
   <path class="request" d="M 700 390 L 700 440" />
 
-  <rect class="inner" x="300" y="450" width="800" height="585" rx="28" />
+  <rect class="inner" x="300" y="450" width="800" height="730" rx="28" />
   <text class="heading" x="700" y="495" fill="#334155">Spring Boot Application</text>
   <text class="note" x="700" y="523">Nginx 없이 Embedded Tomcat이 직접 외부 요청을 받을 수도 있다</text>
 
@@ -69,11 +69,14 @@
   <path class="request" d="M 700 1035 L 700 1080" />
 
   <rect class="box" x="485" y="1090" width="430" height="70" stroke="#94a3b8" />
-  <text class="node" x="700" y="1131" fill="#475569">Repository → Database</text>
+  <text class="node" x="700" y="1131" fill="#475569">Repository</text>
 
-  <path class="response" d="M 1045 1080 L 1045 255" />
+  <path class="request" d="M 700 1160 L 700 1185" />
+
+  <rect class="box" x="485" y="1195" width="430" height="70" stroke="#64748b" />
+  <text class="node" x="700" y="1236" fill="#334155">Database</text>
+
+  <path class="response" d="M 1045 1230 L 1045 180 L 920 180" />
   <text class="side" x="1110" y="675" fill="#15803d" transform="rotate(90 1110 675)">Response · 역방향 전달</text>
-
-  <path class="response" d="M 1045 255 L 915 255" />
-  <text class="note" x="700" y="1210">이 그림은 Nginx와 Spring Boot를 함께 사용하는 경우의 예시이며 필수 조합을 의미하지 않는다</text>
+  <text class="note" x="700" y="1320">이 그림은 Nginx와 Spring Boot를 함께 사용하는 경우의 예시이며 필수 조합을 의미하지 않는다</text>
 </svg>

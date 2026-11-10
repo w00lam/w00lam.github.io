@@ -57,13 +57,14 @@
   <text class="heading" x="1180" y="220" fill="#15803d">Server</text>
   <text class="label" x="1180" y="270">Order Resource</text>
   <text class="body" x="1080" y="320">ID: 123</text>
-  <rect x="1080" y="350" width="200" height="120" rx="16" fill="#dcfce7" />
-  <text class="mono" x="1098" y="386">HTTP 200 OK</text>
-  <text class="mono" x="1098" y="425">{</text>
-  <text class="mono" x="1114" y="452">"status": "PAID"</text>
-  <text class="mono" x="1098" y="479">}</text>
-  <text class="small" x="1180" y="535">리소스의 현재 상태를</text>
-  <text class="small" x="1180" y="560">JSON Representation으로 응답</text>
+  <rect x="1080" y="350" width="200" height="170" rx="16" fill="#dcfce7" />
+  <text class="mono" x="1098" y="382">HTTP 200 OK</text>
+  <text class="mono" x="1098" y="420">{</text>
+  <text class="mono" x="1114" y="448">"id": 123,</text>
+  <text class="mono" x="1114" y="476">"status": "PAID"</text>
+  <text class="mono" x="1098" y="504">}</text>
+  <text class="small" x="1180" y="555">리소스의 현재 상태를</text>
+  <text class="small" x="1180" y="580">JSON Representation으로 응답</text>
 
   <path class="response" d="M 1030 660 L 370 660" />
   <text class="label" x="700" y="640" fill="#15803d">HTTP 200 OK + JSON Representation</text>
