@@ -1,0 +1,79 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1400" height="1260" viewBox="0 0 1400 1260" role="img" aria-labelledby="title desc">
+  <title id="title">Nginx와 Spring Boot 내장 Tomcat의 요청 처리 흐름</title>
+  <desc id="desc">클라이언트의 HTTPS 요청이 Nginx Reverse Proxy를 거쳐 Spring Boot, Embedded Tomcat, DispatcherServlet, Controller, Service, Repository, Database로 전달되고 응답이 역방향으로 돌아오는 흐름</desc>
+  <defs>
+    <style>
+      .bg { fill: #f8fafc; }
+      .title { font: 700 32px Arial, "Malgun Gothic", sans-serif; fill: #0f172a; text-anchor: middle; }
+      .subtitle { font: 500 17px Arial, "Malgun Gothic", sans-serif; fill: #64748b; text-anchor: middle; }
+      .heading { font: 700 24px Arial, "Malgun Gothic", sans-serif; text-anchor: middle; }
+      .node { font: 700 20px Arial, "Malgun Gothic", sans-serif; text-anchor: middle; }
+      .detail { font: 500 16px Arial, "Malgun Gothic", sans-serif; text-anchor: middle; }
+      .side { font: 600 17px Arial, "Malgun Gothic", sans-serif; text-anchor: middle; }
+      .note { font: 500 16px Arial, "Malgun Gothic", sans-serif; fill: #64748b; text-anchor: middle; }
+      .box { fill: #ffffff; stroke-width: 2; rx: 20; }
+      .request { stroke: #2563eb; stroke-width: 5; fill: none; marker-end: url(#arrow-blue); }
+      .response { stroke: #16a34a; stroke-width: 5; fill: none; marker-end: url(#arrow-green); }
+      .inner { stroke: #cbd5e1; stroke-width: 2; stroke-dasharray: 8 8; fill: #f1f5f9; }
+    </style>
+    <marker id="arrow-blue" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#2563eb" />
+    </marker>
+    <marker id="arrow-green" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#16a34a" />
+    </marker>
+  </defs>
+
+  <rect class="bg" width="1400" height="1260" rx="28" />
+  <text class="title" x="700" y="58">Nginx와 Spring Boot 요청 처리 흐름</text>
+  <text class="subtitle" x="700" y="91">Nginx는 전달을 담당하고 Tomcat과 Spring MVC는 애플리케이션 요청을 실행한다</text>
+
+  <rect class="box" x="485" y="135" width="430" height="90" stroke="#93c5fd" />
+  <text class="node" x="700" y="177" fill="#1d4ed8">Client</text>
+  <text class="detail" x="700" y="205" fill="#475569">HTTPS Request</text>
+
+  <path class="request" d="M 700 225 L 700 275" />
+
+  <rect class="box" x="485" y="285" width="430" height="105" stroke="#f9a8d4" />
+  <text class="node" x="700" y="328" fill="#be185d">Nginx</text>
+  <text class="detail" x="700" y="358" fill="#475569">Reverse Proxy · TLS · Routing</text>
+
+  <path class="request" d="M 700 390 L 700 440" />
+
+  <rect class="inner" x="300" y="450" width="800" height="585" rx="28" />
+  <text class="heading" x="700" y="495" fill="#334155">Spring Boot Application</text>
+  <text class="note" x="700" y="523">Nginx 없이 Embedded Tomcat이 직접 외부 요청을 받을 수도 있다</text>
+
+  <rect class="box" x="485" y="550" width="430" height="90" stroke="#86efac" />
+  <text class="node" x="700" y="592" fill="#15803d">Embedded Tomcat</text>
+  <text class="detail" x="700" y="620" fill="#475569">Servlet Container · HTTP 처리 환경</text>
+
+  <path class="request" d="M 700 640 L 700 680" />
+
+  <rect class="box" x="485" y="690" width="430" height="90" stroke="#c4b5fd" />
+  <text class="node" x="700" y="732" fill="#7c3aed">DispatcherServlet</text>
+  <text class="detail" x="700" y="760" fill="#475569">Spring MVC Front Controller</text>
+
+  <path class="request" d="M 700 780 L 700 820" />
+
+  <rect class="box" x="485" y="830" width="430" height="80" stroke="#fdba74" />
+  <text class="node" x="700" y="865" fill="#c2410c">Controller</text>
+  <text class="detail" x="700" y="890" fill="#475569">요청 매핑 · 응답 조합</text>
+
+  <path class="request" d="M 700 910 L 700 945" />
+
+  <rect class="box" x="485" y="955" width="430" height="80" stroke="#facc15" />
+  <text class="node" x="700" y="990" fill="#a16207">Service</text>
+  <text class="detail" x="700" y="1015" fill="#475569">비즈니스 규칙 처리</text>
+
+  <path class="request" d="M 700 1035 L 700 1080" />
+
+  <rect class="box" x="485" y="1090" width="430" height="70" stroke="#94a3b8" />
+  <text class="node" x="700" y="1131" fill="#475569">Repository → Database</text>
+
+  <path class="response" d="M 1045 1080 L 1045 255" />
+  <text class="side" x="1110" y="675" fill="#15803d" transform="rotate(90 1110 675)">Response · 역방향 전달</text>
+
+  <path class="response" d="M 1045 255 L 915 255" />
+  <text class="note" x="700" y="1210">이 그림은 Nginx와 Spring Boot를 함께 사용하는 경우의 예시이며 필수 조합을 의미하지 않는다</text>
+</svg>

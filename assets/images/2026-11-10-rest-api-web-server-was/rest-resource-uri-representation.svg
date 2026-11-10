@@ -1,0 +1,72 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1400" height="820" viewBox="0 0 1400 820" role="img" aria-labelledby="title desc">
+  <title id="title">REST API의 Resource, URI, Representation 관계</title>
+  <desc id="desc">클라이언트가 GET /orders/123 요청을 보내면 URI가 주문 리소스를 식별하고 서버가 JSON Representation과 200 OK 응답을 반환하는 흐름</desc>
+  <defs>
+    <style>
+      .bg { fill: #f8fafc; }
+      .title { font: 700 32px Arial, "Malgun Gothic", sans-serif; fill: #0f172a; text-anchor: middle; }
+      .subtitle { font: 500 17px Arial, "Malgun Gothic", sans-serif; fill: #64748b; text-anchor: middle; }
+      .heading { font: 700 24px Arial, "Malgun Gothic", sans-serif; text-anchor: middle; }
+      .label { font: 700 16px Arial, "Malgun Gothic", sans-serif; fill: #475569; text-anchor: middle; }
+      .body { font: 500 18px Arial, "Malgun Gothic", sans-serif; fill: #334155; }
+      .mono { font: 600 19px Consolas, "Malgun Gothic", monospace; fill: #0f172a; }
+      .small { font: 500 15px Arial, "Malgun Gothic", sans-serif; fill: #64748b; text-anchor: middle; }
+      .card { fill: #ffffff; stroke-width: 2; rx: 24; }
+      .arrow { stroke: #2563eb; stroke-width: 4; fill: none; marker-end: url(#arrow); }
+      .response { stroke: #16a34a; stroke-width: 4; fill: none; marker-end: url(#arrow-green); }
+    </style>
+    <marker id="arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#2563eb" />
+    </marker>
+    <marker id="arrow-green" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#16a34a" />
+    </marker>
+  </defs>
+
+  <rect class="bg" width="1400" height="820" rx="28" />
+  <text class="title" x="700" y="58">REST API는 리소스를 식별하고 그 표현을 주고받는다</text>
+  <text class="subtitle" x="700" y="91">URI는 대상을 가리키고 HTTP Method는 요청의 의미를 나타내며 Representation은 상태를 전달한다</text>
+
+  <rect class="card" x="70" y="165" width="300" height="430" stroke="#93c5fd" />
+  <text class="heading" x="220" y="220" fill="#1d4ed8">Client</text>
+  <text class="label" x="220" y="270">HTTP Request</text>
+  <rect x="105" y="295" width="230" height="70" rx="16" fill="#dbeafe" />
+  <text class="mono" x="220" y="338" text-anchor="middle">GET /orders/123</text>
+  <text class="body" x="105" y="430">Method: GET</text>
+  <text class="body" x="105" y="468">URI: /orders/123</text>
+  <text class="small" x="220" y="535">리소스의 표현을 조회하겠다는</text>
+  <text class="small" x="220" y="560">요청의 의미를 전달</text>
+
+  <path class="arrow" d="M 385 380 L 515 380" />
+  <text class="label" x="450" y="350">요청</text>
+
+  <rect class="card" x="545" y="165" width="310" height="430" stroke="#c4b5fd" />
+  <text class="heading" x="700" y="220" fill="#7c3aed">URI</text>
+  <text class="label" x="700" y="275">리소스 식별자</text>
+  <rect x="600" y="310" width="200" height="70" rx="16" fill="#ede9fe" />
+  <text class="mono" x="700" y="353" text-anchor="middle">/orders/123</text>
+  <text class="body" x="585" y="445">Resource</text>
+  <text class="body" x="585" y="483">123번 주문이라는 개념</text>
+  <text class="small" x="700" y="535">URI가 리소스의 위치와 의미를</text>
+  <text class="small" x="700" y="560">식별하도록 설계</text>
+
+  <path class="arrow" d="M 870 380 L 1000 380" />
+  <text class="label" x="935" y="350">대상 식별</text>
+
+  <rect class="card" x="1030" y="165" width="300" height="430" stroke="#86efac" />
+  <text class="heading" x="1180" y="220" fill="#15803d">Server</text>
+  <text class="label" x="1180" y="270">Order Resource</text>
+  <text class="body" x="1080" y="320">ID: 123</text>
+  <rect x="1080" y="350" width="200" height="120" rx="16" fill="#dcfce7" />
+  <text class="mono" x="1098" y="386">HTTP 200 OK</text>
+  <text class="mono" x="1098" y="425">{</text>
+  <text class="mono" x="1114" y="452">"status": "PAID"</text>
+  <text class="mono" x="1098" y="479">}</text>
+  <text class="small" x="1180" y="535">리소스의 현재 상태를</text>
+  <text class="small" x="1180" y="560">JSON Representation으로 응답</text>
+
+  <path class="response" d="M 1030 660 L 370 660" />
+  <text class="label" x="700" y="640" fill="#15803d">HTTP 200 OK + JSON Representation</text>
+  <text class="small" x="700" y="710">Representation은 리소스 자체가 아니라 특정 시점의 상태를 표현한 데이터다</text>
+  <text class="small" x="700" y="742">서버 내부의 데이터베이스 구조를 클라이언트가 알 필요는 없다</text>
+</svg>
