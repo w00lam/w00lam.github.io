@@ -1,0 +1,95 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1400" height="950" viewBox="0 0 1400 950" role="img" aria-labelledby="title desc">
+  <title id="title">OAuth Authorization Code Grant 처리 흐름</title>
+  <desc id="desc">사용자가 Client에서 Google 로그인을 요청하면 Authorization Server가 Authorization Code를 Redirect URI로 반환하고 Client가 code와 code_verifier를 사용해 Access Token으로 교환한 뒤 Resource Server에 사용자 정보를 요청하는 흐름</desc>
+  <defs>
+    <style>
+      .bg { fill: #f8fafc; }
+      .title { font: 700 32px Arial, "Malgun Gothic", sans-serif; fill: #0f172a; text-anchor: middle; }
+      .subtitle { font: 500 17px Arial, "Malgun Gothic", sans-serif; fill: #64748b; text-anchor: middle; }
+      .heading { font: 700 23px Arial, "Malgun Gothic", sans-serif; text-anchor: middle; }
+      .label { font: 700 16px Arial, "Malgun Gothic", sans-serif; fill: #475569; text-anchor: middle; }
+      .body { font: 500 17px Arial, "Malgun Gothic", sans-serif; fill: #334155; }
+      .small { font: 500 15px Arial, "Malgun Gothic", sans-serif; fill: #64748b; text-anchor: middle; }
+      .mono { font: 600 17px Consolas, "Malgun Gothic", monospace; fill: #0f172a; }
+      .card { fill: #ffffff; stroke-width: 2; rx: 22; }
+      .request { stroke: #2563eb; stroke-width: 4; fill: none; marker-end: url(#arrow-blue); }
+      .code { stroke: #7c3aed; stroke-width: 4; fill: none; marker-end: url(#arrow-purple); }
+      .token { stroke: #16a34a; stroke-width: 4; fill: none; marker-end: url(#arrow-green); }
+      .dashed { stroke-dasharray: 10 8; }
+    </style>
+    <marker id="arrow-blue" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#2563eb" />
+    </marker>
+    <marker id="arrow-purple" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#7c3aed" />
+    </marker>
+    <marker id="arrow-green" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#16a34a" />
+    </marker>
+  </defs>
+
+  <rect class="bg" width="1400" height="950" rx="28" />
+  <text class="title" x="700" y="58">OAuth Authorization Code Grant 흐름</text>
+  <text class="subtitle" x="700" y="91">브라우저에는 Authorization Code를 돌려주고 Client는 서버 간 교환으로 Access Token을 받는다</text>
+
+  <rect class="card" x="55" y="145" width="260" height="250" stroke="#93c5fd" />
+  <text class="heading" x="185" y="198" fill="#1d4ed8">사용자</text>
+  <text class="label" x="185" y="246">Resource Owner</text>
+  <text class="body" x="95" y="300">Google 로그인 요청</text>
+  <text class="body" x="95" y="338">로그인과 권한 동의</text>
+  <text class="small" x="185" y="370">비밀번호는 Client에 전달하지 않음</text>
+
+  <rect class="card" x="365" y="145" width="280" height="250" stroke="#c4b5fd" />
+  <text class="heading" x="505" y="198" fill="#7c3aed">Client</text>
+  <text class="label" x="505" y="246">애플리케이션</text>
+  <text class="body" x="405" y="300">인가 요청 생성</text>
+  <text class="mono" x="405" y="340">state</text>
+  <text class="mono" x="490" y="340">code_challenge</text>
+  <text class="small" x="505" y="374">Redirect URI를 미리 등록</text>
+
+  <rect class="card" x="695" y="145" width="300" height="250" stroke="#f9a8d4" />
+  <text class="heading" x="845" y="198" fill="#be185d">Authorization Server</text>
+  <text class="label" x="845" y="246">Google</text>
+  <text class="body" x="735" y="300">로그인·동의 처리</text>
+  <text class="body" x="735" y="338">Authorization Code 발급</text>
+  <text class="small" x="845" y="374">Resource Server와 같은 제공자일 수 있음</text>
+
+  <rect class="card" x="1045" y="145" width="300" height="250" stroke="#86efac" />
+  <text class="heading" x="1195" y="198" fill="#15803d">Resource Server</text>
+  <text class="label" x="1195" y="246">보호된 API</text>
+  <text class="body" x="1085" y="300">Access Token 검증</text>
+  <text class="body" x="1085" y="338">사용자 정보 제공</text>
+  <text class="small" x="1195" y="374">허용된 범위의 리소스만 반환</text>
+
+  <path class="request" d="M 315 270 L 355 270" />
+  <text class="label" x="335" y="245">로그인</text>
+  <path class="request" d="M 645 270 L 685 270" />
+  <text class="label" x="665" y="245">인가 요청</text>
+  <path class="request dashed" d="M 695 420 L 645 420 L 645 455 L 365 455 L 365 420" />
+  <text class="label" x="505" y="445" fill="#7c3aed">Redirect URI + Authorization Code</text>
+
+  <rect x="80" y="515" width="1240" height="300" rx="24" fill="#ffffff" stroke="#cbd5e1" stroke-width="2" />
+  <text class="heading" x="700" y="565" fill="#334155">토큰 교환과 Resource 요청</text>
+
+  <rect x="120" y="620" width="270" height="100" rx="18" fill="#ede9fe" />
+  <text class="heading" x="255" y="660" fill="#7c3aed">Authorization Code</text>
+  <text class="small" x="255" y="692">code + code_verifier</text>
+  <path class="code" d="M 400 670 L 650 670" />
+  <text class="label" x="525" y="645" fill="#7c3aed">토큰 교환 요청</text>
+
+  <rect x="660" y="620" width="280" height="100" rx="18" fill="#fce7f3" />
+  <text class="heading" x="800" y="660" fill="#be185d">Access Token 발급</text>
+  <text class="small" x="800" y="692">Authorization Server의 검증</text>
+  <path class="token" d="M 950 670 L 1170 670" />
+  <text class="label" x="1060" y="645" fill="#15803d">Resource 요청</text>
+
+  <rect x="1180" y="620" width="100" height="100" rx="18" fill="#dcfce7" />
+  <text class="heading" x="1230" y="658" fill="#15803d">User</text>
+  <text class="small" x="1230" y="690">정보</text>
+
+  <path class="token dashed" d="M 800 735 L 800 775 L 400 775 L 400 735" />
+  <text class="label" x="600" y="800" fill="#15803d">Access Token이 없으면 API 호출을 할 수 없음</text>
+
+  <text class="small" x="700" y="875">Authorization Code는 API 호출 토큰이 아니며, Access Token으로 교환되는 중간 단계다</text>
+  <text class="small" x="700" y="900">State는 요청과 응답을 연결하고 PKCE는 code_verifier와 code_challenge의 관계를 검증한다</text>
+</svg>

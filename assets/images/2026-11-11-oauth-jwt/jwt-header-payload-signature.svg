@@ -1,0 +1,73 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1400" height="900" viewBox="0 0 1400 900" role="img" aria-labelledby="title desc">
+  <title id="title">JWT Header, Payload, Signature 구조</title>
+  <desc id="desc">JWT 문자열을 Header, Payload, Signature 세 부분으로 나누고 각 부분의 역할과 Base64URL 인코딩 및 서명 검증을 설명하는 구조</desc>
+  <defs>
+    <style>
+      .bg { fill: #f8fafc; }
+      .title { font: 700 32px Arial, "Malgun Gothic", sans-serif; fill: #0f172a; text-anchor: middle; }
+      .subtitle { font: 500 17px Arial, "Malgun Gothic", sans-serif; fill: #64748b; text-anchor: middle; }
+      .heading { font: 700 23px Arial, "Malgun Gothic", sans-serif; text-anchor: middle; }
+      .label { font: 700 16px Arial, "Malgun Gothic", sans-serif; fill: #475569; text-anchor: middle; }
+      .body { font: 500 17px Arial, "Malgun Gothic", sans-serif; fill: #334155; }
+      .small { font: 500 15px Arial, "Malgun Gothic", sans-serif; fill: #64748b; text-anchor: middle; }
+      .mono { font: 600 18px Consolas, "Malgun Gothic", monospace; fill: #0f172a; }
+      .card { fill: #ffffff; stroke-width: 2; rx: 22; }
+    </style>
+  </defs>
+
+  <rect class="bg" width="1400" height="900" rx="28" />
+  <text class="title" x="700" y="58">JWT는 Header.Payload.Signature로 나뉜다</text>
+  <text class="subtitle" x="700" y="91">Base64URL 인코딩은 암호화가 아니며 Signature는 무결성과 발급자 검증에 사용된다</text>
+
+  <rect x="80" y="145" width="1240" height="145" rx="24" fill="#ffffff" stroke="#cbd5e1" stroke-width="2" />
+  <text class="label" x="700" y="185">JWT Compact Serialization</text>
+  <rect x="125" y="210" width="330" height="55" rx="12" fill="#dbeafe" />
+  <rect x="535" y="210" width="330" height="55" rx="12" fill="#fef3c7" />
+  <rect x="945" y="210" width="330" height="55" rx="12" fill="#dcfce7" />
+  <text class="mono" x="145" y="245">eyJhbGciOiJIUzI1NiJ9</text>
+  <text class="mono" x="555" y="245">eyJzdWIiOiIxMjM0NSJ9</text>
+  <text class="mono" x="965" y="245">SflKxwRJSMeKKF2QT4fwp</text>
+  <text class="heading" x="495" y="245" fill="#7c3aed">.</text>
+  <text class="heading" x="905" y="245" fill="#7c3aed">.</text>
+
+  <rect class="card" x="80" y="355" width="380" height="330" stroke="#93c5fd" />
+  <text class="heading" x="270" y="410" fill="#1d4ed8">Header</text>
+  <text class="label" x="270" y="445">메타데이터</text>
+  <rect x="125" y="475" width="290" height="100" rx="16" fill="#dbeafe" />
+  <text class="mono" x="150" y="515">{ "alg": "HS256",</text>
+  <text class="mono" x="150" y="550">  "typ": "JWT" }</text>
+  <text class="small" x="270" y="625">서명 알고리즘과 토큰 유형을 표시</text>
+  <text class="small" x="270" y="650">헤더의 alg를 무조건 신뢰하지 않고</text>
+  <text class="small" x="270" y="672">허용 목록과 키를 서버에서 정한다</text>
+
+  <rect class="card" x="510" y="355" width="380" height="330" stroke="#facc15" />
+  <text class="heading" x="700" y="410" fill="#a16207">Payload</text>
+  <text class="label" x="700" y="445">Claim 집합</text>
+  <rect x="555" y="475" width="290" height="100" rx="16" fill="#fef3c7" />
+  <text class="mono" x="580" y="515">{ "sub": "12345",</text>
+  <text class="mono" x="580" y="550">  "iss": "auth", "exp": ... }</text>
+  <text class="small" x="700" y="625">사용자 식별자와 만료 시각을 포함</text>
+  <text class="small" x="700" y="650">Base64URL로 디코딩할 수 있음</text>
+  <text class="small" x="700" y="672">민감정보를 넣지 않음</text>
+
+  <rect class="card" x="940" y="355" width="380" height="330" stroke="#86efac" />
+  <text class="heading" x="1130" y="410" fill="#15803d">Signature</text>
+  <text class="label" x="1130" y="445">서명 검증값</text>
+  <rect x="985" y="475" width="290" height="100" rx="16" fill="#dcfce7" />
+  <text class="mono" x="1010" y="515">HMACSHA256(</text>
+  <text class="mono" x="1010" y="550">  Header + Payload, key)</text>
+  <text class="small" x="1130" y="625">내용이 바뀌지 않았는지 검증</text>
+  <text class="small" x="1130" y="650">신뢰하는 발급자의 서명인지 확인</text>
+  <text class="small" x="1130" y="672">기밀성을 제공하지 않음</text>
+
+  <path d="M 700 300 L 700 340" stroke="#7c3aed" stroke-width="4" marker-end="url(#arrow)" />
+  <defs>
+    <marker id="arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#7c3aed" />
+    </marker>
+  </defs>
+
+  <rect x="140" y="755" width="1120" height="70" rx="18" fill="#ede9fe" />
+  <text class="label" x="700" y="785" fill="#7c3aed">검증 순서</text>
+  <text class="small" x="700" y="810">서명 알고리즘·키 확인 → Signature 검증 → iss·aud·exp 등 Claim 검증 → API 권한 검사</text>
+</svg>
