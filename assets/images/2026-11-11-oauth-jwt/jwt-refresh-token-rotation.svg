@@ -52,9 +52,9 @@
   <text class="mono" x="1160" y="390">Refresh Token: R2</text>
 
   <line class="request" x1="380" y1="342" x2="560" y2="342" />
-  <text class="label" x="470" y="235">R1 제출</text>
+  <text class="label" x="470" y="325">R1 제출</text>
   <line class="success" x1="840" y1="342" x2="1020" y2="342" />
-  <text class="label" x="930" y="235" fill="#15803d">A2 + R2 발급</text>
+  <text class="label" x="930" y="325" fill="#15803d">A2 + R2 발급</text>
 
   <line class="success dashed" x1="1160" y1="465" x2="240" y2="465" />
   <text class="label" x="700" y="500" fill="#15803d">Rotation 시점에 기존 R1 무효화</text>
@@ -75,9 +75,9 @@
   <text class="body" x="1160" y="810">토큰군·세션 폐기</text>
 
   <line class="danger" x1="380" y1="785" x2="560" y2="785" />
-  <text class="label" x="470" y="700" fill="#b91c1c">R1 재사용</text>
+  <text class="label" x="470" y="768" fill="#b91c1c">R1 재사용</text>
   <line class="danger" x1="840" y1="785" x2="1020" y2="785" />
-  <text class="label" x="930" y="700" fill="#b91c1c">거부</text>
+  <text class="label" x="930" y="768" fill="#b91c1c">거부</text>
 
   <text class="small" x="700" y="930">새 토큰을 발급했다는 사실만으로 이전 토큰이 자동 무효화되지는 않는다</text>
   <text class="small" x="700" y="955">Rotation을 적용하려면 Refresh Token의 상태와 재사용 여부를 서버에서 관리해야 한다</text>

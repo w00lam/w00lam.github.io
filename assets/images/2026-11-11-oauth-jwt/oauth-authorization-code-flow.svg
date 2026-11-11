@@ -67,37 +67,37 @@
   <text class="node" x="310" y="528" fill="#7c3aed">Client</text>
   <rect class="box" x="960" y="490" width="260" height="60" stroke="#f9a8d4" />
   <text class="node" x="1090" y="528" fill="#be185d">Authorization Server</text>
-  <line class="request" x1="440" y1="520" x2="960" y2="520" />
-  <text class="label" x="700" y="480">인가 요청 + state + code_challenge</text>
-  <line class="code" x1="960" y1="585" x2="440" y2="585" />
-  <text class="label" x="700" y="615" fill="#7c3aed">Redirect URI + Authorization Code</text>
+  <line class="request" x1="440" y1="515" x2="960" y2="515" />
+  <text class="label" x="700" y="495">인가 요청 + state + code_challenge</text>
+  <line class="code" x1="960" y1="545" x2="440" y2="545" />
+  <text class="label" x="700" y="575" fill="#7c3aed">Redirect URI + Authorization Code</text>
 
   <rect x="80" y="680" width="1240" height="220" rx="24" fill="#ffffff" stroke="#cbd5e1" stroke-width="2" />
   <text class="heading" x="700" y="718" fill="#334155">2. 서버 간 토큰 교환과 API 요청</text>
-  <rect class="box" x="70" y="760" width="250" height="70" stroke="#c4b5fd" />
-  <text class="node" x="195" y="790" fill="#7c3aed">Client</text>
-  <text class="small" x="195" y="815">code + code_verifier</text>
+  <rect class="box" x="70" y="760" width="230" height="70" stroke="#c4b5fd" />
+  <text class="node" x="185" y="790" fill="#7c3aed">Client</text>
+  <text class="small" x="185" y="815">code + code_verifier</text>
 
-  <rect class="box" x="380" y="760" width="280" height="70" stroke="#f9a8d4" />
-  <text class="node" x="520" y="790" fill="#be185d">Authorization Server</text>
-  <text class="small" x="520" y="815">Access Token 발급</text>
+  <rect class="box" x="400" y="760" width="260" height="70" stroke="#f9a8d4" />
+  <text class="node" x="530" y="790" fill="#be185d">Authorization Server</text>
+  <text class="small" x="530" y="815">Access Token 발급</text>
 
-  <rect class="box" x="730" y="760" width="230" height="70" stroke="#c4b5fd" />
-  <text class="node" x="845" y="790" fill="#7c3aed">Client</text>
-  <text class="small" x="845" y="815">Access Token 수신</text>
+  <rect class="box" x="760" y="760" width="210" height="70" stroke="#c4b5fd" />
+  <text class="node" x="865" y="790" fill="#7c3aed">Client</text>
+  <text class="small" x="865" y="815">Access Token 수신</text>
 
-  <rect class="box" x="1030" y="760" width="290" height="70" stroke="#86efac" />
-  <text class="node" x="1175" y="790" fill="#15803d">Resource Server</text>
-  <text class="small" x="1175" y="815">검증 후 사용자 정보 반환</text>
+  <rect class="box" x="1070" y="760" width="260" height="70" stroke="#86efac" />
+  <text class="node" x="1200" y="790" fill="#15803d">Resource Server</text>
+  <text class="small" x="1200" y="815">검증 후 사용자 정보 반환</text>
 
-  <line class="code" x1="320" y1="795" x2="380" y2="795" />
-  <text class="label" x="350" y="745" fill="#7c3aed">code 교환</text>
-  <line class="token" x1="660" y1="795" x2="730" y2="795" />
-  <text class="label" x="695" y="745" fill="#15803d">Access Token</text>
-  <line class="token" x1="960" y1="795" x2="1030" y2="795" />
-  <text class="label" x="995" y="745" fill="#15803d">Bearer 요청</text>
-  <line class="token" x1="1030" y1="855" x2="960" y2="855" />
-  <text class="label" x="995" y="880" fill="#15803d">사용자 정보 응답</text>
+  <line class="code" x1="300" y1="795" x2="400" y2="795" />
+  <text class="label" x="350" y="775" fill="#7c3aed">code 교환</text>
+  <line class="token" x1="660" y1="795" x2="760" y2="795" />
+  <text class="label" x="710" y="775" fill="#15803d">Access Token</text>
+  <line class="token" x1="970" y1="795" x2="1070" y2="795" />
+  <text class="label" x="1020" y="775" fill="#15803d">Bearer 요청</text>
+  <line class="token" x1="1070" y1="855" x2="970" y2="855" />
+  <text class="label" x="1020" y="880" fill="#15803d">사용자 정보 응답</text>
 
   <text class="small" x="700" y="955">Authorization Code는 API 호출 토큰이 아니며, Access Token으로 교환되는 중간 단계다</text>
   <text class="small" x="700" y="978">State는 요청과 응답을 연결하고 PKCE는 code_verifier와 code_challenge를 검증한다</text>
