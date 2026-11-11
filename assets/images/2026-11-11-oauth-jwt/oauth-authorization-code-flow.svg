@@ -62,9 +62,9 @@
   <text class="small" x="1195" y="374">허용된 범위의 리소스만 반환</text>
 
   <path class="request" d="M 315 270 L 355 270" />
-  <text class="label" x="335" y="245">로그인</text>
+  <text class="label" x="335" y="125">로그인</text>
   <path class="request" d="M 645 270 L 685 270" />
-  <text class="label" x="665" y="245">인가 요청</text>
+  <text class="label" x="665" y="125">인가 요청</text>
   <path class="request dashed" d="M 695 420 L 365 420" />
   <text class="label" x="505" y="445" fill="#7c3aed">브라우저 리다이렉트 · Redirect URI + Authorization Code</text>
 
@@ -76,21 +76,21 @@
   <text class="small" x="225" y="682">Authorization Code</text>
   <text class="small" x="225" y="705">code + code_verifier</text>
   <path class="code" d="M 360 670 L 410 670" />
-  <text class="label" x="385" y="645" fill="#7c3aed">code 교환</text>
+  <text class="label" x="385" y="600" fill="#7c3aed">code 교환</text>
 
   <rect x="420" y="620" width="300" height="100" rx="18" fill="#fce7f3" />
   <text class="heading" x="570" y="655" fill="#be185d">Authorization Server</text>
   <text class="small" x="570" y="682">code와 code_verifier 검증</text>
   <text class="small" x="570" y="705">Access Token 발급</text>
   <path class="token" d="M 730 670 L 780 670" />
-  <text class="label" x="755" y="645" fill="#15803d">토큰 반환</text>
+  <text class="label" x="755" y="600" fill="#15803d">토큰 반환</text>
 
   <rect x="790" y="620" width="250" height="100" rx="18" fill="#dbeafe" />
   <text class="heading" x="915" y="655" fill="#1d4ed8">Client</text>
   <text class="small" x="915" y="682">Access Token 수신</text>
   <text class="small" x="915" y="705">보호된 API 요청 준비</text>
   <path class="token" d="M 1050 670 L 1090 670" />
-  <text class="label" x="1070" y="645" fill="#15803d">API 요청</text>
+  <text class="label" x="1070" y="600" fill="#15803d">API 요청</text>
 
   <rect x="1100" y="620" width="230" height="100" rx="18" fill="#dcfce7" />
   <text class="heading" x="1215" y="655" fill="#15803d">Resource Server</text>

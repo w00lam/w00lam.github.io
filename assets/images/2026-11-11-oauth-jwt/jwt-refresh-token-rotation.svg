@@ -17,13 +17,13 @@
       .danger { stroke: #dc2626; stroke-width: 4; fill: none; marker-end: url(#arrow-red); }
       .dashed { stroke-dasharray: 10 8; }
     </style>
-    <marker id="arrow-blue" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse">
+    <marker id="arrow-blue" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
       <path d="M 0 0 L 10 5 L 0 10 z" fill="#2563eb" />
     </marker>
-    <marker id="arrow-green" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse">
+    <marker id="arrow-green" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
       <path d="M 0 0 L 10 5 L 0 10 z" fill="#16a34a" />
     </marker>
-    <marker id="arrow-red" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse">
+    <marker id="arrow-red" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
       <path d="M 0 0 L 10 5 L 0 10 z" fill="#dc2626" />
     </marker>
   </defs>
@@ -51,11 +51,11 @@
   <text class="mono" x="1070" y="365">Refresh Token: R2</text>
 
   <path class="request" d="M 385 320 L 555 320" />
-  <text class="label" x="470" y="295">R1 제출</text>
+  <text class="label" x="470" y="225">R1 제출</text>
   <path class="success" d="M 845 320 L 1010 320" />
-  <text class="label" x="928" y="295" fill="#15803d">A2 + R2 발급</text>
+  <text class="label" x="928" y="225" fill="#15803d">A2 + R2 발급</text>
 
-  <path class="success dashed" d="M 1155 410 L 1155 470 L 245 470 L 245 410" />
+  <path class="success dashed" d="M 1155 430 L 245 430" />
   <text class="label" x="700" y="455" fill="#15803d">기존 R1은 Rotation 시점에 무효화</text>
 
   <rect x="70" y="600" width="1260" height="300" rx="26" fill="#fff7ed" stroke="#fdba74" stroke-width="2" />
@@ -74,9 +74,9 @@
   <text class="body" x="1135" y="790" text-anchor="middle">토큰군·세션 폐기 정책</text>
 
   <path class="danger" d="M 405 765 L 555 765" />
-  <text class="label" x="480" y="740" fill="#b91c1c">재사용 제출</text>
+  <text class="label" x="480" y="685" fill="#b91c1c">재사용 제출</text>
   <path class="danger" d="M 845 765 L 990 765" />
-  <text class="label" x="918" y="740" fill="#b91c1c">거부</text>
+  <text class="label" x="918" y="685" fill="#b91c1c">거부</text>
 
   <text class="small" x="700" y="965">새 토큰을 발급했다는 사실만으로 이전 토큰이 자동 무효화되지는 않는다</text>
   <text class="small" x="700" y="990">Rotation을 적용하려면 Refresh Token의 상태와 재사용 여부를 서버에서 관리해야 한다</text>

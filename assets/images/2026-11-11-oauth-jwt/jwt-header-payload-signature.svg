@@ -63,13 +63,6 @@
   <text class="small" x="1130" y="650">서명 또는 MAC을 검증</text>
   <text class="small" x="1130" y="672">기밀성을 제공하지 않음</text>
 
-  <path d="M 700 300 L 700 340" stroke="#7c3aed" stroke-width="4" marker-end="url(#arrow)" />
-  <defs>
-    <marker id="arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
-      <path d="M 0 0 L 10 5 L 0 10 z" fill="#7c3aed" />
-    </marker>
-  </defs>
-
   <rect x="140" y="755" width="1120" height="70" rx="18" fill="#ede9fe" />
   <text class="label" x="700" y="785" fill="#7c3aed">검증 순서</text>
   <text class="small" x="700" y="810">서명 알고리즘·키 확인 → Signature 검증 → iss·aud·exp 등 Claim 검증 → API 권한 검사</text>
