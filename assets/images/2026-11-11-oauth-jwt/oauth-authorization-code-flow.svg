@@ -13,10 +13,38 @@
       .small { font: 500 15px Arial, "Malgun Gothic", sans-serif; fill: #64748b; text-anchor: middle; }
       .mono { font: 600 16px Consolas, "Malgun Gothic", monospace; fill: #0f172a; text-anchor: middle; }
       .box { fill: #ffffff; stroke-width: 2; rx: 20; }
+      .panel { fill: #ffffff; stroke: #cbd5e1; stroke-width: 2; }
       .request { stroke: #2563eb; stroke-width: 4; fill: none; marker-end: url(#arrow-blue); }
       .code { stroke: #7c3aed; stroke-width: 4; fill: none; marker-end: url(#arrow-purple); }
       .token { stroke: #16a34a; stroke-width: 4; fill: none; marker-end: url(#arrow-green); }
       .dashed { stroke-dasharray: 10 8; }
+      .motion-line { stroke-dasharray: 18 10; animation: flow 2.4s linear infinite; }
+      .stage-marker { opacity: .28; animation: stage 12s linear infinite; }
+      .packet { opacity: 0; }
+      .packet-1 { animation: packet-forward 12s linear infinite; animation-delay: 0s; }
+      .packet-2 { animation: packet-back 12s linear infinite; animation-delay: 1.8s; }
+      .packet-3 { animation: packet-short 12s linear infinite; animation-delay: 3.6s; }
+      .packet-4 { animation: packet-short 12s linear infinite; animation-delay: 5.2s; }
+      .packet-5 { animation: packet-short 12s linear infinite; animation-delay: 6.8s; }
+      .packet-6 { animation: packet-short-back 12s linear infinite; animation-delay: 8.4s; }
+      @keyframes flow { to { stroke-dashoffset: -56; } }
+      @keyframes stage { 0%, 8% { opacity: .28; } 10%, 18% { opacity: 1; } 22%, 100% { opacity: .28; } }
+      @keyframes packet-forward { 0%, 4% { opacity: 0; transform: translateX(0); } 8% { opacity: 1; } 18% { opacity: 1; transform: translateX(500px); } 22%, 100% { opacity: 0; transform: translateX(500px); } }
+      @keyframes packet-back { 0%, 4% { opacity: 0; transform: translateX(0); } 8% { opacity: 1; } 18% { opacity: 1; transform: translateX(-500px); } 22%, 100% { opacity: 0; transform: translateX(-500px); } }
+      @keyframes packet-short { 0%, 4% { opacity: 0; transform: translateX(0); } 8% { opacity: 1; } 18% { opacity: 1; transform: translateX(100px); } 22%, 100% { opacity: 0; transform: translateX(100px); } }
+      @keyframes packet-short-back { 0%, 4% { opacity: 0; transform: translateX(0); } 8% { opacity: 1; } 18% { opacity: 1; transform: translateX(-100px); } 22%, 100% { opacity: 0; transform: translateX(-100px); } }
+      @media (prefers-reduced-motion: reduce) {
+        .motion-line, .stage-marker, .packet { animation: none !important; }
+        .packet { display: none; }
+      }
+      @media (prefers-color-scheme: dark) {
+        .bg { fill: #0f172a; }
+        .panel, .box { fill: #111827; stroke: #334155; }
+        .title { fill: #f8fafc; }
+        .subtitle, .small { fill: #cbd5e1; }
+        .label, .body, .heading { fill: #e2e8f0; }
+        .mono { fill: #f8fafc; }
+      }
     </style>
     <marker id="arrow-blue" viewBox="0 0 10 10" refX="8" refY="5" markerUnits="userSpaceOnUse" markerWidth="10" markerHeight="10" orient="auto">
       <path d="M 0 0 L 10 5 L 0 10 z" fill="#2563eb" />
@@ -61,18 +89,22 @@
   <text class="body" x="1187" y="345">사용자 정보 반환</text>
   <text class="small" x="1187" y="368">허용된 범위의 리소스만 제공</text>
 
-  <rect x="80" y="420" width="1240" height="220" rx="24" fill="#ffffff" stroke="#cbd5e1" stroke-width="2" />
+  <rect class="panel" x="80" y="420" width="1240" height="220" rx="24" />
   <text class="heading" x="700" y="458" fill="#334155">1. 브라우저 리다이렉트</text>
   <rect class="box" x="180" y="490" width="260" height="60" stroke="#c4b5fd" />
   <text class="node" x="310" y="528" fill="#7c3aed">Client</text>
   <rect class="box" x="960" y="490" width="260" height="60" stroke="#f9a8d4" />
   <text class="node" x="1090" y="528" fill="#be185d">Authorization Server</text>
-  <line class="request" x1="440" y1="515" x2="960" y2="515" />
+  <line class="request motion-line" x1="440" y1="515" x2="960" y2="515" />
   <text class="label" x="700" y="495">인가 요청 + state + code_challenge</text>
-  <line class="code" x1="960" y1="545" x2="440" y2="545" />
+  <line class="code motion-line" x1="960" y1="545" x2="440" y2="545" />
   <text class="label" x="700" y="575" fill="#7c3aed">Redirect URI + Authorization Code</text>
+  <circle class="stage-marker" cx="700" cy="515" r="10" fill="#2563eb" />
+  <circle class="stage-marker" cx="700" cy="545" r="10" fill="#7c3aed" style="animation-delay: 1.8s" />
+  <circle class="packet packet-1" cx="440" cy="515" r="8" fill="#2563eb" />
+  <circle class="packet packet-2" cx="960" cy="545" r="8" fill="#7c3aed" />
 
-  <rect x="80" y="680" width="1240" height="220" rx="24" fill="#ffffff" stroke="#cbd5e1" stroke-width="2" />
+  <rect class="panel" x="80" y="680" width="1240" height="220" rx="24" />
   <text class="heading" x="700" y="718" fill="#334155">2. 서버 간 토큰 교환과 API 요청</text>
   <rect class="box" x="70" y="760" width="230" height="70" stroke="#c4b5fd" />
   <text class="node" x="185" y="790" fill="#7c3aed">Client</text>
@@ -80,7 +112,7 @@
 
   <rect class="box" x="400" y="760" width="260" height="70" stroke="#f9a8d4" />
   <text class="node" x="530" y="790" fill="#be185d">Authorization Server</text>
-  <text class="small" x="530" y="815">Access Token 발급</text>
+  <text class="small" x="530" y="815">PKCE 비교 후 토큰 발급</text>
 
   <rect class="box" x="760" y="760" width="210" height="70" stroke="#c4b5fd" />
   <text class="node" x="865" y="790" fill="#7c3aed">Client</text>
@@ -90,15 +122,23 @@
   <text class="node" x="1200" y="790" fill="#15803d">Resource Server</text>
   <text class="small" x="1200" y="815">검증 후 사용자 정보 반환</text>
 
-  <line class="code" x1="300" y1="795" x2="400" y2="795" />
+  <line class="code motion-line" x1="300" y1="795" x2="400" y2="795" />
   <text class="label" x="350" y="775" fill="#7c3aed">code 교환</text>
-  <line class="token" x1="660" y1="795" x2="760" y2="795" />
+  <line class="token motion-line" x1="660" y1="795" x2="760" y2="795" />
   <text class="label" x="710" y="775" fill="#15803d">Access Token</text>
-  <line class="token" x1="970" y1="795" x2="1070" y2="795" />
+  <line class="token motion-line" x1="970" y1="795" x2="1070" y2="795" />
   <text class="label" x="1020" y="775" fill="#15803d">Bearer 요청</text>
-  <line class="token" x1="1070" y1="855" x2="970" y2="855" />
+  <line class="token motion-line" x1="1070" y1="855" x2="970" y2="855" />
   <text class="label" x="1020" y="880" fill="#15803d">사용자 정보 응답</text>
+  <circle class="stage-marker" cx="350" cy="795" r="10" fill="#7c3aed" style="animation-delay: 3.6s" />
+  <circle class="stage-marker" cx="710" cy="795" r="10" fill="#16a34a" style="animation-delay: 5.2s" />
+  <circle class="stage-marker" cx="1020" cy="795" r="10" fill="#16a34a" style="animation-delay: 6.8s" />
+  <circle class="stage-marker" cx="1020" cy="855" r="10" fill="#16a34a" style="animation-delay: 8.4s" />
+  <circle class="packet packet-3" cx="300" cy="795" r="8" fill="#7c3aed" />
+  <circle class="packet packet-4" cx="660" cy="795" r="8" fill="#16a34a" />
+  <circle class="packet packet-5" cx="970" cy="795" r="8" fill="#16a34a" />
+  <circle class="packet packet-6" cx="1070" cy="855" r="8" fill="#16a34a" />
 
   <text class="small" x="700" y="955">Authorization Code는 API 호출 토큰이 아니며, Access Token으로 교환되는 중간 단계다</text>
-  <text class="small" x="700" y="978">State는 요청과 응답을 연결하고 PKCE는 code_verifier와 code_challenge를 검증한다</text>
+  <text class="small" x="700" y="978">State는 요청과 응답을 연결하고, 서버는 code_verifier를 변환해 code_challenge와 비교한다</text>
 </svg>

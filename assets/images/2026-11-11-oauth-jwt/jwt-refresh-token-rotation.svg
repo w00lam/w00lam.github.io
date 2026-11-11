@@ -17,6 +17,31 @@
       .success { stroke: #16a34a; stroke-width: 4; fill: none; marker-end: url(#arrow-green); }
       .danger { stroke: #dc2626; stroke-width: 4; fill: none; marker-end: url(#arrow-red); }
       .dashed { stroke-dasharray: 10 8; }
+      .panel { fill: #ffffff; stroke: #cbd5e1; stroke-width: 2; }
+      .motion-line { stroke-dasharray: 18 10; animation: flow 2.4s linear infinite; }
+      .stage-marker { opacity: .28; animation: stage 12s linear infinite; }
+      .packet { opacity: 0; }
+      .packet-1 { animation: packet-forward 12s linear infinite; animation-delay: 0s; }
+      .packet-2 { animation: packet-forward 12s linear infinite; animation-delay: 2s; }
+      .packet-3 { animation: packet-back 12s linear infinite; animation-delay: 4s; }
+      .packet-4 { animation: packet-forward 12s linear infinite; animation-delay: 6s; }
+      .packet-5 { animation: packet-forward 12s linear infinite; animation-delay: 8s; }
+      @keyframes flow { to { stroke-dashoffset: -56; } }
+      @keyframes stage { 0%, 8% { opacity: .28; } 10%, 18% { opacity: 1; } 22%, 100% { opacity: .28; } }
+      @keyframes packet-forward { 0%, 4% { opacity: 0; transform: translateX(0); } 8% { opacity: 1; } 18% { opacity: 1; transform: translateX(180px); } 22%, 100% { opacity: 0; transform: translateX(180px); } }
+      @keyframes packet-back { 0%, 4% { opacity: 0; transform: translateX(0); } 8% { opacity: 1; } 18% { opacity: 1; transform: translateX(-920px); } 22%, 100% { opacity: 0; transform: translateX(-920px); } }
+      @media (prefers-reduced-motion: reduce) {
+        .motion-line, .stage-marker, .packet { animation: none !important; }
+        .packet { display: none; }
+      }
+      @media (prefers-color-scheme: dark) {
+        .bg { fill: #0f172a; }
+        .panel, .box { fill: #111827; stroke: #334155; }
+        .title { fill: #f8fafc; }
+        .subtitle, .small { fill: #cbd5e1; }
+        .label, .body, .heading { fill: #e2e8f0; }
+        .mono { fill: #f8fafc; }
+      }
     </style>
     <marker id="arrow-blue" viewBox="0 0 10 10" refX="8" refY="5" markerUnits="userSpaceOnUse" markerWidth="10" markerHeight="10" orient="auto">
       <path d="M 0 0 L 10 5 L 0 10 z" fill="#2563eb" />
@@ -33,7 +58,7 @@
   <text class="title" x="700" y="58">Refresh Token Rotation은 이전 토큰을 폐기한다</text>
   <text class="subtitle" x="700" y="91">R1을 사용해 R2를 발급한 뒤, 다시 제출된 R1은 재사용으로 거부한다</text>
 
-  <rect x="70" y="140" width="1260" height="420" rx="26" fill="#ffffff" stroke="#cbd5e1" stroke-width="2" />
+  <rect class="panel" x="70" y="140" width="1260" height="420" rx="26" />
   <text class="heading" x="700" y="190" fill="#334155">1. 정상적인 재발급 흐름</text>
 
   <rect class="box" x="100" y="270" width="280" height="145" stroke="#93c5fd" />
@@ -51,15 +76,21 @@
   <text class="mono" x="1160" y="355">Access Token: A2</text>
   <text class="mono" x="1160" y="390">Refresh Token: R2</text>
 
-  <line class="request" x1="380" y1="342" x2="560" y2="342" />
+  <line class="request motion-line" x1="380" y1="342" x2="560" y2="342" />
   <text class="label" x="470" y="325">R1 제출</text>
-  <line class="success" x1="840" y1="342" x2="1020" y2="342" />
+  <line class="success motion-line" x1="840" y1="342" x2="1020" y2="342" />
   <text class="label" x="930" y="325" fill="#15803d">A2 + R2 발급</text>
+  <circle class="stage-marker" cx="470" cy="342" r="10" fill="#2563eb" />
+  <circle class="stage-marker" cx="930" cy="342" r="10" fill="#16a34a" style="animation-delay: 2s" />
+  <circle class="packet packet-1" cx="380" cy="342" r="8" fill="#2563eb" />
+  <circle class="packet packet-2" cx="840" cy="342" r="8" fill="#16a34a" />
 
-  <line class="success dashed" x1="1160" y1="465" x2="240" y2="465" />
+  <line class="success dashed motion-line" x1="1160" y1="465" x2="240" y2="465" />
   <text class="label" x="700" y="500" fill="#15803d">Rotation 시점에 기존 R1 무효화</text>
+  <circle class="stage-marker" cx="700" cy="465" r="10" fill="#16a34a" style="animation-delay: 4s" />
+  <circle class="packet packet-3" cx="1160" cy="465" r="8" fill="#16a34a" />
 
-  <rect x="70" y="620" width="1260" height="260" rx="26" fill="#fff7ed" stroke="#fdba74" stroke-width="2" />
+  <rect class="panel" x="70" y="620" width="1260" height="260" rx="26" fill="#fff7ed" stroke="#fdba74" />
   <text class="heading" x="700" y="670" fill="#c2410c">2. R1 재사용 시</text>
 
   <rect class="box" x="100" y="735" width="280" height="100" stroke="#fca5a5" />
@@ -74,10 +105,14 @@
   <text class="node" x="1160" y="775" fill="#b91c1c">요청 거부</text>
   <text class="body" x="1160" y="810">토큰군·세션 폐기</text>
 
-  <line class="danger" x1="380" y1="785" x2="560" y2="785" />
+  <line class="danger motion-line" x1="380" y1="785" x2="560" y2="785" />
   <text class="label" x="470" y="768" fill="#b91c1c">R1 재사용</text>
-  <line class="danger" x1="840" y1="785" x2="1020" y2="785" />
+  <line class="danger motion-line" x1="840" y1="785" x2="1020" y2="785" />
   <text class="label" x="930" y="768" fill="#b91c1c">거부</text>
+  <circle class="stage-marker" cx="470" cy="785" r="10" fill="#dc2626" style="animation-delay: 6s" />
+  <circle class="stage-marker" cx="930" cy="785" r="10" fill="#dc2626" style="animation-delay: 8s" />
+  <circle class="packet packet-4" cx="380" cy="785" r="8" fill="#dc2626" />
+  <circle class="packet packet-5" cx="840" cy="785" r="8" fill="#dc2626" />
 
   <text class="small" x="700" y="930">새 토큰을 발급했다는 사실만으로 이전 토큰이 자동 무효화되지는 않는다</text>
   <text class="small" x="700" y="955">Rotation을 적용하려면 Refresh Token의 상태와 재사용 여부를 서버에서 관리해야 한다</text>
