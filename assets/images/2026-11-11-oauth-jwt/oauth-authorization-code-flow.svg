@@ -17,13 +17,13 @@
       .token { stroke: #16a34a; stroke-width: 4; fill: none; marker-end: url(#arrow-green); }
       .dashed { stroke-dasharray: 10 8; }
     </style>
-    <marker id="arrow-blue" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse">
+    <marker id="arrow-blue" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
       <path d="M 0 0 L 10 5 L 0 10 z" fill="#2563eb" />
     </marker>
-    <marker id="arrow-purple" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse">
+    <marker id="arrow-purple" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
       <path d="M 0 0 L 10 5 L 0 10 z" fill="#7c3aed" />
     </marker>
-    <marker id="arrow-green" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse">
+    <marker id="arrow-green" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
       <path d="M 0 0 L 10 5 L 0 10 z" fill="#16a34a" />
     </marker>
   </defs>
@@ -65,7 +65,7 @@
   <text class="label" x="335" y="245">로그인</text>
   <path class="request" d="M 645 270 L 685 270" />
   <text class="label" x="665" y="245">인가 요청</text>
-  <path class="request dashed" d="M 695 420 L 645 420 L 645 455 L 365 455 L 365 420" />
+  <path class="request dashed" d="M 695 420 L 365 420" />
   <text class="label" x="505" y="445" fill="#7c3aed">브라우저 리다이렉트 · Redirect URI + Authorization Code</text>
 
   <rect x="80" y="515" width="1240" height="300" rx="24" fill="#ffffff" stroke="#cbd5e1" stroke-width="2" />
@@ -97,8 +97,8 @@
   <text class="small" x="1215" y="682">Access Token 검증</text>
   <text class="small" x="1215" y="705">사용자 정보 반환</text>
 
-  <path class="token dashed" d="M 1215 735 L 1215 775 L 915 775 L 915 735" />
-  <text class="label" x="1065" y="800" fill="#15803d">사용자 정보 응답</text>
+  <path class="token dashed" d="M 1215 735 L 915 735" />
+  <text class="label" x="1065" y="760" fill="#15803d">사용자 정보 응답</text>
 
   <text class="small" x="700" y="875">Authorization Code는 API 호출 토큰이 아니라 Access Token으로 교환되는 중간 단계다</text>
   <text class="small" x="700" y="900">State는 요청과 응답을 연결하고 PKCE는 code_verifier와 code_challenge를 검증한다</text>
