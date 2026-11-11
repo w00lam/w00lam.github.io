@@ -66,10 +66,10 @@
   <path class="request" d="M 645 270 L 685 270" />
   <text class="label" x="665" y="245">인가 요청</text>
   <path class="request dashed" d="M 695 420 L 645 420 L 645 455 L 365 455 L 365 420" />
-  <text class="label" x="505" y="445" fill="#7c3aed">Redirect URI + Authorization Code</text>
+  <text class="label" x="505" y="445" fill="#7c3aed">브라우저 리다이렉트 · Redirect URI + Authorization Code</text>
 
   <rect x="80" y="515" width="1240" height="300" rx="24" fill="#ffffff" stroke="#cbd5e1" stroke-width="2" />
-  <text class="heading" x="700" y="565" fill="#334155">토큰 교환과 Resource 요청</text>
+  <text class="heading" x="700" y="565" fill="#334155">Authorization Code 교환과 Resource 요청</text>
 
   <rect x="100" y="620" width="250" height="100" rx="18" fill="#ede9fe" />
   <text class="heading" x="225" y="655" fill="#7c3aed">Client</text>
@@ -100,6 +100,6 @@
   <path class="token dashed" d="M 1215 735 L 1215 775 L 915 775 L 915 735" />
   <text class="label" x="1065" y="800" fill="#15803d">사용자 정보 응답</text>
 
-  <text class="small" x="700" y="875">Authorization Code는 API 호출 토큰이 아니며, Access Token으로 교환되는 중간 단계다</text>
-  <text class="small" x="700" y="900">State는 요청과 응답을 연결하고 PKCE는 code_verifier와 code_challenge의 관계를 검증한다</text>
+  <text class="small" x="700" y="875">Authorization Code는 API 호출 토큰이 아니라 Access Token으로 교환되는 중간 단계다</text>
+  <text class="small" x="700" y="900">State는 요청과 응답을 연결하고 PKCE는 code_verifier와 code_challenge를 검증한다</text>
 </svg>

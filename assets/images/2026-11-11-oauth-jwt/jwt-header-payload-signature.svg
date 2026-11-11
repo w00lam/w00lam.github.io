@@ -29,6 +29,9 @@
   <text class="mono" x="965" y="245">SflKxwRJSMeKKF2QT4fwp</text>
   <text class="heading" x="495" y="245" fill="#7c3aed">.</text>
   <text class="heading" x="905" y="245" fill="#7c3aed">.</text>
+  <text class="label" x="290" y="305" fill="#1d4ed8">Header</text>
+  <text class="label" x="700" y="305" fill="#a16207">Payload</text>
+  <text class="label" x="1110" y="305" fill="#15803d">Signature</text>
 
   <rect class="card" x="80" y="355" width="380" height="330" stroke="#93c5fd" />
   <text class="heading" x="270" y="410" fill="#1d4ed8">Header</text>
