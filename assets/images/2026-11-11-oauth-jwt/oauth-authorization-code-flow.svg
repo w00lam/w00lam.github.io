@@ -71,24 +71,34 @@
   <rect x="80" y="515" width="1240" height="300" rx="24" fill="#ffffff" stroke="#cbd5e1" stroke-width="2" />
   <text class="heading" x="700" y="565" fill="#334155">토큰 교환과 Resource 요청</text>
 
-  <rect x="120" y="620" width="270" height="100" rx="18" fill="#ede9fe" />
-  <text class="heading" x="255" y="660" fill="#7c3aed">Authorization Code</text>
-  <text class="small" x="255" y="692">code + code_verifier</text>
-  <path class="code" d="M 400 670 L 650 670" />
-  <text class="label" x="525" y="645" fill="#7c3aed">토큰 교환 요청</text>
+  <rect x="100" y="620" width="250" height="100" rx="18" fill="#ede9fe" />
+  <text class="heading" x="225" y="655" fill="#7c3aed">Client</text>
+  <text class="small" x="225" y="682">Authorization Code</text>
+  <text class="small" x="225" y="705">code + code_verifier</text>
+  <path class="code" d="M 360 670 L 410 670" />
+  <text class="label" x="385" y="645" fill="#7c3aed">code 교환</text>
 
-  <rect x="660" y="620" width="280" height="100" rx="18" fill="#fce7f3" />
-  <text class="heading" x="800" y="660" fill="#be185d">Access Token 발급</text>
-  <text class="small" x="800" y="692">Authorization Server의 검증</text>
-  <path class="token" d="M 950 670 L 1170 670" />
-  <text class="label" x="1060" y="645" fill="#15803d">Resource 요청</text>
+  <rect x="420" y="620" width="300" height="100" rx="18" fill="#fce7f3" />
+  <text class="heading" x="570" y="655" fill="#be185d">Authorization Server</text>
+  <text class="small" x="570" y="682">code와 code_verifier 검증</text>
+  <text class="small" x="570" y="705">Access Token 발급</text>
+  <path class="token" d="M 730 670 L 780 670" />
+  <text class="label" x="755" y="645" fill="#15803d">토큰 반환</text>
 
-  <rect x="1180" y="620" width="100" height="100" rx="18" fill="#dcfce7" />
-  <text class="heading" x="1230" y="658" fill="#15803d">User</text>
-  <text class="small" x="1230" y="690">정보</text>
+  <rect x="790" y="620" width="250" height="100" rx="18" fill="#dbeafe" />
+  <text class="heading" x="915" y="655" fill="#1d4ed8">Client</text>
+  <text class="small" x="915" y="682">Access Token 수신</text>
+  <text class="small" x="915" y="705">보호된 API 요청 준비</text>
+  <path class="token" d="M 1050 670 L 1090 670" />
+  <text class="label" x="1070" y="645" fill="#15803d">API 요청</text>
 
-  <path class="token dashed" d="M 800 735 L 800 775 L 400 775 L 400 735" />
-  <text class="label" x="600" y="800" fill="#15803d">Access Token이 없으면 API 호출을 할 수 없음</text>
+  <rect x="1100" y="620" width="230" height="100" rx="18" fill="#dcfce7" />
+  <text class="heading" x="1215" y="655" fill="#15803d">Resource Server</text>
+  <text class="small" x="1215" y="682">Access Token 검증</text>
+  <text class="small" x="1215" y="705">사용자 정보 반환</text>
+
+  <path class="token dashed" d="M 1215 735 L 1215 775 L 915 775 L 915 735" />
+  <text class="label" x="1065" y="800" fill="#15803d">사용자 정보 응답</text>
 
   <text class="small" x="700" y="875">Authorization Code는 API 호출 토큰이 아니며, Access Token으로 교환되는 중간 단계다</text>
   <text class="small" x="700" y="900">State는 요청과 응답을 연결하고 PKCE는 code_verifier와 code_challenge의 관계를 검증한다</text>

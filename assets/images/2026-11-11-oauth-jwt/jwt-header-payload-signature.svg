@@ -47,17 +47,17 @@
   <text class="mono" x="580" y="515">{ "sub": "12345",</text>
   <text class="mono" x="580" y="550">  "iss": "auth", "exp": ... }</text>
   <text class="small" x="700" y="625">사용자 식별자와 만료 시각을 포함</text>
-  <text class="small" x="700" y="650">Base64URL로 디코딩할 수 있음</text>
+  <text class="small" x="700" y="650">Base64URL로 표현되어 디코딩 가능</text>
   <text class="small" x="700" y="672">민감정보를 넣지 않음</text>
 
   <rect class="card" x="940" y="355" width="380" height="330" stroke="#86efac" />
   <text class="heading" x="1130" y="410" fill="#15803d">Signature</text>
   <text class="label" x="1130" y="445">서명 검증값</text>
   <rect x="985" y="475" width="290" height="100" rx="16" fill="#dcfce7" />
-  <text class="mono" x="1010" y="515">HMACSHA256(</text>
+  <text class="mono" x="1010" y="515">Sign(</text>
   <text class="mono" x="1010" y="550">  Header + Payload, key)</text>
   <text class="small" x="1130" y="625">내용이 바뀌지 않았는지 검증</text>
-  <text class="small" x="1130" y="650">신뢰하는 발급자의 서명인지 확인</text>
+  <text class="small" x="1130" y="650">서명 또는 MAC을 검증</text>
   <text class="small" x="1130" y="672">기밀성을 제공하지 않음</text>
 
   <path d="M 700 300 L 700 340" stroke="#7c3aed" stroke-width="4" marker-end="url(#arrow)" />

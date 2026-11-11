@@ -30,7 +30,7 @@
 
   <rect class="bg" width="1400" height="1040" rx="28" />
   <text class="title" x="700" y="58">Refresh Token Rotation은 이전 토큰을 폐기한다</text>
-  <text class="subtitle" x="700" y="91">R1으로 재발급한 뒤 R2를 사용하고, 다시 제출된 R1은 재사용으로 거부한다</text>
+  <text class="subtitle" x="700" y="91">R1을 사용해 R2를 발급한 뒤, 다시 제출된 R1은 재사용으로 거부한다</text>
 
   <rect x="70" y="135" width="1260" height="400" rx="26" fill="#ffffff" stroke="#cbd5e1" stroke-width="2" />
   <text class="heading" x="700" y="182" fill="#334155">정상적인 재발급 흐름</text>
@@ -71,7 +71,7 @@
 
   <rect class="card" x="1000" y="710" width="270" height="110" stroke="#fca5a5" />
   <text class="heading" x="1135" y="755" fill="#b91c1c">요청 거부</text>
-  <text class="body" x="1135" y="790" text-anchor="middle">관련 세션 폐기 정책</text>
+  <text class="body" x="1135" y="790" text-anchor="middle">토큰군·세션 폐기 정책</text>
 
   <path class="danger" d="M 405 765 L 555 765" />
   <text class="label" x="480" y="740" fill="#b91c1c">재사용 제출</text>
