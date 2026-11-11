@@ -18,13 +18,13 @@
       .danger { stroke: #dc2626; stroke-width: 4; fill: none; marker-end: url(#arrow-red); }
       .dashed { stroke-dasharray: 10 8; }
     </style>
-    <marker id="arrow-blue" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto">
+    <marker id="arrow-blue" viewBox="0 0 10 10" refX="8" refY="5" markerUnits="userSpaceOnUse" markerWidth="10" markerHeight="10" orient="auto">
       <path d="M 0 0 L 10 5 L 0 10 z" fill="#2563eb" />
     </marker>
-    <marker id="arrow-green" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto">
+    <marker id="arrow-green" viewBox="0 0 10 10" refX="8" refY="5" markerUnits="userSpaceOnUse" markerWidth="10" markerHeight="10" orient="auto">
       <path d="M 0 0 L 10 5 L 0 10 z" fill="#16a34a" />
     </marker>
-    <marker id="arrow-red" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto">
+    <marker id="arrow-red" viewBox="0 0 10 10" refX="8" refY="5" markerUnits="userSpaceOnUse" markerWidth="10" markerHeight="10" orient="auto">
       <path d="M 0 0 L 10 5 L 0 10 z" fill="#dc2626" />
     </marker>
   </defs>
