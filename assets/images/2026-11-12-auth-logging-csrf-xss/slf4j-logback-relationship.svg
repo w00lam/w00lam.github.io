@@ -8,7 +8,7 @@
       .node { font: 700 24px Arial, "Malgun Gothic", sans-serif; text-anchor: middle; } .body { font: 500 16px Arial, "Malgun Gothic", sans-serif; fill: #334155; text-anchor: middle; }
       .small { font: 500 15px Arial, "Malgun Gothic", sans-serif; fill: #64748b; text-anchor: middle; } .box { fill: #fff; stroke-width: 2; rx: 20; }
       .line { stroke: #2563eb; stroke-width: 5; stroke-dasharray: 16 10; animation: dash 2s linear infinite; } .packet { fill: #2563eb; animation: move 3.2s ease-in-out infinite; }
-      @keyframes dash { to { stroke-dashoffset: -52; } } @keyframes move { 0%, 12% { transform: translateY(0); opacity: 0; } 20% { opacity: 1; } 44% { transform: translateY(115px); opacity: 1; } 55%, 100% { transform: translateY(115px); opacity: 0; } }
+      @keyframes dash { to { stroke-dashoffset: -52; } } @keyframes move { 0%, 12% { transform: translateX(0); opacity: 0; } 20% { opacity: 1; } 44% { transform: translateX(420px); opacity: 1; } 55%, 100% { transform: translateX(420px); opacity: 0; } }
       @media (prefers-reduced-motion: reduce) { .line, .packet { animation: none !important; } .packet { display: none; } }
       @media (prefers-color-scheme: dark) { .bg { fill: #0f172a; } .box { fill: #111827; stroke: #334155; } .title { fill: #f8fafc; } .subtitle, .small { fill: #cbd5e1; } .body { fill: #e2e8f0; } }
     </style>

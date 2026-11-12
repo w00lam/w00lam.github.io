@@ -143,7 +143,7 @@ SLF4J와 Logback을 모두 로깅 도구라고 뭉뚱그려 부르기 쉬웠다.
 
 애플리케이션 코드가 SLF4J의 `Logger`를 사용하면 코드가 특정 구현체의 API에 직접 묶이지 않는다. 배포 시 Logback과 다른 로깅 구현체를 선택하더라도 애플리케이션 코드의 변경을 줄일 수 있다. 다만 실제로 어떤 구현체가 연결되는지는 의존성과 설정에 달려 있으므로 SLF4J를 사용한다고 항상 같은 출력 방식이 보장되는 것은 아니다.
 
-![SLF4J와 Logback의 관계](/assets/images/2026-11-12-auth-logging-csrf-xss/slf4j-logback-relationship.svg?v=9bf1d8f)
+![SLF4J와 Logback의 관계](/assets/images/2026-11-12-auth-logging-csrf-xss/slf4j-logback-relationship.svg?v=slf4j-flow-1)
 
 *그림 2. 애플리케이션은 SLF4J가 제공하는 로깅 API를 호출하고 Logback 같은 구현체가 실제 출력과 관리를 담당한다. 구현체를 바꿀 수 있다는 점은 추상화의 장점이며 실제 연결은 의존성과 설정을 따른다.*
 
