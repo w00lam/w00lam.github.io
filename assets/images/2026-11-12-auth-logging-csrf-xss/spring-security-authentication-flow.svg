@@ -14,17 +14,15 @@
       .box { fill: #fff; stroke-width: 2; rx: 18; }
       .panel { fill: #fff; stroke: #cbd5e1; stroke-width: 2; rx: 22; }
       .flow { fill: none; stroke-width: 4; stroke-dasharray: 14 9; animation: dash 2.2s linear infinite; }
-      .packet { opacity: 0; animation: packet 10s linear infinite; }
-      .packet.reverse { animation-name: packet-reverse; animation-delay: 2.3s; }
-      .packet.context { animation-name: packet-context; animation-delay: 5.8s; }
+      .packet { opacity: 0; animation: packet-opacity 10s linear infinite; }
+      .packet.reverse { animation-delay: 2.3s; }
+      .packet.context { animation-delay: 5.8s; }
       .step { opacity: .3; animation: highlight 10s linear infinite; }
       .s2 { animation-delay: 1.1s; } .s3 { animation-delay: 2.2s; } .s4 { animation-delay: 3.3s; }
       .s5 { animation-delay: 5.4s; } .s6 { animation-delay: 6.5s; } .s7 { animation-delay: 7.6s; }
       @keyframes dash { to { stroke-dashoffset: -46; } }
       @keyframes highlight { 0%, 5% { opacity: .3; } 8%, 16% { opacity: 1; } 20%, 100% { opacity: .3; } }
-      @keyframes packet { 0%, 5% { opacity: 0; transform: translateX(0); } 9% { opacity: 1; } 19% { opacity: 1; transform: translateX(220px); } 23%, 100% { opacity: 0; transform: translateX(220px); } }
-      @keyframes packet-reverse { 0%, 8% { opacity: 0; transform: translateX(0); } 12% { opacity: 1; } 22% { opacity: 1; transform: translateX(-220px); } 26%, 100% { opacity: 0; transform: translateX(-220px); } }
-      @keyframes packet-context { 0%, 12% { opacity: 0; transform: translateX(0); } 16% { opacity: 1; } 25% { opacity: 1; transform: translateX(220px); } 29%, 100% { opacity: 0; transform: translateX(220px); } }
+      @keyframes packet-opacity { 0%, 5% { opacity: 0; } 9%, 19% { opacity: 1; } 23%, 100% { opacity: 0; } }
       @media (prefers-reduced-motion: reduce) { .flow, .packet, .step { animation: none !important; } .packet { display: none; } }
       @media (prefers-color-scheme: dark) { .bg { fill: #0f172a; } .box, .panel { fill: #111827; stroke: #334155; } .title { fill: #f8fafc; } .subtitle, .small { fill: #cbd5e1; } .body, .label { fill: #e2e8f0; } .mono { fill: #f8fafc; } }
     </style>
@@ -57,7 +55,9 @@
   <path d="M485 520H1135V340" stroke="#16a34a" stroke-width="4" fill="none" marker-end="url(#green)" />
   <line x1="1235" y1="265" x2="1280" y2="265" stroke="#16a34a" stroke-width="4" marker-end="url(#green)" />
 
-  <circle class="packet" cx="235" cy="265" r="8" fill="#2563eb" /><circle class="packet reverse" cx="885" cy="340" r="8" fill="#7c3aed" /><circle class="packet context" cx="485" cy="520" r="8" fill="#16a34a" />
+  <circle class="packet" cx="235" cy="265" r="8" fill="#2563eb"><animateMotion dur="10s" repeatCount="indefinite" path="M 0 0 H 50" /></circle>
+  <circle class="packet reverse" cx="885" cy="340" r="8" fill="#7c3aed"><animateMotion dur="10s" begin="2.3s" repeatCount="indefinite" path="M 0 0 V 70 H -250 V -70" /></circle>
+  <circle class="packet context" cx="485" cy="520" r="8" fill="#16a34a"><animateMotion dur="10s" begin="5.8s" repeatCount="indefinite" path="M 0 0 H 650 V -180" /></circle>
   <text class="label" x="260" y="245">1. 인증 요청</text><text class="label" x="510" y="245">2. 위임</text><text class="label" x="760" y="245">3. 검증 요청</text>
   <text class="label" x="760" y="440" fill="#be185d">4. 인증된 Authentication 반환</text>
   <text class="label" x="760" y="490" fill="#16a34a">5. Filter가 SecurityContext 설정</text>
