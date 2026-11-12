@@ -1,4 +1,4 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="560" viewBox="0 0 1200 560" role="img" aria-labelledby="title desc">
+<svg xmlns="http://www.w3.org/2000/svg" width="100%" height="auto" viewBox="0 0 1200 560" role="img" aria-labelledby="title desc">
   <title id="title">SLF4J와 Logback의 관계</title>
   <desc id="desc">애플리케이션이 SLF4J 로깅 API를 호출하고 Logback 구현체가 로그 출력과 관리를 수행하는 구조</desc>
   <defs>
