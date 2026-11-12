@@ -1,0 +1,70 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1400" height="820" viewBox="0 0 1400 820" role="img" aria-labelledby="title desc">
+  <title id="title">Spring Security 인증 처리 흐름</title>
+  <desc id="desc">인증 필터가 AuthenticationManager에 인증을 요청하고 AuthenticationProvider가 검증한 뒤 인증 필터가 SecurityContext에 인증 결과를 설정하는 개념적 흐름</desc>
+  <defs>
+    <style>
+      .bg { fill: #f8fafc; }
+      .title { font: 700 32px Arial, "Malgun Gothic", sans-serif; fill: #0f172a; text-anchor: middle; }
+      .subtitle { font: 500 17px Arial, "Malgun Gothic", sans-serif; fill: #64748b; text-anchor: middle; }
+      .node { font: 700 20px Arial, "Malgun Gothic", sans-serif; text-anchor: middle; }
+      .body { font: 500 15px Arial, "Malgun Gothic", sans-serif; fill: #334155; text-anchor: middle; }
+      .label { font: 700 14px Arial, "Malgun Gothic", sans-serif; fill: #475569; text-anchor: middle; }
+      .small { font: 500 14px Arial, "Malgun Gothic", sans-serif; fill: #64748b; text-anchor: middle; }
+      .mono { font: 600 15px Consolas, "Malgun Gothic", monospace; fill: #0f172a; text-anchor: middle; }
+      .box { fill: #fff; stroke-width: 2; rx: 18; }
+      .panel { fill: #fff; stroke: #cbd5e1; stroke-width: 2; rx: 22; }
+      .flow { fill: none; stroke-width: 4; stroke-dasharray: 14 9; animation: dash 2.2s linear infinite; }
+      .packet { opacity: 0; animation: packet 10s linear infinite; }
+      .packet.reverse { animation-name: packet-reverse; animation-delay: 2.3s; }
+      .packet.context { animation-name: packet-context; animation-delay: 5.8s; }
+      .step { opacity: .3; animation: highlight 10s linear infinite; }
+      .s2 { animation-delay: 1.1s; } .s3 { animation-delay: 2.2s; } .s4 { animation-delay: 3.3s; }
+      .s5 { animation-delay: 5.4s; } .s6 { animation-delay: 6.5s; } .s7 { animation-delay: 7.6s; }
+      @keyframes dash { to { stroke-dashoffset: -46; } }
+      @keyframes highlight { 0%, 5% { opacity: .3; } 8%, 16% { opacity: 1; } 20%, 100% { opacity: .3; } }
+      @keyframes packet { 0%, 5% { opacity: 0; transform: translateX(0); } 9% { opacity: 1; } 19% { opacity: 1; transform: translateX(220px); } 23%, 100% { opacity: 0; transform: translateX(220px); } }
+      @keyframes packet-reverse { 0%, 8% { opacity: 0; transform: translateX(0); } 12% { opacity: 1; } 22% { opacity: 1; transform: translateX(-220px); } 26%, 100% { opacity: 0; transform: translateX(-220px); } }
+      @keyframes packet-context { 0%, 12% { opacity: 0; transform: translateX(0); } 16% { opacity: 1; } 25% { opacity: 1; transform: translateX(220px); } 29%, 100% { opacity: 0; transform: translateX(220px); } }
+      @media (prefers-reduced-motion: reduce) { .flow, .packet, .step { animation: none !important; } .packet { display: none; } }
+      @media (prefers-color-scheme: dark) { .bg { fill: #0f172a; } .box, .panel { fill: #111827; stroke: #334155; } .title { fill: #f8fafc; } .subtitle, .small { fill: #cbd5e1; } .body, .label { fill: #e2e8f0; } .mono { fill: #f8fafc; } }
+    </style>
+    <marker id="blue" viewBox="0 0 10 10" refX="8" refY="5" markerUnits="userSpaceOnUse" markerWidth="10" markerHeight="10" orient="auto"><path d="M0 0L10 5L0 10z" fill="#2563eb" /></marker>
+    <marker id="purple" viewBox="0 0 10 10" refX="8" refY="5" markerUnits="userSpaceOnUse" markerWidth="10" markerHeight="10" orient="auto"><path d="M0 0L10 5L0 10z" fill="#7c3aed" /></marker>
+    <marker id="green" viewBox="0 0 10 10" refX="8" refY="5" markerUnits="userSpaceOnUse" markerWidth="10" markerHeight="10" orient="auto"><path d="M0 0L10 5L0 10z" fill="#16a34a" /></marker>
+  </defs>
+  <rect class="bg" width="1400" height="820" rx="28" />
+  <text class="title" x="700" y="58">Spring Security 인증 처리 흐름</text>
+  <text class="subtitle" x="700" y="91">인증 결과를 검증하는 단계와 SecurityContext에 반영하는 단계를 나누어 본다</text>
+
+  <rect class="box" x="55" y="190" width="180" height="150" stroke="#93c5fd" />
+  <text class="node" x="145" y="238" fill="#1d4ed8">Client</text><text class="body" x="145" y="275">로그인 정보</text><text class="body" x="145" y="300">또는 Bearer Token</text>
+  <rect class="box" x="285" y="190" width="200" height="150" stroke="#93c5fd" />
+  <text class="node" x="385" y="238" fill="#1d4ed8">Security Filter</text><text class="body" x="385" y="275">인증 요청을 읽음</text><text class="body" x="385" y="300">인증 객체 생성</text>
+  <rect class="box" x="535" y="190" width="200" height="150" stroke="#c4b5fd" />
+  <text class="node" x="635" y="238" fill="#7c3aed">Authentication</text><text class="body" x="635" y="275">Manager</text><text class="body" x="635" y="300">인증 Provider 선택</text>
+  <rect class="box" x="785" y="190" width="200" height="150" stroke="#f9a8d4" />
+  <text class="node" x="885" y="238" fill="#be185d">Authentication</text><text class="body" x="885" y="275">Provider</text><text class="body" x="885" y="300">자격 증명 검증</text>
+  <rect class="box" x="1035" y="190" width="200" height="150" stroke="#86efac" />
+  <text class="node" x="1135" y="238" fill="#15803d">SecurityContext</text><text class="body" x="1135" y="275">인증 결과 저장</text><text class="body" x="1135" y="300">현재 사용자 정보</text>
+  <rect class="box" x="1280" y="190" width="90" height="150" stroke="#fde68a" />
+  <text class="node" x="1325" y="238" font-size="17" fill="#a16207">Controller</text><text class="body" x="1325" y="275">인가 후</text><text class="body" x="1325" y="300">요청 처리</text>
+
+  <line x1="235" y1="265" x2="285" y2="265" stroke="#2563eb" stroke-width="4" marker-end="url(#blue)" />
+  <line x1="485" y1="265" x2="535" y2="265" stroke="#2563eb" stroke-width="4" marker-end="url(#blue)" />
+  <line x1="735" y1="265" x2="785" y2="265" stroke="#7c3aed" stroke-width="4" marker-end="url(#purple)" />
+  <path d="M885 340V410H635V340" stroke="#be185d" stroke-width="4" fill="none" marker-end="url(#purple)" />
+  <path d="M635 450V500H385V340" stroke="#16a34a" stroke-width="4" fill="none" marker-end="url(#green)" />
+  <path d="M485 520H1135V340" stroke="#16a34a" stroke-width="4" fill="none" marker-end="url(#green)" />
+  <line x1="1235" y1="265" x2="1280" y2="265" stroke="#16a34a" stroke-width="4" marker-end="url(#green)" />
+
+  <circle class="packet" cx="235" cy="265" r="8" fill="#2563eb" /><circle class="packet reverse" cx="885" cy="340" r="8" fill="#7c3aed" /><circle class="packet context" cx="485" cy="520" r="8" fill="#16a34a" />
+  <text class="label" x="260" y="245">1. 인증 요청</text><text class="label" x="510" y="245">2. 위임</text><text class="label" x="760" y="245">3. 검증 요청</text>
+  <text class="label" x="760" y="440" fill="#be185d">4. 인증된 Authentication 반환</text>
+  <text class="label" x="760" y="490" fill="#16a34a">5. Filter가 SecurityContext 설정</text>
+  <text class="label" x="810" y="545" fill="#16a34a">6. 인가 후 Controller 호출</text>
+
+  <rect class="panel" x="90" y="620" width="1220" height="115" />
+  <text class="mono" x="700" y="660">Authentication 생성 ≠ SecurityContext 자동 저장</text>
+  <text class="small" x="700" y="692">Provider는 인증 결과를 반환하고, 인증 필터가 그 결과를 현재 보안 컨텍스트에 설정한다</text>
+  <text class="small" x="700" y="718">실제 필터와 처리 순서는 인증 메커니즘에 따라 달라질 수 있는 개념도다</text>
+</svg>

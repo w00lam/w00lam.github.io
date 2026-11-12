@@ -1,0 +1,30 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="560" viewBox="0 0 1200 560" role="img" aria-labelledby="title desc">
+  <title id="title">SLF4J와 Logback의 관계</title>
+  <desc id="desc">애플리케이션이 SLF4J 로깅 API를 호출하고 Logback 구현체가 로그 출력과 관리를 수행하는 구조</desc>
+  <defs>
+    <style>
+      .bg { fill: #f8fafc; } .title { font: 700 32px Arial, "Malgun Gothic", sans-serif; fill: #0f172a; text-anchor: middle; }
+      .subtitle { font: 500 17px Arial, "Malgun Gothic", sans-serif; fill: #64748b; text-anchor: middle; }
+      .node { font: 700 24px Arial, "Malgun Gothic", sans-serif; text-anchor: middle; } .body { font: 500 16px Arial, "Malgun Gothic", sans-serif; fill: #334155; text-anchor: middle; }
+      .small { font: 500 15px Arial, "Malgun Gothic", sans-serif; fill: #64748b; text-anchor: middle; } .box { fill: #fff; stroke-width: 2; rx: 20; }
+      .line { stroke: #2563eb; stroke-width: 5; stroke-dasharray: 16 10; animation: dash 2s linear infinite; } .packet { fill: #2563eb; animation: move 3.2s ease-in-out infinite; }
+      @keyframes dash { to { stroke-dashoffset: -52; } } @keyframes move { 0%, 12% { transform: translateY(0); opacity: 0; } 20% { opacity: 1; } 44% { transform: translateY(115px); opacity: 1; } 55%, 100% { transform: translateY(115px); opacity: 0; } }
+      @media (prefers-reduced-motion: reduce) { .line, .packet { animation: none !important; } .packet { display: none; } }
+      @media (prefers-color-scheme: dark) { .bg { fill: #0f172a; } .box { fill: #111827; stroke: #334155; } .title { fill: #f8fafc; } .subtitle, .small { fill: #cbd5e1; } .body { fill: #e2e8f0; } }
+    </style>
+    <marker id="arrow" viewBox="0 0 10 10" refX="8" refY="5" markerUnits="userSpaceOnUse" markerWidth="10" markerHeight="10" orient="auto"><path d="M0 0L10 5L0 10z" fill="#2563eb" /></marker>
+  </defs>
+  <rect class="bg" width="1200" height="560" rx="28" />
+  <text class="title" x="600" y="58">SLF4J와 Logback의 관계</text>
+  <text class="subtitle" x="600" y="91">애플리케이션 코드는 API를 호출하고, 구현체가 실제 로그를 출력한다</text>
+  <rect class="box" x="120" y="175" width="270" height="185" stroke="#93c5fd" />
+  <text class="node" x="255" y="235" fill="#1d4ed8">Application</text><text class="body" x="255" y="280">Logger 호출</text><text class="body" x="255" y="310">log.info()</text><text class="small" x="255" y="340">구현체에 직접 의존하지 않음</text>
+  <rect class="box" x="465" y="175" width="270" height="185" stroke="#c4b5fd" />
+  <text class="node" x="600" y="235" fill="#7c3aed">SLF4J</text><text class="body" x="600" y="280">로깅 API</text><text class="body" x="600" y="310">추상화 계층</text><text class="small" x="600" y="340">호출 규약을 제공</text>
+  <rect class="box" x="810" y="175" width="270" height="185" stroke="#86efac" />
+  <text class="node" x="945" y="235" fill="#15803d">Logback</text><text class="body" x="945" y="280">구현체</text><text class="body" x="945" y="310">출력·관리·설정</text><text class="small" x="945" y="340">Appender와 Layout 사용</text>
+  <line x1="390" y1="267" x2="465" y2="267" class="line" marker-end="url(#arrow)" /><line x1="735" y1="267" x2="810" y2="267" class="line" marker-end="url(#arrow)" />
+  <circle class="packet" cx="390" cy="267" r="8" />
+  <text class="small" x="600" y="435">추상화 계층을 사용하면 구현체를 교체해도 애플리케이션 코드 변경을 줄일 수 있다</text>
+  <text class="small" x="600" y="465">실제 연결되는 구현체와 출력 형식은 의존성과 설정에 따라 결정된다</text>
+</svg>
