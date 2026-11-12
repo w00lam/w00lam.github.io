@@ -1,4 +1,4 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="100%" height="auto" viewBox="0 0 1400 860" role="img" aria-labelledby="title desc">
+<svg xmlns="http://www.w3.org/2000/svg" width="1400" height="860" viewBox="0 0 1400 860" role="img" aria-labelledby="title desc" style="max-width:100%;height:auto">
   <title id="title">CSRF 공격 흐름과 CSRF Token 검증</title>
   <desc id="desc">사용자가 대상 서버에 로그인한 뒤 공격자 사이트가 피해자의 브라우저를 통해 대상 서버로 요청을 유도하고 Cookie 전송 조건과 CSRF Token 검증에 따라 처리 결과가 달라지는 흐름</desc>
   <defs>
