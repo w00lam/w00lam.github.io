@@ -43,7 +43,7 @@ Spring Security에서 인증 객체가 만들어지는 과정과 저장되는 �
 
 `SecurityFilterChain`은 이런 보안 필터들을 요청 앞단에 배치하고 순서에 따라 처리하도록 구성한다. `AuthenticationManager`는 인증 처리 방식 자체를 결정하는 API이고 `AuthenticationProvider`는 특정 인증 방식의 검증을 담당한다. `SecurityContext`는 현재 요청의 인증 정보를 보관하는 장소다.
 
-![Spring Security 인증 처리 흐름](/assets/images/2026-11-12-auth-logging-csrf-xss/spring-security-authentication-flow.svg?v=29732fb)
+![Spring Security 인증 처리 흐름](/assets/images/2026-11-12-auth-logging-csrf-xss/spring-security-authentication-flow.svg?v=9bf1d8f)
 
 *그림 1. 인증 요청은 인증 필터에서 시작해 `AuthenticationManager`와 `AuthenticationProvider`를 거친다. Provider가 `SecurityContext`에 직접 저장하는 것이 아니라 인증 필터가 반환된 결과를 설정하는 개념적 흐름이다. 실제 필터와 처리 방식은 인증 메커니즘에 따라 달라질 수 있다.*
 
@@ -143,7 +143,7 @@ SLF4J와 Logback을 모두 로깅 도구라고 뭉뚱그려 부르기 쉬웠다.
 
 애플리케이션 코드가 SLF4J의 `Logger`를 사용하면 코드가 특정 구현체의 API에 직접 묶이지 않는다. 배포 시 Logback과 다른 로깅 구현체를 선택하더라도 애플리케이션 코드의 변경을 줄일 수 있다. 다만 실제로 어떤 구현체가 연결되는지는 의존성과 설정에 달려 있으므로 SLF4J를 사용한다고 항상 같은 출력 방식이 보장되는 것은 아니다.
 
-![SLF4J와 Logback의 관계](/assets/images/2026-11-12-auth-logging-csrf-xss/slf4j-logback-relationship.svg?v=29732fb)
+![SLF4J와 Logback의 관계](/assets/images/2026-11-12-auth-logging-csrf-xss/slf4j-logback-relationship.svg?v=9bf1d8f)
 
 *그림 2. 애플리케이션은 SLF4J가 제공하는 로깅 API를 호출하고 Logback 같은 구현체가 실제 출력과 관리를 담당한다. 구현체를 바꿀 수 있다는 점은 추상화의 장점이며 실제 연결은 의존성과 설정을 따른다.*
 
@@ -188,7 +188,7 @@ CSRF는 Cross-Site Request Forgery의 약자다. 사용자가 대상 서버에 �
 
 중요한 점은 공격자가 인증 Cookie의 값을 직접 읽어야 하는 것은 아니라는 것이다. 공격자는 피해자의 브라우저가 요청을 보내도록 유도할 뿐이고 Cookie를 읽지 못해도 공격이 성립한다. 다만 Cookie가 모든 교차 출처 요청에 항상 포함되는 것은 아니다. `SameSite` 속성과 브라우저의 Cookie 전송 정책에 따라 전송 여부가 달라진다.
 
-![CSRF 공격과 토큰 검증 흐름](/assets/images/2026-11-12-auth-logging-csrf-xss/csrf-request-flow.svg?v=29732fb)
+![CSRF 공격과 토큰 검증 흐름](/assets/images/2026-11-12-auth-logging-csrf-xss/csrf-request-flow.svg?v=9bf1d8f)
 
 *그림 3. 공격자는 Cookie 값을 읽지 않아도 피해자의 브라우저가 대상 서버로 요청을 보내도록 유도한다. `SameSite` 정책과 요청 조건에 따라 Cookie가 전송되지 않을 수도 있으며 서버가 CSRF Token을 요구하면 토큰 검증에서 요청이 거부된다.*
 
@@ -212,7 +212,7 @@ Reflected XSS는 공격자가 준비한 요청의 입력이 서버 응답에 반
 
 두 유형의 차이는 악성 입력이 저장되는지와 어떤 경로로 응답에 들어가는지에 있다. 입력이 존재한다고 항상 XSS가 발생하는 것은 아니다. 브라우저가 실행 가능한 문맥으로 해석하는 위치에 삽입되고 방어가 부족할 때 문제가 된다.
 
-![Stored XSS와 Reflected XSS 비교](/assets/images/2026-11-12-auth-logging-csrf-xss/stored-reflected-xss.svg?v=29732fb)
+![Stored XSS와 Reflected XSS 비교](/assets/images/2026-11-12-auth-logging-csrf-xss/stored-reflected-xss.svg?v=9bf1d8f)
 
 *그림 4. Stored XSS는 공격자 입력이 서버에 저장된 뒤 다른 사용자의 조회 응답으로 전달된다. Reflected XSS는 준비된 요청의 입력이 저장되지 않고 현재 응답에 반영된다. 두 경우 모두 취약한 출력 문맥에서 실행 가능한 입력으로 해석될 때 문제가 된다.*
 
