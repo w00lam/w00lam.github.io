@@ -12038,3 +12038,639 @@ github_collaboration:
       outcomes:
         - status: allow
           text: "협업의 기준과 배포 가능한 상태를 함께 관리한다."
+
+concurrency_control_methods:
+  eyebrow: "Interactive comparison"
+  title: "동시성 제어 방법 선택"
+  summary: "비관적 락·낙관적 락·원자적 쿼리·분산 락은 충돌 위치와 운영 경계가 서로 다르다."
+  actors:
+    - id: problem
+      kind: "공유 상태"
+      name: "Concurrent Update"
+      description: "여러 요청이 같은 데이터를 읽고 변경하는 상황"
+    - id: pessimistic
+      kind: "DB 잠금"
+      name: "Pessimistic Lock"
+      description: "충돌 전에 행을 잠가 다른 변경을 기다리게 하는 방법"
+    - id: optimistic
+      kind: "버전 검증"
+      name: "Optimistic Lock"
+      description: "버전·조건을 확인해 충돌 시 실패시키는 방법"
+    - id: atomic
+      kind: "원자 연산"
+      name: "Atomic Update / Distributed Lock"
+      description: "DB 조건 연산 또는 여러 인스턴스 사이의 분산 잠금"
+  steps:
+    - title: "1. 충돌 지점 정의"
+      from: "Concurrent Update"
+      to: "Pessimistic Lock"
+      route_label: "같은 행의 충돌을 사전에 막고 대기시키는 비관적 락을 검토한다."
+      active_actors: [problem, pessimistic]
+      description: "충돌 비용이 크고 짧은 트랜잭션으로 자원을 보호할 수 있을 때 적합하다."
+      payload: ["row lock", "wait", "transaction"]
+      outcomes:
+        - status: info
+          text: "잠금 대기와 데드락을 운영 지표로 관찰해야 한다."
+    - title: "2. 충돌 감지"
+      from: "Concurrent Update"
+      to: "Optimistic Lock"
+      route_label: "버전이나 조건이 바뀌었는지 확인하고 충돌한 요청을 재시도·실패 처리한다."
+      active_actors: [problem, optimistic]
+      description: "충돌이 드물고 대기보다 실패 후 재시도가 유리한 경우 선택한다."
+      payload: ["version", "compare", "retry"]
+      outcomes:
+        - status: allow
+          text: "잠금 없이도 변경 경쟁을 감지할 수 있다."
+    - title: "3. 원자·분산 경계 선택"
+      from: "Concurrent Update"
+      to: "Atomic Update / Distributed Lock"
+      route_label: "단일 DB 조건 연산으로 충분한지, 여러 인스턴스 자원을 분산 락으로 묶을지 판단한다."
+      active_actors: [problem, atomic, pessimistic, optimistic]
+      description: "기술 이름보다 데이터 경계와 실패 시나리오에 맞는 최소 제어를 선택한다."
+      payload: ["conditional update", "distributed lock", "scope"]
+      outcomes:
+        - status: allow
+          text: "공유 상태와 실행 환경에 맞춰 제어 범위를 줄인다."
+
+pessimistic_lock_payment:
+  eyebrow: "Interactive flow"
+  title: "비관적 락 동작"
+  summary: "트랜잭션이 행을 잠근 뒤 변경을 커밋할 때까지 같은 행을 수정하려는 다른 트랜잭션을 기다리게 한다."
+  actors:
+    - id: tx_a
+      kind: "선점 요청"
+      name: "Transaction A"
+      description: "먼저 대상 행을 조회하고 잠금을 획득한 트랜잭션"
+    - id: row
+      kind: "DB 자원"
+      name: "Locked Row"
+      description: "동시 변경을 조정해야 하는 데이터 행"
+    - id: tx_b
+      kind: "대기 요청"
+      name: "Transaction B"
+      description: "잠긴 행에 접근해 대기하는 다른 트랜잭션"
+    - id: commit
+      kind: "해제"
+      name: "Commit / Rollback"
+      description: "변경을 확정하거나 되돌리며 락을 반환하는 경계"
+  steps:
+    - title: "1. 행 잠금 획득"
+      from: "Transaction A"
+      to: "Locked Row"
+      route_label: "트랜잭션 A가 SELECT FOR UPDATE 같은 방식으로 대상 행을 잠근다."
+      active_actors: [tx_a, row]
+      description: "잠금 범위와 인덱스 조건에 따라 실제로 잠기는 행을 확인해야 한다."
+      payload: ["SELECT FOR UPDATE", "row lock", "transaction"]
+      outcomes:
+        - status: allow
+          text: "A가 변경하는 동안 다른 변경 요청을 조정할 수 있다."
+    - title: "2. 다른 요청 대기"
+      from: "Locked Row"
+      to: "Transaction B"
+      route_label: "트랜잭션 B가 같은 행을 잠그려 하면 A의 커밋·롤백까지 대기한다."
+      active_actors: [row, tx_b, tx_a]
+      description: "대기 시간이 길어지면 처리량과 타임아웃에 영향을 준다."
+      payload: ["wait", "lock timeout", "contention"]
+      outcomes:
+        - status: warning
+          text: "긴 트랜잭션과 잠금 순서 불일치는 데드락 위험을 키운다."
+    - title: "3. 커밋 후 다음 처리"
+      from: "Transaction A"
+      to: "Commit / Rollback"
+      route_label: "A가 변경을 확정하거나 되돌리면 락이 해제되고 B가 다음 상태를 읽는다."
+      active_actors: [tx_a, commit, tx_b]
+      description: "락 수명은 DB 트랜잭션 경계와 함께 설계한다."
+      payload: ["commit", "rollback", "unlock"]
+      outcomes:
+        - status: allow
+          text: "다음 요청이 확정된 상태를 기준으로 처리한다."
+
+optimistic_lock_payment:
+  eyebrow: "Interactive flow"
+  title: "낙관적 락과 버전 검증"
+  summary: "조회 시점의 버전을 기억하고 저장 시 같은 버전인지 확인해 먼저 변경된 요청을 감지한다."
+  actors:
+    - id: read
+      kind: "조회"
+      name: "Read Version"
+      description: "엔티티와 현재 version을 함께 읽는 요청"
+    - id: a
+      kind: "변경 A"
+      name: "Transaction A"
+      description: "버전 N을 읽고 먼저 저장하려는 요청"
+    - id: b
+      kind: "변경 B"
+      name: "Transaction B"
+      description: "같은 버전 N을 읽고 나중에 저장하려는 요청"
+    - id: result
+      kind: "판정"
+      name: "Version Check"
+      description: "UPDATE 조건의 affected rows로 충돌을 판단"
+  steps:
+    - title: "1. 같은 버전 읽기"
+      from: "Read Version"
+      to: "Transaction A"
+      route_label: "A와 B가 모두 version N인 데이터를 읽고 각자의 변경을 준비한다."
+      active_actors: [read, a, b]
+      description: "조회 시점에는 잠금을 잡지 않고 충돌을 저장 시점까지 늦춘다."
+      payload: ["version N", "snapshot", "edit"]
+      outcomes:
+        - status: info
+          text: "두 요청이 같은 상태를 기준으로 변경할 수 있다."
+    - title: "2. 먼저 저장"
+      from: "Transaction A"
+      to: "Version Check"
+      route_label: "A가 WHERE version = N 조건으로 저장하고 version을 N+1로 올린다."
+      active_actors: [a, result]
+      description: "조건이 맞는 한 건만 수정되어 A의 변경이 먼저 확정된다."
+      payload: ["WHERE version=N", "UPDATE", "N+1"]
+      outcomes:
+        - status: allow
+          text: "A의 변경이 새 기준 버전을 만든다."
+    - title: "3. 충돌 감지"
+      from: "Transaction B"
+      to: "Version Check"
+      route_label: "B가 같은 version N으로 저장하면 수정 행 0건이 되어 충돌로 판단한다."
+      active_actors: [b, result, a]
+      description: "B는 재조회·사용자 알림·재시도 같은 도메인 정책으로 후속 처리한다."
+      payload: ["affected rows 0", "conflict", "retry"]
+      outcomes:
+        - status: reject
+          text: "나중 저장이 먼저 저장한 변경을 조용히 덮어쓰지 않는다."
+
+spring_ai_app_flow:
+  eyebrow: "Interactive flow"
+  title: "Spring AI 애플리케이션 흐름"
+  summary: "애플리케이션이 사용자 입력을 ChatClient에 전달하고 모델 응답·구조화 결과를 도메인 처리에 연결한다."
+  actors:
+    - id: user
+      kind: "입력"
+      name: "User Request"
+      description: "자연어 질문이나 업무 요청"
+    - id: client
+      kind: "오케스트레이션"
+      name: "Spring AI ChatClient"
+      description: "프롬프트·대화 기록·모델 호출을 조합하는 애플리케이션 API"
+    - id: model
+      kind: "생성"
+      name: "Chat Model"
+      description: "요청을 해석하고 텍스트 또는 구조화 결과를 생성하는 모델"
+    - id: app
+      kind: "업무 연결"
+      name: "Application Service"
+      description: "모델 결과를 검증하고 도메인 로직에 적용하는 서비스"
+  steps:
+    - title: "1. 요청 구성"
+      from: "User Request"
+      to: "Spring AI ChatClient"
+      route_label: "사용자 입력과 시스템 지침·대화 문맥·필요한 옵션을 요청으로 구성한다."
+      active_actors: [user, client]
+      description: "프롬프트 조합과 모델 호출을 애플리케이션 코드의 한 경계에 둔다."
+      payload: ["prompt", "context", "options"]
+      outcomes:
+        - status: info
+          text: "모델에 전달하는 입력과 사용자 원문을 구분해 관리한다."
+    - title: "2. 모델 호출"
+      from: "Spring AI ChatClient"
+      to: "Chat Model"
+      route_label: "ChatClient가 선택한 모델에 요청을 보내 텍스트·JSON·도구 호출 결과를 받는다."
+      active_actors: [client, model]
+      description: "모델 호출은 외부 의존성이므로 타임아웃·실패·토큰 비용을 관찰한다."
+      payload: ["model", "messages", "response"]
+      outcomes:
+        - status: allow
+          text: "모델 추상화와 애플리케이션 흐름이 연결된다."
+    - title: "3. 결과 검증·적용"
+      from: "Chat Model"
+      to: "Application Service"
+      route_label: "응답 형식과 업무 규칙을 검증한 뒤 사용자 응답이나 도메인 처리로 연결한다."
+      active_actors: [model, app, user]
+      description: "모델 응답을 곧바로 신뢰하지 않고 애플리케이션 경계에서 검증한다."
+      payload: ["structured output", "validation", "domain action"]
+      outcomes:
+        - status: allow
+          text: "생성 결과가 통제된 업무 흐름 안에서 사용된다."
+
+spring_ai_architecture:
+  eyebrow: "Interactive flow"
+  title: "Spring AI 구성 아키텍처"
+  summary: "애플리케이션 계층이 Spring AI 추상화와 모델·메모리·벡터 저장소를 조합한다."
+  actors:
+    - id: app
+      kind: "애플리케이션"
+      name: "Application Layer"
+      description: "업무 요구와 AI 기능을 연결하는 서비스 계층"
+    - id: ai
+      kind: "추상화"
+      name: "Spring AI APIs"
+      description: "ChatClient·프롬프트·출력 파서·Tool 인터페이스"
+    - id: model
+      kind: "모델"
+      name: "Chat / Embedding Model"
+      description: "텍스트 생성과 임베딩을 제공하는 모델 공급자"
+    - id: memory
+      kind: "상태·검색"
+      name: "Memory / Vector Store"
+      description: "대화 문맥과 검색용 벡터를 저장·조회하는 구성"
+  steps:
+    - title: "1. 업무 요구 연결"
+      from: "Application Layer"
+      to: "Spring AI APIs"
+      route_label: "업무 서비스가 ChatClient·프롬프트·출력 처리 같은 Spring AI API를 사용한다."
+      active_actors: [app, ai]
+      description: "모델 공급자 세부 구현을 업무 코드에서 분리할 수 있다."
+      payload: ["service", "prompt", "ChatClient"]
+      outcomes:
+        - status: allow
+          text: "애플리케이션과 AI 인프라의 경계를 만든다."
+    - title: "2. 모델 추상화 연결"
+      from: "Spring AI APIs"
+      to: "Chat / Embedding Model"
+      route_label: "추상화 계층이 채팅 생성·임베딩 모델의 요청과 응답을 연결한다."
+      active_actors: [ai, model]
+      description: "모델 교체와 공급자별 설정을 한 경계에서 관리한다."
+      payload: ["chat", "embedding", "provider"]
+      outcomes:
+        - status: info
+          text: "추상화가 모델의 품질·비용·제한을 없애지는 않는다."
+    - title: "3. 문맥과 검색 사용"
+      from: "Spring AI APIs"
+      to: "Memory / Vector Store"
+      route_label: "대화 메모리와 문서 벡터를 저장·조회해 모델 입력 문맥을 보강한다."
+      active_actors: [ai, memory, app]
+      description: "생성 모델과 외부 상태 저장소의 책임을 분리한다."
+      payload: ["conversation", "embedding", "retrieval"]
+      outcomes:
+        - status: allow
+          text: "AI 기능을 모델 호출 하나가 아닌 조합 가능한 애플리케이션 구조로 본다."
+
+spring_ai_components:
+  eyebrow: "Interactive flow"
+  title: "Spring AI 핵심 구성요소"
+  summary: "프롬프트·ChatClient·모델·출력 파서·메모리가 요청부터 검증 가능한 결과까지 이어진다."
+  actors:
+    - id: prompt
+      kind: "입력 설계"
+      name: "Prompt Template"
+      description: "시스템 지침과 사용자 입력을 조합하는 템플릿"
+    - id: client
+      kind: "호출 조정"
+      name: "ChatClient"
+      description: "모델 호출과 옵션·대화 흐름을 조정하는 API"
+    - id: model
+      kind: "생성"
+      name: "Chat Model"
+      description: "텍스트나 구조화 응답을 생성하는 모델"
+    - id: parser
+      kind: "검증"
+      name: "Output Parser / Memory"
+      description: "응답을 타입·스키마로 변환하고 필요한 문맥을 관리"
+  steps:
+    - title: "1. 프롬프트 준비"
+      from: "Prompt Template"
+      to: "ChatClient"
+      route_label: "템플릿에 사용자 입력·지침·대화 문맥을 채워 모델 요청을 만든다."
+      active_actors: [prompt, client]
+      description: "입력 구조를 고정하면 출력 품질과 테스트 기준을 관리하기 쉽다."
+      payload: ["system", "user", "context"]
+      outcomes:
+        - status: info
+          text: "프롬프트는 코드와 데이터가 만나는 입력 계약이다."
+    - title: "2. 모델 응답"
+      from: "ChatClient"
+      to: "Chat Model"
+      route_label: "ChatClient가 모델을 호출하고 응답을 수신한다."
+      active_actors: [client, model]
+      description: "모델 응답 지연·오류·비용은 애플리케이션 운영 지표로 남긴다."
+      payload: ["messages", "temperature", "response"]
+      outcomes:
+        - status: allow
+          text: "모델 호출이 애플리케이션의 명시적인 단계가 된다."
+    - title: "3. 구조화·기억"
+      from: "Chat Model"
+      to: "Output Parser / Memory"
+      route_label: "응답을 스키마로 파싱하고 다음 요청에 필요한 문맥을 저장하거나 검색한다."
+      active_actors: [model, parser, prompt]
+      description: "모델 텍스트를 도메인 객체로 쓰기 전에 형식과 필수 값을 검증한다."
+      payload: ["JSON", "schema", "memory"]
+      outcomes:
+        - status: allow
+          text: "생성 결과가 애플리케이션에서 다룰 수 있는 구조로 변환된다."
+
+ai_function_decomposition:
+  eyebrow: "Interactive flow"
+  title: "AI 기능 단계별 분해"
+  summary: "영수증 처리처럼 입력 수집·문서 해석·검증·저장·응답을 별도 책임으로 나눠 설계한다."
+  actors:
+    - id: input
+      kind: "입력"
+      name: "Receipt Image / Text"
+      description: "사용자가 제공한 영수증 이미지와 보조 정보"
+    - id: extract
+      kind: "추출"
+      name: "Vision / LLM Extraction"
+      description: "상호·금액·날짜·품목을 구조화하는 모델 단계"
+    - id: validate
+      kind: "검증"
+      name: "Schema + Business Rules"
+      description: "필수 필드·형식·업무 규칙을 검사하는 계층"
+    - id: action
+      kind: "적용"
+      name: "Domain Action"
+      description: "검증된 결과를 저장·분류·정산 같은 업무로 연결"
+  steps:
+    - title: "1. 입력 수집"
+      from: "Receipt Image / Text"
+      to: "Vision / LLM Extraction"
+      route_label: "이미지와 텍스트를 모델이 처리할 수 있는 입력으로 준비한다."
+      active_actors: [input, extract]
+      description: "파일 형식·크기·민감 정보 처리를 모델 호출 전 경계에서 관리한다."
+      payload: ["image", "OCR", "prompt"]
+      outcomes:
+        - status: info
+          text: "입력 전처리와 모델 추출 책임을 분리한다."
+    - title: "2. 구조화 추출"
+      from: "Vision / LLM Extraction"
+      to: "Schema + Business Rules"
+      route_label: "모델이 찾은 필드를 JSON 스키마와 업무 규칙으로 검증한다."
+      active_actors: [extract, validate]
+      description: "자유로운 텍스트 응답을 곧바로 데이터베이스에 저장하지 않는다."
+      payload: ["merchant", "amount", "date", "items"]
+      outcomes:
+        - status: warning
+          text: "누락·오인식·비정상 금액을 애플리케이션에서 다시 확인한다."
+    - title: "3. 업무 적용"
+      from: "Schema + Business Rules"
+      to: "Domain Action"
+      route_label: "검증을 통과한 구조화 결과만 저장·분류·정산 같은 도메인 동작에 사용한다."
+      active_actors: [validate, action]
+      description: "AI는 입력 해석을 돕지만 최종 상태 변경은 기존 업무 규칙을 따른다."
+      payload: ["validated data", "persist", "classification"]
+      outcomes:
+        - status: allow
+          text: "AI 기능을 작은 검증 가능한 단계로 나눌 수 있다."
+
+tool_calling_workflow:
+  eyebrow: "Interactive flow"
+  title: "Spring AI Tool Calling"
+  summary: "모델이 도구 호출을 요청하면 애플리케이션이 인자와 권한을 검증해 실행하고 결과를 다시 모델에 전달한다."
+  actors:
+    - id: user
+      kind: "요청"
+      name: "User Question"
+      description: "외부 데이터나 동작이 필요한 사용자 질문"
+    - id: model
+      kind: "선택"
+      name: "Chat Model"
+      description: "도구가 필요한지와 호출 인자를 판단하는 모델"
+    - id: tool
+      kind: "실행"
+      name: "Tool Handler"
+      description: "실제 API·DB·검색을 호출하는 애플리케이션 함수"
+    - id: result
+      kind: "응답"
+      name: "Final Answer"
+      description: "도구 결과를 근거로 작성한 사용자 응답"
+  steps:
+    - title: "1. 도구 필요성 판단"
+      from: "User Question"
+      to: "Chat Model"
+      route_label: "질문과 사용 가능한 도구 설명을 모델에 전달해 다음 행동을 선택하게 한다."
+      active_actors: [user, model]
+      description: "모델이 모든 동작을 직접 수행하는 것이 아니라 호출 계획을 제안한다."
+      payload: ["question", "tool schema", "context"]
+      outcomes:
+        - status: info
+          text: "도구 이름과 입력 스키마가 모델의 선택 기준이 된다."
+    - title: "2. 검증된 도구 실행"
+      from: "Chat Model"
+      to: "Tool Handler"
+      route_label: "애플리케이션이 도구 이름·인자·권한·범위를 검증한 뒤 실제 함수를 호출한다."
+      active_actors: [model, tool]
+      description: "모델 출력만으로 위험한 상태 변경을 실행하지 않도록 실행 경계를 둔다."
+      payload: ["tool call", "arguments", "authorization"]
+      outcomes:
+        - status: allow
+          text: "외부 상태 변경은 애플리케이션 정책 안에서 실행된다."
+    - title: "3. 결과 기반 응답"
+      from: "Tool Handler"
+      to: "Final Answer"
+      route_label: "도구 결과와 오류를 모델 컨텍스트에 넣어 최종 답변이나 다음 호출을 결정한다."
+      active_actors: [tool, result, model]
+      description: "도구 실패를 숨기지 않고 사용자 응답과 재시도 정책에 반영한다."
+      payload: ["tool result", "error", "answer"]
+      outcomes:
+        - status: allow
+          text: "생성 모델과 실제 시스템 데이터를 연결한다."
+
+multi_model_strategy:
+  eyebrow: "Interactive comparison"
+  title: "멀티 모델 활용 전략"
+  summary: "요청의 비용·지연·정확도·추론 난이도에 따라 모델을 선택하거나 단계별로 조합한다."
+  actors:
+    - id: request
+      kind: "입력"
+      name: "AI Request"
+      description: "생성·분류·추출·요약 같은 업무 요청"
+    - id: route
+      kind: "라우팅"
+      name: "Model Router"
+      description: "업무 난이도와 운영 조건을 보고 모델을 선택"
+    - id: fast
+      kind: "효율 모델"
+      name: "Fast / Small Model"
+      description: "낮은 비용과 짧은 지연이 필요한 반복 작업"
+    - id: strong
+      kind: "고성능 모델"
+      name: "Reasoning / Large Model"
+      description: "복잡한 판단과 높은 품질이 필요한 작업"
+  steps:
+    - title: "1. 요청 분류"
+      from: "AI Request"
+      to: "Model Router"
+      route_label: "질문의 난이도·민감도·지연·비용 조건을 평가한다."
+      active_actors: [request, route]
+      description: "모든 요청을 가장 큰 모델에 보내는 것이 최적은 아니다."
+      payload: ["task type", "latency", "cost", "quality"]
+      outcomes:
+        - status: info
+          text: "라우팅 기준을 측정 가능한 정책으로 만든다."
+    - title: "2. 효율 모델 처리"
+      from: "Model Router"
+      to: "Fast / Small Model"
+      route_label: "반복 분류·간단 추출·초안처럼 빠른 처리가 가능한 요청을 작은 모델에 보낸다."
+      active_actors: [route, fast]
+      description: "낮은 비용과 지연을 얻는 대신 품질 경계와 fallback을 정의한다."
+      payload: ["classification", "draft", "low cost"]
+      outcomes:
+        - status: allow
+          text: "단순 작업의 처리 비용을 낮춘다."
+    - title: "3. 고성능 모델 처리"
+      from: "Model Router"
+      to: "Reasoning / Large Model"
+      route_label: "복잡한 추론·긴 문맥·높은 정확도가 필요한 요청을 고성능 모델에 보낸다."
+      active_actors: [route, strong, request]
+      description: "품질 향상과 함께 비용·지연·제공자 의존성을 관찰한다."
+      payload: ["reasoning", "long context", "fallback"]
+      outcomes:
+        - status: allow
+          text: "업무 유형에 맞는 모델 선택으로 전체 시스템을 조정한다."
+
+flyway_validate_sequence:
+  eyebrow: "Interactive flow"
+  title: "Flyway와 Hibernate Validate 실행 순서"
+  summary: "Flyway가 스키마 마이그레이션을 먼저 적용하고 Hibernate Validate가 엔티티와 실제 스키마의 일치를 확인한다."
+  actors:
+    - id: app
+      kind: "시작"
+      name: "Spring Boot Startup"
+      description: "애플리케이션 컨텍스트가 시작되는 과정"
+    - id: flyway
+      kind: "스키마 변경"
+      name: "Flyway Migration"
+      description: "버전 관리된 SQL을 순서대로 적용하는 도구"
+    - id: validate
+      kind: "검증"
+      name: "Hibernate Validate"
+      description: "엔티티 매핑과 데이터베이스 스키마를 비교하는 단계"
+    - id: ready
+      kind: "실행"
+      name: "Application Ready"
+      description: "검증을 통과해 요청을 받을 수 있는 상태"
+  steps:
+    - title: "1. 애플리케이션 시작"
+      from: "Spring Boot Startup"
+      to: "Flyway Migration"
+      route_label: "Spring Boot가 시작되며 Flyway가 적용되지 않은 마이그레이션을 실행한다."
+      active_actors: [app, flyway]
+      description: "스키마 변경을 코드와 별도 버전 이력으로 관리한다."
+      payload: ["startup", "version", "migration"]
+      outcomes:
+        - status: allow
+          text: "운영 DB가 선언된 마이그레이션 이력에 맞춰진다."
+    - title: "2. 매핑 검증"
+      from: "Flyway Migration"
+      to: "Hibernate Validate"
+      route_label: "마이그레이션 이후 Hibernate가 엔티티 매핑과 현재 스키마를 검증한다."
+      active_actors: [flyway, validate]
+      description: "애플리케이션 모델과 DB 구조의 불일치를 시작 시점에 발견한다."
+      payload: ["schema", "entity", "validate"]
+      outcomes:
+        - status: reject
+          text: "검증 실패 시 애플리케이션을 정상 상태로 올리지 않는다."
+    - title: "3. 요청 수락"
+      from: "Hibernate Validate"
+      to: "Application Ready"
+      route_label: "마이그레이션과 검증을 모두 통과하면 애플리케이션이 요청을 받을 수 있다."
+      active_actors: [validate, ready]
+      description: "스키마 변경과 코드 배포의 호환성을 시작 단계에서 확인한다."
+      payload: ["passed", "health", "ready"]
+      outcomes:
+        - status: allow
+          text: "DB 변경과 애플리케이션 실행 순서가 명확하다."
+
+flyway_defer_problem:
+  eyebrow: "Interactive comparison"
+  title: "defer-datasource-initialization=true의 순서 문제"
+  summary: "초기화 스크립트가 Flyway 마이그레이션과 기대한 순서로 실행되지 않으면 없는 테이블을 참조할 수 있다."
+  actors:
+    - id: flyway
+      kind: "마이그레이션"
+      name: "Flyway"
+      description: "테이블과 스키마를 버전별로 만드는 단계"
+    - id: init
+      kind: "초기화"
+      name: "DataSource Initialization"
+      description: "data.sql 같은 초기 데이터 스크립트"
+    - id: schema
+      kind: "대상"
+      name: "Database Schema"
+      description: "초기화 스크립트가 기대하는 테이블과 컬럼"
+    - id: failure
+      kind: "실패"
+      name: "Startup Failure"
+      description: "스키마 준비 전 스크립트가 실행되어 애플리케이션이 뜨지 않는 상태"
+  steps:
+    - title: "1. 초기화 실행"
+      from: "DataSource Initialization"
+      to: "Database Schema"
+      route_label: "초기 데이터 스크립트가 필요한 테이블을 참조하려고 실행된다."
+      active_actors: [init, schema]
+      description: "스키마 생성보다 초기화가 먼저면 대상 테이블을 찾지 못할 수 있다."
+      payload: ["data.sql", "insert", "table"]
+      outcomes:
+        - status: warning
+          text: "초기화 스크립트의 실행 순서가 마이그레이션과 맞는지 확인한다."
+    - title: "2. Flyway 순서 충돌"
+      from: "DataSource Initialization"
+      to: "Flyway"
+      route_label: "defer 설정과 자동 구성 순서가 기대와 다르면 초기화 단계가 Flyway보다 앞설 수 있다."
+      active_actors: [init, flyway]
+      description: "설정 이름만 보고 실제 Spring Boot 자동 구성 순서를 추측하지 않는다."
+      payload: ["auto configuration", "defer", "ordering"]
+      outcomes:
+        - status: reject
+          text: "없는 스키마를 참조하면 시작 실패로 이어진다."
+    - title: "3. 시작 실패"
+      from: "Flyway"
+      to: "Startup Failure"
+      route_label: "마이그레이션·초기화·검증 순서가 어긋난 상태에서 컨텍스트가 종료된다."
+      active_actors: [flyway, failure, schema]
+      description: "로그에서 실제 실행 순서와 최초 SQL 오류를 확인해야 한다."
+      payload: ["exception", "missing table", "context close"]
+      outcomes:
+        - status: reject
+          text: "초기화 순서와 스키마 책임을 하나의 정책으로 정리해야 한다."
+
+flyway_defer_solution:
+  eyebrow: "Interactive flow"
+  title: "Flyway 이후 데이터 초기화"
+  summary: "Flyway가 스키마를 만든 뒤 초기화 스크립트와 Hibernate 검증이 실행되도록 순서를 명시한다."
+  actors:
+    - id: flyway
+      kind: "1단계"
+      name: "Flyway Migration"
+      description: "버전 SQL로 테이블·컬럼을 준비"
+    - id: init
+      kind: "2단계"
+      name: "Data Initialization"
+      description: "준비된 스키마에 초기 데이터를 입력"
+    - id: validate
+      kind: "3단계"
+      name: "Hibernate Validate"
+      description: "엔티티와 변경된 스키마를 비교"
+    - id: ready
+      kind: "결과"
+      name: "Ready Application"
+      description: "초기 데이터와 매핑 검증을 통과한 애플리케이션"
+  steps:
+    - title: "1. 스키마 준비"
+      from: "Flyway Migration"
+      to: "Data Initialization"
+      route_label: "Flyway가 필요한 테이블과 컬럼을 먼저 만든 뒤 초기화 단계로 넘긴다."
+      active_actors: [flyway, init]
+      description: "스키마의 생성·변경 이력은 Flyway가 단일 책임으로 맡는다."
+      payload: ["V1", "V2", "table ready"]
+      outcomes:
+        - status: allow
+          text: "초기화 스크립트가 참조할 구조가 존재한다."
+    - title: "2. 초기 데이터 입력"
+      from: "Data Initialization"
+      to: "Hibernate Validate"
+      route_label: "초기 데이터가 준비된 스키마에 입력되고 애플리케이션 매핑 검증으로 이어진다."
+      active_actors: [init, validate]
+      description: "개발용 초기화와 운영 마이그레이션을 같은 파일·책임으로 섞지 않는다."
+      payload: ["seed", "data.sql", "schema"]
+      outcomes:
+        - status: info
+          text: "환경별 초기 데이터 정책을 분리해 관리한다."
+    - title: "3. 최종 검증"
+      from: "Hibernate Validate"
+      to: "Ready Application"
+      route_label: "Hibernate가 스키마와 엔티티를 검증한 뒤 애플리케이션을 준비 상태로 전환한다."
+      active_actors: [validate, ready, flyway]
+      description: "변경 순서와 검증 실패를 시작 시점에 확인해 런타임 오류를 줄인다."
+      payload: ["validate", "health", "ready"]
+      outcomes:
+        - status: allow
+          text: "Flyway·초기화·Hibernate의 책임과 순서가 분리된다."

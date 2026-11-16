@@ -33,7 +33,7 @@ permalink: /posts/concurrency-control-strategy/
 
 이처럼 마지막에 저장된 값 때문에 이전의 변경 사항이 유실되는 것을 **Lost Update**라고 합니다. 데이터의 정합성을 심각하게 훼손하는 문제입니다.
 
-![동시성 문제 (Lost Update)](/assets/images/2026-06-01-concurrency-control/lost-update.png)
+{% include interactive/flow-card.html flow='payment_lost_update' %}
 
 ## 3. 락(Lock)이란
 
@@ -55,7 +55,7 @@ permalink: /posts/concurrency-control-strategy/
 | **낙관락** | 사용 안함 | 데이터 | 충돌 감지 후 처리 (재시도) |
 | **분산락** | 사용 | 분산 환경 공유 자원 | 분산 환경에서의 정합성 보장 |
 
-![동시성 제어 방법 분류](/assets/images/2026-06-01-concurrency-control/concurrency-control-classification.png)
+{% include interactive/flow-card.html flow='concurrency_control_methods' %}
 
 이처럼 격리수준은 데이터베이스 트랜잭션의 '정책'에 가깝고 비관락/낙관락/분산락은 동시성 문제를 해결하기 위한 '전략'이며 락/버전 관리/원자적 쿼리는 이러한 전략을 구현하는 '기법'이라고 볼 수 있습니다.
 
@@ -85,7 +85,7 @@ JPA(Java Persistence API)는 영속성 컨텍스트로 엔티티를 관리하며
 **실무 예시:**
 JPA에서는 `@Lock(LockModeType.PESSIMISTIC_WRITE)`로 비관적 락을 적용합니다. 이 어노테이션은 `SELECT ... FOR UPDATE`와 같은 SQL 쿼리를 발생시켜 데이터베이스 레벨에서 락을 겁니다.
 
-![비관적 락 동작 방식](/assets/images/2026-06-01-concurrency-control/pessimistic-lock.png)
+{% include interactive/flow-card.html flow='pessimistic_lock_payment' %}
 
 ## 7. 낙관적 락 (Optimistic Lock)
 
@@ -111,7 +111,7 @@ JPA에서는 `@Version` 어노테이션을 사용하여 낙관적 락을 구현�
 **사용하기 적합한 상황:**
 * 데이터 조회 빈도가 높고 충돌 발생 빈도가 낮은 경우 (예: 게시판 조회수, 댓글)
 
-![낙관적 락 동작 방식](/assets/images/2026-06-01-concurrency-control/optimistic-lock.png)
+{% include interactive/flow-card.html flow='optimistic_lock_payment' %}
 
 ## 8. 재시도 전략 (Retry Strategy)
 
@@ -145,7 +145,7 @@ WHERE id = ?;
 * 단순한 카운터 증가/감소와 같이 복잡한 비즈니스 로직이 없는 경우
 * 데이터베이스의 강력한 정합성 보장 기능을 활용하고자 할 때
 
-![원자적 쿼리 동작 방식](/assets/images/2026-06-01-concurrency-control/atomic-query.png)
+{% include interactive/flow-card.html flow='payment_conditional_update' %}
 
 ## 10. 분산락 (Distributed Lock)
 
@@ -159,7 +159,7 @@ WHERE id = ?;
 * **재고 차감**: 여러 서버에서 동시에 재고 차감 요청이 들어올 때 재고가 음수가 되는 것을 방지합니다.
 * **커넥션 풀 보호**: 특정 자원의 커넥션 풀을 여러 서버가 공유할 때 동시 접근을 제어합니다.
 
-![분산락 동작 방식](/assets/images/2026-06-01-concurrency-control/distributed-lock.png)
+{% include interactive/flow-card.html flow='payment_lock_transaction' %}
 
 ## 11. 그래서 무엇이 더 빠를까?
 

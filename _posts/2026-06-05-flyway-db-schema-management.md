@@ -96,7 +96,7 @@ Spring Boot 공식 문서에서도 Flyway나 Liquibase와 같은 상위 수준�
 
 정상적인 애플리케이션 실행 순서는 다음과 같습니다.
 
-![Flyway와 Hibernate Validate 실행 순서](/assets/images/2026-06-05-flyway-db-schema-management/flyway-hibernate-sequence.png)
+{% include interactive/flow-card.html flow='flyway_validate_sequence' %}
 
 1. **Flyway가 migration SQL 실행**: DB 스키마를 최신 상태로 만듭니다.
 2. **DB 테이블 생성/변경 완료**: Flyway 작업이 성공적으로 마무리됩니다.
@@ -111,7 +111,7 @@ Spring Boot 공식 문서에서도 Flyway나 Liquibase와 같은 상위 수준�
 
 만약 이 값이 `true`로 설정되어 있다면 다음과 같은 문제 상황이 발생할 수 있습니다.
 
-![defer-datasource-initialization=true 일 때 문제 상황](/assets/images/2026-06-05-flyway-db-schema-management/defer-true-problem.png)
+{% include interactive/flow-card.html flow='flyway_defer_problem' %}
 
 1. **Hibernate `validate` 실행**: 애플리케이션 시작 시 Hibernate가 스키마 검증을 시도합니다.
 2. **아직 Flyway가 테이블을 만들기 전**: `defer-datasource-initialization: true`로 인해 Flyway의 DB 초기화 작업이 지연됩니다.
@@ -130,7 +130,7 @@ spring:
     defer-datasource-initialization: false
 ```
 
-![defer-datasource-initialization=false 일 때 해결 흐름](/assets/images/2026-06-05-flyway-db-schema-management/defer-false-solution.png)
+{% include interactive/flow-card.html flow='flyway_defer_solution' %}
 
 1. **Flyway migration 실행**: 애플리케이션 시작 시 Flyway가 먼저 DB 스키마 마이그레이션을 수행합니다.
 2. **테이블 생성 완료**: Flyway에 의해 필요한 테이블들이 모두 생성됩니다.

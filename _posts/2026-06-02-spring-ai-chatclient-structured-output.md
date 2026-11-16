@@ -21,7 +21,7 @@ permalink: /posts/spring-ai-chatclient-structured-output/
 
 이러한 한계를 극복하기 위해 AI 앱 개발은 단순한 "답변 생성"을 넘어 다양한 방향으로 발전하고 있습니다. 그 흐름은 다음과 같습니다.
 
-![AI 앱 개발의 흐름](/assets/images/2026-06-02-spring-ai/ai-app-development-flow.png)
+{% include interactive/flow-card.html flow='spring_ai_app_flow' %}
 
 * **Structured Output**: LLM의 응답을 문자열이 아닌 JSON/객체와 같은 구조화된 형태로 받아 후속 처리를 용이하게 합니다.
 * **Tool Calling**: LLM이 외부 API, DB, 또는 서비스를 안전하게 호출하여 특정 작업을 수행할 수 있도록 합니다.
@@ -63,7 +63,7 @@ String response = httpClient.send(request, HttpResponse.BodyHandlers.ofString())
 
 **Spring AI**는 이러한 문제를 해결하고 AI 모델 호출을 Spring Boot 애플리케이션 내에서 자연스럽게 다룰 수 있도록 돕는 프레임워크입니다. Spring AI를 사용하면 AI 호출도 하나의 외부 의존성으로 간주해 Spring이 제공하는 기능(Bean, 설정, 서비스 계층)으로 체계적으로 관리할 수 있습니다.
 
-![Spring AI 아키텍처](/assets/images/2026-06-02-spring-ai/spring-ai-architecture.png)
+{% include interactive/flow-card.html flow='spring_ai_architecture' %}
 
 Spring Boot 개발자에게 익숙한 관점에서 Spring AI의 주요 구성요소는 다음과 같이 비유할 수 있습니다.
 
@@ -92,7 +92,7 @@ Spring Boot 개발자에게 익숙한 관점에서 Spring AI의 주요 구성요
 
 Spring AI를 처음 접할 때는 낯선 용어들 때문에 혼란스러울 수 있습니다. 하지만 몇 가지 핵심 개념만 이해하면 쉽게 접근할 수 있습니다.
 
-![Spring AI 핵심 구성요소](/assets/images/2026-06-02-spring-ai/spring-ai-core-components.png)
+{% include interactive/flow-card.html flow='spring_ai_components' %}
 
 ### 핵심 용어 정리
 
