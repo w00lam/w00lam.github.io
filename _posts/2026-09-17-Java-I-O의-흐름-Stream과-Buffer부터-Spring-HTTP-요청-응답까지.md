@@ -161,7 +161,7 @@ Network Output
 Client
 ~~~
 
-![클라이언트의 JSON 요청이 Java 객체가 되고 비즈니스 로직을 거쳐 JSON 응답으로 돌아가는 Spring HTTP 흐름](/assets/images/2026-09-17-java-io-http-flow/spring-http-io-serialization-flow.svg)
+{% include interactive/flow-card.html flow='spring_http_io' %}
 
 클라이언트가 보낸 HTTP Request가 서버로 들어오는 것은 네트워크 I/O다. Request Body의 JSON을 `CreateUserRequest` 객체로 바꾸는 과정은 역직렬화다. 그 객체를 서비스에 전달해 비즈니스 로직을 수행하고, 결과로 나온 `UserResponse` 객체를 JSON으로 바꾸는 과정은 직렬화다. 변환된 JSON을 HTTP Response로 보내는 단계는 네트워크 출력이다.
 

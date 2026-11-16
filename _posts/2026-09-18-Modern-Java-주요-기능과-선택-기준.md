@@ -168,7 +168,7 @@ if (obj instanceof User user) {
 
 데이터 전달이 주된 책임인 DTO라면 `record`를 검토할 수 있다. 값의 부재가 정상적인 결과라면 `Optional`을 반환 타입으로 고려한다. 기본값을 만드는 작업이 비싸다면 `orElseGet()`으로 실행 시점을 늦춘다. 우변만으로 타입이 분명한 지역 변수라면 `var`가 읽기 흐름을 단순하게 만들 수 있다. 허용된 타입 계층을 닫아야 한다면 `sealed`를, 분기의 결과를 바로 만들고 싶다면 `switch expression`을 검토한다. 타입 검사 뒤 캐스팅이 반복된다면 `instanceof` pattern matching이 그 의도를 잘 드러낼 수 있다.
 
-![코드가 표현하려는 의도에서 Modern Java 기능을 선택하는 기준](/assets/images/2026-09-18-modern-java-feature-selection/modern-java-selection-criteria.svg)
+{% include interactive/flow-card.html flow='modern_java_selection' %}
 
 ## 실제 Java/Spring 백엔드에서 적용할 때
 

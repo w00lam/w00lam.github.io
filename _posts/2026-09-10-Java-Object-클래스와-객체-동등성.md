@@ -85,7 +85,7 @@ System.out.println(user1 == user3); // true
 
 그 이유는 `==`가 값의 의미나 객체의 상태가 아니라 참조의 동일성을 비교하기 때문이다. 객체의 상태를 기준으로 비교하려면 다른 기준이 필요하다.
 
-![==는 참조 동일성을, equals()는 개발자가 정의한 논리적 동등성을 비교하는 구조](/assets/images/2026-09-10-object-equality/identity-vs-equality.svg)
+{% include interactive/flow-card.html flow='identity_equality' %}
 
 ## `equals()`는 무엇을 비교하는가?
 
@@ -195,7 +195,7 @@ users.size() == 1
 
 서로 다른 객체가 같은 해시값을 갖는 해시 충돌이 발생할 수 있기 때문이다. 해시값은 탐색 범위를 좁히는 기준이고, 최종 판단은 `equals()`가 맡는다.
 
-![HashSet이 hashCode()로 버킷을 찾은 뒤 equals()로 논리적 동등성을 확인하는 흐름](/assets/images/2026-09-10-object-equality/hashset-lookup.svg)
+{% include interactive/flow-card.html flow='hashset_lookup' %}
 
 ## `HashSet`에서 직접 확인하기
 

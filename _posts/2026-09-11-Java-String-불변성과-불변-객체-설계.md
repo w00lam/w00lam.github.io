@@ -47,7 +47,7 @@ String b = "hello";
 
 `new String("hello")`는 다르게 동작한다. `"hello"`라는 리터럴은 String Pool에 존재하지만 `new`는 그 내용을 가진 별도의 String 객체를 새로 만든다. 그래서 `c`는 Pool의 객체가 아니라 새로 생성된 객체를 참조한다.
 
-![String Pool과 new String()의 참조 관계를 보여주는 다이어그램](/assets/images/2026-09-11-string-immutability/string-pool-references.svg)
+{% include interactive/flow-card.html flow='string_pool' %}
 
 이 결과를 보면 `a`, `b`, `c`는 모두 문자열 내용으로는 `hello`를 갖지만 참조 관계는 같지 않다. `a`와 `b`가 같은 객체를 바라보고 `c`가 별도의 객체를 바라본다는 점을 구분하면 앞의 실행 결과가 설명된다.
 
@@ -94,7 +94,7 @@ value = value + " world";
 
 겉으로는 `value` 안의 문자열이 수정된 것처럼 보인다. 실제로는 기존 String 객체의 내용이 바뀌지 않는다.
 
-![String 불변성에 따른 변수 참조 재대입을 보여주는 다이어그램](/assets/images/2026-09-11-string-immutability/string-immutability-assignment.svg)
+{% include interactive/flow-card.html flow='string_immutable_assignment' %}
 
 `value = value + " world"`가 실행되면 `hello world`라는 새로운 문자열 결과가 만들어지고, `value`가 그 결과를 참조하도록 대입된다. 기존 `hello` 객체는 그대로 남는다.
 
@@ -197,7 +197,7 @@ System.out.println(user.getRoles()); // [USER, ADMIN]
 
 `User`의 코드를 호출한 쪽이 `user`의 메서드를 호출하지 않았는데도 내부 역할 목록이 바뀌었다. 생성자에 전달한 List와 `User.roles`가 같은 객체를 가리키고 있기 때문이다.
 
-![컬렉션 참조 공유와 방어적 복사를 비교하는 다이어그램](/assets/images/2026-09-11-string-immutability/collection-reference-boundary.svg)
+{% include interactive/flow-card.html flow='defensive_copy' %}
 
 getter도 같은 문제를 만든다.
 

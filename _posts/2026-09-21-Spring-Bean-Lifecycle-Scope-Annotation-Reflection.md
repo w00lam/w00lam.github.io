@@ -116,7 +116,7 @@ Java Reflection은 실행 중 Class, Method, Field, Constructor 같은 타입 �
 
 Spring은 클래스 정보를 BeanDefinition으로 등록한 뒤 Container에서 객체를 만들고 의존성을 연결한다. `@Service`가 객체를 만드는 게 아니라 Spring이 메타데이터를 읽고 규칙에 따라 Bean을 구성한다. ([Spring Classpath Scanning](https://docs.spring.io/spring-framework/reference/core/beans/classpath-scanning.html))
 
-![Annotation 메타데이터를 Spring이 해석해 Bean을 등록하고 생명주기를 관리하는 흐름](/assets/images/2026-09-21-spring-bean-lifecycle/spring-annotation-to-bean-lifecycle.svg)
+{% include interactive/flow-card.html flow='bean_lifecycle' %}
 
 실제 Backend 코드에선 `UserService`가 이런 과정을 거친다.
 

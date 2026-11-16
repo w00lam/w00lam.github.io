@@ -57,7 +57,7 @@ HTTP Response
 
 다만 이 그림을 모든 요청이 반드시 통과하는 고정된 호출 순서로 보면 안 된다. `@RequestParam`이나 `@PathVariable`처럼 URL과 요청 파라미터에서 값을 얻는 경우에는 JSON Body 변환이 필요하지 않다. `HttpMessageConverter`와 Jackson은 HTTP Body를 읽거나 쓸 때, 그중에서도 JSON을 사용하는 예시에서 등장한다.
 
-![JSON 요청과 응답을 예시로 본 Spring MVC HTTP 요청 처리 흐름](/assets/images/2026-09-22-spring-mvc-http-request-flow/spring-mvc-http-request-flow.svg)
+{% include interactive/flow-card.html flow='mvc_http' %}
 
 ## Servlet Container와 DispatcherServlet
 

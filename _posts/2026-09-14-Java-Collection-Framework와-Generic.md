@@ -34,7 +34,7 @@ comments.add("두 번째 댓글");
 
 여기서 중요한 점은 Collection이 단순히 크기가 변하는 배열이라는 사실이 아니다. **데이터를 저장하고 다루는 여러 구조를 공통된 인터페이스로 사용할 수 있게 만든 프레임워크**라는 점이다.
 
-![Java Collection Framework의 주요 인터페이스와 구현체 구조](/assets/images/2026-09-14-collection-framework-generic/collection-framework.svg)
+{% include interactive/flow-card.html flow='collection_framework' %}
 
 `List`와 `Set`은 `Collection`을 상속하지만 `Map`은 별도의 계층에 있다. `Map`은 값을 하나씩 저장하는 대신 `Key`와 `Value`의 관계를 관리하기 때문이다.
 
@@ -115,7 +115,7 @@ B 앞에 X 삽입
 
 하지만 `get(100)`처럼 특정 위치를 찾으려면 앞이나 뒤에서 노드를 따라가야 한다. 삽입 위치를 찾는 과정에서 이미 탐색 비용이 발생하면 연결만 바꾸는 장점이 전체 작업 시간으로 이어지지 않는다. 노드 객체와 연결 정보를 따로 관리하는 비용도 있다.
 
-![ArrayList의 배열 기반 저장과 LinkedList의 노드 연결 구조 비교](/assets/images/2026-09-14-collection-framework-generic/arraylist-linkedlist.svg)
+{% include interactive/flow-card.html flow='arraylist_linkedlist' %}
 
 따라서 구현체 선택은 Big-O 하나를 보고 끝낼 문제가 아니다. 인덱스 조회와 순회가 많은 일반적인 백엔드 코드에서는 `ArrayList`가 기본 선택이 되는 경우가 많다. 중간 삽입·삭제가 정말 빈번하고 위치를 이미 알고 있는지, 또는 다른 자료구조가 더 적합한지를 사용 패턴과 함께 확인한다.
 
@@ -144,7 +144,7 @@ equals()
 논리적으로 같은 객체인지 결정
 ```
 
-![HashSet이 hashCode()와 equals()로 객체의 중복을 판단하는 흐름](/assets/images/2026-09-14-collection-framework-generic/hashset-equals-hashcode.svg)
+{% include interactive/flow-card.html flow='hashset_equals' %}
 
 따라서 다음 계약이 필요하다.
 
@@ -307,7 +307,7 @@ Producer Extends
 Consumer Super
 ```
 
-![Generic Wildcard에서 extends와 super의 읽기·쓰기 방향을 비교한 PECS 다이어그램](/assets/images/2026-09-14-collection-framework-generic/generic-wildcards-pecs.svg)
+{% include interactive/flow-card.html flow='generic_pecs' %}
 
 PECS는 암기 문구로만 남기기보다 “컴파일러가 실제 타입을 어디까지 확정하는가?”라는 질문으로 이해하는 편이 낫다. `extends`에서는 읽을 값의 상한을 알고 `super`에서는 넣을 값의 하한을 보장한다.
 

@@ -47,7 +47,7 @@ public class OrderService {
 
 이제 서비스는 `OrderRepository`가 필요하다는 점만 드러내며, `JdbcOrderRepository`를 직접 생성하지 않는다. 어떤 구현체를 연결할지는 바깥에서 정한다. IoC는 객체 관리의 제어권을 넘기는 더 큰 개념이고, DI는 의존성을 외부에서 전달하는 대표적인 방법이다. 두 용어는 이어져 있지만 같은 뜻은 아니다.
 
-![직접 생성 방식과 Spring IoC·DI에서 객체 생성 및 의존 관계 연결 주체를 비교한 구조도](/assets/images/2026-09-19-spring-ioc-di/ioc-di-object-wiring.svg)
+{% include interactive/flow-card.html flow='ioc_di' %}
 
 ## Container가 관리하는 객체가 Bean이다
 

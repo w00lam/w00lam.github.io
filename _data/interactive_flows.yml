@@ -3819,3 +3819,1544 @@ on_where_join:
       outcomes:
         - status: info
           text: "SQL을 읽을 때 ON과 WHERE를 처리 순서와 함께 확인한다."
+
+cache_hierarchy:
+  eyebrow: "Interactive flow"
+  title: "CPU 캐시 계층의 히트와 미스"
+  summary: "가까운 캐시부터 블록을 찾고 없으면 더 느린 하위 계층으로 내려간다."
+  actors:
+    - id: cpu
+      kind: "요청 주체"
+      name: "CPU"
+      description: "명령어 또는 데이터 블록을 요청하는 프로세서"
+    - id: l1
+      kind: "가장 가까운 캐시"
+      name: "L1 Cache"
+      description: "작고 빠른 1차 캐시"
+    - id: l2
+      kind: "중간 캐시"
+      name: "L2 / L3 Cache"
+      description: "더 큰 하위 캐시 계층"
+    - id: ram
+      kind: "주기억장치"
+      name: "RAM"
+      description: "캐시에 없는 블록을 제공하는 메모리"
+  steps:
+    - title: "1. L1 조회"
+      from: "CPU"
+      to: "L1 Cache"
+      route_label: "CPU가 먼저 가장 가까운 L1 캐시에서 요청 블록을 찾는다."
+      active_actors: [cpu, l1]
+      description: "L1에 블록이 있으면 하위 계층까지 이동하지 않고 빠르게 결과를 얻는다."
+      payload: ["주소", "캐시 라인", "태그 비교"]
+      outcomes:
+        - status: allow
+          text: "L1 hit이면 접근 비용을 가장 작게 유지한다."
+    - title: "2. 하위 캐시 확인"
+      from: "L1 Cache"
+      to: "L2 / L3 Cache"
+      route_label: "L1 miss이면 L2와 L3에서 같은 블록을 차례로 찾는다."
+      active_actors: [l1, l2]
+      description: "각 계층의 용량과 지연 시간은 다르지만 가까운 곳부터 확인한다는 원리는 같다."
+      payload: ["L1 miss", "L2 hit", "L3 hit"]
+      outcomes:
+        - status: info
+          text: "캐시 계층의 이름보다 탐색 순서와 비용 차이가 핵심이다."
+    - title: "3. RAM 접근"
+      from: "L2 / L3 Cache"
+      to: "RAM"
+      route_label: "모든 캐시에서 찾지 못하면 RAM에서 블록을 가져온다."
+      active_actors: [l2, ram, cpu]
+      description: "RAM 접근은 캐시 hit보다 느리므로 가져온 블록을 캐시에 채우는 과정이 뒤따를 수 있다."
+      payload: ["cache miss", "메모리 블록", "fill line"]
+      outcomes:
+        - status: warning
+          text: "하위 계층까지 내려갈수록 지연 시간이 커진다."
+
+cache_conflict:
+  eyebrow: "Interactive flow"
+  title: "Direct Mapped 캐시의 충돌 미스"
+  summary: "서로 다른 블록이 같은 인덱스에 매핑되면 한 라인이 반복해서 교체될 수 있다."
+  actors:
+    - id: request
+      kind: "메모리 요청"
+      name: "Address 0 · 1 · 16"
+      description: "서로 다른 주소에서 발생한 접근"
+    - id: index
+      kind: "캐시 위치"
+      name: "Index 0"
+      description: "블록을 배치할 Direct Mapped 라인"
+    - id: block0
+      kind: "기존 블록"
+      name: "Block 0"
+      description: "처음 Index 0에 들어온 블록"
+    - id: block4
+      kind: "새 블록"
+      name: "Block 4"
+      description: "같은 Index 0을 차지하려는 블록"
+  steps:
+    - title: "1. 블록 0 적재"
+      from: "Address 0 · 1 · 16"
+      to: "Block 0"
+      route_label: "주소 0이 처음 요청되어 블록 0이 Index 0에 적재된다."
+      active_actors: [request, block0, index]
+      description: "처음 요청한 블록이 캐시에 없으면 콜드 미스가 발생한다."
+      payload: ["address 0", "block 0", "index 0"]
+      outcomes:
+        - status: info
+          text: "블록 안의 주소 1은 같은 블록에 있으면 hit가 될 수 있다."
+    - title: "2. 같은 블록 hit"
+      from: "Address 0 · 1 · 16"
+      to: "Block 0"
+      route_label: "주소 1은 같은 블록 0의 다른 offset을 읽어 hit가 된다."
+      active_actors: [request, block0, index]
+      description: "주소가 달라도 블록 번호와 인덱스가 현재 캐시 라인과 맞으면 RAM까지 내려가지 않는다."
+      payload: ["address 1", "same block", "hit"]
+      outcomes:
+        - status: allow
+          text: "공간적 지역성이 캐시 hit로 이어지는 예다."
+    - title: "3. 블록 4 교체"
+      from: "Address 0 · 1 · 16"
+      to: "Block 4"
+      route_label: "주소 16의 블록 4도 4 % 4 = 0이어서 Index 0의 블록 0을 교체한다."
+      active_actors: [request, block0, block4, index]
+      description: "서로 다른 태그를 가진 블록이 같은 인덱스를 쓰면 충돌 미스가 발생한다."
+      payload: ["address 16", "block 4", "tag 1", "replace"]
+      outcomes:
+        - status: warning
+          text: "같은 라인을 번갈아 쓰는 접근 패턴은 캐시 효율을 떨어뜨린다."
+
+cpu_bus:
+  eyebrow: "Interactive flow"
+  title: "CPU와 RAM 사이의 주소·제어·데이터 흐름"
+  summary: "CPU는 주소와 읽기·쓰기 제어 신호를 보내고 RAM은 읽기 값 또는 저장 결과를 데이터 버스로 교환한다."
+  actors:
+    - id: cpu
+      kind: "처리 장치"
+      name: "CPU"
+      description: "레지스터·제어장치·ALU를 가진 프로세서"
+    - id: control
+      kind: "제어"
+      name: "Control Unit"
+      description: "명령어를 해석하고 버스 동작을 지시함"
+    - id: alu
+      kind: "연산"
+      name: "ALU / Registers"
+      description: "값을 계산하고 주소·중간 결과를 보관함"
+    - id: ram
+      kind: "메모리"
+      name: "RAM"
+      description: "주소별 명령어와 데이터를 저장함"
+  steps:
+    - title: "1. 명령어 인출"
+      from: "Control Unit"
+      to: "RAM"
+      route_label: "제어장치가 PC의 주소와 읽기 신호를 RAM으로 보낸다."
+      active_actors: [cpu, control, ram]
+      description: "RAM은 해당 주소의 명령어를 CPU 쪽 데이터 버스로 돌려준다."
+      payload: ["PC address", "read", "instruction"]
+      outcomes:
+        - status: allow
+          text: "CPU는 인출한 명령어를 해석할 수 있다."
+    - title: "2. 피연산자 읽기"
+      from: "ALU / Registers"
+      to: "RAM"
+      route_label: "ADD 등에 필요한 데이터 주소와 읽기 신호를 RAM으로 보낸다."
+      active_actors: [alu, ram]
+      description: "주소·제어 신호와 실제 값이 서로 다른 방향으로 흐를 수 있음을 구분한다."
+      payload: ["data address", "read", "operand"]
+      outcomes:
+        - status: info
+          text: "읽기에서는 주소와 제어는 CPU에서, 값은 RAM에서 온다."
+    - title: "3. 연산 수행"
+      from: "RAM"
+      to: "ALU / Registers"
+      route_label: "RAM이 보낸 실제 값을 레지스터와 ALU가 계산에 사용한다."
+      active_actors: [ram, alu]
+      description: "제어장치가 명령어 순서를 조정하고 ALU가 산술·논리 연산을 수행한다."
+      payload: ["data bus", "ADD", "result"]
+      outcomes:
+        - status: info
+          text: "메모리 접근과 CPU 내부 연산은 서로 다른 책임이다."
+    - title: "4. STORE"
+      from: "ALU / Registers"
+      to: "RAM"
+      route_label: "저장 주소와 쓰기 신호, 레지스터의 값을 RAM으로 보낸다."
+      active_actors: [alu, control, ram]
+      description: "쓰기에서는 저장할 실제 값도 CPU에서 메모리로 이동한다."
+      payload: ["address 502", "write", "value 13"]
+      outcomes:
+        - status: allow
+          text: "RAM[502]에 새로운 값이 기록된다."
+
+jpa_dirty_check:
+  eyebrow: "Interactive flow"
+  title: "JPA Dirty Checking과 테스트 트랜잭션 경계"
+  summary: "영속 상태의 엔티티 변경을 트랜잭션 종료 시점에 감지해 UPDATE하고, 별도 트랜잭션에서 커밋 결과를 확인한다."
+  actors:
+    - id: service
+      kind: "업무 흐름"
+      name: "Service Transaction"
+      description: "User를 조회하고 도메인 메서드를 호출하는 트랜잭션"
+    - id: entity
+      kind: "영속 객체"
+      name: "Managed User"
+      description: "영속성 컨텍스트가 스냅샷과 함께 추적하는 엔티티"
+    - id: flush
+      kind: "변경 감지"
+      name: "Flush / UPDATE"
+      description: "스냅샷과 현재 상태를 비교해 SQL을 준비하는 단계"
+    - id: test
+      kind: "검증 경계"
+      name: "Separate Read Transaction"
+      description: "커밋된 결과를 별도 트랜잭션에서 읽는 검증"
+  steps:
+    - title: "1. 엔티티 조회"
+      from: "Service Transaction"
+      to: "Managed User"
+      route_label: "서비스 트랜잭션 안에서 User를 영속 상태로 조회한다."
+      active_actors: [service, entity]
+      description: "영속성 컨텍스트는 조회 시점의 상태를 스냅샷으로 기억한다."
+      payload: ["find User", "managed", "snapshot"]
+      outcomes:
+        - status: info
+          text: "변경 감지는 영속 상태 엔티티를 기준으로 동작한다."
+    - title: "2. 도메인 변경"
+      from: "Managed User"
+      to: "Service Transaction"
+      route_label: "setter 또는 changeName 같은 도메인 메서드로 엔티티 상태를 변경한다."
+      active_actors: [entity, service]
+      description: "변경 문법보다 영속성 컨텍스트가 추적하는 상태가 바뀌었는지가 중요하다."
+      payload: ["changeName()", "현재 상태", "dirty"]
+      outcomes:
+        - status: info
+          text: "엔티티 안에 변경 책임을 두면 정책을 함께 관리하기 쉽다."
+    - title: "3. Flush와 커밋"
+      from: "Managed User"
+      to: "Flush / UPDATE"
+      route_label: "flush 시점에 스냅샷과 현재 상태를 비교해 UPDATE SQL을 준비한다."
+      active_actors: [entity, flush, service]
+      description: "flush가 SQL을 보낸 시점과 트랜잭션이 최종 커밋된 시점은 구분해서 본다."
+      payload: ["dirty checking", "UPDATE", "commit"]
+      outcomes:
+        - status: allow
+          text: "커밋이 성공해야 다른 트랜잭션에서 변경 결과를 읽을 수 있다."
+    - title: "4. 별도 조회 검증"
+      from: "Separate Read Transaction"
+      to: "Managed User"
+      route_label: "서비스 트랜잭션이 끝난 뒤 별도 트랜잭션으로 변경된 User를 조회한다."
+      active_actors: [test, entity]
+      description: "테스트가 같은 트랜잭션 안에서만 동작하면 커밋과 격리 경계를 검증하지 못할 수 있다."
+      payload: ["new transaction", "committed value", "assert"]
+      outcomes:
+        - status: info
+          text: "검증하려는 사실에 맞춰 트랜잭션 경계를 설계한다."
+
+boot_startup:
+  eyebrow: "Interactive flow"
+  title: "Spring Boot 애플리케이션 시작"
+  summary: "Spring Boot가 설정과 클래스패스를 바탕으로 컨테이너와 웹 인프라를 준비한 뒤 애플리케이션을 실행한다."
+  actors:
+    - id: app
+      kind: "시작점"
+      name: "SpringApplication"
+      description: "main에서 부트스트랩을 시작하는 진입점"
+    - id: config
+      kind: "환경 설정"
+      name: "Auto Configuration"
+      description: "클래스패스와 설정에 맞는 자동 구성 후보"
+    - id: container
+      kind: "객체 관리"
+      name: "Spring Container"
+      description: "BeanDefinition으로 객체와 의존성을 관리하는 컨테이너"
+    - id: web
+      kind: "웹 인프라"
+      name: "Embedded Web Server"
+      description: "HTTP 요청을 받을 서버와 Servlet 환경"
+  steps:
+    - title: "1. 애플리케이션 시작"
+      from: "SpringApplication"
+      to: "Auto Configuration"
+      route_label: "SpringApplication이 환경과 클래스패스를 읽어 시작 구성을 결정한다."
+      active_actors: [app, config]
+      description: "Boot는 반복적인 초기화 코드를 줄이고 애플리케이션 구성 후보를 준비한다."
+      payload: ["main", "classpath", "application.yml"]
+      outcomes:
+        - status: info
+          text: "자동 구성은 조건에 따라 적용되므로 모든 애플리케이션의 결과가 동일하지 않다."
+    - title: "2. 컨테이너 준비"
+      from: "Auto Configuration"
+      to: "Spring Container"
+      route_label: "설정과 컴포넌트 스캔 결과로 BeanDefinition을 등록한다."
+      active_actors: [config, container]
+      description: "컨테이너는 Bean을 만들고 의존 관계를 연결할 준비를 한다."
+      payload: ["BeanDefinition", "component scan", "dependency graph"]
+      outcomes:
+        - status: allow
+          text: "객체 생성과 연결의 책임이 컨테이너로 모인다."
+    - title: "3. 웹 인프라 준비"
+      from: "Spring Container"
+      to: "Embedded Web Server"
+      route_label: "웹 관련 Bean과 내장 서버·Servlet 환경을 함께 준비한다."
+      active_actors: [container, web]
+      description: "웹 애플리케이션은 컨테이너 초기화와 HTTP 진입점 준비가 함께 완료되어야 한다."
+      payload: ["DispatcherServlet", "embedded server", "port"]
+      outcomes:
+        - status: allow
+          text: "서버가 뜬 뒤에야 외부 HTTP 요청을 받을 수 있다."
+    - title: "4. 요청 대기"
+      from: "Embedded Web Server"
+      to: "SpringApplication"
+      route_label: "초기화가 끝난 애플리케이션이 포트에서 HTTP 요청을 기다린다."
+      active_actors: [web, app, container]
+      description: "실제 Boot 내부 이벤트 순서 전체가 아니라 핵심 책임 연결을 단순화한 흐름이다."
+      payload: ["started", "listening", "ready"]
+      outcomes:
+        - status: info
+          text: "시작 성공과 요청 처리 흐름을 별개의 단계로 구분한다."
+
+security_mvc:
+  eyebrow: "Interactive flow"
+  title: "Spring Security에서 Spring MVC까지"
+  summary: "HTTP 요청은 Security Filter에서 인증·인가를 거친 뒤 DispatcherServlet과 Controller로 이어진다."
+  actors:
+    - id: client
+      kind: "요청"
+      name: "Client Request"
+      description: "브라우저나 API 클라이언트의 HTTP 요청"
+    - id: security
+      kind: "보안 경계"
+      name: "Security Filter"
+      description: "인증 정보와 접근 권한을 확인하는 필터 체인"
+    - id: mvc
+      kind: "웹 분배"
+      name: "DispatcherServlet"
+      description: "Spring MVC의 Front Controller"
+    - id: controller
+      kind: "업무 진입점"
+      name: "Controller"
+      description: "매핑된 요청을 처리하는 컨트롤러"
+  steps:
+    - title: "1. 요청 진입"
+      from: "Client Request"
+      to: "Security Filter"
+      route_label: "HTTP 요청이 애플리케이션 앞단의 Security Filter Chain으로 들어온다."
+      active_actors: [client, security]
+      description: "보안 검증은 MVC Controller보다 앞선 요청 경계에서 실행된다."
+      payload: ["HTTP request", "Cookie / Bearer", "filter chain"]
+      outcomes:
+        - status: info
+          text: "인증 정보가 없거나 유효하지 않으면 MVC로 내려가지 않을 수 있다."
+    - title: "2. 인증·인가 확인"
+      from: "Security Filter"
+      to: "DispatcherServlet"
+      route_label: "인증 결과와 권한 정책을 확인한 뒤 통과한 요청만 MVC로 넘긴다."
+      active_actors: [security, mvc]
+      description: "SecurityContext에 현재 요청의 인증 정보가 설정되는 시점과 Controller 호출을 구분한다."
+      payload: ["Authentication", "Authorization", "SecurityContext"]
+      outcomes:
+        - status: allow
+          text: "검증을 통과한 요청만 다음 계층에서 처리된다."
+    - title: "3. 핸들러 매핑"
+      from: "DispatcherServlet"
+      to: "Controller"
+      route_label: "DispatcherServlet이 URL과 HTTP 메서드에 맞는 Controller 핸들러를 찾는다."
+      active_actors: [mvc, controller]
+      description: "Spring MVC는 요청을 적절한 컨트롤러 메서드로 분배한다."
+      payload: ["handler mapping", "path", "method"]
+      outcomes:
+        - status: allow
+          text: "컨트롤러가 실제 비즈니스 요청 처리를 시작한다."
+    - title: "4. 응답 반환"
+      from: "Controller"
+      to: "Client Request"
+      route_label: "Controller의 결과가 MVC와 보안 계층을 거쳐 HTTP 응답으로 돌아간다."
+      active_actors: [controller, mvc, client]
+      description: "요청이 내려가는 경로와 응답이 올라오는 경로를 하나의 왕복으로 이해한다."
+      payload: ["response body", "status", "HTTP response"]
+      outcomes:
+        - status: info
+          text: "보안 필터와 MVC는 서로 다른 책임을 가진 요청 처리 계층이다."
+
+mvc_http:
+  eyebrow: "Interactive flow"
+  title: "Spring MVC의 JSON 요청과 응답"
+  summary: "Servlet Container가 요청을 받고 DispatcherServlet·Controller·MessageConverter를 거쳐 JSON 응답을 만든다."
+  actors:
+    - id: client
+      kind: "HTTP 클라이언트"
+      name: "Client"
+      description: "JSON 요청을 보내고 응답을 받는 쪽"
+    - id: servlet
+      kind: "서블릿 환경"
+      name: "Servlet Container"
+      description: "네트워크 요청과 Servlet 실행을 담당하는 런타임"
+    - id: dispatcher
+      kind: "분배기"
+      name: "DispatcherServlet"
+      description: "핸들러를 찾고 MVC 처리를 조정하는 Front Controller"
+    - id: converter
+      kind: "변환기"
+      name: "HttpMessageConverter"
+      description: "객체와 JSON Body를 변환하는 계층"
+  steps:
+    - title: "1. JSON 요청 수신"
+      from: "Client"
+      to: "Servlet Container"
+      route_label: "클라이언트가 JSON Body를 포함한 HTTP 요청을 보낸다."
+      active_actors: [client, servlet]
+      description: "URL 파라미터 요청과 JSON Body 요청은 필요한 변환 경로가 다를 수 있다."
+      payload: ["POST /users", "Content-Type: application/json", "JSON"]
+      outcomes:
+        - status: info
+          text: "모든 HTTP 요청이 JSON 변환을 필요로 하지는 않는다."
+    - title: "2. MVC 분배"
+      from: "Servlet Container"
+      to: "DispatcherServlet"
+      route_label: "Servlet Container가 요청을 DispatcherServlet에 전달한다."
+      active_actors: [servlet, dispatcher]
+      description: "DispatcherServlet이 Spring MVC 내부의 요청 처리를 시작한다."
+      payload: ["servlet request", "handler mapping", "controller"]
+      outcomes:
+        - status: allow
+          text: "적절한 컨트롤러 메서드가 선택된다."
+    - title: "3. JSON 역직렬화"
+      from: "HttpMessageConverter"
+      to: "DispatcherServlet"
+      route_label: "Jackson 같은 변환기가 Request Body를 Java 객체로 만든다."
+      active_actors: [converter, dispatcher]
+      description: "객체로 바꾸는 단계는 들어오는 JSON Body에 대한 역직렬화다."
+      payload: ["JSON", "CreateUserRequest", "deserialize"]
+      outcomes:
+        - status: info
+          text: "객체 변환과 비즈니스 로직 수행을 하나의 단계로 합치지 않는다."
+    - title: "4. JSON 응답 직렬화"
+      from: "DispatcherServlet"
+      to: "Client"
+      route_label: "Controller 결과 객체를 JSON으로 직렬화해 HTTP 응답으로 보낸다."
+      active_actors: [dispatcher, converter, client]
+      description: "응답 객체를 JSON으로 바꾸는 과정은 들어올 때와 반대 방향의 변환이다."
+      payload: ["UserResponse", "serialize", "HTTP response"]
+      outcomes:
+        - status: allow
+          text: "네트워크 I/O와 객체 직렬화 책임을 분리해 설명할 수 있다."
+
+bean_lifecycle:
+  eyebrow: "Interactive flow"
+  title: "Annotation에서 Spring Bean 생명주기까지"
+  summary: "Spring이 어노테이션 메타데이터를 읽어 BeanDefinition을 만들고 객체를 생성·주입·초기화한다."
+  actors:
+    - id: annotation
+      kind: "메타데이터"
+      name: "@Service / @Component"
+      description: "클래스가 Bean 후보임을 나타내는 어노테이션"
+    - id: reflection
+      kind: "해석"
+      name: "Reflection / Scan"
+      description: "클래스패스의 메타데이터를 읽는 과정"
+    - id: definition
+      kind: "설계 정보"
+      name: "BeanDefinition"
+      description: "생성·주입·스코프 정보를 담은 정의"
+    - id: bean
+      kind: "관리 객체"
+      name: "Spring Bean"
+      description: "컨테이너가 생성하고 생명주기를 관리하는 객체"
+  steps:
+    - title: "1. 후보 표시"
+      from: "@Service / @Component"
+      to: "Reflection / Scan"
+      route_label: "컴포넌트 스캔이 직접 또는 메타 어노테이션을 가진 클래스를 찾는다."
+      active_actors: [annotation, reflection]
+      description: "@Service 자체가 객체를 만드는 것이 아니라 Bean 후보라는 메타데이터를 제공한다."
+      payload: ["@Service", "@Component", "classpath"]
+      outcomes:
+        - status: info
+          text: "어노테이션과 객체 생성 주체를 구분한다."
+    - title: "2. 정의 등록"
+      from: "Reflection / Scan"
+      to: "BeanDefinition"
+      route_label: "Spring이 클래스 정보와 설정을 BeanDefinition으로 등록한다."
+      active_actors: [reflection, definition]
+      description: "컨테이너가 이후 어떤 방식으로 Bean을 만들지 설명하는 내부 정의가 준비된다."
+      payload: ["class metadata", "scope", "constructor"]
+      outcomes:
+        - status: allow
+          text: "객체 생성 계획과 의존성 정보가 컨테이너에 모인다."
+    - title: "3. 객체 생성과 주입"
+      from: "BeanDefinition"
+      to: "Spring Bean"
+      route_label: "컨테이너가 객체를 만들고 필요한 의존성을 연결한다."
+      active_actors: [definition, bean]
+      description: "생성자 주입 등 구성 규칙에 따라 Bean 그래프가 완성된다."
+      payload: ["instantiate", "dependency injection", "proxy 후보"]
+      outcomes:
+        - status: allow
+          text: "애플리케이션 코드가 구현체를 직접 생성하지 않아도 된다."
+    - title: "4. 생명주기 관리"
+      from: "Spring Bean"
+      to: "Spring Container"
+      route_label: "초기화 콜백과 스코프 규칙에 따라 컨테이너가 Bean을 관리한다."
+      active_actors: [bean, definition]
+      description: "Bean 등록은 생성 한 번으로 끝나지 않고 초기화·사용·종료까지 이어진다."
+      payload: ["init", "scope", "destroy"]
+      outcomes:
+        - status: info
+          text: "생명주기 책임이 컨테이너에 있다는 점이 핵심이다."
+
+ioc_di:
+  eyebrow: "Interactive comparison"
+  title: "직접 생성과 Spring IoC·DI"
+  summary: "직접 생성은 서비스가 구현체를 선택하지만 IoC·DI에서는 컨테이너가 객체 생성과 의존성 연결을 맡는다."
+  actors:
+    - id: service
+      kind: "사용자"
+      name: "OrderService"
+      description: "OrderRepository 계약을 필요로 하는 서비스"
+    - id: impl
+      kind: "구현체"
+      name: "JdbcOrderRepository"
+      description: "Repository 계약의 구체 구현"
+    - id: container
+      kind: "외부 조정자"
+      name: "Spring IoC Container"
+      description: "객체를 만들고 의존성을 주입하는 관리 주체"
+    - id: contract
+      kind: "추상화"
+      name: "OrderRepository"
+      description: "서비스와 구현체 사이의 계약"
+  steps:
+    - title: "1. 직접 생성"
+      from: "OrderService"
+      to: "JdbcOrderRepository"
+      route_label: "서비스가 new JdbcOrderRepository()로 구체 구현체를 직접 만든다."
+      active_actors: [service, impl]
+      description: "호출부가 구현체 선택과 생성 방법을 함께 알아야 하는 구조다."
+      payload: ["new", "구체 클래스", "강한 결합"]
+      outcomes:
+        - status: warning
+          text: "구현체 교체와 테스트 대체 범위가 서비스에 퍼질 수 있다."
+    - title: "2. 계약 의존"
+      from: "OrderService"
+      to: "OrderRepository"
+      route_label: "서비스는 필요한 기능의 계약만 알고 구체 구현체는 직접 만들지 않는다."
+      active_actors: [service, contract]
+      description: "인터페이스 타입에 의존하면 구현의 세부 사항과 호출부를 분리할 수 있다."
+      payload: ["constructor parameter", "interface", "역할"]
+      outcomes:
+        - status: allow
+          text: "서비스의 책임이 의존성 생성에서 업무 처리로 좁혀진다."
+    - title: "3. 컨테이너 주입"
+      from: "Spring IoC Container"
+      to: "OrderService"
+      route_label: "컨테이너가 OrderRepository 구현체를 선택해 생성자에 전달한다."
+      active_actors: [container, contract, service, impl]
+      description: "IoC는 객체 관리의 제어권을 외부로 넘기는 더 큰 개념이고 DI는 그 전달 방식이다."
+      payload: ["bean creation", "constructor injection", "wiring"]
+      outcomes:
+        - status: allow
+          text: "구현체 선택과 연결 책임이 바깥 구성으로 이동한다."
+
+modern_java_selection:
+  eyebrow: "Interactive flow"
+  title: "코드 의도에서 Modern Java 기능 선택"
+  summary: "최신 문법을 무조건 적용하지 않고 코드가 표현하려는 의도와 기능의 책임을 맞춰 선택한다."
+  actors:
+    - id: intent
+      kind: "문제 의도"
+      name: "Code Intent"
+      description: "데이터 전달·부재·분기·타입 계층 같은 코드의 목적"
+    - id: data
+      kind: "데이터 전달"
+      name: "record"
+      description: "값 중심 DTO를 간결하게 표현하는 기능"
+    - id: absence
+      kind: "부재 표현"
+      name: "Optional / orElseGet"
+      description: "값의 부재와 기본값 계산 시점을 표현함"
+    - id: type
+      kind: "타입·분기"
+      name: "sealed / pattern / switch"
+      description: "허용 타입과 분기 의도를 드러내는 기능들"
+  steps:
+    - title: "1. 의도 확인"
+      from: "Code Intent"
+      to: "record"
+      route_label: "주된 책임이 데이터 전달인지 먼저 확인한다."
+      active_actors: [intent, data]
+      description: "DTO처럼 값 전달이 중심이면 record가 후보가 될 수 있다."
+      payload: ["DTO", "불변 값", "record"]
+      outcomes:
+        - status: info
+          text: "Entity까지 같은 방식으로 바꾸는 것은 도메인 책임을 다시 확인해야 한다."
+    - title: "2. 부재와 비용"
+      from: "Code Intent"
+      to: "Optional / orElseGet"
+      route_label: "값이 없을 수 있는지와 기본값 계산 비용이 큰지를 구분한다."
+      active_actors: [intent, absence]
+      description: "Optional은 부재를, orElseGet은 기본값 계산 시점 지연을 표현한다."
+      payload: ["empty result", "Optional", "lazy default"]
+      outcomes:
+        - status: allow
+          text: "기능 이름보다 코드가 전달하려는 사실을 먼저 드러낸다."
+    - title: "3. 타입 계층과 분기"
+      from: "Code Intent"
+      to: "sealed / pattern / switch"
+      route_label: "허용 타입을 닫거나 분기 결과를 표현해야 하는지 판단한다."
+      active_actors: [intent, type]
+      description: "sealed, pattern matching, switch expression은 서로 다른 의도를 위한 도구다."
+      payload: ["sealed", "instanceof pattern", "switch expression"]
+      outcomes:
+        - status: info
+          text: "최신 문법 사용 자체가 리팩터링의 목적은 아니다."
+
+spring_http_io:
+  eyebrow: "Interactive flow"
+  title: "Spring HTTP 요청의 직렬화와 I/O"
+  summary: "클라이언트 JSON은 Java 객체로 역직렬화되고 비즈니스 로직 뒤 응답 객체가 다시 JSON으로 직렬화된다."
+  actors:
+    - id: client
+      kind: "네트워크 입력"
+      name: "HTTP Client"
+      description: "JSON Request를 보내고 JSON Response를 받는 클라이언트"
+    - id: converter
+      kind: "변환 계층"
+      name: "Jackson Converter"
+      description: "JSON과 Java 객체 사이를 변환하는 계층"
+    - id: service
+      kind: "업무 로직"
+      name: "Spring Service"
+      description: "변환된 요청을 처리하는 비즈니스 계층"
+    - id: response
+      kind: "네트워크 출력"
+      name: "HTTP Response"
+      description: "직렬화된 JSON을 담은 응답"
+  steps:
+    - title: "1. JSON 수신"
+      from: "HTTP Client"
+      to: "Jackson Converter"
+      route_label: "클라이언트가 JSON Request Body를 네트워크로 보낸다."
+      active_actors: [client, converter]
+      description: "HTTP 네트워크 입력과 JSON 형식 자체를 구분한다."
+      payload: ["HTTP request", "JSON", "Request Body"]
+      outcomes:
+        - status: info
+          text: "JSON이 들어온다는 사실과 객체 변환은 서로 다른 단계다."
+    - title: "2. 역직렬화"
+      from: "Jackson Converter"
+      to: "Spring Service"
+      route_label: "Request Body를 CreateUserRequest 같은 Java 객체로 변환한다."
+      active_actors: [converter, service]
+      description: "외부 표현을 애플리케이션 내부 타입으로 바꾸는 과정이다."
+      payload: ["deserialize", "CreateUserRequest", "Java object"]
+      outcomes:
+        - status: allow
+          text: "서비스는 JSON 문법보다 객체의 의미를 다룬다."
+    - title: "3. 비즈니스 처리"
+      from: "Spring Service"
+      to: "Jackson Converter"
+      route_label: "서비스가 처리 결과를 UserResponse 같은 객체로 만든다."
+      active_actors: [service, converter]
+      description: "업무 로직 수행과 결과 객체 생성은 직렬화 전의 별도 책임이다."
+      payload: ["business logic", "UserResponse", "result object"]
+      outcomes:
+        - status: info
+          text: "객체가 만들어졌다고 네트워크 응답이 바로 되는 것은 아니다."
+    - title: "4. 직렬화와 응답"
+      from: "Jackson Converter"
+      to: "HTTP Response"
+      route_label: "응답 객체를 JSON으로 바꾸고 HTTP Response로 전송한다."
+      active_actors: [converter, response, client]
+      description: "내부 객체를 외부 전송 형식으로 바꾸는 과정이 직렬화다."
+      payload: ["serialize", "JSON response", "network output"]
+      outcomes:
+        - status: allow
+          text: "입력의 역직렬화와 출력의 직렬화를 왕복 흐름으로 구분한다."
+
+race_condition:
+  eyebrow: "Interactive flow"
+  title: "count++에서 발생하는 Race Condition"
+  summary: "두 Thread가 같은 값을 읽고 각각 계산한 뒤 덮어쓰면 기대한 2가 아니라 1이 남을 수 있다."
+  actors:
+    - id: thread_a
+      kind: "실행 흐름 A"
+      name: "Thread A"
+      description: "공유 count를 읽고 증가시키는 스레드"
+    - id: thread_b
+      kind: "실행 흐름 B"
+      name: "Thread B"
+      description: "같은 공유 상태에 동시에 접근하는 스레드"
+    - id: shared
+      kind: "공유 상태"
+      name: "count = 0"
+      description: "두 Thread가 함께 읽고 쓰는 값"
+    - id: result
+      kind: "최종 결과"
+      name: "count = 1"
+      description: "쓰기 충돌로 한 증가가 사라진 결과"
+  steps:
+    - title: "1. 같은 값 읽기"
+      from: "count = 0"
+      to: "Thread A / Thread B"
+      route_label: "두 Thread가 거의 동시에 공유 count의 0을 읽는다."
+      active_actors: [shared, thread_a, thread_b]
+      description: "count++는 한 번에 끝나는 원자 연산이 아니라 읽기·수정·쓰기의 묶음이다."
+      payload: ["read 0", "read 0", "shared state"]
+      outcomes:
+        - status: warning
+          text: "둘 다 같은 이전 값을 기반으로 계산할 수 있다."
+    - title: "2. 각각 1 계산"
+      from: "Thread A / Thread B"
+      to: "count = 0"
+      route_label: "각 Thread가 로컬 계산 결과 1을 만든다."
+      active_actors: [thread_a, thread_b, shared]
+      description: "각자 한 번 증가시켰다는 사실과 공유 메모리에 반영된 횟수는 다를 수 있다."
+      payload: ["0 + 1", "local result 1", "overlap"]
+      outcomes:
+        - status: warning
+          text: "두 계산 사이에 다른 Thread의 쓰기가 끼어들 수 있다."
+    - title: "3. 마지막 쓰기"
+      from: "Thread A / Thread B"
+      to: "count = 1"
+      route_label: "마지막으로 기록된 1이 앞선 Thread의 결과를 덮어쓴다."
+      active_actors: [thread_a, thread_b, result]
+      description: "실행 순서에 따라 결과가 달라지는 것이 Race Condition이다."
+      payload: ["write 1", "write 1", "lost update"]
+      outcomes:
+        - status: reject
+          text: "두 번의 증가가 모두 반영될 것이라는 보장이 깨진다."
+    - title: "4. 제어 범위 선택"
+      from: "count = 1"
+      to: "count = 0"
+      route_label: "락·원자 연산·불변 구조 등 공유 상태에 맞는 제어 방식을 선택한다."
+      active_actors: [result, shared]
+      description: "동기화 여부보다 어떤 상태를 어느 범위에서 보호해야 하는지 먼저 판단한다."
+      payload: ["lock", "atomic", "critical section"]
+      outcomes:
+        - status: info
+          text: "문제의 원인은 Thread 수가 아니라 공유 상태의 경쟁이다."
+
+singleton_shared_state:
+  eyebrow: "Interactive flow"
+  title: "Spring Singleton Bean과 공유 mutable 상태"
+  summary: "여러 HTTP 요청이 하나의 Singleton Bean 인스턴스에 동시에 들어오면 mutable field가 요청 간 공유될 수 있다."
+  actors:
+    - id: requests
+      kind: "동시 요청"
+      name: "HTTP Requests"
+      description: "서로 다른 요청 Thread에서 들어오는 호출들"
+    - id: threads
+      kind: "실행 흐름"
+      name: "Request Threads"
+      description: "각 요청을 처리하는 독립 실행 흐름"
+    - id: bean
+      kind: "공유 객체"
+      name: "Singleton Bean"
+      description: "컨테이너가 기본적으로 하나만 만드는 Bean"
+    - id: state
+      kind: "변경 가능 필드"
+      name: "Mutable Field"
+      description: "요청별 값이 섞일 수 있는 인스턴스 상태"
+  steps:
+    - title: "1. 요청 분리"
+      from: "HTTP Requests"
+      to: "Request Threads"
+      route_label: "여러 HTTP 요청이 서로 다른 Thread에서 동시에 실행된다."
+      active_actors: [requests, threads]
+      description: "요청별 로컬 변수는 Thread마다 분리되지만 Bean 인스턴스는 별도 문제다."
+      payload: ["request A", "request B", "thread"]
+      outcomes:
+        - status: info
+          text: "Thread가 다르다는 사실만으로 객체 상태가 분리되지는 않는다."
+    - title: "2. 하나의 Bean 공유"
+      from: "Request Threads"
+      to: "Singleton Bean"
+      route_label: "여러 Thread가 컨테이너의 같은 Singleton Bean을 호출한다."
+      active_actors: [threads, bean]
+      description: "Singleton은 인스턴스 수를 줄이는 스코프이지 자동으로 Thread-safe하게 만드는 장치가 아니다."
+      payload: ["same instance", "DI", "concurrent call"]
+      outcomes:
+        - status: warning
+          text: "인스턴스 필드가 요청별 작업 공간으로 사용되면 경쟁이 생긴다."
+    - title: "3. mutable field 충돌"
+      from: "Singleton Bean"
+      to: "Mutable Field"
+      route_label: "동시 요청이 같은 mutable field를 읽고 쓰면서 값이 섞일 수 있다."
+      active_actors: [bean, state, threads]
+      description: "요청 데이터는 메서드 로컬 변수나 불변 값으로 두고 공유 상태는 별도 보호가 필요하다."
+      payload: ["field write", "request data", "race"]
+      outcomes:
+        - status: reject
+          text: "Singleton이라는 이유만으로 공유 필드가 안전해지지 않는다."
+
+distributed_jvm_lock:
+  eyebrow: "Interactive comparison"
+  title: "여러 서버에서 JVM Lock이 충분하지 않은 이유"
+  summary: "각 서버의 JVM Lock은 자기 프로세스 안에서만 유효하므로 같은 DB를 향한 전역 경쟁을 막지 못한다."
+  actors:
+    - id: request_a
+      kind: "요청 경로 A"
+      name: "Server A"
+      description: "첫 번째 JVM에서 요청을 처리하는 서버"
+    - id: request_b
+      kind: "요청 경로 B"
+      name: "Server B"
+      description: "두 번째 JVM에서 요청을 처리하는 서버"
+    - id: lock
+      kind: "프로세스 잠금"
+      name: "JVM Locks"
+      description: "각 JVM 내부 객체에 걸린 독립된 락"
+    - id: db
+      kind: "공유 자원"
+      name: "Shared Database"
+      description: "두 서버가 함께 변경하는 외부 상태"
+  steps:
+    - title: "1. 요청 분산"
+      from: "Server A / Server B"
+      to: "JVM Locks"
+      route_label: "로드 밸런서가 같은 자원 요청을 서로 다른 서버로 보낼 수 있다."
+      active_actors: [request_a, request_b]
+      description: "서버가 여러 대가 되면 요청이 한 프로세스에만 머문다는 보장이 없다."
+      payload: ["request 1", "request 2", "load balancing"]
+      outcomes:
+        - status: warning
+          text: "분산 배치에서는 서버별 메모리 상태가 서로 다르다."
+    - title: "2. 독립 Lock 획득"
+      from: "JVM Locks"
+      to: "Shared Database"
+      route_label: "Server A와 B가 서로 다른 JVM Lock을 획득하고 DB에 접근한다."
+      active_actors: [request_a, request_b, lock, db]
+      description: "객체 주소와 락 모니터가 JVM마다 다르므로 한쪽 락이 다른 서버를 멈추지 않는다."
+      payload: ["lock A", "lock B", "same row"]
+      outcomes:
+        - status: reject
+          text: "프로세스 내부 락만으로 전역 상호 배제를 만들 수 없다."
+    - title: "3. 공유 제어 선택"
+      from: "Shared Database"
+      to: "JVM Locks"
+      route_label: "DB Lock·분산 Lock·원자 연산처럼 공유 자원에 도달하는 제어를 선택한다."
+      active_actors: [db, request_a, request_b]
+      description: "락의 위치는 보호하려는 상태가 실제로 어디에 있는지에 맞춰야 한다."
+      payload: ["DB row lock", "distributed lock", "atomic update"]
+      outcomes:
+        - status: info
+          text: "단일 JVM 문제와 여러 서버의 공유 상태 문제를 구분한다."
+
+jvm_memory:
+  eyebrow: "Interactive flow"
+  title: "JVM Stack·Heap·Method Area와 객체 생명주기"
+  summary: "Stack의 여러 참조가 Heap의 같은 객체를 가리킬 수 있고 Method Area는 클래스 수준 정보를 관리한다."
+  actors:
+    - id: stack
+      kind: "호출 프레임"
+      name: "JVM Stack"
+      description: "메서드별 지역 변수와 객체 참조를 담는 영역"
+    - id: heap
+      kind: "객체 저장"
+      name: "Heap"
+      description: "new로 생성된 객체가 놓이는 영역"
+    - id: method
+      kind: "클래스 정보"
+      name: "Method Area"
+      description: "클래스 메타데이터와 정적 수준 정보를 관리하는 영역"
+    - id: gc
+      kind: "회수 판단"
+      name: "Garbage Collector"
+      description: "더 이상 도달할 수 없는 객체를 회수하는 런타임"
+  steps:
+    - title: "1. 객체 생성"
+      from: "JVM Stack"
+      to: "Heap"
+      route_label: "메서드 안의 참조 변수 user1·user2가 Heap의 User 객체를 가리킨다."
+      active_actors: [stack, heap]
+      description: "변수 두 개가 있어도 new를 한 번만 했다면 같은 객체를 함께 가리킬 수 있다."
+      payload: ["user1", "user2", "new User()"]
+      outcomes:
+        - status: info
+          text: "참조 변수 수와 Heap 객체 수를 같은 숫자로 세지 않는다."
+    - title: "2. 클래스 정보 사용"
+      from: "Method Area"
+      to: "Heap"
+      route_label: "User 클래스의 메타데이터와 메서드 정보가 객체 동작을 뒷받침한다."
+      active_actors: [method, heap]
+      description: "객체 인스턴스 데이터와 클래스 수준 정보는 다른 메모리 책임으로 나누어 본다."
+      payload: ["class metadata", "method", "static info"]
+      outcomes:
+        - status: info
+          text: "Method Area의 구현 세부는 JVM 버전에 따라 달라질 수 있다."
+    - title: "3. 프레임 종료"
+      from: "JVM Stack"
+      to: "Garbage Collector"
+      route_label: "메서드가 끝나면 Stack의 지역 참조는 사라지고 Heap 객체의 도달 가능성을 다시 판단한다."
+      active_actors: [stack, heap, gc]
+      description: "참조가 모두 끊겼다고 해서 즉시 객체가 삭제되는 것은 아니며 GC가 회수 시점을 결정한다."
+      payload: ["frame pop", "reachability", "GC candidate"]
+      outcomes:
+        - status: info
+          text: "메서드 종료와 객체 즉시 소멸을 같은 사건으로 보지 않는다."
+
+collection_framework:
+  eyebrow: "Interactive comparison"
+  title: "Java Collection Framework의 구조"
+  summary: "공통 인터페이스 아래 List·Set과 별도 Map 계층이 저장과 조회 방식에 맞는 구현체를 제공한다."
+  actors:
+    - id: collection
+      kind: "공통 계약"
+      name: "Collection"
+      description: "여러 요소를 다루는 공통 인터페이스"
+    - id: list
+      kind: "순서·중복"
+      name: "List"
+      description: "인덱스와 입력 순서를 다루는 계층"
+    - id: set
+      kind: "중복 없음"
+      name: "Set"
+      description: "논리적 중복을 허용하지 않는 계층"
+    - id: map
+      kind: "키·값"
+      name: "Map"
+      description: "Key와 Value 관계를 관리하는 별도 계층"
+  steps:
+    - title: "1. 공통 컬렉션 계약"
+      from: "Collection"
+      to: "List / Set"
+      route_label: "List와 Set이 Collection의 공통 연산 계약을 확장한다."
+      active_actors: [collection, list, set]
+      description: "Collection은 단순히 크기가 변하는 배열이 아니라 여러 구조를 공통 방식으로 다루는 틀이다."
+      payload: ["add", "remove", "iterate"]
+      outcomes:
+        - status: info
+          text: "공통 인터페이스와 저장 구조 구현체를 구분한다."
+    - title: "2. List 선택"
+      from: "List"
+      to: "Collection"
+      route_label: "순서와 인덱스 접근이 중요하면 List 계열을 선택한다."
+      active_actors: [list, collection]
+      description: "ArrayList와 LinkedList는 같은 List 계약을 서로 다른 저장 구조로 구현한다."
+      payload: ["order", "duplicates", "index"]
+      outcomes:
+        - status: allow
+          text: "사용 패턴이 구현체 선택의 기준이 된다."
+    - title: "3. Set 선택"
+      from: "Set"
+      to: "Collection"
+      route_label: "중복을 허용하지 않는 값 집합이 필요하면 Set 계열을 선택한다."
+      active_actors: [set, collection]
+      description: "Set의 중복 판단은 구현체의 해시·동등성 계약과 연결된다."
+      payload: ["unique", "equals", "hashCode"]
+      outcomes:
+        - status: info
+          text: "중복 없음은 값의 의미를 어떻게 정의하는지에 달려 있다."
+    - title: "4. Map 분리"
+      from: "Map"
+      to: "Collection"
+      route_label: "키와 값의 관계를 저장해야 하면 Collection과 별도인 Map 계층을 사용한다."
+      active_actors: [map, collection]
+      description: "Map은 요소 하나씩의 순서보다 키로 값을 찾는 관계를 모델링한다."
+      payload: ["key", "value", "lookup"]
+      outcomes:
+        - status: info
+          text: "List·Set·Map을 하나의 배열 대체품으로 묶어 선택하지 않는다."
+
+arraylist_linkedlist:
+  eyebrow: "Interactive comparison"
+  title: "ArrayList와 LinkedList 저장 구조"
+  summary: "ArrayList는 배열 인덱스로 접근하고 LinkedList는 노드 링크를 따라가므로 접근과 삽입 비용이 다르다."
+  actors:
+    - id: operation
+      kind: "사용 패턴"
+      name: "Access / Insert"
+      description: "인덱스 조회와 중간 삽입·삭제 같은 작업"
+    - id: array
+      kind: "연속 저장"
+      name: "ArrayList"
+      description: "내부 배열과 인덱스로 요소를 저장"
+    - id: linked
+      kind: "노드 연결"
+      name: "LinkedList"
+      description: "노드와 next·prev 링크로 요소를 저장"
+    - id: cost
+      kind: "비용 판단"
+      name: "Actual Workload"
+      description: "탐색과 이동을 함께 포함한 실제 비용"
+  steps:
+    - title: "1. 인덱스 조회"
+      from: "Access / Insert"
+      to: "ArrayList"
+      route_label: "ArrayList는 인덱스로 내부 배열 위치를 계산해 요소를 읽는다."
+      active_actors: [operation, array]
+      description: "연속 저장 덕분에 임의 인덱스 접근이 일정한 비용에 가깝다."
+      payload: ["get(i)", "array index", "O(1)"]
+      outcomes:
+        - status: allow
+          text: "인덱스 조회와 순회가 많은 코드에서 기본 선택이 될 수 있다."
+    - title: "2. 링크 탐색"
+      from: "Access / Insert"
+      to: "LinkedList"
+      route_label: "LinkedList는 시작점에서 노드를 따라가 대상 위치를 찾는다."
+      active_actors: [operation, linked]
+      description: "삽입 위치를 이미 알고 있지 않다면 탐색 비용이 먼저 발생한다."
+      payload: ["node", "next / prev", "traversal"]
+      outcomes:
+        - status: warning
+          text: "중간 삽입이 항상 전체 작업에서 빠르다고 단정하지 않는다."
+    - title: "3. 구현체 선택"
+      from: "Actual Workload"
+      to: "ArrayList"
+      route_label: "조회·순회·삽입 빈도와 위치 지식까지 포함해 구현체를 선택한다."
+      active_actors: [cost, array, linked]
+      description: "Big-O 하나만 보지 말고 실제 호출 패턴과 메모리 비용을 함께 비교한다."
+      payload: ["access frequency", "known position", "node overhead"]
+      outcomes:
+        - status: info
+          text: "자료구조 선택은 작업 패턴에 대한 설계 결정이다."
+
+hashset_equals:
+  eyebrow: "Interactive flow"
+  title: "HashSet의 hashCode와 equals"
+  summary: "HashSet은 hashCode로 후보 버킷을 찾은 뒤 equals로 논리적 중복을 최종 판단한다."
+  actors:
+    - id: object
+      kind: "입력 객체"
+      name: "User Object"
+      description: "Set에 추가하거나 이미 존재하는지 확인할 객체"
+    - id: hash
+      kind: "1차 탐색"
+      name: "hashCode()"
+      description: "객체가 들어갈 후보 버킷을 계산하는 값"
+    - id: bucket
+      kind: "후보 영역"
+      name: "Hash Bucket"
+      description: "같은 해시 후보가 모이는 저장 영역"
+    - id: equals
+      kind: "최종 비교"
+      name: "equals()"
+      description: "논리적으로 같은 객체인지 확인하는 비교"
+  steps:
+    - title: "1. 해시 계산"
+      from: "User Object"
+      to: "hashCode()"
+      route_label: "입력 객체의 hashCode를 계산해 후보 버킷을 찾는다."
+      active_actors: [object, hash]
+      description: "해시값은 탐색 범위를 좁히는 기준이지 동등성의 최종 증거는 아니다."
+      payload: ["hashCode", "bucket index", "candidate"]
+      outcomes:
+        - status: info
+          text: "서로 다른 객체도 같은 해시값을 가질 수 있다."
+    - title: "2. 버킷 진입"
+      from: "hashCode()"
+      to: "Hash Bucket"
+      route_label: "계산된 해시 위치의 후보 요소만 비교 대상으로 좁힌다."
+      active_actors: [hash, bucket]
+      description: "해시 테이블은 전체 요소를 모두 비교하지 않도록 후보를 줄인다."
+      payload: ["bucket", "collision", "candidate set"]
+      outcomes:
+        - status: info
+          text: "충돌이 있어도 다음 equals 단계로 판단할 수 있다."
+    - title: "3. 논리적 동등성"
+      from: "Hash Bucket"
+      to: "equals()"
+      route_label: "후보 객체와 equals를 호출해 논리적으로 같은지 확인한다."
+      active_actors: [bucket, equals, object]
+      description: "equals가 true인 두 객체는 같은 hashCode를 반환해야 계약이 유지된다."
+      payload: ["equals", "same identity by rule", "duplicate"]
+      outcomes:
+        - status: reject
+          text: "equals와 hashCode 계약을 어기면 Set의 중복 판단이 깨질 수 있다."
+
+generic_pecs:
+  eyebrow: "Interactive comparison"
+  title: "Generic Wildcard와 PECS"
+  summary: "extends는 생산자에서 안전하게 읽는 방향이고 super는 소비자에 값을 넣는 방향을 표현한다."
+  actors:
+    - id: producer
+      kind: "상한 타입"
+      name: "? extends T"
+      description: "T의 하위 타입을 생산하는 컬렉션"
+    - id: consumer
+      kind: "하한 타입"
+      name: "? super T"
+      description: "T 또는 상위 타입을 소비하는 컬렉션"
+    - id: read
+      kind: "읽기"
+      name: "Read as T"
+      description: "상한을 알고 읽을 수 있는 방향"
+    - id: write
+      kind: "쓰기"
+      name: "Write T"
+      description: "하한이 보장되어 넣을 수 있는 방향"
+  steps:
+    - title: "1. extends 생산자"
+      from: "? extends T"
+      to: "Read as T"
+      route_label: "T의 하위 타입을 담은 컬렉션에서 값을 T로 읽는다."
+      active_actors: [producer, read]
+      description: "정확한 실제 하위 타입은 몰라도 T라는 상한은 보장된다."
+      payload: ["Producer", "? extends T", "get"]
+      outcomes:
+        - status: allow
+          text: "값을 읽는 용도에 적합하다."
+    - title: "2. extends 쓰기 제한"
+      from: "Read as T"
+      to: "? extends T"
+      route_label: "어떤 구체 하위 타입인지 모르므로 임의의 T 값을 넣기 어렵다."
+      active_actors: [producer, read]
+      description: "하위 타입 전용 컬렉션일 수 있어 안전한 추가 타입을 확정할 수 없다."
+      payload: ["unknown subtype", "add 제한", "type safety"]
+      outcomes:
+        - status: warning
+          text: "extends를 읽기와 쓰기 모두 가능하다고 외우지 않는다."
+    - title: "3. super 소비자"
+      from: "? super T"
+      to: "Write T"
+      route_label: "T 또는 T의 상위 타입 컬렉션에는 T 값을 안전하게 넣을 수 있다."
+      active_actors: [consumer, write]
+      description: "실제 타입이 T의 부모여도 T는 그 안에 들어갈 수 있다."
+      payload: ["Consumer", "? super T", "add(T)"]
+      outcomes:
+        - status: allow
+          text: "값을 소비하는 메서드의 매개변수에 적합하다."
+    - title: "4. PECS 적용"
+      from: "Producer / Consumer"
+      to: "Read as T"
+      route_label: "데이터를 꺼내는 쪽은 extends, 넣는 쪽은 super를 후보로 삼는다."
+      active_actors: [producer, consumer, read, write]
+      description: "PECS는 암기보다 컴파일러가 확정할 수 있는 타입 범위를 묻는 규칙이다."
+      payload: ["Producer Extends", "Consumer Super", "generic API"]
+      outcomes:
+        - status: info
+          text: "실제 API의 반환·입력 역할에 맞춰 wildcard를 선택한다."
+
+string_pool:
+  eyebrow: "Interactive flow"
+  title: "String Pool과 new String"
+  summary: "문자열 리터럴은 String Pool의 객체를 공유할 수 있지만 new String은 별도 객체를 만든다."
+  actors:
+    - id: literal
+      kind: "리터럴"
+      name: '"hello"'
+      description: "String Pool에 intern되는 문자열 리터럴"
+    - id: pool
+      kind: "공유 영역"
+      name: "String Pool"
+      description: "같은 리터럴 객체를 재사용하는 풀"
+    - id: reference
+      kind: "참조 변수"
+      name: "a · b · c"
+      description: "문자열 객체를 가리키는 변수들"
+    - id: fresh
+      kind: "새 객체"
+      name: "new String()"
+      description: "내용은 같지만 별도로 생성된 객체"
+  steps:
+    - title: "1. 리터럴 조회"
+      from: '"hello"'
+      to: "String Pool"
+      route_label: "문자열 리터럴은 Pool에서 같은 내용의 객체를 재사용할 수 있다."
+      active_actors: [literal, pool]
+      description: "리터럴 표현과 객체 생성 표현은 같은 참조 동작을 보장하지 않는다."
+      payload: ["literal", "intern", "shared object"]
+      outcomes:
+        - status: info
+          text: "내용이 같다는 사실과 참조가 같다는 사실은 분리해서 확인한다."
+    - title: "2. a와 b 공유"
+      from: "String Pool"
+      to: "a · b · c"
+      route_label: "같은 리터럴을 사용한 a와 b가 Pool의 동일 객체를 가리킬 수 있다."
+      active_actors: [pool, reference]
+      description: "참조 동일성은 리터럴 풀링 규칙과 연결된다."
+      payload: ["a", "b", "same reference"]
+      outcomes:
+        - status: allow
+          text: "a == b가 true가 될 수 있는 구조다."
+    - title: "3. c는 별도 객체"
+      from: "new String()"
+      to: "a · b · c"
+      route_label: "new String(\"hello\")는 같은 내용을 가진 새 객체를 만든다."
+      active_actors: [fresh, reference]
+      description: "c의 문자열 내용은 같아도 Pool 객체와 참조는 다를 수 있다."
+      payload: ["c", "new", "different reference"]
+      outcomes:
+        - status: warning
+          text: "문자열 내용 비교에는 equals를 사용한다."
+
+string_immutable_assignment:
+  eyebrow: "Interactive flow"
+  title: "String 불변성과 재대입"
+  summary: "문자열 연산은 기존 객체를 바꾸지 않고 새로운 결과 객체를 만들어 변수의 참조를 바꾼다."
+  actors:
+    - id: variable
+      kind: "변수"
+      name: "value"
+      description: "현재 문자열 객체를 가리키는 참조 변수"
+    - id: old
+      kind: "기존 객체"
+      name: '"hello"'
+      description: "연산 전부터 존재하는 불변 String 객체"
+    - id: operation
+      kind: "연산"
+      name: 'value + " world"'
+      description: "새로운 문자열 내용을 계산하는 표현"
+    - id: fresh
+      kind: "새 객체"
+      name: '"hello world"'
+      description: "연산 결과로 만들어진 String 객체"
+  steps:
+    - title: "1. 기존 참조"
+      from: "value"
+      to: '"hello"'
+      route_label: "value가 기존 hello 객체를 가리킨다."
+      active_actors: [variable, old]
+      description: "String 객체의 내부 문자를 직접 바꾸는 것이 아니라 참조 관계를 관찰한다."
+      payload: ["value", "hello", "reference"]
+      outcomes:
+        - status: info
+          text: "현재 객체는 연산 전후에도 내용이 바뀌지 않는다."
+    - title: "2. 새 내용 계산"
+      from: 'value + " world"'
+      to: '"hello world"'
+      route_label: "문자열 결합 결과로 새로운 String 객체가 만들어진다."
+      active_actors: [operation, fresh, old]
+      description: "불변성 때문에 기존 hello 객체를 수정하는 대신 결과 객체를 생성한다."
+      payload: ["concat", "new object", "hello world"]
+      outcomes:
+        - status: allow
+          text: "기존 문자열 객체의 상태는 유지된다."
+    - title: "3. 참조 재대입"
+      from: "value"
+      to: '"hello world"'
+      route_label: "value가 새 결과 객체를 가리키도록 참조를 재대입한다."
+      active_actors: [variable, fresh]
+      description: "겉으로 값이 바뀐 것처럼 보이지만 실제로는 변수가 다른 객체를 참조하게 된 것이다."
+      payload: ["assignment", "new reference", "old object remains"]
+      outcomes:
+        - status: info
+          text: "String 불변성과 변수 재대입을 하나의 개념으로 혼동하지 않는다."
+
+defensive_copy:
+  eyebrow: "Interactive comparison"
+  title: "컬렉션 참조 공유와 방어적 복사"
+  summary: "생성자와 getter에서 같은 컬렉션 참조를 공유하면 외부 변경이 객체 내부 상태를 바꿀 수 있다."
+  actors:
+    - id: caller
+      kind: "외부 코드"
+      name: "Caller List"
+      description: "객체 생성자에 전달하거나 getter 결과를 받는 컬렉션"
+    - id: user
+      kind: "도메인 객체"
+      name: "User.roles"
+      description: "사용자 내부 역할 목록"
+    - id: shared
+      kind: "공유 참조"
+      name: "Same List Object"
+      description: "외부와 내부가 함께 가리키는 가변 컬렉션"
+    - id: copy
+      kind: "경계 보호"
+      name: "Defensive Copy"
+      description: "복사·불변 뷰로 외부 변경을 차단하는 경계"
+  steps:
+    - title: "1. 같은 List 전달"
+      from: "Caller List"
+      to: "User.roles"
+      route_label: "생성자가 전달받은 List를 그대로 roles 필드에 저장한다."
+      active_actors: [caller, user, shared]
+      description: "caller와 User가 같은 컬렉션 객체를 가리키면 한쪽 변경이 다른 쪽에 보인다."
+      payload: ["constructor", "roles", "same reference"]
+      outcomes:
+        - status: warning
+          text: "객체 생성 뒤에도 외부가 내부 상태를 바꿀 수 있다."
+    - title: "2. 외부 변경 전파"
+      from: "Caller List"
+      to: "User.roles"
+      route_label: "caller가 roles에 ADMIN을 추가하면 User 내부 목록에도 즉시 반영된다."
+      active_actors: [caller, shared, user]
+      description: "참조 공유는 메서드를 호출하지 않아도 상태가 바뀌는 경계를 만든다."
+      payload: ["add ADMIN", "mutation", "unexpected state"]
+      outcomes:
+        - status: reject
+          text: "불변 객체 설계의 캡슐화 경계가 무너진다."
+    - title: "3. 방어적 복사"
+      from: "Caller List"
+      to: "Defensive Copy"
+      route_label: "생성 시 복사하고 getter에서는 수정할 수 없는 값이나 복사본을 반환한다."
+      active_actors: [caller, copy, user]
+      description: "내부 컬렉션과 외부 컬렉션의 객체 identity를 분리한다."
+      payload: ["List.copyOf", "copy", "unmodifiable view"]
+      outcomes:
+        - status: allow
+          text: "외부 변경이 내부 상태로 전파되지 않는다."
+
+identity_equality:
+  eyebrow: "Interactive comparison"
+  title: "참조 동일성과 논리적 동등성"
+  summary: "==는 같은 객체를 가리키는지 보고 equals는 도메인 규칙상 같은 값인지 판단한다."
+  actors:
+    - id: a
+      kind: "객체 A"
+      name: "User A"
+      description: "비슷한 상태를 가진 첫 번째 객체"
+    - id: b
+      kind: "객체 B"
+      name: "User B"
+      description: "별도로 생성됐지만 같은 ID를 가질 수 있는 객체"
+    - id: identity
+      kind: "참조 비교"
+      name: "=="
+      description: "두 참조가 같은 객체를 가리키는지 비교"
+    - id: logical
+      kind: "값 비교"
+      name: "equals()"
+      description: "개발자가 정의한 논리적 동등성 비교"
+  steps:
+    - title: "1. 객체 참조 준비"
+      from: "User A"
+      to: "User B"
+      route_label: "내용이 비슷한 두 객체라도 별도로 new하면 참조는 다를 수 있다."
+      active_actors: [a, b]
+      description: "객체의 상태와 메모리 identity를 같은 질문으로 취급하지 않는다."
+      payload: ["id = 1", "same name", "different object"]
+      outcomes:
+        - status: info
+          text: "값이 같아 보여도 == 결과는 false일 수 있다."
+    - title: "2. == 비교"
+      from: "User A"
+      to: "=="
+      route_label: "두 변수의 참조가 같은 객체를 가리키는지 비교한다."
+      active_actors: [a, b, identity]
+      description: "==는 객체의 필드 값을 해석하지 않고 참조 동일성만 확인한다."
+      payload: ["a == b", "reference", "identity"]
+      outcomes:
+        - status: reject
+          text: "논리적 사용자 동일성을 표현하는 비교로는 부족할 수 있다."
+    - title: "3. equals 비교"
+      from: "User A"
+      to: "equals()"
+      route_label: "User가 정의한 equals 규칙에 따라 ID나 상태를 비교한다."
+      active_actors: [a, b, logical]
+      description: "도메인이 같은 사용자라고 보는 기준을 equals에 일관되게 구현해야 한다."
+      payload: ["a.equals(b)", "business key", "logical equality"]
+      outcomes:
+        - status: allow
+          text: "참조가 달라도 논리적 동등성을 true로 표현할 수 있다."
+
+hashset_lookup:
+  eyebrow: "Interactive flow"
+  title: "HashSet 조회의 해시와 동등성"
+  summary: "HashSet은 먼저 hashCode로 버킷을 좁히고 같은 버킷 후보에 equals를 적용한다."
+  actors:
+    - id: query
+      kind: "조회 객체"
+      name: "Target User"
+      description: "contains 또는 add를 수행할 객체"
+    - id: hash
+      kind: "해시 단계"
+      name: "hashCode()"
+      description: "버킷 위치를 계산하는 단계"
+    - id: bucket
+      kind: "후보 버킷"
+      name: "Bucket"
+      description: "같은 위치에 모인 후보 객체들"
+    - id: equals
+      kind: "동등성 단계"
+      name: "equals()"
+      description: "최종 동일 여부를 판정하는 단계"
+  steps:
+    - title: "1. 해시 위치 계산"
+      from: "Target User"
+      to: "hashCode()"
+      route_label: "조회 객체의 hashCode로 찾아갈 버킷 위치를 계산한다."
+      active_actors: [query, hash]
+      description: "해시는 빠른 후보 선택을 위한 1차 필터다."
+      payload: ["hash", "index", "contains"]
+      outcomes:
+        - status: info
+          text: "해시가 다르면 같은 버킷에서 비교할 필요가 줄어든다."
+    - title: "2. 후보 확인"
+      from: "hashCode()"
+      to: "Bucket"
+      route_label: "계산한 위치의 버킷에서 후보 객체를 읽는다."
+      active_actors: [hash, bucket]
+      description: "해시 충돌이 있으면 한 버킷에 여러 후보가 남을 수 있다."
+      payload: ["bucket", "collision", "candidate list"]
+      outcomes:
+        - status: info
+          text: "후보가 있다는 사실이 곧 논리적 동등성을 뜻하지 않는다."
+    - title: "3. equals 최종 판정"
+      from: "Bucket"
+      to: "equals()"
+      route_label: "후보마다 equals를 적용해 같은 사용자 여부를 최종 확인한다."
+      active_actors: [bucket, equals, query]
+      description: "hashCode와 equals 계약이 함께 맞아야 HashSet의 조회·중복 제거가 올바르게 동작한다."
+      payload: ["equals", "match", "duplicate check"]
+      outcomes:
+        - status: allow
+          text: "해시 탐색과 논리 비교는 서로 다른 단계다."
+
+payment_contract:
+  eyebrow: "Interactive flow"
+  title: "PaymentService 인터페이스 계약"
+  summary: "PaymentController는 구현체가 아니라 PaymentService 계약에 의존하고 구현체가 그 계약을 제공한다."
+  actors:
+    - id: controller
+      kind: "호출부"
+      name: "PaymentController"
+      description: "결제 기능을 요청하는 웹 계층"
+    - id: contract
+      kind: "계약"
+      name: "PaymentService"
+      description: "pay() 같은 결제 기능의 인터페이스"
+    - id: card
+      kind: "구현체"
+      name: "CardPaymentService"
+      description: "카드 결제를 구현하는 클래스"
+    - id: other
+      kind: "대체 구현"
+      name: "Other Payment Service"
+      description: "계약을 구현하는 다른 결제 방식"
+  steps:
+    - title: "1. Controller 의존"
+      from: "PaymentController"
+      to: "PaymentService"
+      route_label: "Controller가 구체 클래스가 아니라 PaymentService 계약을 주입받는다."
+      active_actors: [controller, contract]
+      description: "호출부는 결제 기능의 사용법만 알고 구현 세부 내용은 알지 않는다."
+      payload: ["constructor injection", "pay()", "interface"]
+      outcomes:
+        - status: allow
+          text: "구현체 변경이 Controller까지 퍼지는 것을 줄인다."
+    - title: "2. 카드 구현"
+      from: "PaymentService"
+      to: "CardPaymentService"
+      route_label: "CardPaymentService가 PaymentService의 계약을 구현한다."
+      active_actors: [contract, card]
+      description: "실제 객체의 pay() 구현은 런타임 다형성으로 선택된다."
+      payload: ["implements", "pay()", "card gateway"]
+      outcomes:
+        - status: info
+          text: "변수 타입과 실제 객체 타입은 다를 수 있다."
+    - title: "3. 대체 구현 교체"
+      from: "PaymentService"
+      to: "Other Payment Service"
+      route_label: "같은 계약을 구현한 다른 결제 서비스를 구성에서 선택할 수 있다."
+      active_actors: [contract, other, controller]
+      description: "호출부가 계약만 사용하면 구현체 교체 시 수정 범위가 좁아진다."
+      payload: ["mock", "bank payment", "implementation swap"]
+      outcomes:
+        - status: allow
+          text: "테스트 대역과 운영 구현을 같은 계약으로 연결할 수 있다."
+
+interface_vs_abstract:
+  eyebrow: "Interactive comparison"
+  title: "인터페이스와 추상 클래스의 책임"
+  summary: "인터페이스는 무엇을 제공하는지 계약하고 추상 클래스는 같은 계열 구현체의 상태와 공통 행동을 공유한다."
+  actors:
+    - id: contract
+      kind: "계약"
+      name: "Interface"
+      description: "외부에 제공할 메서드와 역할"
+    - id: abstract
+      kind: "공통 기반"
+      name: "Abstract Class"
+      description: "공통 상태와 구현을 공유하는 부모 클래스"
+    - id: implementation
+      kind: "구현체"
+      name: "Concrete Service"
+      description: "계약을 구현하고 필요하면 공통 기반을 상속하는 클래스"
+    - id: composition
+      kind: "대안"
+      name: "Composition"
+      description: "상속 대신 필요한 객체를 내부에 두고 위임하는 구조"
+  steps:
+    - title: "1. 계약 표현"
+      from: "Interface"
+      to: "Concrete Service"
+      route_label: "인터페이스가 외부에 제공할 기능의 이름과 계약을 정의한다."
+      active_actors: [contract, implementation]
+      description: "구현체가 달라도 호출부는 같은 계약을 사용할 수 있다."
+      payload: ["what", "method contract", "polymorphism"]
+      outcomes:
+        - status: allow
+          text: "역할과 구현을 분리한다."
+    - title: "2. 공통 상태 공유"
+      from: "Abstract Class"
+      to: "Concrete Service"
+      route_label: "추상 클래스가 같은 계열 서비스의 필드와 검증·공통 행동을 제공한다."
+      active_actors: [abstract, implementation]
+      description: "상속받은 구현체가 공통 상태와 알고리즘 일부를 재사용한다."
+      payload: ["shared state", "template behavior", "IS-A"]
+      outcomes:
+        - status: info
+          text: "단순 코드 중복만으로 상속 관계를 만들지는 않는다."
+    - title: "3. 상속 관계 점검"
+      from: "Concrete Service"
+      to: "Composition"
+      route_label: "IS-A가 자연스럽지 않으면 인터페이스나 Composition을 검토한다."
+      active_actors: [implementation, composition]
+      description: "재사용이 필요해도 부모의 상태·생성자 규칙까지 떠안는 비용을 비교한다."
+      payload: ["IS-A", "delegation", "coupling"]
+      outcomes:
+        - status: warning
+          text: "상속은 기능 재사용보다 의미 있는 관계가 먼저다."
+
+combined_payment_design:
+  eyebrow: "Interactive flow"
+  title: "인터페이스와 추상 클래스를 함께 쓰는 결제 구조"
+  summary: "외부에는 PaymentService 계약을 제공하고 내부에서는 BasePaymentService로 공통 상태와 행동을 공유한다."
+  actors:
+    - id: controller
+      kind: "호출부"
+      name: "PaymentController"
+      description: "결제 계약만 사용하는 웹 계층"
+    - id: contract
+      kind: "외부 계약"
+      name: "PaymentService"
+      description: "결제 기능을 노출하는 인터페이스"
+    - id: base
+      kind: "공통 기반"
+      name: "BasePaymentService"
+      description: "공통 검증·상태·행동을 가진 추상 클래스"
+    - id: card
+      kind: "구현체"
+      name: "CardPaymentService"
+      description: "카드 결제만의 세부 처리를 구현하는 클래스"
+  steps:
+    - title: "1. Controller 계약 사용"
+      from: "PaymentController"
+      to: "PaymentService"
+      route_label: "Controller는 PaymentService만 알고 결제 구현체의 계층은 모른다."
+      active_actors: [controller, contract]
+      description: "호출부에 외부 기능의 계약만 노출한다."
+      payload: ["PaymentService", "pay()", "dependency injection"]
+      outcomes:
+        - status: allow
+          text: "구현체 교체가 호출부에 영향을 덜 준다."
+    - title: "2. 공통 기반 상속"
+      from: "PaymentService"
+      to: "BasePaymentService"
+      route_label: "공통 결제 검증과 상태는 BasePaymentService에 모은다."
+      active_actors: [contract, base]
+      description: "인터페이스 계약과 내부 재사용 기반은 서로 다른 책임으로 함께 존재할 수 있다."
+      payload: ["validation", "shared state", "abstract"]
+      outcomes:
+        - status: info
+          text: "외부 API와 내부 구현 재사용을 한 계층으로 합치지 않는다."
+    - title: "3. 카드 세부 구현"
+      from: "BasePaymentService"
+      to: "CardPaymentService"
+      route_label: "CardPaymentService가 공통 흐름을 재사용하고 카드 결제 단계만 구현한다."
+      active_actors: [base, card]
+      description: "공통 로직은 부모에 두되 구체 결제 방식의 변화를 자식이 담당한다."
+      payload: ["extends", "card gateway", "override"]
+      outcomes:
+        - status: allow
+          text: "계약·공통 기반·세부 구현의 책임이 분리된다."
+    - title: "4. 런타임 연결"
+      from: "CardPaymentService"
+      to: "PaymentController"
+      route_label: "컨테이너가 CardPaymentService를 PaymentService 타입으로 주입한다."
+      active_actors: [card, contract, controller]
+      description: "호출부는 실제 연결된 구현체를 몰라도 계약에 따라 결제를 호출한다."
+      payload: ["bean wiring", "polymorphism", "runtime implementation"]
+      outcomes:
+        - status: info
+          text: "인터페이스와 추상 클래스는 경쟁 도구가 아니라 다른 책임을 맡는다."

@@ -96,7 +96,7 @@ Thread B : count = 1
 
 이 현상을 “멀티스레드라서 값이 틀렸다”라고만 설명하면 부족하다. 여러 Thread의 실행 순서에 따라 결과가 달라지는 **Race Condition**이고, 공유 상태를 읽고 수정하고 쓰는 사이에 다른 Thread의 작업이 끼어들어 생긴다.
 
-![두 Thread의 count++가 읽기-수정-쓰기 과정에서 서로 겹치며 최종 값 1을 만드는 Race Condition 흐름](/assets/images/2026-09-16-java-thread-concurrency/race-condition-count-increment.svg)
+{% include interactive/flow-card.html flow='race_condition' %}
 
 ## 원자성은 연산의 경계를 보는 개념이다
 
@@ -202,7 +202,7 @@ Bean도 Heap에 존재하는 객체다.
 → 객체 안에 mutable state가 있으면 여러 요청이 같은 상태를 수정한다.
 ~~~
 
-![여러 HTTP 요청이 서로 다른 Thread를 거쳐 하나의 Spring Singleton Bean과 mutable field를 공유하는 구조](/assets/images/2026-09-16-java-thread-concurrency/spring-singleton-shared-state.svg)
+{% include interactive/flow-card.html flow='singleton_shared_state' %}
 
 일반적인 Spring Service에서는 요청마다 필요한 값을 지역 변수나 메서드 인자로 처리하는 stateless 설계를 먼저 고려하는 편이 단순하다. 공유 상태가 정말 필요할 때 그 범위에 맞는 동기화 수단을 선택한다.
 
@@ -230,7 +230,7 @@ Server A (JVM A)                 Server B (JVM B)
 
 Server A의 Lock과 Server B의 Lock은 서로 공유되지 않는다. 두 서버 인스턴스가 같은 좌석이나 재고를 동시에 수정한다면 Java의 `synchronized`만으로 시스템 전체를 조정할 수 없다.
 
-![Server A와 Server B가 서로 다른 JVM Lock으로 같은 DB에 접근하는 분산 환경 구조](/assets/images/2026-09-16-java-thread-concurrency/distributed-jvm-locks.svg)
+{% include interactive/flow-card.html flow='distributed_jvm_lock' %}
 
 이 구분을 알고 나면 “동기화하면 안전하다”라는 문장을 그대로 외우지 않게 된다. 무엇이 같은 범위에서 공유되는지 먼저 확인해야 한다. 단일 JVM의 객체 상태와 여러 서버가 함께 사용하는 DB 상태는 같은 동시성 문제라도 제어 범위가 다르다.
 

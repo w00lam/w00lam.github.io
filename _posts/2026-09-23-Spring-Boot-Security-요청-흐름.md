@@ -112,7 +112,7 @@ Spring MVC 인프라 초기화
 
 이 도식은 Spring Boot 내부의 모든 이벤트와 호출 스택을 그대로 옮긴 것이 아니다. 각 구성 요소의 책임이 어떻게 이어지는지 보기 위한 구조다.
 
-![Spring Boot 애플리케이션이 시작되며 Spring Container와 웹 인프라를 준비하는 흐름](/assets/images/2026-09-23-spring-boot-security/spring-boot-startup-flow.svg)
+{% include interactive/flow-card.html flow='boot_startup' %}
 
 ## 애플리케이션이 실행된 뒤 요청은 어디로 들어오는가
 
@@ -310,7 +310,7 @@ ArgumentResolver / HttpMessageConverter
 Controller
 ```
 
-![Spring Security 인증 정보가 Spring MVC 요청 처리로 이어지는 전체 흐름](/assets/images/2026-09-23-spring-boot-security/security-mvc-request-flow.svg)
+{% include interactive/flow-card.html flow='security_mvc' %}
 
 전에는 Spring Boot와 Spring Security를 서로 다른 기능 목록처럼 봤다. 애플리케이션 시작 시 Spring Container와 웹 인프라가 준비되고, 요청이 들어오면 Security Filter가 인증과 인가에 필요한 정보를 확인한 뒤 Spring MVC로 넘긴다는 한 흐름으로 보게 됐다.
 
