@@ -49,7 +49,7 @@ LLM은 방대한 일반 지식을 가지고 있지만 독립적인 백엔드 시
 
 RAG 시스템은 단일 처리 과정이 아니라 **문서를 저장하는 과정(Ingestion Pipeline)**과 **사용자의 질문에 답변하는 과정(Query Processing Pipeline)**이라는 두 개의 독립된 백엔드 파이프라인으로 구성됩니다.
 
-![RAG 전체 데이터 흐름](/assets/images/2026-07-22-rag-not-learning-but-retrieval/rag-data-flow.png)
+{% include interactive/flow-card.html flow='rag_pipeline' %}
 > RAG는 문서를 조각내어 벡터 DB에 저장하는 Ingestion 파이프라인과, 질문을 받아 유사한 조각을 검색한 뒤 LLM에 전달하는 Query 파이프라인으로 나뉜다.
 
 ### (1) 문서를 저장하는 과정 (Ingestion Pipeline)
@@ -97,7 +97,7 @@ RAG 시스템은 단일 처리 과정이 아니라 **문서를 저장하는 과�
 
 임베딩(Embedding)은 문장이 담고 있는 **의미적 맥락을 고차원 수치 공간의 점(Vector)으로 매핑**하는 과정입니다. 핵심은 **문장에 사용된 단어가 완전히 다르더라도 의미가 유사하면 벡터 공간에서 서로 가까운 위치에 존재**하게 된다는 점입니다.
 
-![키워드 검색 vs 벡터 검색 비교](/assets/images/2026-07-22-rag-not-learning-but-retrieval/keyword-vs-vector-search.png)
+{% include interactive/flow-card.html flow='keyword_vector_search' %}
 > 키워드 검색은 정확한 용어 매칭에 강하고 벡터 검색은 단어가 달라도 의미적 유사성을 찾아내는 데 강하다.
 
 예를 들어 다음과 같은 상황을 봅니다.
@@ -146,7 +146,7 @@ RAG 시스템은 단일 처리 과정이 아니라 **문서를 저장하는 과�
 
 RAG에서 원본 문서를 적절한 크기(Chunk)로 나누는 **Chunking 전략은 RAG 전체 성능의 70% 이상을 결정**한다고 해도 과언이 아닙니다.
 
-![Chunk 크기에 따른 문제 비교](/assets/images/2026-07-22-rag-not-learning-but-retrieval/rag-chunk-size-comparison.png)
+{% include interactive/flow-card.html flow='chunk_size' %}
 > 청크가 너무 작으면 문맥이 잘리고 너무 크면 주제가 섞여 임베딩 정확도와 토큰 효율이 떨어진다.
 
 ### (1) 문서를 너무 작게 나누었을 때 (Under-chunking)
@@ -233,7 +233,7 @@ Reranker(Cross-Encoder 모델)는 질문 텍스트와 검색된 청크 텍스트
 
 RAG는 LLM의 환각을 현저히 줄여주지만 **환각을 100% 제거하는 완벽한 치트키는 아닙니다.** RAG 시스템에서도 다음과 같은 다양한 지점에서 실패가 일어납니다.
 
-![Retrieval과 Generation의 책임 분리](/assets/images/2026-07-22-rag-not-learning-but-retrieval/retrieval-vs-generation.png)
+{% include interactive/flow-card.html flow='rag_agent_eval' %}
 > RAG 시스템의 답변 실패는 검색 단계(Retrieval Failure)와 생성 단계(Generation Failure) 중 어느 곳에서도 발생할 수 있다.
 
 ### RAG의 대표적인 실패 시나리오
@@ -299,7 +299,7 @@ LLM 기반 개발을 할 때 가장 많이 혼동하는 **RAG**와 **Fine-tuning
 
 내가 작성한 과거 TIL과 트러블슈팅 기록을 찾아주는 **개인 개발 기록 검색 서비스**를 RAG로 설계한다면 다음과 같은 백엔드 파이프라인을 갖게 됩니다.
 
-![개인 개발 기록 검색 서비스 구조](/assets/images/2026-07-22-rag-not-learning-but-retrieval/developer-history-rag-architecture.png)
+{% include interactive/flow-card.html flow='developer_history_rag' %}
 > 작성된 TIL 및 기술 블로그 마크다운 포스팅을 파싱 및 인덱싱하고 자연어 질의에 따라 검색 및 Reranking을 거쳐 출처와 함께 답변을 반환하는 전체 서비스 구조.
 
 ### 실제 사용자 자연어 질의 처리 흐름 예시

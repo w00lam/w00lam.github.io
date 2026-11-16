@@ -74,7 +74,7 @@ permalink: /posts/mvp-problem-hypothesis-feature/
 
 **기능**은 가설을 검증하기 위해 구현하는 수단이다. 지도 API를 이용한 장소 검색, 선택한 장소의 이동 순서 생성, 취향 설문, 장소 추천, 예약과 결제가 기능에 해당한다.
 
-![문제에서 가설과 기능을 거쳐 검증 결과와 다음 판단으로 이어지는 흐름](/assets/images/2026-07-21-mvp-problem-hypothesis-feature/problem-hypothesis-feature-flow.svg)
+{% include interactive/flow-card.html flow='mvp_hypothesis_validation' %}
 
 _기능을 구현한 사실만으로 서비스의 가치가 확인되지는 않는다. 기능으로 얻은 결과로 가설을 판단해야 한다._
 
@@ -93,7 +93,7 @@ _기능을 구현한 사실만으로 서비스의 가치가 확인되지는 않�
 
 질문이 네 개라면 필요한 데이터와 사용자 행동도 달라진다. 한 번의 MVP로 모두 답하려 하면 구현은 커지고 결과 해석은 어려워진다.
 
-![여러 기능을 한꺼번에 포함한 초기 아이디어와 하나의 핵심 가설에 집중한 MVP 비교](/assets/images/2026-07-21-mvp-problem-hypothesis-feature/large-vs-focused-mvp.svg)
+{% include interactive/flow-card.html flow='mvp_scope_focus' %}
 
 _작은 MVP는 완성된 서비스의 모든 기능을 축소한 형태가 아니라 하나의 질문에 답할 수 있도록 범위를 제한한 형태에 가깝다._
 

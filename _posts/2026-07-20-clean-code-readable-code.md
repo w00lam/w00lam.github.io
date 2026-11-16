@@ -35,7 +35,7 @@ permalink: /posts/clean-code-readable-code/
 
 반대로 메서드가 역할에 맞게 나뉘고 이름만으로 다음 동작을 예상할 수 있다면 코드가 조금 길어져도 위에서 아래로 자연스럽게 읽힌다. 여기서 중요한 것은 무조건 잘게 쪼개는 일이 아니다. 메서드 이름이 실제 작업 단위를 설명하고 각 메서드가 비슷한 추상화 수준을 유지해야 한다.
 
-![짧지만 의도가 보이지 않는 코드와 역할과 흐름이 드러나는 코드 비교](/assets/images/2026-07-20-clean-code-readable-code/short-code-vs-readable-code.png)
+{% include interactive/flow-card.html flow='clean_code_compare' %}
 
 _코드의 길이보다 읽는 사람이 빈칸을 채우기 위해 수행해야 하는 추론의 양이 가독성을 더 잘 보여 준다._
 
@@ -64,7 +64,7 @@ _코드의 길이보다 읽는 사람이 빈칸을 채우기 위해 수행해야
 
 메서드가 여러 일을 하면 하나의 이름으로 역할을 설명하기 어렵다. 모호한 이름으로는 의도가 전달되지 않으니 주석이 필요해진다. 반대로 책임을 나누면 각 작업의 경계가 보이고 그 경계에 맞는 구체적인 이름을 붙일 수 있다. 작은 함수는 단순히 줄 수가 적은 함수가 아니라 하나의 이름으로 설명할 수 있는 함수에 가까웠다.
 
-![클린 코드 원칙이 가독성과 유지보수성으로 이어지는 연결 구조](/assets/images/2026-07-20-clean-code-readable-code/clean-code-principles-flow.png)
+{% include interactive/flow-card.html flow='clean_code_principles' %}
 
 _명확한 책임은 함수와 이름의 경계를 만들고 그 결과 코드 자체가 의도를 설명하면서 이해와 변경에 드는 비용을 낮춘다._
 

@@ -55,7 +55,7 @@ permalink: /posts/sdd-document-structure-design/
 3. **유튜버·영상 관리 도메인**: 유튜버 프로필, 영상 URL 및 메타데이터 담당 (유튜버 데이터 소유)
 4. **관리자 데이터 등록 도메인**: 맛집·유튜버·영상 신규 데이터 검증 및 백오피스 등록 담당
 
-![단일 PRD와 분리된 SDD 문서 구조 비교](/assets/images/2026-07-24-sdd-document-structure/single-vs-separated-sdd-docs.png)
+{% include interactive/flow-card.html flow='sdd_document_structure' %}
 
 도메인의 책임과 소유 데이터를 먼저 정하자, 각 팀원은 자신의 도메인 범위 안에서 독립적으로 엔티티와 비즈니스 로직을 구현할 수 있게 되었다. 다른 도메인의 데이터가 필요할 때는 직접 엔티티를 참조하거나 DB를 조회하는 대신, **명확히 정의된 Internal API나 인터페이스**로 요청하게 만들었다.
 
@@ -170,7 +170,7 @@ docs/
     └── git-workflow.md
 ```
 
-![SDD 문서 관계도](/assets/images/2026-07-24-sdd-document-structure/sdd-document-relationship.png)
+{% include interactive/flow-card.html flow='sdd_document_relationship' %}
 
  각 디렉터리는 다음과 같은 명확한 역할을 수행한다.
 

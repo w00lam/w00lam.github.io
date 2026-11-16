@@ -9547,3 +9547,480 @@ mysql_postgres_decision:
       outcomes:
         - status: info
           text: "선택 기준은 현재 팀과 서비스의 총 위험을 줄이는 방향이다."
+
+clean_code_compare:
+  eyebrow: "Interactive comparison"
+  title: "짧은 코드와 읽히는 코드"
+  summary: "코드 길이보다 역할·이름·추상화 수준이 다음 동작을 예상하게 만드는지가 중요하다."
+  actors:
+    - id: compact
+      kind: "표면적 기준"
+      name: "Short Code"
+      description: "줄 수는 짧지만 의도와 책임이 한눈에 드러나지 않는 코드"
+    - id: name
+      kind: "의도 표현"
+      name: "Meaningful Names"
+      description: "메서드와 변수 이름으로 작업 단위를 설명하는 규칙"
+    - id: role
+      kind: "책임 분리"
+      name: "Focused Methods"
+      description: "한 메서드가 하나의 역할과 추상화 수준을 유지하는 구조"
+    - id: readable
+      kind: "결과"
+      name: "Readable Flow"
+      description: "호출부를 위에서 아래로 읽으며 동작을 이해할 수 있는 코드"
+  steps:
+    - title: "1. 짧음 확인"
+      from: "Short Code"
+      to: "Meaningful Names"
+      route_label: "줄 수가 짧다는 사실만으로 코드의 품질을 판단하지 않는다."
+      active_actors: [compact, name]
+      description: "축약된 조건문과 일반적인 이름은 읽는 사람이 구현 세부를 다시 추적하게 만든다."
+      payload: ["line count", "implicit intent", "generic name"]
+      outcomes:
+        - status: warning
+          text: "짧은 코드와 읽기 쉬운 코드는 같은 기준이 아니다."
+    - title: "2. 역할 분리"
+      from: "Meaningful Names"
+      to: "Focused Methods"
+      route_label: "메서드 이름이 실제 작업 단위를 설명하도록 책임과 추상화 수준을 나눈다."
+      active_actors: [name, role]
+      description: "이름만 바꾸는 것이 아니라 각 메서드가 한 가지 이유로 변경되도록 정리한다."
+      payload: ["intent", "single responsibility", "abstraction level"]
+      outcomes:
+        - status: allow
+          text: "호출부에서 다음 동작을 이름만 보고 예상할 수 있다."
+    - title: "3. 흐름 읽기"
+      from: "Focused Methods"
+      to: "Readable Flow"
+      route_label: "작업 단위가 위에서 아래로 자연스럽게 이어져 코드를 읽는 경로가 짧아진다."
+      active_actors: [role, readable, name]
+      description: "조금 길어져도 의도와 책임이 보이면 유지보수 비용을 줄일 수 있다."
+      payload: ["top-down", "readability", "maintenance"]
+      outcomes:
+        - status: allow
+          text: "코드의 구조가 도메인 흐름을 설명한다."
+
+clean_code_principles:
+  eyebrow: "Interactive flow"
+  title: "클린 코드 원칙의 연결"
+  summary: "명확한 이름·작은 책임·일관된 추상화가 가독성을 만들고 변경 비용을 낮춘다."
+  actors:
+    - id: naming
+      kind: "표현"
+      name: "Clear Naming"
+      description: "변수와 메서드가 의도와 도메인 의미를 드러내는 상태"
+    - id: responsibility
+      kind: "구조"
+      name: "Focused Responsibility"
+      description: "한 구성요소가 하나의 역할에 집중하는 구조"
+    - id: consistency
+      kind: "규칙"
+      name: "Consistent Abstraction"
+      description: "한 코드 블록 안에서 비슷한 수준의 개념을 다루는 규칙"
+    - id: maintain
+      kind: "결과"
+      name: "Maintainability"
+      description: "변경 영향과 이해 비용이 낮은 코드 상태"
+  steps:
+    - title: "1. 이름으로 의도 표현"
+      from: "Clear Naming"
+      to: "Focused Responsibility"
+      route_label: "작업을 설명하는 이름을 사용해 메서드가 맡은 책임을 구분한다."
+      active_actors: [naming, responsibility]
+      description: "이름은 호출부가 구현을 열어보지 않고도 다음 동작을 이해하게 하는 경계다."
+      payload: ["domain term", "intent", "method name"]
+      outcomes:
+        - status: info
+          text: "이름이 모호하면 책임도 쉽게 섞인다."
+    - title: "2. 책임과 추상화 정렬"
+      from: "Focused Responsibility"
+      to: "Consistent Abstraction"
+      route_label: "메서드 내부의 단계들이 비슷한 추상화 수준을 유지하도록 구성한다."
+      active_actors: [responsibility, consistency]
+      description: "고수준 정책과 저수준 구현이 한 블록에 뒤섞이면 흐름을 읽기 어려워진다."
+      payload: ["single role", "abstraction", "cohesion"]
+      outcomes:
+        - status: allow
+          text: "변경 이유가 다른 코드가 서로 다른 위치에 놓인다."
+    - title: "3. 유지보수성 확보"
+      from: "Consistent Abstraction"
+      to: "Maintainability"
+      route_label: "일관된 구조를 바탕으로 읽기·테스트·변경의 비용을 낮춘다."
+      active_actors: [consistency, maintain, naming]
+      description: "클린 코드는 규칙을 외우는 것보다 다음 사람이 코드를 이해할 경로를 줄이는 데 있다."
+      payload: ["readability", "testability", "change cost"]
+      outcomes:
+        - status: info
+          text: "모든 메서드를 무조건 잘게 나누는 것이 목표는 아니다."
+
+mvp_hypothesis_validation:
+  eyebrow: "Interactive flow"
+  title: "문제·가설·기능·검증"
+  summary: "문제를 관찰하고 가설을 세운 뒤 필요한 기능만 구현해 결과로 다음 판단을 내린다."
+  actors:
+    - id: problem
+      kind: "출발점"
+      name: "User Problem"
+      description: "사용자에게 반복적으로 나타나는 불편이나 비용"
+    - id: hypothesis
+      kind: "검증 주장"
+      name: "Hypothesis"
+      description: "어떤 변화가 문제를 줄일지 표현한 가설"
+    - id: feature
+      kind: "검증 수단"
+      name: "MVP Feature"
+      description: "가설을 검증하는 데 필요한 최소 기능"
+    - id: result
+      kind: "판단"
+      name: "Evidence / Next Decision"
+      description: "사용 결과와 지표를 바탕으로 한 다음 행동"
+  steps:
+    - title: "1. 문제 구체화"
+      from: "User Problem"
+      to: "Hypothesis"
+      route_label: "누가 언제 어떤 비용을 겪는지 관찰하고 검증 가능한 가설로 바꾼다."
+      active_actors: [problem, hypothesis]
+      description: "기능 목록보다 먼저 해결하려는 사용자 문제를 명확히 한다."
+      payload: ["user", "context", "pain"]
+      outcomes:
+        - status: info
+          text: "문제가 흐리면 기능을 만든 뒤에도 무엇을 검증했는지 알기 어렵다."
+    - title: "2. 최소 기능 구현"
+      from: "Hypothesis"
+      to: "MVP Feature"
+      route_label: "가설의 핵심 부분을 검증하는 데 필요한 가장 작은 기능 범위를 정한다."
+      active_actors: [hypothesis, feature]
+      description: "완성된 서비스의 축소판이 아니라 하나의 질문에 답하는 실험에 가깝다."
+      payload: ["scope", "feature", "experiment"]
+      outcomes:
+        - status: allow
+          text: "구현 범위와 검증 질문이 연결된다."
+    - title: "3. 결과로 판단"
+      from: "MVP Feature"
+      to: "Evidence / Next Decision"
+      route_label: "사용 행동과 결과를 측정해 가설 유지·수정·폐기와 다음 실험을 결정한다."
+      active_actors: [feature, result, hypothesis]
+      description: "기능을 배포한 사실만으로 문제 해결이나 제품 가치를 증명할 수 없다."
+      payload: ["usage", "metric", "learned evidence"]
+      outcomes:
+        - status: allow
+          text: "검증 결과가 다음 개발의 입력이 된다."
+
+mvp_scope_focus:
+  eyebrow: "Interactive comparison"
+  title: "넓은 초기 아이디어와 집중된 MVP"
+  summary: "많은 기능을 동시에 만드는 대신 하나의 핵심 가설을 답할 수 있도록 범위를 제한한다."
+  actors:
+    - id: idea
+      kind: "초기 아이디어"
+      name: "Large Feature Set"
+      description: "검색·추천·예약·결제를 한 번에 포함한 넓은 구상"
+    - id: question
+      kind: "핵심 질문"
+      name: "One Hypothesis"
+      description: "이번 실험에서 답하려는 하나의 사용자·제품 질문"
+    - id: focused
+      kind: "작은 범위"
+      name: "Focused MVP"
+      description: "핵심 질문에 필요한 최소 행동과 데이터만 포함한 실험"
+    - id: learning
+      kind: "학습 결과"
+      name: "Interpretable Learning"
+      description: "무엇이 가설에 영향을 줬는지 해석할 수 있는 결과"
+  steps:
+    - title: "1. 기능 나열"
+      from: "Large Feature Set"
+      to: "One Hypothesis"
+      route_label: "초기 아이디어의 기능을 사용자 문제와 검증 질문으로 다시 정리한다."
+      active_actors: [idea, question]
+      description: "기능이 많아질수록 한 번의 결과를 어떤 가설과 연결할지 어려워진다."
+      payload: ["map", "recommendation", "booking", "payment"]
+      outcomes:
+        - status: warning
+          text: "넓은 범위는 구현보다 결과 해석의 비용을 키울 수 있다."
+    - title: "2. 범위 제한"
+      from: "One Hypothesis"
+      to: "Focused MVP"
+      route_label: "핵심 질문에 직접 필요한 사용자 흐름만 남기고 나머지는 다음 실험으로 미룬다."
+      active_actors: [question, focused]
+      description: "작은 MVP는 기능 수가 아니라 질문과 결과의 연결이 선명한 범위다."
+      payload: ["one question", "minimum path", "scope cut"]
+      outcomes:
+        - status: allow
+          text: "실험의 성공·실패 조건을 사전에 정의할 수 있다."
+    - title: "3. 해석 가능한 학습"
+      from: "Focused MVP"
+      to: "Interpretable Learning"
+      route_label: "작은 실험의 결과로 가설을 판단하고 다음 범위를 결정한다."
+      active_actors: [focused, learning, question]
+      description: "구현된 기능의 양보다 질문에 대한 학습의 질을 우선한다."
+      payload: ["signal", "hypothesis result", "next iteration"]
+      outcomes:
+        - status: info
+          text: "MVP의 목적은 빠른 학습이지 기능 목록의 완성 자체가 아니다."
+
+keyword_vector_search:
+  eyebrow: "Interactive comparison"
+  title: "키워드 검색과 벡터 검색"
+  summary: "키워드 검색은 정확한 용어에 강하고 벡터 검색은 표현이 달라도 의미가 가까운 문서를 찾는다."
+  actors:
+    - id: query
+      kind: "질문"
+      name: "User Query"
+      description: "사용자가 입력한 자연어 질문"
+    - id: keyword
+      kind: "정확 매칭"
+      name: "Keyword Search"
+      description: "단어·구문·필드 일치를 기준으로 후보를 찾는 검색"
+    - id: vector
+      kind: "의미 매칭"
+      name: "Vector Search"
+      description: "문장 의미를 벡터 거리로 비교하는 검색"
+    - id: result
+      kind: "검색 결과"
+      name: "Relevant Context"
+      description: "답변이나 후속 처리에 사용할 문서 후보"
+  steps:
+    - title: "1. 정확한 표현 찾기"
+      from: "User Query"
+      to: "Keyword Search"
+      route_label: "고유명사·에러 코드·날짜처럼 정확한 표현이 중요한 조건을 먼저 매칭한다."
+      active_actors: [query, keyword]
+      description: "검색어가 문서에 그대로 있어야 강점을 발휘하는 방식이다."
+      payload: ["term", "exact match", "filter"]
+      outcomes:
+        - status: allow
+          text: "정확한 용어와 조건을 놓치지 않는다."
+    - title: "2. 의미가 가까운 문서 찾기"
+      from: "User Query"
+      to: "Vector Search"
+      route_label: "단어가 달라도 의미가 유사한 문서를 임베딩 거리로 후보에 포함한다."
+      active_actors: [query, vector]
+      description: "표현의 차이를 넘어 질문과 문서의 의미적 근접성을 본다."
+      payload: ["embedding", "similarity", "semantic match"]
+      outcomes:
+        - status: info
+          text: "고유명사와 정확한 숫자는 별도 키워드·메타데이터 보강이 필요할 수 있다."
+    - title: "3. 검색 결과 조합"
+      from: "Keyword Search"
+      to: "Relevant Context"
+      route_label: "정확 매칭과 의미 매칭의 후보를 결합해 답변에 사용할 근거를 정리한다."
+      active_actors: [keyword, vector, result]
+      description: "실제 RAG에서는 두 검색 방식을 함께 사용해 서로의 약점을 보완할 수 있다."
+      payload: ["hybrid", "rerank", "context"]
+      outcomes:
+        - status: allow
+          text: "질문 유형에 따라 검색 전략을 조정할 수 있다."
+
+developer_history_rag:
+  eyebrow: "Interactive flow"
+  title: "개인 개발 기록 RAG"
+  summary: "TIL·트러블슈팅·ADR·커밋 기록을 색인하고 자연어 질문에 관련 근거와 출처를 반환한다."
+  actors:
+    - id: docs
+      kind: "원문"
+      name: "TIL / ADR / Commits"
+      description: "개발 과정에서 축적된 문서와 변경 기록"
+    - id: index
+      kind: "색인"
+      name: "Parser + Vector Index"
+      description: "마크다운을 파싱해 청크·메타데이터·임베딩을 저장"
+    - id: search
+      kind: "검색"
+      name: "Retrieval + Reranking"
+      description: "질문과 관련된 기록을 찾고 순위를 조정하는 계층"
+    - id: answer
+      kind: "답변"
+      name: "Answer + Sources"
+      description: "검색 근거와 원문 출처를 포함한 설명형 답변"
+  steps:
+    - title: "1. 기록 색인"
+      from: "TIL / ADR / Commits"
+      to: "Parser + Vector Index"
+      route_label: "문서를 파싱하고 프로젝트·기술·날짜·문제 같은 메타데이터와 함께 색인한다."
+      active_actors: [docs, index]
+      description: "원문과 구조화된 메타데이터를 함께 보존하면 검색 범위를 조절할 수 있다."
+      payload: ["markdown", "chunk", "metadata", "embedding"]
+      outcomes:
+        - status: allow
+          text: "과거 개발 기록이 검색 가능한 지식 기반이 된다."
+    - title: "2. 관련 기록 검색"
+      from: "Parser + Vector Index"
+      to: "Retrieval + Reranking"
+      route_label: "자연어 질문으로 관련 청크를 찾고 기술·프로젝트·시점 조건을 반영해 재정렬한다."
+      active_actors: [index, search]
+      description: "비슷한 문장뿐 아니라 질문의 도메인과 시간 맥락을 함께 본다."
+      payload: ["query", "metadata filter", "rerank"]
+      outcomes:
+        - status: info
+          text: "검색 실패와 생성 실패를 분리해 개선할 수 있다."
+    - title: "3. 출처 포함 답변"
+      from: "Retrieval + Reranking"
+      to: "Answer + Sources"
+      route_label: "검색 결과를 근거로 답변하고 원문 포스트·커밋·ADR 출처를 함께 반환한다."
+      active_actors: [search, answer, docs]
+      description: "개발 기록 검색에서는 결론뿐 아니라 왜 그렇게 판단했는지 근거가 중요하다."
+      payload: ["context", "answer", "citation"]
+      outcomes:
+        - status: allow
+          text: "답변을 원문으로 검증하고 과거 결정의 맥락을 다시 찾을 수 있다."
+
+chunking_strategy:
+  eyebrow: "Interactive comparison"
+  title: "길이 기반과 의미 기반 청킹"
+  summary: "길이 기반 청킹은 단순하고 예측 가능하며 의미 기반 청킹은 주제 경계를 보존하는 데 유리하다."
+  actors:
+    - id: document
+      kind: "원문"
+      name: "Document"
+      description: "검색 대상이 되는 서술형 기술 문서"
+    - id: length
+      kind: "규칙 A"
+      name: "Length-based Chunking"
+      description: "토큰·문자·문장 수로 일정한 크기를 만드는 방식"
+    - id: semantic
+      kind: "규칙 B"
+      name: "Semantic Chunking"
+      description: "주제와 문단 의미의 경계를 따라 나누는 방식"
+    - id: retrieval
+      kind: "검색 품질"
+      name: "Retrieval Context"
+      description: "검색 결과가 답변에 제공하는 문맥의 단위"
+  steps:
+    - title: "1. 일정한 크기로 분할"
+      from: "Document"
+      to: "Length-based Chunking"
+      route_label: "문서를 일정한 토큰·문자 길이로 나눠 구현과 운영을 단순하게 만든다."
+      active_actors: [document, length]
+      description: "크기와 비용을 예측하기 쉽지만 문장이 경계에서 끊길 수 있다."
+      payload: ["token limit", "overlap", "fixed size"]
+      outcomes:
+        - status: info
+          text: "단순한 문서와 초기 MVP에 적용하기 쉽다."
+    - title: "2. 주제 경계로 분할"
+      from: "Document"
+      to: "Semantic Chunking"
+      route_label: "문단·제목·주제 전환을 기준으로 같은 의미 단위를 하나의 청크로 묶는다."
+      active_actors: [document, semantic]
+      description: "문맥을 보존하는 대신 청크 크기와 처리 비용이 들쭉날쭉해질 수 있다."
+      payload: ["topic boundary", "paragraph", "semantic shift"]
+      outcomes:
+        - status: allow
+          text: "서술형 문서의 의미 단위를 보존하기 쉽다."
+    - title: "3. 문서 특성에 맞춰 선택"
+      from: "Length-based Chunking"
+      to: "Retrieval Context"
+      route_label: "문서 구조·질문 유형·비용을 평가해 청킹 전략과 overlap을 선택한다."
+      active_actors: [length, semantic, retrieval]
+      description: "항상 한 전략이 우월한 것이 아니라 검색 품질과 운영 비용의 균형을 찾는다."
+      payload: ["recall", "context", "cost"]
+      outcomes:
+        - status: info
+          text: "실제 질의 세트로 청크 전략을 비교해야 한다."
+
+sdd_document_structure:
+  eyebrow: "Interactive comparison"
+  title: "단일 PRD와 분리된 SDD"
+  summary: "제품 요구사항과 기술 설계를 한 문서에 섞지 않고 각 문서의 책임과 연결점을 분리한다."
+  actors:
+    - id: product
+      kind: "제품 문서"
+      name: "PRD"
+      description: "문제·사용자·범위·성공 기준을 설명하는 문서"
+    - id: design
+      kind: "설계 문서"
+      name: "SDD"
+      description: "도메인·API·데이터·배포 구조를 설명하는 문서"
+    - id: domain
+      kind: "구현 경계"
+      name: "Domain Ownership"
+      description: "팀과 도메인의 책임·소유 데이터를 정의하는 구조"
+    - id: team
+      kind: "협업 결과"
+      name: "Independent Implementation"
+      description: "각 팀이 경계 안에서 독립적으로 구현할 수 있는 상태"
+  steps:
+    - title: "1. 제품 질문 정리"
+      from: "PRD"
+      to: "SDD"
+      route_label: "문제·사용자·범위와 성공 기준을 기술 설계가 해결해야 할 입력으로 전달한다."
+      active_actors: [product, design]
+      description: "PRD는 무엇을 왜 만드는지, SDD는 어떻게 구성할지에 집중한다."
+      payload: ["problem", "scope", "acceptance"]
+      outcomes:
+        - status: info
+          text: "문서 한 장에 서로 다른 질문을 모두 넣지 않는다."
+    - title: "2. 도메인 경계 설계"
+      from: "SDD"
+      to: "Domain Ownership"
+      route_label: "도메인의 책임·소유 데이터·Internal API를 문서화한다."
+      active_actors: [design, domain]
+      description: "다른 도메인의 DB와 엔티티를 직접 참조하지 않도록 경계를 만든다."
+      payload: ["domain", "data owner", "internal API"]
+      outcomes:
+        - status: allow
+          text: "설계 문서가 구현 팀의 작업 경계를 제공한다."
+    - title: "3. 독립 구현"
+      from: "Domain Ownership"
+      to: "Independent Implementation"
+      route_label: "각 팀이 자신의 도메인 범위에서 엔티티와 비즈니스 로직을 구현한다."
+      active_actors: [domain, team, design]
+      description: "공유 규칙과 명시적 인터페이스가 병렬 개발의 기준이 된다."
+      payload: ["implementation", "contract", "parallel work"]
+      outcomes:
+        - status: allow
+          text: "문서 구조가 코드 소유권과 협업 방식을 뒷받침한다."
+
+sdd_document_relationship:
+  eyebrow: "Interactive flow"
+  title: "SDD 문서 관계"
+  summary: "상위 요구사항에서 도메인·API·데이터·배포 설계로 내려가고 각 문서는 서로의 결정을 참조한다."
+  actors:
+    - id: requirement
+      kind: "상위 기준"
+      name: "Requirements"
+      description: "서비스 목표와 사용자 요구를 정리한 기준"
+    - id: domain
+      kind: "구조"
+      name: "Domain Design"
+      description: "도메인 책임과 소유 데이터를 나누는 설계"
+    - id: api
+      kind: "계약"
+      name: "API / Interface"
+      description: "도메인 간 통신과 외부 계약을 정의하는 설계"
+    - id: delivery
+      kind: "실행"
+      name: "Data + Deployment"
+      description: "저장 구조와 운영·배포 방식을 구체화하는 설계"
+  steps:
+    - title: "1. 요구사항 연결"
+      from: "Requirements"
+      to: "Domain Design"
+      route_label: "제품 요구를 도메인 책임과 사용자 흐름으로 나눈다."
+      active_actors: [requirement, domain]
+      description: "기술 문서의 각 결정은 상위 요구사항을 추적할 수 있어야 한다."
+      payload: ["use case", "domain", "responsibility"]
+      outcomes:
+        - status: info
+          text: "도메인 경계가 문서 전체의 기준점이 된다."
+    - title: "2. 계약 구체화"
+      from: "Domain Design"
+      to: "API / Interface"
+      route_label: "도메인 사이의 데이터와 동작을 내부 API·인터페이스 계약으로 고정한다."
+      active_actors: [domain, api]
+      description: "직접 엔티티 참조 대신 명시적인 계약을 통해 변경 영향을 줄인다."
+      payload: ["request", "response", "error contract"]
+      outcomes:
+        - status: allow
+          text: "구현 팀이 서로의 내부 구조에 덜 의존한다."
+    - title: "3. 저장과 운영 연결"
+      from: "API / Interface"
+      to: "Data + Deployment"
+      route_label: "계약을 만족하는 데이터 모델과 배포·관찰·복구 방식을 설계한다."
+      active_actors: [api, delivery, domain]
+      description: "문서 관계는 구현 순서와 운영 책임까지 이어져야 한다."
+      payload: ["schema", "deployment", "observability"]
+      outcomes:
+        - status: info
+          text: "문서가 따로 있어도 결정과 참조 관계는 연결되어 있다."
