@@ -104,19 +104,19 @@
         });
       };
 
-      const render = () => {
-        const step = steps[currentStep];
+      const render = (stepIndex = currentStep) => {
+        const step = steps[stepIndex];
 
-        root.dataset.step = String(currentStep + 1);
+        root.dataset.step = String(stepIndex + 1);
         refs.title.textContent = step.title;
-        refs.count.textContent = `${currentStep + 1} / ${steps.length}`;
+        refs.count.textContent = `${stepIndex + 1} / ${steps.length}`;
         refs.from.textContent = step.from;
         refs.to.textContent = step.to;
         refs.routeLabel.textContent = step.routeLabel;
         refs.description.textContent = step.description;
-        controls.previous.disabled = currentStep === 0;
-        controls.reset.disabled = currentStep === 0;
-        controls.next.disabled = currentStep === steps.length - 1;
+        controls.previous.disabled = stepIndex === 0;
+        controls.reset.disabled = stepIndex === 0;
+        controls.next.disabled = stepIndex === steps.length - 1;
         refs.stepData.hidden = true;
 
         renderActors(step.activeActors);
@@ -156,8 +156,34 @@
       });
 
       root.dataset.flowInitialized = 'true';
-      render();
+      const layoutSlots = {
+        progress: {
+          selector: '.interactive-flow__progress',
+          variable: '--interactive-flow-progress-height'
+        },
+        stage: {
+          selector: '.interactive-flow__stage',
+          variable: '--interactive-flow-stage-height'
+        },
+        description: {
+          selector: '.interactive-flow__description',
+          variable: '--interactive-flow-description-height'
+        }
+      };
+
+      const lockLayout = () => {
+        InteractiveLayout.lockHeights({
+          root,
+          renderStep: render,
+          stepCount: steps.length,
+          currentStep,
+          slots: layoutSlots
+        });
+      };
+
+      lockLayout();
       root.classList.add('is-ready');
+      InteractiveLayout.watchResize(lockLayout);
     } catch (error) {
       const errorMessage = root.querySelector('[data-flow-error]');
       const stepData = root.querySelector('[data-flow-step-data]');

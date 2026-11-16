@@ -54,10 +54,13 @@
     align-items: center;
     justify-content: space-between;
     gap: 1rem;
-    min-height: 3.1rem;
+    box-sizing: border-box;
+    height: var(--sort-progress-height, auto);
+    min-height: var(--sort-progress-height, 3.1rem);
     margin-bottom: 0.85rem;
     padding-bottom: 0.65rem;
     border-bottom: 1px solid var(--sort-border);
+    overflow-y: auto;
 
     strong {
       color: var(--heading-color);
@@ -74,7 +77,8 @@
   &__stage {
     display: grid;
     gap: 0.85rem;
-    min-height: 19.25rem;
+    height: var(--sort-stage-height, auto);
+    min-height: var(--sort-stage-height, 19.25rem);
   }
 
   &__array-wrap {
@@ -92,6 +96,8 @@
   &__cell {
     display: grid;
     gap: 0.18rem;
+    box-sizing: border-box;
+    height: 5.4rem;
     min-height: 5.4rem;
     padding: 0.55rem 0.35rem;
     border: 1px solid var(--sort-border);
@@ -245,7 +251,8 @@
   &__description {
     display: flex;
     align-items: center;
-    height: 5rem;
+    box-sizing: border-box;
+    height: var(--sort-description-height, 5rem);
     margin: 0.85rem 0 0;
     padding: 0.85rem 1rem;
     border-radius: calc(v.$radius-lg - 0.15rem);
@@ -293,6 +300,15 @@
     display: none;
   }
 
+  &.is-measuring &__progress,
+  &.is-measuring &__stage,
+  &.is-measuring &__description {
+    height: auto;
+    min-height: 0;
+    max-height: none;
+    overflow: visible;
+  }
+
   @include bp.lte(bp.get(sm)) {
     padding: 1rem;
 
@@ -300,7 +316,7 @@
       align-items: flex-start;
       flex-direction: column;
       gap: 0.25rem;
-      min-height: 4rem;
+      min-height: var(--sort-progress-height, 4rem);
     }
 
     &__stage {
@@ -313,7 +329,7 @@
     }
 
     &__description {
-      height: 8rem;
+      height: var(--sort-description-height, 8rem);
     }
   }
 
@@ -328,7 +344,7 @@
     }
 
     &__description {
-      height: 9rem;
+      height: var(--sort-description-height, 9rem);
     }
   }
 

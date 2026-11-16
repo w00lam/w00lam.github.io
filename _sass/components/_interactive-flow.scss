@@ -53,10 +53,13 @@
     align-items: center;
     justify-content: space-between;
     gap: 1rem;
-    min-height: 2rem;
+    box-sizing: border-box;
+    height: var(--interactive-flow-progress-height, auto);
+    min-height: var(--interactive-flow-progress-height, 2rem);
     margin-bottom: 0.85rem;
     padding-bottom: 0.65rem;
     border-bottom: 1px solid var(--interactive-flow-border);
+    overflow-y: auto;
 
     strong {
       color: var(--heading-color);
@@ -73,10 +76,12 @@
   &__stage {
     display: grid;
     gap: 1rem;
+    height: var(--interactive-flow-stage-height, auto);
+    min-height: var(--interactive-flow-stage-height, 0);
   }
 
   &[data-flow-layout='six'] {
-    .interactive-flow__actors {
+    [class~='interactive-flow__actors'] {
       grid-template-columns: repeat(3, minmax(0, 1fr));
     }
   }
@@ -134,6 +139,7 @@
   &__actor-state {
     color: var(--interactive-flow-accent);
     font-weight: 700;
+    min-height: 1.35em;
   }
 
   &__route {
@@ -244,7 +250,9 @@
   &__description {
     display: flex;
     align-items: center;
-    min-height: 3.35rem;
+    box-sizing: border-box;
+    height: var(--interactive-flow-description-height, auto);
+    min-height: var(--interactive-flow-description-height, 3.35rem);
     margin: 0;
     padding: 0.85rem 1rem;
     border-radius: calc(v.$radius-lg - 0.15rem);
@@ -252,6 +260,7 @@
     color: var(--text-color);
     font-size: 0.9rem;
     line-height: 1.55;
+    overflow-y: auto;
   }
 
   &__controls {
@@ -306,6 +315,15 @@
     display: none;
   }
 
+  &.is-measuring &__progress,
+  &.is-measuring &__stage,
+  &.is-measuring &__description {
+    height: auto;
+    min-height: 0;
+    max-height: none;
+    overflow: visible;
+  }
+
   @include bp.lte(bp.get(sm)) {
     padding: 1rem;
 
@@ -314,7 +332,7 @@
       grid-template-columns: 1fr;
     }
 
-    &[data-flow-layout='six'] .interactive-flow__actors {
+    &[data-flow-layout='six'] [class~='interactive-flow__actors'] {
       grid-template-columns: 1fr;
     }
 
@@ -326,16 +344,7 @@
       align-items: flex-start;
       flex-direction: column;
       gap: 0.25rem;
-    }
-
-    &__route {
-      min-height: 0;
-    }
-
-    &__route p,
-    &__outcomes,
-    &__description {
-      min-height: 0;
+      min-height: var(--interactive-flow-progress-height, 4rem);
     }
   }
 

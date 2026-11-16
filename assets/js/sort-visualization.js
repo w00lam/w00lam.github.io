@@ -672,15 +672,15 @@
       );
     };
 
-    const render = () => {
-      const step = steps[currentStep];
-      root.dataset.step = String(currentStep + 1);
+    const render = (stepIndex = currentStep) => {
+      const step = steps[stepIndex];
+      root.dataset.step = String(stepIndex + 1);
       refs.title.textContent = `${statusLabels[step.status] || statusLabels.info} · ${step.title}`;
-      refs.count.textContent = `${currentStep + 1} / ${steps.length}`;
+      refs.count.textContent = `${stepIndex + 1} / ${steps.length}`;
       refs.description.textContent = step.description;
-      refs.previous.disabled = currentStep === 0;
-      refs.reset.disabled = currentStep === 0;
-      refs.next.disabled = currentStep === steps.length - 1;
+      refs.previous.disabled = stepIndex === 0;
+      refs.reset.disabled = stepIndex === 0;
+      refs.next.disabled = stepIndex === steps.length - 1;
       refs.stepData.hidden = true;
       renderArray(step);
       renderDetails(step);
@@ -715,8 +715,34 @@
     });
 
     root.dataset.sortInitialized = 'true';
+    const layoutSlots = {
+      progress: {
+        selector: '.sort-visualization__progress',
+        variable: '--sort-progress-height'
+      },
+      stage: {
+        selector: '.sort-visualization__stage',
+        variable: '--sort-stage-height'
+      },
+      description: {
+        selector: '.sort-visualization__description',
+        variable: '--sort-description-height'
+      }
+    };
+
+    const lockLayout = () => {
+      InteractiveLayout.lockHeights({
+        root,
+        renderStep: render,
+        stepCount: steps.length,
+        currentStep,
+        slots: layoutSlots
+      });
+    };
+
+    lockLayout();
     root.classList.add('is-ready');
-    render();
+    InteractiveLayout.watchResize(lockLayout);
   };
 
   roots.forEach((root) => {
