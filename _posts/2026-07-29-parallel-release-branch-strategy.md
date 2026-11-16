@@ -26,7 +26,7 @@ permalink: /posts/parallel-release-branch-strategy/
 
 브랜치를 나누면 관리 대상은 하나 늘어난다. 병합 순서를 맞춰야 하고 수정사항을 되돌려 반영하는 작업도 생긴다. 반면 무엇을 배포하는지 고정할 수 있고 새 기능 때문에 배포 검증을 처음부터 반복하는 일을 줄일 수 있다. 4명 규모의 팀에서는 이 추가 비용보다 기준점이 흔들릴 때 생기는 비용이 더 크다고 판단했다.
 
-![하나의 develop 브랜치와 배포 브랜치를 분리한 방식 비교](/assets/images/2026-07-29-parallel-release-branch-strategy/single-vs-split-branch.png)
+{% include interactive/flow-card.html flow='branch_split_strategy' %}
 > `develop` 하나에 배포 설정과 신규 기능을 함께 모으면 배포 대상도 계속 바뀐다. 브랜치를 나누면 배포 코드를 고정한 채 다음 기능을 이어 갈 수 있다.
 
 ## 세 브랜치의 역할을 나누다
@@ -69,7 +69,7 @@ git push -u origin deploy/m2
 
 이 시점부터 흐름은 둘로 나뉜다. 배포 담당자는 `deploy/m2`에서 설정과 오류를 고치고 나머지 팀원은 `develop`을 기준으로 기능 브랜치를 만들어 2차 개발을 이어 간다. 배포 브랜치에는 새 기능이나 대규모 리팩터링을 넣지 않는다. 패키지 구조 정리, 갑작스러운 데이터베이스 구조 변경, 다음 버전 기능의 선행 병합도 같은 이유로 피한다. 배포 안정화에 꼭 필요한 최소 변경만 허용해야 검증 범위를 통제할 수 있다.
 
-![배포 준비와 다음 기능 개발을 병렬로 진행하는 브랜치 흐름](/assets/images/2026-07-29-parallel-release-branch-strategy/branch-parallel-workflow.png)
+{% include interactive/flow-card.html flow='branch_parallel_workflow' %}
 > `deploy/m2`는 배포 대상을 고정하고 `develop`은 다음 기능을 계속 받는다. 배포가 끝나면 배포 수정사항을 두 기준 브랜치에 반영한다.
 
 검증이 끝난 `deploy/m2`는 `main`에 병합한다. 아래 명령은 흐름을 보여 주기 위한 예시다.

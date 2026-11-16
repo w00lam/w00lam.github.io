@@ -10,7 +10,7 @@ permalink: /posts/gemini-spark-24-7-ai-agent/
 
 이 차이는 단순히 답변 품질이 좋아진 것이 아니다. 요청 하나를 처리하는 챗봇에서 **상태를 보존하고 조건을 기다리며 행동하는 실행 시스템**으로 무게중심이 옮겨갔음을 보여준다. Spark의 공개 기능을 살펴보면서 24시간 에이전트를 백엔드 관점에서 어떻게 이해해야 하는지 정리했다.
 
-![대화형 챗봇에서 클라우드 기반 상시 실행 에이전트로의 전환](/assets/images/2026-07-31-gemini-spark/chatbot-to-agent.png)
+{% include interactive/flow-card.html flow='spark_agent_transition' %}
 _생성 파일: `assets/images/2026-07-31-gemini-spark/chatbot-to-agent.png` — 글 도입부에 삽입_
 
 ## Gemini Spark는 무엇인가

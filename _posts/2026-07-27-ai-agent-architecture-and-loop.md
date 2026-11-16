@@ -57,7 +57,7 @@ AI 에이전트의 동작을 가장 단순하게 펼치면 다음과 같다.
 → 완료되지 않았다면 다시 행동 결정
 ```
 
-![AI 에이전트의 전체 구조와 반복 흐름](/assets/images/2026-07-27-ai-agent-architecture/ai-agent-architecture.png)
+{% include interactive/flow-card.html flow='agent_architecture' %}
 
 _에이전트는 LLM의 판단만으로 끝나지 않는다. 지침과 메모리를 참고해 도구를 실행하고 결과를 관찰한 뒤 완료 여부를 확인하는 반복 구조로 움직인다._
 
@@ -233,7 +233,7 @@ Claude Code나 Codex 같은 코드 에이전트에 다음 요청을 했다고 �
 
 겉으로 보면 카테고리 조건 하나를 추가하는 간단한 요청이다. 하지만 실제 코드 변경까지 가려면 여러 단계가 필요하다.
 
-![코드 에이전트의 탐색, 수정, 테스트 반복 과정](/assets/images/2026-07-27-ai-agent-architecture/code-agent-loop.png)
+{% include interactive/flow-card.html flow='code_agent_loop' %}
 
 _코드 에이전트는 코드를 한 번 생성하고 끝내지 않는다. 테스트가 실패하면 로그를 분석하고 코드 변경 단계로 돌아가며 성공한 뒤에도 요구사항 충족 여부를 최종 확인한다._
 
@@ -298,7 +298,7 @@ Spring Boot 프로젝트라면 Controller에서 쿼리 파라미터를 받고 Se
 
 AI 에이전트는 현재 상황과 실행 결과를 해석해 다음 행동을 동적으로 선택한다. 어떤 파일을 읽을지, 실패 원인을 더 조사할지, 다른 도구를 사용할지 실행 중에 결정할 수 있다.
 
-![고정된 워크플로우와 동적으로 판단하는 AI 에이전트 비교](/assets/images/2026-07-27-ai-agent-architecture/workflow-vs-ai-agent.png)
+{% include interactive/flow-card.html flow='workflow_vs_agent' %}
 
 _워크플로우는 미리 설계된 경로를 안정적으로 반복한다. AI 에이전트는 관찰 결과에 따라 다음 행동을 선택하고 필요하면 이전 판단 단계로 돌아간다._
 

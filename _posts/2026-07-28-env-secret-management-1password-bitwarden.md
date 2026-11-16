@@ -82,7 +82,7 @@ JWT_SECRET=
 
 환경 변수도 그 자체로 안전한 금고는 아니다. 코드 하드코딩보다 주입과 환경 분리가 쉽지만 디버그 로그, 오류 출력, 프로세스 정보, 컨테이너 설정 조회, CI/CD 로그, 잘못 열린 Actuator 같은 관리 엔드포인트로 보일 수 있다. 환경 변수는 Secret을 애플리케이션에 **전달하는 방식**이고 원본을 어디에 저장하고 누가 가져올지는 별도의 문제다.
 
-![Slack과 개인 .env를 거치는 잘못된 비밀값 공유 흐름](/assets/images/2026-07-28-env-secret-management-1password-bitwarden/unsafe-secret-sharing.png)
+{% include interactive/flow-card.html flow='unsafe_secret_sharing' %}
 > 채팅을 거쳐 개인 파일로 복사할수록 복사본은 늘고 보유자 추적과 접근 회수는 어려워진다.
 
 ## 4. 안전한 관리는 Secret의 수명주기를 다룬다
@@ -100,7 +100,7 @@ Secret 관리의 핵심은 값을 한 번 숨겨 두는 것이 아니라 **생�
 * **폐기와 접근 회수**: 역할이 바뀌거나 팀원이 나가면 권한을 제거한다. 이미 로컬에 복사된 값은 되가져올 수 없으므로 민감한 공유 Secret은 함께 회전한다.
 * **자동화**: 사람이 매번 복사하지 않고 파이프라인과 애플리케이션이 필요한 값만 제한적으로 가져온다.
 
-![Secret의 생성부터 폐기까지 이어지는 수명주기](/assets/images/2026-07-28-env-secret-management-1password-bitwarden/secret-lifecycle.png)
+{% include interactive/flow-card.html flow='secret_lifecycle' %}
 > Secret 관리는 저장으로 끝나지 않는다. 회전과 폐기까지 반복 가능한 절차가 있어야 한다.
 
 ## 5. Password Manager와 Secrets Manager는 초점이 다르다
@@ -212,7 +212,7 @@ Secret을 워크플로에서 `echo`하거나 디버깅을 위해 변형해 출�
 
 AWS Parameter Store의 `SecureString`은 KMS로 암호화하는 계층형 설정 저장에 적합하다. 자동 회전이나 더 세밀한 Secret 수명주기가 필요하면 AWS가 해당 용도로 안내하는 Secrets Manager가 더 맞다. 애플리케이션이나 IAM Role에는 필요한 경로와 Secret을 읽는 권한만 준다.
 
-![로컬 개발, CI/CD, 운영 환경을 분리한 Secret 관리 구조](/assets/images/2026-07-28-env-secret-management-1password-bitwarden/secure-secret-architecture.png)
+{% include interactive/flow-card.html flow='secure_secret_architecture' %}
 > 로컬은 사람의 접근, CI/CD는 제한된 배포 권한, 운영은 애플리케이션의 역할 기반 접근으로 나눈다.
 
 이 구조는 이전에 정리한 [사용자의 요청은 AWS 내부에서 어떻게 처리될까?](/posts/how-aws-request-flow-works/)의 IAM과 애플리케이션 경계를 Secret 접근에도 적용한 결과다. JWT 서명 키 역시 같은 원칙이 필요하다. [JWT 인증 필터에서 검증 책임을 분리한 이유](/posts/why-split-jwt-validation-responsibilities/)에서 다룬 검증 책임과 별개로, 서명 키 자체는 코드 밖에서 환경별로 분리하고 접근을 제한해야 한다.
