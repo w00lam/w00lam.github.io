@@ -1965,3 +1965,676 @@ tcp_handshake:
       outcomes:
         - status: info
           text: "연결 종료 뒤에도 재전송 가능성을 고려한다."
+
+procedure_call:
+  eyebrow: "Interactive flow"
+  title: "저장 프로시저의 정의와 호출"
+  summary: "정의할 때 본문을 DB에 저장하고 호출할 때는 이름과 인수를 전달한다."
+  actors:
+    - id: deploy
+      kind: "정의 주체"
+      name: "DB Admin / Deploy"
+      description: "CREATE PROCEDURE로 본문과 매개변수를 정의함"
+    - id: database
+      kind: "실행 장소"
+      name: "Database"
+      description: "저장된 프로시저 본문을 보관하고 실행함"
+    - id: application
+      kind: "호출자"
+      name: "Application"
+      description: "프로시저 이름과 인수를 전달함"
+    - id: result
+      kind: "반환 값"
+      name: "Result"
+      description: "실행 결과 행이나 OUT 값을 호출자에게 반환함"
+  steps:
+    - title: "1. 프로시저 정의"
+      from: "DB Admin / Deploy"
+      to: "Database"
+      route_label: "정의 시점에 CREATE PROCEDURE와 본문을 DB에 저장한다."
+      active_actors: [deploy, database]
+      description: "프로시저 전체 본문은 호출할 때마다 다시 보내는 것이 아니라 정의 단계에서 DB에 보관된다."
+      payload: ["CREATE PROCEDURE", "본문", "매개변수"]
+      outcomes:
+        - status: allow
+          text: "DB 내부에 add_amount 같은 저장 작업이 생긴다."
+    - title: "2. 이름과 인수로 호출"
+      from: "Application"
+      to: "Database"
+      route_label: "애플리케이션이 CALL 이름과 입력값만 전달한다."
+      active_actors: [application, database]
+      description: "호출자는 저장된 프로시저 본문 전체가 아니라 add_amount(5, 10, NULL)처럼 이름과 인수를 보낸다."
+      payload: ["CALL add_amount", "입력 인수"]
+      outcomes:
+        - status: info
+          text: "정의와 호출에서 전달되는 값의 범위를 구분한다."
+    - title: "3. DB 내부 실행"
+      from: "Database"
+      to: "Result"
+      route_label: "DB가 저장된 본문을 찾아 실행하고 결과를 만든다."
+      active_actors: [database, result]
+      description: "프로시저는 DB 내부에서 실행되며 예시에서는 p_total과 p_added 같은 결과를 계산한다."
+      payload: ["저장된 본문", "p_total: 15", "p_added: 5"]
+      outcomes:
+        - status: allow
+          text: "실행 위치는 DB 내부다."
+    - title: "4. 결과 반환"
+      from: "Result"
+      to: "Application"
+      route_label: "출력 결과 행이나 OUT 값을 호출자에게 반환한다."
+      active_actors: [result, application]
+      description: "호출자는 DB가 실행한 작업의 결과만 받아 다음 애플리케이션 흐름에 사용한다."
+      payload: ["결과 행", "15", "5"]
+      outcomes:
+        - status: allow
+          text: "호출마다 본문 전체를 전송하지 않는다."
+
+cache_invalidation:
+  eyebrow: "Interactive flow"
+  title: "DB 변경과 Redis 캐시 무효화"
+  summary: "TTL 만료와 원본 변경에 따른 캐시 무효화는 서로 다른 흐름이다."
+  actors:
+    - id: database
+      kind: "원본 상태"
+      name: "Relational DB"
+      description: "변경 내용을 커밋해 기준 상태를 확정함"
+    - id: cache
+      kind: "캐시 상태"
+      name: "Redis"
+      description: "조회 결과와 TTL을 보관함"
+    - id: invalidation
+      kind: "무효화"
+      name: "Cache Invalidation"
+      description: "원본 변경과 관련된 오래된 결과를 삭제함"
+    - id: reader
+      kind: "조회 경로"
+      name: "Next Read"
+      description: "캐시 미스 뒤 DB에서 새 결과를 읽음"
+  steps:
+    - title: "1. DB 변경 커밋"
+      from: "Relational DB"
+      to: "Redis"
+      route_label: "DB에는 새 주소가 커밋됐지만 Redis에는 이전 조회 결과가 남을 수 있다."
+      active_actors: [database, cache]
+      description: "DB와 Redis가 하나의 트랜잭션으로 자동 처리된다고 가정하지 않고 두 상태를 따로 확인한다."
+      payload: ["새 주소", "이전 캐시", "TTL 남음"]
+      outcomes:
+        - status: warning
+          text: "다음 요청이 만료 전 오래된 결과를 받을 수 있다."
+    - title: "2. 관련 캐시 삭제"
+      from: "Relational DB"
+      to: "Cache Invalidation"
+      route_label: "DB 변경을 확정한 뒤 관련 키의 오래된 캐시를 무효화한다."
+      active_actors: [database, invalidation, cache]
+      description: "캐시 무효화는 원본 변경으로 더 이상 사용할 수 없는 결과를 제거하는 대응이다."
+      payload: ["DB 변경 커밋", "관련 키 삭제"]
+      outcomes:
+        - status: allow
+          text: "오래된 조회 결과를 다음 요청에서 사용하지 않는다."
+    - title: "3. 다음 조회의 Cache Miss"
+      from: "Next Read"
+      to: "Relational DB"
+      route_label: "다음 조회가 캐시 미스를 만나 DB에서 새 결과를 읽는다."
+      active_actors: [reader, cache, database]
+      description: "삭제된 캐시가 없으므로 조회 경로는 원본 DB를 읽어 최신 결과를 얻는다."
+      payload: ["Cache Miss", "DB 조회", "새 결과"]
+      outcomes:
+        - status: info
+          text: "캐시 삭제와 DB 조회를 한 단계로 뭉치지 않는다."
+    - title: "4. 새 결과 재저장"
+      from: "Relational DB"
+      to: "Redis"
+      route_label: "새 조회 결과를 Redis에 저장하고 필요한 TTL을 다시 설정한다."
+      active_actors: [database, cache, reader]
+      description: "TTL은 시간이 지나면 키를 만료시키고 무효화는 원본 변경으로 오래된 결과를 제거한다."
+      payload: ["새 조회 결과", "TTL 재설정"]
+      outcomes:
+        - status: allow
+          text: "다음 요청부터 새 결과를 사용할 수 있다."
+
+snapshot_timing:
+  eyebrow: "Interactive comparison"
+  title: "READ COMMITTED와 REPEATABLE READ의 스냅샷 기준"
+  summary: "BEGIN 시점과 실제 스냅샷 기준 문장을 구분해 재조회 결과를 비교한다."
+  actors:
+    - id: t1
+      kind: "첫 트랜잭션"
+      name: "T1"
+      description: "BEGIN 뒤 같은 행을 다시 조회함"
+    - id: t2
+      kind: "동시 변경"
+      name: "T2"
+      description: "이름을 변경하고 커밋함"
+    - id: read_committed
+      kind: "문장 기준"
+      name: "READ COMMITTED"
+      description: "각 문장이 시작할 때의 스냅샷을 사용함"
+    - id: repeatable_read
+      kind: "트랜잭션 기준"
+      name: "REPEATABLE READ"
+      description: "첫 조회·변경 문장의 스냅샷을 유지함"
+  steps:
+    - title: "1. T1 BEGIN"
+      from: "T1"
+      to: "READ COMMITTED"
+      route_label: "T1이 시작되지만 BEGIN만으로 REPEATABLE READ 스냅샷이 확정되지는 않는다."
+      active_actors: [t1, read_committed, repeatable_read]
+      description: "트랜잭션 시작 시점과 실제 첫 조회 또는 첫 변경 문장의 시점을 나누어 본다."
+      payload: ["BEGIN", "아직 조회 없음"]
+      outcomes:
+        - status: info
+          text: "BEGIN과 스냅샷 확정은 같은 사건이 아니다."
+    - title: "2. T1 첫 SELECT"
+      from: "T1"
+      to: "REPEATABLE READ"
+      route_label: "첫 조회가 REPEATABLE READ에서 유지할 스냅샷의 기준이 된다."
+      active_actors: [t1, repeatable_read]
+      description: "첫 SELECT에서 달빛국수를 읽은 시점의 스냅샷을 이후 재조회가 참조하게 된다."
+      payload: ["첫 SELECT", "달빛국수", "스냅샷 확정"]
+      outcomes:
+        - status: info
+          text: "첫 조회 또는 첫 변경 문장이 기준이다."
+    - title: "3. T2 UPDATE와 COMMIT"
+      from: "T2"
+      to: "T1"
+      route_label: "T2가 이름을 달빛면옥으로 바꾸고 커밋한다."
+      active_actors: [t1, t2, read_committed, repeatable_read]
+      description: "동시 트랜잭션이 뒤에서 변경을 확정해도 격리 수준에 따라 T1의 다음 조회가 보는 스냅샷이 달라진다."
+      payload: ["UPDATE", "COMMIT", "달빛면옥"]
+      outcomes:
+        - status: info
+          text: "T2의 커밋이 T1의 모든 조회에 같은 방식으로 보이는 것은 아니다."
+    - title: "4. T1 재조회 결과"
+      from: "T1"
+      to: "READ COMMITTED / REPEATABLE READ"
+      route_label: "READ COMMITTED는 새 문장 스냅샷, REPEATABLE READ는 기존 스냅샷을 참조한다."
+      active_actors: [t1, read_committed, repeatable_read]
+      description: "READ COMMITTED에서는 달빛면옥을 읽을 수 있지만 REPEATABLE READ에서는 첫 조회 때의 달빛국수가 유지된다."
+      payload: ["READ COMMITTED: 달빛면옥", "REPEATABLE READ: 달빛국수"]
+      outcomes:
+        - status: allow
+          text: "격리 수준 이름보다 스냅샷 기준 시점을 확인한다."
+
+serializable_rule:
+  eyebrow: "Interactive comparison"
+  title: "REPEATABLE READ와 SERIALIZABLE의 결과 보장"
+  summary: "같은 값을 반복해 읽는 보장과 업무 규칙을 깨지 않는 직렬 실행 결과 보장은 다르다."
+  actors:
+    - id: t1
+      kind: "동시 트랜잭션"
+      name: "T1"
+      description: "활성 운영자 A를 비활성화하려 함"
+    - id: t2
+      kind: "동시 트랜잭션"
+      name: "T2"
+      description: "활성 운영자 B를 비활성화하려 함"
+    - id: repeatable
+      kind: "스냅샷 보장"
+      name: "REPEATABLE READ"
+      description: "각 트랜잭션이 안정적인 스냅샷을 읽음"
+    - id: serializable
+      kind: "결과 보장"
+      name: "SERIALIZABLE"
+      description: "성공한 결과가 어떤 직렬 실행과 같아야 함"
+  steps:
+    - title: "1. 공통 초기 상태"
+      from: "T1"
+      to: "T2"
+      route_label: "T1과 T2가 활성 운영자 A와 B 두 명을 확인한다."
+      active_actors: [t1, t2]
+      description: "업무 규칙은 활성 운영자가 최소 한 명 남아야 한다는 것이며 두 트랜잭션은 같은 초기 상태를 읽는다."
+      payload: ["A: 활성", "B: 활성", "최소 1명"]
+      outcomes:
+        - status: info
+          text: "각자 확인한 상태가 최종 업무 규칙을 자동 보장하지는 않는다."
+    - title: "2. 서로 다른 운영자 변경"
+      from: "T1"
+      to: "T2"
+      route_label: "T1은 A를, T2는 B를 비활성화한다."
+      active_actors: [t1, t2, repeatable, serializable]
+      description: "두 변경이 서로 다른 행을 건드리면 일반적인 행 충돌만으로 업무 규칙 위반을 발견하기 어려울 수 있다."
+      payload: ["A 비활성화", "B 비활성화"]
+      outcomes:
+        - status: warning
+          text: "각 트랜잭션의 안정적인 스냅샷과 전체 결과의 직렬성은 별개다."
+    - title: "3. REPEATABLE READ 결과"
+      from: "REPEATABLE READ"
+      to: "T1 + T2 COMMIT"
+      route_label: "두 트랜잭션이 모두 커밋하면 활성 운영자 0명이 될 수 있다."
+      active_actors: [repeatable, t1, t2]
+      description: "REPEATABLE READ는 같은 트랜잭션에서 같은 값을 읽는 성질을 제공해도 애플리케이션 업무 규칙을 자동으로 지키게 하지는 않는다."
+      payload: ["T1 COMMIT", "T2 COMMIT", "활성 운영자 0명"]
+      outcomes:
+        - status: reject
+          text: "스냅샷 안정성이 업무 규칙 보장을 의미하지 않는다."
+    - title: "4. SERIALIZABLE 결과"
+      from: "SERIALIZABLE"
+      to: "T1 또는 T2 실패"
+      route_label: "직렬 실행으로 설명할 수 없는 결과를 만들지 않도록 한 트랜잭션이 실패할 수 있다."
+      active_actors: [serializable, t1, t2]
+      description: "SERIALIZABLE은 모든 작업을 실제로 한 줄로 실행하는 것이 아니라 성공 결과가 어떤 직렬 실행과 같도록 조정한다."
+      payload: ["직렬화 실패", "40001 가능", "재시도 고려"]
+      outcomes:
+        - status: allow
+          text: "두 작업이 모두 커밋해 업무 규칙을 깨는 결과를 허용하지 않는다."
+
+transaction_boundary:
+  eyebrow: "Interactive comparison"
+  title: "자동 커밋과 트랜잭션 경계"
+  summary: "같은 실패라도 여러 SQL을 하나로 묶었는지에 따라 남는 결과가 달라진다."
+  actors:
+    - id: restaurant
+      kind: "첫 작업"
+      name: "Restaurant INSERT"
+      description: "음식점 101 저장을 수행함"
+    - id: relation
+      kind: "두 번째 작업"
+      name: "RestaurantVideo INSERT"
+      description: "존재하지 않는 video_id 999 연결을 시도함"
+    - id: autocommit
+      kind: "분리된 확정"
+      name: "Auto Commit"
+      description: "각 문장을 별도 트랜잭션으로 확정함"
+    - id: transaction
+      kind: "업무 단위"
+      name: "Explicit Transaction"
+      description: "BEGIN부터 COMMIT·ROLLBACK까지 묶음"
+  steps:
+    - title: "1. 음식점 저장"
+      from: "Restaurant INSERT"
+      to: "Auto Commit"
+      route_label: "자동 커밋에서는 음식점 101 저장이 즉시 확정된다."
+      active_actors: [restaurant, autocommit]
+      description: "첫 SQL이 성공하면 다음 SQL의 성공 여부와 분리된 커밋으로 남을 수 있다."
+      payload: ["restaurant 101", "COMMIT"]
+      outcomes:
+        - status: allow
+          text: "첫 문장의 변경이 이미 확정된다."
+    - title: "2. 영상 연결 실패"
+      from: "RestaurantVideo INSERT"
+      to: "Auto Commit"
+      route_label: "존재하지 않는 video_id 999 외래키 오류가 발생한다."
+      active_actors: [relation, autocommit]
+      description: "자동 커밋에서는 두 번째 문장의 실패가 앞선 커밋을 자동으로 취소하지 않는다."
+      payload: ["video_id 999", "Foreign Key Error"]
+      outcomes:
+        - status: reject
+          text: "음식점 101은 남고 영상 연결은 없다."
+    - title: "3. 명시적 트랜잭션 시작"
+      from: "Explicit Transaction"
+      to: "Restaurant INSERT"
+      route_label: "BEGIN 뒤 음식점 저장과 영상 연결을 하나의 성공 단위로 실행한다."
+      active_actors: [transaction, restaurant, relation]
+      description: "두 작업이 함께 성공해야 하는지는 SQL 개수가 아니라 업무의 성공 조건으로 정한다."
+      payload: ["BEGIN", "음식점 저장", "영상 연결"]
+      outcomes:
+        - status: info
+          text: "첫 작업이 성공해도 아직 최종 확정 전이다."
+    - title: "4. 오류 시 ROLLBACK"
+      from: "RestaurantVideo INSERT"
+      to: "Explicit Transaction"
+      route_label: "영상 연결이 실패하면 전체 트랜잭션을 ROLLBACK한다."
+      active_actors: [transaction, relation, restaurant]
+      description: "명시적 경계에서는 앞선 음식점 저장까지 함께 취소해 업무 단위의 부분 성공을 막을 수 있다."
+      payload: ["외래키 오류", "ROLLBACK", "전체 취소"]
+      outcomes:
+        - status: reject
+          text: "음식점 저장도 함께 취소된다."
+
+wal_mvcc:
+  eyebrow: "Interactive structure"
+  title: "WAL·데이터 페이지·MVCC의 역할 구분"
+  summary: "WAL은 장애 복구 기록이고 MVCC는 동시 실행 중 어떤 행 버전을 볼지 결정한다."
+  actors:
+    - id: query
+      kind: "변경 실행"
+      name: "SQL / Query Processor"
+      description: "데이터 변경을 수행함"
+    - id: buffer
+      kind: "메모리 페이지"
+      name: "Buffer Manager"
+      description: "변경된 데이터 페이지를 메모리에 유지함"
+    - id: wal
+      kind: "영속 로그"
+      name: "Persistent WAL"
+      description: "데이터 페이지보다 먼저 변경 기록을 flush함"
+    - id: data_file
+      kind: "영속 데이터"
+      name: "Data File / MVCC"
+      description: "페이지를 기록하고 스냅샷에 따른 행 가시성을 관리함"
+  steps:
+    - title: "1. SQL 변경"
+      from: "SQL / Query Processor"
+      to: "Buffer Manager"
+      route_label: "SQL 실행이 데이터 페이지의 메모리 변경을 만든다."
+      active_actors: [query, buffer]
+      description: "변경된 페이지는 즉시 데이터 파일에 기록되지 않고 Buffer Manager 메모리에 남아 있을 수 있다."
+      payload: ["UPDATE", "변경 페이지", "메모리"]
+      outcomes:
+        - status: info
+          text: "커밋과 데이터 페이지 기록은 같은 사건이 아니다."
+    - title: "2. WAL 먼저 영속화"
+      from: "Buffer Manager"
+      to: "Persistent WAL"
+      route_label: "데이터 페이지보다 변경 기록을 먼저 WAL에 flush한다."
+      active_actors: [buffer, wal]
+      description: "WAL은 커밋 내구성과 장애 뒤 복구에 필요한 변경 기록을 보관하는 층위다."
+      payload: ["변경 기록", "WAL flush", "커밋 내구성"]
+      outcomes:
+        - status: allow
+          text: "먼저 기록된 WAL이 REDO의 근거가 된다."
+    - title: "3. 데이터 파일 반영"
+      from: "Buffer Manager"
+      to: "Data File / MVCC"
+      route_label: "변경된 페이지는 나중에 데이터 파일에 기록될 수 있다."
+      active_actors: [buffer, data_file]
+      description: "장애로 메모리를 잃으면 WAL을 읽어 데이터 파일에 REDO할 수 있으므로 두 기록 시점을 분리한다."
+      payload: ["최신 페이지", "데이터 파일", "REDO"]
+      outcomes:
+        - status: info
+          text: "데이터 파일 쓰기가 WAL보다 늦을 수 있다."
+    - title: "4. MVCC 가시성 판단"
+      from: "Data File / MVCC"
+      to: "Data File / MVCC"
+      route_label: "트랜잭션 스냅샷에 따라 v1·v2 중 보이는 행 버전을 선택한다."
+      active_actors: [data_file]
+      description: "MVCC는 WAL 기록 순서의 단계가 아니라 동시 실행 중 트랜잭션이 어떤 행 버전을 읽을지 관리하는 별도의 축이다."
+      payload: ["v1 이전 값", "v2 변경 값", "스냅샷"]
+      outcomes:
+        - status: info
+          text: "WAL과 MVCC를 하나의 저장 순서로 합치지 않는다."
+
+normalization:
+  eyebrow: "Interactive structure"
+  title: "함수 종속성에 따른 정규화 분해"
+  summary: "사실을 결정하는 키가 있는 테이블에 두고 관계는 연결 테이블로 분리한다."
+  actors:
+    - id: raw
+      kind: "분해 전"
+      name: "RestaurantVideoDetail"
+      description: "음식점·영상·유튜버 사실이 한 행에 함께 반복됨"
+    - id: dependency
+      kind: "분석 기준"
+      name: "Functional Dependencies"
+      description: "키가 어떤 사실을 결정하는지 확인함"
+    - id: entities
+      kind: "대상 테이블"
+      name: "Restaurant / Video / YouTuber"
+      description: "각 대상의 사실을 식별 키와 함께 관리함"
+    - id: relation
+      kind: "연결 테이블"
+      name: "RestaurantVideo"
+      description: "음식점과 영상의 관계와 복합 PK를 관리함"
+  steps:
+    - title: "1. 통합 구조 확인"
+      from: "RestaurantVideoDetail"
+      to: "Functional Dependencies"
+      route_label: "한 행에 반복된 음식점·영상·유튜버 정보를 함수 종속성으로 분석한다."
+      active_actors: [raw, dependency]
+      description: "restaurant_id가 이름을, video_id가 제목과 youtuber_id를, youtuber_id가 이름을 결정하는 관계를 찾는다."
+      payload: ["restaurant_name", "video_title", "youtuber_name"]
+      outcomes:
+        - status: warning
+          text: "서로 다른 사실이 한 행에 반복되면 갱신 이상이 생길 수 있다."
+    - title: "2. 결정 키별 테이블 분리"
+      from: "Functional Dependencies"
+      to: "Restaurant / Video / YouTuber"
+      route_label: "각 사실을 결정하는 키가 있는 대상 테이블로 옮긴다."
+      active_actors: [dependency, entities]
+      description: "Restaurant·Video·YouTuber 각각의 고유 사실을 해당 PK가 있는 곳에서 한 번 관리한다."
+      payload: ["PK", "restaurant_id", "video_id", "youtuber_id"]
+      outcomes:
+        - status: allow
+          text: "이름과 제목의 중복 저장을 줄인다."
+    - title: "3. 관계를 연결 테이블로 이동"
+      from: "Restaurant / Video / YouTuber"
+      to: "RestaurantVideo"
+      route_label: "음식점과 영상의 연결은 FK와 복합 PK를 가진 연결 테이블에 둔다."
+      active_actors: [entities, relation]
+      description: "대상의 사실과 대상 사이 관계를 분리하면 각 책임과 중복 방지 규칙을 구분해 관리할 수 있다."
+      payload: ["restaurant_id FK", "video_id FK", "PK (restaurant_id, video_id)"]
+      outcomes:
+        - status: allow
+          text: "연결 관계의 중복을 복합 PK로 제한한다."
+
+lossless_dependency:
+  eyebrow: "Interactive comparison"
+  title: "무손실 복원과 종속성 보존"
+  summary: "JOIN으로 원래 정보를 복원할 수 있는지와 업무 규칙을 강제할 수 있는지는 별도로 확인한다."
+  actors:
+    - id: original
+      kind: "분해 전 관계"
+      name: "Featured Video Relation"
+      description: "음식점·유튜버 조합마다 대표 영상 하나라는 규칙을 가짐"
+    - id: video
+      kind: "대상 테이블"
+      name: "Video"
+      description: "video_id와 youtuber_id를 관리함"
+    - id: join_table
+      kind: "연결 테이블"
+      name: "RestaurantFeaturedVideo"
+      description: "restaurant_id와 video_id를 연결함"
+    - id: rule
+      kind: "추가 업무 규칙"
+      name: "Dependency Check"
+      description: "음식점·유튜버 조합의 대표 영상 개수를 검증함"
+  steps:
+    - title: "1. 분해와 FK 연결"
+      from: "Featured Video Relation"
+      to: "Video"
+      route_label: "Video와 연결 테이블로 정보를 나누고 video_id FK로 연결한다."
+      active_actors: [original, video, join_table]
+      description: "개별 PK·FK를 두어도 원래 대상과 관계를 참조할 수 있는 구조를 만들 수 있다."
+      payload: ["video_id PK", "video_id FK", "restaurant_id"]
+      outcomes:
+        - status: allow
+          text: "참조 대상이 존재하는지 확인할 수 있다."
+    - title: "2. 무손실 JOIN 복원"
+      from: "RestaurantFeaturedVideo"
+      to: "Video"
+      route_label: "연결 테이블과 Video를 JOIN해 원래 관계의 속성을 복원한다."
+      active_actors: [join_table, video, original]
+      description: "공통 속성 video_id가 연결되므로 restaurant_id와 youtuber_id를 포함한 관계를 복원할 수 있다."
+      payload: ["JOIN ON video_id", "원래 관계 복원"]
+      outcomes:
+        - status: allow
+          text: "무손실 복원은 가능하다."
+    - title: "3. 종속성 규칙 별도 검증"
+      from: "RestaurantFeaturedVideo"
+      to: "Dependency Check"
+      route_label: "PK·FK만으로 음식점·유튜버 조합의 대표 영상 하나 규칙을 보장할 수 있는지 확인한다."
+      active_actors: [join_table, video, rule]
+      description: "같은 조합에 V101과 V103이 모두 연결되면 JOIN은 되지만 대표 영상 하나라는 업무 규칙은 깨질 수 있다."
+      payload: ["(restaurant_id, youtuber_id)", "→ video_id", "추가 검증"]
+      outcomes:
+        - status: reject
+          text: "무손실 복원과 종속성 보존은 같은 보장이 아니다."
+
+anomaly_index:
+  eyebrow: "Interactive comparison"
+  title: "정규화와 복합 인덱스 설계 기준"
+  summary: "중복된 사실은 책임별로 나누고 복합 인덱스는 앞 컬럼 조건이 만드는 구간을 기준으로 읽는다."
+  actors:
+    - id: duplicated
+      kind: "갱신 이상"
+      name: "Duplicated Rows"
+      description: "같은 음식점 이름이 여러 연결 행에 반복됨"
+    - id: normalized
+      kind: "분리된 책임"
+      name: "Restaurant + RestaurantVideo"
+      description: "이름과 연결을 서로 다른 책임으로 관리함"
+    - id: index
+      kind: "정렬 키"
+      name: "Composite Index"
+      description: "region_id·category_id·created_at DESC 순으로 정렬함"
+    - id: query
+      kind: "조회 조건"
+      name: "Query Predicate"
+      description: "앞 컬럼을 얼마나 고정하는지에 따라 읽을 구간이 달라짐"
+  steps:
+    - title: "1. 중복 행의 갱신 이상"
+      from: "Duplicated Rows"
+      to: "Duplicated Rows"
+      route_label: "연결 행 일부만 음식점 이름을 바꾸면 서로 다른 이름이 함께 남는다."
+      active_actors: [duplicated]
+      description: "음식점의 사실과 영상 연결을 한 테이블에 반복 저장하면 일부 행만 수정되는 갱신 이상이 생길 수 있다."
+      payload: ["달빛국수", "달빛면옥", "부분 수정"]
+      outcomes:
+        - status: warning
+          text: "한 사실을 여러 행에서 관리하는 비용이 드러난다."
+    - title: "2. 책임별 분리"
+      from: "Duplicated Rows"
+      to: "Restaurant + RestaurantVideo"
+      route_label: "Restaurant에는 이름을 한 번 두고 RestaurantVideo에는 연결만 둔다."
+      active_actors: [duplicated, normalized]
+      description: "이름 변경 대상은 Restaurant 한 행으로 좁히고 영상 관계는 별도 연결 테이블에서 관리한다."
+      payload: ["Restaurant", "RestaurantVideo", "책임 분리"]
+      outcomes:
+        - status: allow
+          text: "사실과 관계의 변경 범위를 구분한다."
+    - title: "3. 복합 인덱스 정렬"
+      from: "Composite Index"
+      to: "Query Predicate"
+      route_label: "region_id → category_id → created_at DESC 순으로 구간과 정렬이 이어진다."
+      active_actors: [index, query]
+      description: "앞의 컬럼으로 범위를 좁힌 뒤 같은 조합 안에서 뒤 컬럼의 정렬 순서를 활용한다."
+      payload: ["region_id", "category_id", "created_at DESC"]
+      outcomes:
+        - status: info
+          text: "인덱스는 각 컬럼의 독립 목록이 아니다."
+    - title: "4. 조건에 따른 활용 범위"
+      from: "Query Predicate"
+      to: "Composite Index"
+      route_label: "지역과 카테고리를 모두 고정하면 해당 구간에서 최신순으로 읽기 쉽다."
+      active_actors: [index, query]
+      description: "category_id 조건이 빠지면 지역 전체가 created_at 순으로 바로 이어진다고 단정할 수 없어 실행계획을 확인해야 한다."
+      payload: ["region_id = 17", "category_id = 3", "LIMIT 20"]
+      outcomes:
+        - status: info
+          text: "복합 인덱스 선택 여부는 데이터 분포와 실행계획으로 확인한다."
+
+composite_index:
+  eyebrow: "Interactive comparison"
+  title: "복합 인덱스의 컬럼 순서와 조회 조건"
+  summary: "앞의 컬럼을 고정한 구간 안에서 뒤 컬럼의 정렬 순서를 활용한다."
+  actors:
+    - id: index
+      kind: "정렬 키"
+      name: "region_id → category_id → created_at DESC"
+      description: "지역·카테고리·최신순으로 이어지는 복합 인덱스"
+    - id: full_match
+      kind: "조건이 충분함"
+      name: "지역 + 카테고리"
+      description: "앞의 두 컬럼이 동등 조건으로 고정됨"
+    - id: partial_match
+      kind: "조건이 부족함"
+      name: "지역만"
+      description: "category_id가 고정되지 않음"
+    - id: plan
+      kind: "검증 기준"
+      name: "Execution Plan"
+      description: "옵티마이저가 실제 인덱스 활용을 판단함"
+  steps:
+    - title: "1. 인덱스 순서"
+      from: "region_id → category_id → created_at DESC"
+      to: "지역 + 카테고리"
+      route_label: "먼저 지역으로 묶고 같은 지역 안에서 카테고리, 그 안에서 최신순이 이어진다."
+      active_actors: [index, full_match]
+      description: "복합 인덱스는 각 컬럼이 독립된 정렬 목록이 아니라 앞 컬럼으로 만든 구간 안에서 다음 순서를 갖는다."
+      payload: ["region_id", "category_id", "created_at DESC"]
+      outcomes:
+        - status: info
+          text: "컬럼 순서가 조회 가능한 구간의 기준이 된다."
+    - title: "2. 앞의 두 조건 고정"
+      from: "지역 + 카테고리"
+      to: "Execution Plan"
+      route_label: "region_id = 17 AND category_id = 3이면 해당 조합 구간을 최신순으로 읽기 쉽다."
+      active_actors: [index, full_match, plan]
+      description: "앞의 두 컬럼이 동등 조건으로 고정되면 created_at DESC 순서를 LIMIT 조회에 활용할 가능성이 있다."
+      payload: ["region_id = 17", "category_id = 3", "LIMIT 20"]
+      outcomes:
+        - status: allow
+          text: "필요한 구간에서 최신순 읽기를 기대할 수 있다."
+    - title: "3. 카테고리 조건 누락"
+      from: "지역만"
+      to: "Execution Plan"
+      route_label: "region_id만 고정하면 지역 전체가 created_at 순이라고 바로 볼 수 없다."
+      active_actors: [index, partial_match, plan]
+      description: "category_id가 빠지면 여러 카테고리 구간이 섞여 뒤 컬럼의 전역 순서를 직접 보장하지 못할 수 있다."
+      payload: ["region_id = 17", "category_id 조건 없음"]
+      outcomes:
+        - status: warning
+          text: "인덱스 순서만 보고 정렬을 단정하지 않는다."
+    - title: "4. 실행계획 확인"
+      from: "Execution Plan"
+      to: "지역 + 카테고리"
+      route_label: "데이터 분포와 비용을 포함한 실행계획으로 실제 선택을 확인한다."
+      active_actors: [plan, index, full_match, partial_match]
+      description: "복합 인덱스를 만들었다는 사실만으로 사용이 보장되지는 않으므로 실제 조회 패턴과 실행계획을 함께 확인한다."
+      payload: ["데이터 분포", "옵티마이저 비용", "실행계획"]
+      outcomes:
+        - status: info
+          text: "자주 쓰는 조회가 다르면 다른 인덱스 후보도 검토한다."
+
+replica_consistency:
+  eyebrow: "Interactive flow"
+  title: "PostgreSQL Primary·Read Replica 읽기 일관성"
+  summary: "쓰기 경로와 읽기 분산을 나누되, 수정 직후 최신 값이 필요한지는 별도로 판단한다."
+  actors:
+    - id: request
+      kind: "요청 유형"
+      name: "Application Request"
+      description: "관리자 수정·일반 검색·수정 직후 조회를 구분함"
+    - id: primary
+      kind: "쓰기 원본"
+      name: "PostgreSQL Primary"
+      description: "쓰기와 최신 상태 확인을 처리함"
+    - id: wal
+      kind: "복제 경로"
+      name: "WAL / Standby"
+      description: "Primary 변경 기록을 Replica로 전달하고 적용함"
+    - id: replica
+      kind: "읽기 분산"
+      name: "Read Replica"
+      description: "복제 지연을 허용할 수 있는 일반 검색을 처리함"
+  steps:
+    - title: "1. 관리자 수정은 Primary"
+      from: "Application Request"
+      to: "PostgreSQL Primary"
+      route_label: "관리자 음식점 수정은 Primary로 보내 최신 상태를 기록한다."
+      active_actors: [request, primary]
+      description: "INSERT·UPDATE는 Primary에 먼저 반영되고 커밋 응답의 기준도 Primary가 된다."
+      payload: ["관리자 수정", "INSERT·UPDATE"]
+      outcomes:
+        - status: allow
+          text: "쓰기 요청은 자동으로 여러 Replica에 분산되는 것이 아니다."
+    - title: "2. WAL 비동기 전달"
+      from: "PostgreSQL Primary"
+      to: "WAL / Standby"
+      route_label: "Primary가 변경 기록을 WAL로 만들고 Standby에 전달한다."
+      active_actors: [primary, wal, replica]
+      description: "비동기 복제에서는 Primary 커밋 시점과 Replica 적용 시점 사이에 지연이 생길 수 있다."
+      payload: ["WAL", "비동기 적용", "복제 지연"]
+      outcomes:
+        - status: warning
+          text: "Replica에는 이전 값이 잠시 남을 수 있다."
+    - title: "3. 일반 검색 분산"
+      from: "Application Request"
+      to: "Read Replica"
+      route_label: "짧은 지연을 허용하는 일반 검색을 Read Replica로 보낸다."
+      active_actors: [request, replica]
+      description: "Read Replica는 읽기 요청을 나누는 데 도움을 주지만 쓰기 확장을 자동으로 해결하는 구성은 아니다."
+      payload: ["일반 검색", "읽기 전용 쿼리"]
+      outcomes:
+        - status: info
+          text: "읽기 분산과 쓰기 확장은 다른 문제다."
+    - title: "4. 수정 직후 최신 값 확인"
+      from: "Application Request"
+      to: "PostgreSQL Primary"
+      route_label: "최신 값이 즉시 필요하면 Primary를 읽거나 복제 적용을 확인한다."
+      active_actors: [request, primary, replica, wal]
+      description: "수정 직후 화면은 Replica 지연을 허용하지 않을 수 있으므로 읽기 대상을 최신성 요구에 맞춰 선택한다."
+      payload: ["최신 값 필요", "Primary 읽기", "복제 적용 확인"]
+      outcomes:
+        - status: allow
+          text: "동기 복제도 응답 지연과 보장 범위를 함께 검토해야 한다."

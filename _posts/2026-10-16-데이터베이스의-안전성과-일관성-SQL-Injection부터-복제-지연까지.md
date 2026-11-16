@@ -121,7 +121,7 @@ MongoDB는 단일 문서 쓰기의 원자성을 제공하고 다중 문서 트�
 
 동기 복제는 커밋 응답에 복제 확인을 반영할 수 있지만 그만큼 응답을 기다리는 시간이 늘어난다. 어느 Standby까지 확인하는지와 어떤 설정을 사용하는지에 따라 보장 범위도 달라진다. “동기 복제면 모든 읽기 일관성이 자동으로 해결된다”고 정리할 수 없는 이유다.
 
-![PostgreSQL Primary와 Read Replica의 쓰기·읽기 경로 및 비동기 복제 지연을 보여 주는 구조도](/assets/images/2026-10-16-postgresql-replication/primary-replica-read-consistency.svg)
+{% include interactive/flow-card.html flow='replica_consistency' %}
 
 *그림 1. 관리자 쓰기는 Primary로 보내고 일반 검색은 Read Replica로 분산할 수 있다. 비동기 복제에서는 쓰기 직후 최신 값이 필요할 때 Primary를 선택하고 동기 복제는 커밋 응답이 복제 확인을 기다릴 수 있다.*
 
