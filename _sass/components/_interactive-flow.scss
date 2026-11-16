@@ -53,6 +53,7 @@
     align-items: center;
     justify-content: space-between;
     gap: 1rem;
+    min-height: 2rem;
     margin-bottom: 0.85rem;
     padding-bottom: 0.65rem;
     border-bottom: 1px solid var(--interactive-flow-border);
@@ -133,6 +134,7 @@
     display: grid;
     gap: 0.5rem;
     justify-items: center;
+    min-height: 7.5rem;
     padding: 1rem;
     border: 1px dashed var(--interactive-flow-border);
     border-radius: calc(v.$radius-lg - 0.1rem);
@@ -157,6 +159,10 @@
   }
 
   &__route p {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 2.8em;
     margin: 0;
     color: var(--interactive-flow-muted);
     font-size: 0.9rem;
@@ -184,6 +190,7 @@
     display: grid;
     grid-template-columns: repeat(2, minmax(0, 1fr));
     gap: 0.65rem;
+    min-height: 3.8rem;
   }
 
   &__outcome {
@@ -229,6 +236,9 @@
   }
 
   &__description {
+    display: flex;
+    align-items: center;
+    min-height: 3.35rem;
     margin: 0;
     padding: 0.85rem 1rem;
     border-radius: calc(v.$radius-lg - 0.15rem);
@@ -258,6 +268,12 @@
 
   &__error {
     color: var(--interactive-flow-negative);
+  }
+
+  @include bp.sm {
+    &__progress strong {
+      white-space: nowrap;
+    }
   }
 
   &__step-data {
@@ -300,6 +316,16 @@
       align-items: flex-start;
       flex-direction: column;
       gap: 0.25rem;
+    }
+
+    &__route {
+      min-height: 0;
+    }
+
+    &__route p,
+    &__outcomes,
+    &__description {
+      min-height: 0;
     }
   }
 
