@@ -8,12 +8,12 @@ permalink: /posts/java-jvm-gc/
 
 JVM(Java Virtual Machine)의 핵심 구성 요소인 Class Loader, Runtime Data Area, Execution Engine, Garbage Collector가 어떻게 상호작용하며 자바 프로그램을 실행하는지 정리한다.
 
-![JVM](/assets/images/2026-03-24-posting/JVM.jpg)
+{% include interactive/flow-card.html flow='bytecode_jvm' %}
 
 ## 1. 자바 코드 실행 흐름
 
 개발자가 작성한 `.java` 소스 코드는 다음과 같은 과정을 거쳐 실행된다.
-![flow](/assets/images/2026-03-24-posting/flow.jpg)
+{% include interactive/flow-card.html flow='jvm_runtime_flow' %}
 1. **자바 컴파일러(javac)** 가 소스 코드를 바이트코드(`.class`)로 변환한다.
 2. **Class Loader**가 바이트코드를 읽어 **Runtime Data Area**에 적재한다.
 3. **Execution Engine**이 메모리에 적재된 바이트코드를 해석하고 실행한다.
@@ -49,9 +49,9 @@ C언어와 달리 자바는 GC가 메모리 해제를 대신 수행한다. GC는
 
 ### Heap 메모리 구조와 세대별 관리
 객체의 생존 기간에 따라 영역을 나누어 관리함으로써 효율을 높인다.
-![Heap](/assets/images/2026-03-24-posting/Heap.jpg)
+{% include interactive/flow-card.html flow='jvm_memory' %}
 
-![Generation](/assets/images/2026-03-24-posting/Generation.png)
+{% include interactive/flow-card.html flow='gc_generations' %}
 1. **Young Generation:** 새 객체가 생성되는 영역
    - **Eden:** 신규 객체 할당
    - **Survivor 0/1:** Minor GC에서 살아남은 객체 이동
@@ -62,14 +62,14 @@ C언어와 달리 자바는 GC가 메모리 해제를 대신 수행한다. GC는
    - Old 영역이 꽉 차면 **Major GC(Full GC)** 가 발생하며 이때 **Stop The World(STW)** 현상으로 인해 모든 스레드가 일시 정지된다.
 
 ### GC 동작 메커니즘 — Mark & Sweep
-![Mark-Sweep](/assets/images/2026-03-24-posting/Mark%20%26%20Sweep.jpg)
+{% include interactive/flow-card.html flow='gc_mark_sweep' %}
 
 1. **Mark:** **GC Root**(Stack, static 변수 등)에서 시작해 참조 사슬을 따라가며 살아있는 객체를 표시한다.
-   ![Mark1](/assets/images/2026-03-24-posting/Mark1.png)
-   ![Mark2](/assets/images/2026-03-24-posting/Mark2.png)
-   ![Mark3](/assets/images/2026-03-24-posting/Mark3.png)
+   {% include interactive/flow-card.html flow='gc_mark_sweep' %}
+   {% include interactive/flow-card.html flow='gc_mark_sweep' %}
+   {% include interactive/flow-card.html flow='gc_mark_sweep' %}
 3. **Sweep:** Mark되지 않은(Unreachable) 객체들을 메모리에서 제거한다.
-   ![Sweep](/assets/images/2026-03-24-posting/Sweep.png)
+   {% include interactive/flow-card.html flow='gc_mark_sweep' %}
 4. **Compact:** (선택적) 분산된 메모리를 한곳으로 모아 단편화를 방지한다.
 
 ---
@@ -82,10 +82,10 @@ C언어와 달리 자바는 GC가 메모리 해제를 대신 수행한다. GC는
 | **발생 시점** | Eden 영역이 꽉 찼을 때 | Old 영역이 꽉 찼을 때 |
 | **실행 속도** | 매우 빠름 | 상대적으로 느림 |
 
-![GC1](/assets/images/2026-03-24-posting/GC1.png) 
-![GC2](/assets/images/2026-03-24-posting/GC2.png)
-![GC3](/assets/images/2026-03-24-posting/GC3.png) 
-![GC4](/assets/images/2026-03-24-posting/GC4.png)
+{% include interactive/flow-card.html flow='gc_collection_cycle' %}
+{% include interactive/flow-card.html flow='gc_collection_cycle' %}
+{% include interactive/flow-card.html flow='gc_collection_cycle' %}
+{% include interactive/flow-card.html flow='gc_collection_cycle' %}
 
 ---
 

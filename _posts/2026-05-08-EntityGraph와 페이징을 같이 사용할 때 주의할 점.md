@@ -124,7 +124,7 @@ row 수 기준으로 잘려버리기 때문에:
 * 실제 Todo 개수는 줄어들고
 * 중복 데이터가 포함될 수 있다
 
-![컬렉션 fetch join row 증가](/assets/images/2026-05-08-posting/jpa-fetchjoin-row-increase.png)
+{% include interactive/flow-card.html flow='fetch_join_rows' %}
 
 ---
 
@@ -179,7 +179,7 @@ ManyToMany
 
 같은 방식들을 고려한다.
 
-![ToOne vs ToMany pagination](/assets/images/2026-05-08-posting/toone-vs-tomany-pagination.png)
+{% include interactive/flow-card.html flow='pagination_toone_tomany' %}
 
 ---
 

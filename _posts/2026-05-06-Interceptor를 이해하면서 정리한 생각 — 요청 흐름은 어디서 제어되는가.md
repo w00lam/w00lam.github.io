@@ -64,9 +64,9 @@ Controller
 
 ## 이미지로 보면 이런 느낌이다
 
-![Interceptor 요청 흐름](/assets/images/2026-05-06-posting/interceptor-request-flow.png)
+{% include interactive/flow-card.html flow='interceptor_request_flow' %}
 
-![Filter vs Interceptor 위치 비교](/assets/images/2026-05-06-posting/filter-interceptor-position.png)
+{% include interactive/flow-card.html flow='filter_interceptor_compare' %}
 
 ---
 

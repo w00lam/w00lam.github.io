@@ -10607,3 +10607,692 @@ spark_agent_transition:
       outcomes:
         - status: info
           text: "챗봇과 상시 에이전트의 차이는 답변 생성보다 상태·시간·행동의 운영에 있다."
+
+jvm_runtime_flow:
+  eyebrow: "Interactive flow"
+  title: "Java 프로그램의 JVM 실행 흐름"
+  summary: "소스 코드를 바이트코드로 빌드하고 JVM이 로드·검증·실행하며 런타임 메모리를 관리한다."
+  actors:
+    - id: source
+      kind: "입력"
+      name: "Java Source"
+      description: "개발자가 작성한 .java 소스 코드"
+    - id: compiler
+      kind: "변환"
+      name: "javac / Bytecode"
+      description: "소스를 플랫폼 중립적인 .class 바이트코드로 변환"
+    - id: jvm
+      kind: "실행 환경"
+      name: "JVM"
+      description: "클래스 로딩·검증·실행과 메모리 관리를 담당"
+    - id: os
+      kind: "호스트"
+      name: "OS / CPU"
+      description: "JVM이 네이티브 자원과 시스템 호출을 사용하는 환경"
+  steps:
+    - title: "1. 바이트코드 생성"
+      from: "Java Source"
+      to: "javac / Bytecode"
+      route_label: "javac가 소스 코드를 클래스 파일과 JAR로 변환한다."
+      active_actors: [source, compiler]
+      description: "소스와 실행 환경 사이에 JVM이 이해하는 중간 표현을 둔다."
+      payload: [".java", ".class", "JAR"]
+      outcomes:
+        - status: allow
+          text: "같은 바이트코드를 여러 JVM 환경에서 재사용할 수 있다."
+    - title: "2. 클래스 로딩·실행"
+      from: "javac / Bytecode"
+      to: "JVM"
+      route_label: "JVM이 클래스를 로드하고 검증한 뒤 인터프리터·JIT로 실행한다."
+      active_actors: [compiler, jvm]
+      description: "JVM은 클래스 로딩과 실행뿐 아니라 런타임 메모리 상태도 관리한다."
+      payload: ["ClassLoader", "verification", "JIT"]
+      outcomes:
+        - status: info
+          text: "바이트코드 실행과 네이티브 라이브러리 호환성은 별도 조건이다."
+    - title: "3. 호스트 자원 사용"
+      from: "JVM"
+      to: "OS / CPU"
+      route_label: "JVM이 스레드·메모리·파일·네트워크 같은 호스트 자원을 사용한다."
+      active_actors: [jvm, os]
+      description: "플랫폼별 JVM 구현이 같은 Java 프로그램을 대상 OS·CPU에 연결한다."
+      payload: ["thread", "heap", "system call"]
+      outcomes:
+        - status: allow
+          text: "실제 실행 검증은 JVM·API·네이티브 의존성을 함께 확인한다."
+
+gc_generations:
+  eyebrow: "Interactive flow"
+  title: "JVM 세대별 Heap 구조"
+  summary: "새 객체는 Young 영역에서 시작하고 오래 살아남은 객체는 Old 영역으로 승격되며 각 세대의 수집 비용을 나눈다."
+  actors:
+    - id: object
+      kind: "할당"
+      name: "New Object"
+      description: "실행 중 새로 생성된 객체"
+    - id: eden
+      kind: "Young"
+      name: "Eden / Survivor"
+      description: "짧게 살아가는 객체를 모으는 영역"
+    - id: old
+      kind: "Old"
+      name: "Old Generation"
+      description: "여러 번 살아남은 객체가 이동하는 영역"
+    - id: gc
+      kind: "수집"
+      name: "GC Collector"
+      description: "도달 가능성을 확인하고 영역별로 회수·압축하는 구성요소"
+  steps:
+    - title: "1. Young 할당"
+      from: "New Object"
+      to: "Eden / Survivor"
+      route_label: "새 객체를 Eden에 할당하고 Minor GC 때 살아남은 객체를 Survivor로 옮긴다."
+      active_actors: [object, eden]
+      description: "대부분의 객체가 짧게 살아간다는 가정을 이용해 수집 범위를 작게 시작한다."
+      payload: ["allocation", "Eden", "Minor GC"]
+      outcomes:
+        - status: info
+          text: "Young 영역의 수집은 비교적 짧은 작업을 목표로 한다."
+    - title: "2. 생존 객체 승격"
+      from: "Eden / Survivor"
+      to: "Old Generation"
+      route_label: "여러 번의 수집에서 살아남은 객체를 Old 영역으로 승격한다."
+      active_actors: [eden, old]
+      description: "장수 객체를 매번 Young에서 다시 검사하는 비용을 줄인다."
+      payload: ["survivor", "age", "promotion"]
+      outcomes:
+        - status: allow
+          text: "세대별 생존 기간에 맞춰 수집 정책을 나눌 수 있다."
+    - title: "3. 영역별 수집"
+      from: "Old Generation"
+      to: "GC Collector"
+      route_label: "수집기가 Young·Old 영역의 도달 가능 객체와 회수 대상을 판단한다."
+      active_actors: [old, gc, eden]
+      description: "Heap 구조와 수집기 알고리즘에 따라 pause와 처리량의 균형이 달라진다."
+      payload: ["reachability", "mark", "compact"]
+      outcomes:
+        - status: info
+          text: "GC는 메모리 부족을 해결하는 동시에 애플리케이션 지연에 영향을 준다."
+
+gc_mark_sweep:
+  eyebrow: "Interactive flow"
+  title: "Mark-Sweep GC"
+  summary: "GC Root에서 도달 가능한 객체를 표시하고 표시되지 않은 객체의 공간을 회수한다."
+  actors:
+    - id: heap
+      kind: "대상"
+      name: "Heap Objects"
+      description: "현재 Heap에 할당된 객체 그래프"
+    - id: root
+      kind: "시작점"
+      name: "GC Roots"
+      description: "스레드 스택·정적 필드 등 객체 그래프를 시작하는 참조"
+    - id: mark
+      kind: "표시"
+      name: "Mark Reachable"
+      description: "Root에서 도달 가능한 객체를 살아 있음으로 표시"
+    - id: sweep
+      kind: "회수"
+      name: "Sweep Unmarked"
+      description: "표시되지 않은 객체의 메모리를 회수하는 단계"
+  steps:
+    - title: "1. Root에서 탐색"
+      from: "GC Roots"
+      to: "Heap Objects"
+      route_label: "GC Root가 참조를 따라 Heap 객체 그래프를 순회한다."
+      active_actors: [root, heap]
+      description: "도달 가능 여부가 객체 생존 판단의 기준이 된다."
+      payload: ["stack", "static", "reference graph"]
+      outcomes:
+        - status: info
+          text: "참조가 끊긴 객체는 애플리케이션에서 더 이상 사용할 수 없다."
+    - title: "2. 생존 객체 표시"
+      from: "Heap Objects"
+      to: "Mark Reachable"
+      route_label: "Root에서 도달한 객체를 살아 있는 객체로 표시한다."
+      active_actors: [heap, mark, root]
+      description: "표시 단계는 회수하면 안 되는 객체를 구분하기 위한 준비다."
+      payload: ["reachable", "mark bit", "live object"]
+      outcomes:
+        - status: allow
+          text: "사용 중인 객체가 회수 대상에서 제외된다."
+    - title: "3. 미표시 공간 회수"
+      from: "Mark Reachable"
+      to: "Sweep Unmarked"
+      route_label: "표시되지 않은 객체의 공간을 free list로 돌려 다음 할당에 재사용한다."
+      active_actors: [mark, sweep, heap]
+      description: "Sweep 뒤 단편화가 남을 수 있어 수집기에 따라 압축 단계를 추가한다."
+      payload: ["unmarked", "free space", "fragmentation"]
+      outcomes:
+        - status: allow
+          text: "도달 불가능한 객체의 메모리를 회수한다."
+
+gc_collection_cycle:
+  eyebrow: "Interactive flow"
+  title: "GC 수집 사이클"
+  summary: "객체 할당이 늘고 임계치를 넘으면 GC가 살아 있는 객체를 확인하고 공간을 회수한 뒤 실행을 재개한다."
+  actors:
+    - id: app
+      kind: "실행"
+      name: "Application Threads"
+      description: "객체를 생성하고 참조를 변경하는 애플리케이션 스레드"
+    - id: heap
+      kind: "메모리"
+      name: "Heap Pressure"
+      description: "할당 증가와 가용 공간 부족을 나타내는 Heap 상태"
+    - id: collector
+      kind: "수집기"
+      name: "GC Phase"
+      description: "Mark·Sweep·Copy·Compact 같은 수집 단계"
+    - id: resume
+      kind: "재개"
+      name: "Application Resume"
+      description: "수집이 끝난 뒤 애플리케이션이 다시 실행되는 상태"
+  steps:
+    - title: "1. 객체 할당"
+      from: "Application Threads"
+      to: "Heap Pressure"
+      route_label: "애플리케이션이 새 객체를 만들며 Heap 사용량을 높인다."
+      active_actors: [app, heap]
+      description: "짧은 객체와 오래 살아남는 객체가 함께 Heap에 쌓인다."
+      payload: ["new object", "reference", "allocation"]
+      outcomes:
+        - status: info
+          text: "할당 속도와 객체 수명이 GC 빈도에 영향을 준다."
+    - title: "2. 수집 실행"
+      from: "Heap Pressure"
+      to: "GC Phase"
+      route_label: "임계치와 수집 정책에 따라 살아 있는 객체를 식별하고 회수한다."
+      active_actors: [heap, collector, app]
+      description: "수집 중 애플리케이션이 멈추는 범위와 시간은 알고리즘마다 다르다."
+      payload: ["threshold", "mark", "sweep/compact"]
+      outcomes:
+        - status: warning
+          text: "긴 pause는 애플리케이션 응답 지연으로 관찰될 수 있다."
+    - title: "3. 메모리 재사용"
+      from: "GC Phase"
+      to: "Application Resume"
+      route_label: "회수된 공간을 재사용할 수 있게 만들고 애플리케이션 실행을 이어 간다."
+      active_actors: [collector, resume, heap]
+      description: "GC 성능은 단순히 회수량보다 지연·처리량·메모리 여유를 함께 봐야 한다."
+      payload: ["free space", "resume", "pause time"]
+      outcomes:
+        - status: allow
+          text: "수집 후 애플리케이션이 다시 객체를 할당한다."
+
+josephus_rotation:
+  eyebrow: "Interactive flow"
+  title: "Josephus 문제와 큐 회전"
+  summary: "현재 큐의 앞 원소를 뒤로 보내는 회전을 반복해 K번째 사람을 제거한다."
+  actors:
+    - id: queue
+      kind: "자료구조"
+      name: "Queue"
+      description: "원형 순서를 큐의 앞·뒤 연산으로 표현"
+    - id: rotate
+      kind: "이동"
+      name: "Rotate K - 1"
+      description: "제거 대상 전까지 앞 원소를 뒤로 이동"
+    - id: remove
+      kind: "제거"
+      name: "Poll / Eliminate"
+      description: "K번째가 된 현재 앞 원소를 큐에서 제거"
+    - id: result
+      kind: "결과"
+      name: "Survivor Order"
+      description: "제거 순서와 마지막 생존자"
+  steps:
+    - title: "1. 원형 순서 시작"
+      from: "Queue"
+      to: "Rotate K - 1"
+      route_label: "큐의 앞에서 시작해 제거 대상 직전까지 원소를 뒤로 보낸다."
+      active_actors: [queue, rotate]
+      description: "인덱스를 계산하지 않고 큐의 순환 연산으로 원형 이동을 표현한다."
+      payload: ["front", "K", "rotation"]
+      outcomes:
+        - status: info
+          text: "현재 큐의 순서가 다음 제거 위치를 결정한다."
+    - title: "2. K번째 제거"
+      from: "Rotate K - 1"
+      to: "Poll / Eliminate"
+      route_label: "K번째 원소가 큐의 앞에 오면 poll해 제거한다."
+      active_actors: [rotate, remove, queue]
+      description: "제거 후 남은 큐가 다음 라운드의 새로운 원형 순서가 된다."
+      payload: ["Kth item", "poll", "removed"]
+      outcomes:
+        - status: allow
+          text: "제거 인덱스를 직접 계산하지 않고 자료구조 연산으로 해결한다."
+    - title: "3. 반복과 생존자"
+      from: "Poll / Eliminate"
+      to: "Survivor Order"
+      route_label: "큐에 한 명이 남을 때까지 회전과 제거를 반복해 순서를 기록한다."
+      active_actors: [remove, result, queue]
+      description: "반복 조건과 K의 범위를 명확히 하면 구현과 검증이 단순해진다."
+      payload: ["remaining", "elimination order", "survivor"]
+      outcomes:
+        - status: allow
+          text: "문제의 원형 규칙이 큐의 FIFO 연산으로 변환된다."
+
+josephus_solution:
+  eyebrow: "Interactive flow"
+  title: "Josephus 큐 구현"
+  summary: "초기 큐를 만들고 K-1회 회전·제거를 반복하며 마지막 원소를 결과로 반환한다."
+  actors:
+    - id: input
+      kind: "입력"
+      name: "N, K"
+      description: "사람 수와 몇 번째마다 제거할지 나타내는 값"
+    - id: init
+      kind: "초기화"
+      name: "Initialize Queue"
+      description: "1부터 N까지 사람을 큐에 넣는 단계"
+    - id: loop
+      kind: "반복"
+      name: "Rotate + Poll Loop"
+      description: "K-1회 이동하고 한 명을 제거하는 반복"
+    - id: output
+      kind: "출력"
+      name: "Survivor"
+      description: "마지막까지 남은 사람과 제거 순서"
+  steps:
+    - title: "1. 입력과 큐 생성"
+      from: "N, K"
+      to: "Initialize Queue"
+      route_label: "N명의 순서와 K를 읽고 1부터 N까지 큐에 삽입한다."
+      active_actors: [input, init]
+      description: "자료구조 상태를 문제의 원형 순서와 동일하게 초기화한다."
+      payload: ["N", "K", "1..N"]
+      outcomes:
+        - status: allow
+          text: "초기 순서가 큐의 앞에서 뒤로 표현된다."
+    - title: "2. 제거 반복"
+      from: "Initialize Queue"
+      to: "Rotate + Poll Loop"
+      route_label: "큐 크기가 1보다 큰 동안 K-1회 회전 후 poll을 수행한다."
+      active_actors: [init, loop]
+      description: "각 반복의 큐 상태를 출력하면 원형 제거 순서를 검증할 수 있다."
+      payload: ["while size > 1", "K-1 rotate", "poll"]
+      outcomes:
+        - status: info
+          text: "큐가 비어 있거나 K가 유효하지 않은 입력도 별도로 검증한다."
+    - title: "3. 결과 반환"
+      from: "Rotate + Poll Loop"
+      to: "Survivor"
+      route_label: "반복이 끝나면 큐의 마지막 원소를 생존자로 반환한다."
+      active_actors: [loop, output]
+      description: "제거 순서와 마지막 값이 문제의 요구 출력과 일치하는지 확인한다."
+      payload: ["last item", "result", "complexity"]
+      outcomes:
+        - status: allow
+          text: "인덱스 수식 없이 큐의 회전으로 문제를 해결한다."
+
+interceptor_request_flow:
+  eyebrow: "Interactive flow"
+  title: "Spring MVC Interceptor 요청 흐름"
+  summary: "DispatcherServlet이 컨트롤러를 호출하기 전·후에 Interceptor가 공통 요청 처리를 끼워 넣는다."
+  actors:
+    - id: request
+      kind: "입력"
+      name: "HTTP Request"
+      description: "클라이언트에서 들어온 웹 요청"
+    - id: dispatcher
+      kind: "중앙 조정"
+      name: "DispatcherServlet"
+      description: "핸들러를 찾고 MVC 호출 흐름을 조정하는 서블릿"
+    - id: interceptor
+      kind: "공통 처리"
+      name: "HandlerInterceptor"
+      description: "preHandle·postHandle·afterCompletion으로 요청 주변을 관찰"
+    - id: controller
+      kind: "업무 처리"
+      name: "Controller"
+      description: "요청에 대한 애플리케이션 기능을 실행"
+  steps:
+    - title: "1. 요청 진입"
+      from: "HTTP Request"
+      to: "DispatcherServlet"
+      route_label: "요청이 Spring MVC의 중앙 DispatcherServlet로 들어온다."
+      active_actors: [request, dispatcher]
+      description: "DispatcherServlet이 매핑과 인터셉터 체인을 구성한다."
+      payload: ["path", "method", "headers"]
+      outcomes:
+        - status: info
+          text: "Interceptor는 서블릿 필터와 다른 MVC 호출 경계에 있다."
+    - title: "2. 전처리"
+      from: "DispatcherServlet"
+      to: "HandlerInterceptor"
+      route_label: "preHandle에서 인증·로깅·권한 같은 공통 요청 전처리를 수행한다."
+      active_actors: [dispatcher, interceptor]
+      description: "false를 반환하면 컨트롤러 호출을 중단할 수도 있다."
+      payload: ["preHandle", "auth", "logging"]
+      outcomes:
+        - status: reject
+          text: "전처리 실패 시 업무 컨트롤러까지 요청을 전달하지 않는다."
+    - title: "3. 컨트롤러 호출과 후처리"
+      from: "HandlerInterceptor"
+      to: "Controller"
+      route_label: "전처리를 통과하면 컨트롤러를 호출하고 postHandle·afterCompletion을 실행한다."
+      active_actors: [interceptor, controller, dispatcher]
+      description: "응답 생성 전후와 완료 시점을 나눠 공통 책임을 배치한다."
+      payload: ["controller", "postHandle", "afterCompletion"]
+      outcomes:
+        - status: allow
+          text: "요청 흐름의 MVC 경계에 공통 로직을 둘 수 있다."
+
+filter_interceptor_compare:
+  eyebrow: "Interactive comparison"
+  title: "Filter와 Interceptor의 위치"
+  summary: "Filter는 서블릿 컨테이너 경계에서 동작하고 Interceptor는 Spring MVC 핸들러 호출 경계에서 동작한다."
+  actors:
+    - id: client
+      kind: "요청"
+      name: "HTTP Request"
+      description: "웹 애플리케이션으로 들어오는 요청"
+    - id: filter
+      kind: "서블릿 경계"
+      name: "Servlet Filter"
+      description: "DispatcherServlet 전후의 넓은 서블릿 요청 처리"
+    - id: interceptor
+      kind: "MVC 경계"
+      name: "Spring Interceptor"
+      description: "HandlerMapping과 Controller 주변의 MVC 처리"
+    - id: handler
+      kind: "핸들러"
+      name: "Controller / Handler"
+      description: "Spring MVC가 선택한 실제 요청 처리 메서드"
+  steps:
+    - title: "1. 컨테이너 진입"
+      from: "HTTP Request"
+      to: "Servlet Filter"
+      route_label: "요청이 DispatcherServlet에 도달하기 전 Filter 체인을 통과한다."
+      active_actors: [client, filter]
+      description: "인코딩·CORS·보안처럼 Spring MVC 밖에서도 필요한 책임에 적합하다."
+      payload: ["container", "filter chain", "request wrapper"]
+      outcomes:
+        - status: info
+          text: "Filter는 MVC 핸들러를 모르는 요청에도 적용할 수 있다."
+    - title: "2. MVC 핸들러 전후"
+      from: "Servlet Filter"
+      to: "Spring Interceptor"
+      route_label: "DispatcherServlet이 핸들러를 찾은 뒤 Interceptor의 MVC 콜백을 실행한다."
+      active_actors: [filter, interceptor]
+      description: "preHandle·postHandle·afterCompletion은 핸들러 실행 맥락을 사용할 수 있다."
+      payload: ["handler", "preHandle", "afterCompletion"]
+      outcomes:
+        - status: allow
+          text: "컨트롤러 단위 인증·권한·로깅 정책을 표현하기 쉽다."
+    - title: "3. 업무 처리"
+      from: "Spring Interceptor"
+      to: "Controller / Handler"
+      route_label: "공통 처리를 통과한 요청이 실제 Controller 메서드로 전달된다."
+      active_actors: [interceptor, handler]
+      description: "공통 로직의 적용 범위와 실행 시점을 기준으로 Filter와 Interceptor를 선택한다."
+      payload: ["handler mapping", "controller", "response"]
+      outcomes:
+        - status: allow
+          text: "각 계층의 경계에 맞는 책임 배치가 가능하다."
+
+aop_proxy_flow:
+  eyebrow: "Interactive flow"
+  title: "Spring AOP 프록시 흐름"
+  summary: "호출부는 프록시를 호출하고 프록시가 공통 관심사를 실행한 뒤 실제 대상 객체의 메서드로 위임한다."
+  actors:
+    - id: caller
+      kind: "호출부"
+      name: "Client / Service Caller"
+      description: "업무 메서드를 호출하는 코드"
+    - id: proxy
+      kind: "횡단 관심사"
+      name: "AOP Proxy"
+      description: "트랜잭션·로깅·보안 advice를 감싸는 프록시 객체"
+    - id: advice
+      kind: "공통 로직"
+      name: "Advice / Pointcut"
+      description: "어떤 호출에 어떤 공통 동작을 적용할지 정하는 구성"
+    - id: target
+      kind: "업무 객체"
+      name: "Target Object"
+      description: "실제 비즈니스 메서드를 구현한 대상 객체"
+  steps:
+    - title: "1. 프록시 호출"
+      from: "Client / Service Caller"
+      to: "AOP Proxy"
+      route_label: "호출부가 컨테이너가 주입한 프록시 객체의 메서드를 호출한다."
+      active_actors: [caller, proxy]
+      description: "호출부는 프록시가 어떤 부가 처리를 하는지 몰라도 계약을 사용할 수 있다."
+      payload: ["method call", "bean", "proxy"]
+      outcomes:
+        - status: info
+          text: "프록시를 거치지 않는 자기 호출은 기대한 advice가 실행되지 않을 수 있다."
+    - title: "2. Advice 실행"
+      from: "AOP Proxy"
+      to: "Advice / Pointcut"
+      route_label: "Pointcut에 맞는 호출이면 트랜잭션·로깅·권한 같은 advice를 실행한다."
+      active_actors: [proxy, advice]
+      description: "공통 관심사를 업무 코드에서 분리하되 적용 범위는 명시적으로 관리한다."
+      payload: ["pointcut", "before", "around"]
+      outcomes:
+        - status: allow
+          text: "반복되는 공통 처리를 한 곳에서 정책화할 수 있다."
+    - title: "3. 대상 위임"
+      from: "Advice / Pointcut"
+      to: "Target Object"
+      route_label: "공통 처리를 마친 프록시가 실제 대상 객체의 업무 메서드로 위임한다."
+      active_actors: [advice, target, proxy]
+      description: "응답 이후 after 동작과 예외 처리는 advice 설정에 따라 이어진다."
+      payload: ["proceed", "business logic", "after"]
+      outcomes:
+        - status: allow
+          text: "업무 객체는 공통 인프라 코드와 느슨하게 결합된다."
+
+fetch_join_rows:
+  eyebrow: "Interactive comparison"
+  title: "Collection Fetch Join의 행 증가"
+  summary: "부모와 여러 자식을 한 번에 조인하면 관계형 결과 행이 자식 수만큼 늘어나 페이징이 흔들릴 수 있다."
+  actors:
+    - id: parent
+      kind: "부모 엔티티"
+      name: "Order / Parent"
+      description: "페이지 단위로 조회하려는 부모 엔티티"
+    - id: child
+      kind: "컬렉션"
+      name: "Order Items"
+      description: "한 부모에 여러 개 연결된 자식 컬렉션"
+    - id: join
+      kind: "SQL 결과"
+      name: "Join Result Rows"
+      description: "부모·자식 조인으로 생성된 실제 DB 결과 행"
+    - id: page
+      kind: "페이징"
+      name: "Page Boundary"
+      description: "offset·limit가 적용되는 결과 범위"
+  steps:
+    - title: "1. 부모-자식 조인"
+      from: "Order / Parent"
+      to: "Order Items"
+      route_label: "부모 한 건과 여러 자식 행을 컬렉션 fetch join으로 함께 조회한다."
+      active_actors: [parent, child]
+      description: "객체 관점의 한 부모가 SQL 결과에서는 자식 수만큼 반복된다."
+      payload: ["one-to-many", "fetch join", "collection"]
+      outcomes:
+        - status: warning
+          text: "부모 개수와 결과 행 개수가 같다고 가정하면 안 된다."
+    - title: "2. 결과 행 증가"
+      from: "Order Items"
+      to: "Join Result Rows"
+      route_label: "자식 컬렉션의 각 행이 부모 정보와 결합되어 결과 행을 만든다."
+      active_actors: [child, join, parent]
+      description: "중복처럼 보이는 부모 행은 조인 결과의 자연스러운 형태다."
+      payload: ["row multiplication", "duplicate parent", "SQL result"]
+      outcomes:
+        - status: info
+          text: "ORM이 객체로 합쳐도 DB 결과 자체의 크기는 줄지 않는다."
+    - title: "3. 페이징 영향"
+      from: "Join Result Rows"
+      to: "Page Boundary"
+      route_label: "증가한 SQL 결과에 limit·offset을 적용하면 부모 페이지가 예상과 달라질 수 있다."
+      active_actors: [join, page]
+      description: "컬렉션 fetch join과 페이징은 별도 조회·batch 전략을 검토해야 한다."
+      payload: ["limit", "offset", "parent page"]
+      outcomes:
+        - status: reject
+          text: "컬렉션 fetch join에 무조건 DB 페이징을 붙이는 방식은 위험하다."
+
+pagination_toone_tomany:
+  eyebrow: "Interactive comparison"
+  title: "ToOne과 ToMany 페이징"
+  summary: "ToOne 조인은 행 증가가 제한적이지만 ToMany 컬렉션 조인은 부모 페이지를 왜곡할 수 있어 조회 전략을 나눈다."
+  actors:
+    - id: page
+      kind: "기준"
+      name: "Parent Page"
+      description: "부모 엔티티를 페이지로 나누려는 요구"
+    - id: toone
+      kind: "단일 관계"
+      name: "ToOne Join"
+      description: "각 부모에 최대 하나가 연결되는 관계"
+    - id: tomany
+      kind: "컬렉션 관계"
+      name: "ToMany Join"
+      description: "부모 하나에 여러 자식이 연결되는 관계"
+    - id: strategy
+      kind: "조회 전략"
+      name: "Two-step / Batch Query"
+      description: "부모 페이지와 자식 조회를 분리하는 전략"
+  steps:
+    - title: "1. ToOne 함께 조회"
+      from: "Parent Page"
+      to: "ToOne Join"
+      route_label: "부모 페이지를 기준으로 ToOne 관계를 함께 조인해도 행 증가가 제한적이다."
+      active_actors: [page, toone]
+      description: "ToOne은 페이지 대상의 행 수를 크게 늘리지 않는 경우가 많다."
+      payload: ["many-to-one", "one-to-one", "join"]
+      outcomes:
+        - status: allow
+          text: "페이지 기준과 조인 결과의 관계가 비교적 예측 가능하다."
+    - title: "2. ToMany 위험 확인"
+      from: "Parent Page"
+      to: "ToMany Join"
+      route_label: "컬렉션을 함께 조인하면 자식 수만큼 결과 행이 늘어 페이지 경계가 깨질 수 있다."
+      active_actors: [page, tomany]
+      description: "ORM 중복 제거와 DB limit·offset 적용 시점이 서로 다르다."
+      payload: ["one-to-many", "row increase", "pagination"]
+      outcomes:
+        - status: warning
+          text: "컬렉션 fetch join과 페이징을 같은 쿼리로 해결하려 하지 않는다."
+    - title: "3. 조회 분리"
+      from: "ToMany Join"
+      to: "Two-step / Batch Query"
+      route_label: "부모 ID를 먼저 페이지 조회한 뒤 자식은 batch·별도 쿼리로 가져온다."
+      active_actors: [tomany, strategy, page]
+      description: "정확한 부모 페이지와 연관 데이터 로딩을 각자의 쿼리로 통제한다."
+      payload: ["parent IDs", "batch size", "secondary query"]
+      outcomes:
+        - status: allow
+          text: "페이지 정확성과 N+1 방지를 함께 고려할 수 있다."
+
+mdc_logging_flow:
+  eyebrow: "Interactive flow"
+  title: "MDC 기반 요청 로깅"
+  summary: "요청 식별자와 사용자·트레이스 정보를 MDC에 넣고 로그 이벤트 전체에 문맥을 붙인다."
+  actors:
+    - id: request
+      kind: "입력"
+      name: "HTTP Request"
+      description: "요청 ID·사용자·경로를 가진 요청"
+    - id: mdc
+      kind: "문맥"
+      name: "MDC Context"
+      description: "현재 스레드 로그에 공통 필드를 공급하는 진단 문맥"
+    - id: service
+      kind: "업무 처리"
+      name: "Service / AOP"
+      description: "업무 메서드와 공통 로깅 advice"
+    - id: sink
+      kind: "저장·검색"
+      name: "Structured Log Sink"
+      description: "JSON 로그를 수집하고 requestId로 추적하는 시스템"
+  steps:
+    - title: "1. 요청 문맥 설정"
+      from: "HTTP Request"
+      to: "MDC Context"
+      route_label: "요청 진입점에서 requestId·userId·path 같은 필드를 MDC에 넣는다."
+      active_actors: [request, mdc]
+      description: "요청 단위 식별자가 있어야 여러 서비스 로그를 다시 연결할 수 있다."
+      payload: ["requestId", "userId", "traceId"]
+      outcomes:
+        - status: allow
+          text: "공통 로그 문맥이 요청 시작부터 유지된다."
+    - title: "2. 업무 로그 생성"
+      from: "MDC Context"
+      to: "Service / AOP"
+      route_label: "서비스와 AOP advice가 같은 MDC 문맥으로 시작·종료·예외 로그를 기록한다."
+      active_actors: [mdc, service]
+      description: "업무 코드가 식별자 전달을 매번 직접 구현하지 않도록 공통 계층이 보완한다."
+      payload: ["start", "end", "exception"]
+      outcomes:
+        - status: info
+          text: "비동기 전환 시 MDC 전파와 정리 정책을 별도로 확인한다."
+    - title: "3. 구조화 수집"
+      from: "Service / AOP"
+      to: "Structured Log Sink"
+      route_label: "구조화된 로그를 수집 시스템에 보내 requestId와 필드로 검색한다."
+      active_actors: [service, sink, mdc]
+      description: "로그를 단순 문자열이 아닌 후속 분석 가능한 이벤트로 설계한다."
+      payload: ["JSON log", "requestId", "search"]
+      outcomes:
+        - status: allow
+          text: "요청 한 건의 흐름과 실패 지점을 추적할 수 있다."
+
+logging_pipeline:
+  eyebrow: "Interactive flow"
+  title: "로깅 데이터 파이프라인"
+  summary: "애플리케이션 로그를 구조화·수집·전달·저장하고 검색과 알림으로 운영에 활용한다."
+  actors:
+    - id: app
+      kind: "생성"
+      name: "Application Logs"
+      description: "업무 이벤트·오류·성능을 담은 구조화 로그"
+    - id: collector
+      kind: "수집"
+      name: "Collector / Agent"
+      description: "호스트와 컨테이너의 로그를 모아 전달하는 수집기"
+    - id: store
+      kind: "저장·검색"
+      name: "Log Store"
+      description: "기간·필드·requestId로 로그를 검색하는 저장소"
+    - id: ops
+      kind: "활용"
+      name: "Dashboard / Alert"
+      description: "지표·대시보드·알림과 장애 분석을 수행하는 운영 계층"
+  steps:
+    - title: "1. 구조화 로그 생성"
+      from: "Application Logs"
+      to: "Collector / Agent"
+      route_label: "애플리케이션이 이벤트와 오류를 구조화된 형식으로 기록한다."
+      active_actors: [app, collector]
+      description: "requestId·서비스·레벨·시간 같은 필드를 처음부터 일관되게 남긴다."
+      payload: ["JSON", "level", "requestId"]
+      outcomes:
+        - status: allow
+          text: "후속 파이프라인이 문자열 파싱에 덜 의존한다."
+    - title: "2. 수집·저장"
+      from: "Collector / Agent"
+      to: "Log Store"
+      route_label: "수집기가 로그를 전달하고 보존 기간·인덱스·접근 정책에 따라 저장한다."
+      active_actors: [collector, store]
+      description: "수집 장애와 로그 폭증도 운영 비용과 유실 가능성에 포함된다."
+      payload: ["ship", "index", "retention"]
+      outcomes:
+        - status: info
+          text: "로그 저장소가 원본 데이터베이스의 대체재가 되지 않도록 경계를 둔다."
+    - title: "3. 검색·알림"
+      from: "Log Store"
+      to: "Dashboard / Alert"
+      route_label: "운영자가 필드와 시간 범위로 검색하고 임계치·패턴에 따라 알림을 받는다."
+      active_actors: [store, ops]
+      description: "기록만 쌓는 것이 아니라 장애 감지와 원인 분석까지 연결해야 한다."
+      payload: ["query", "dashboard", "alert"]
+      outcomes:
+        - status: allow
+          text: "로그 이벤트가 운영 의사결정의 근거가 된다."
