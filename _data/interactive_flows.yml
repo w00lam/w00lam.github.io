@@ -2638,3 +2638,1184 @@ replica_consistency:
       outcomes:
         - status: allow
           text: "동기 복제도 응답 지연과 보장 범위를 함께 검토해야 한다."
+
+floating_point_repr:
+  eyebrow: "Interactive comparison"
+  title: "고정 소수점과 부동 소수점 표현"
+  summary: "고정 소수점은 자릿수를 약속하고 부동 소수점은 부호·지수·가수로 범위와 정밀도를 나눈다."
+  actors:
+    - id: input
+      kind: "입력 값"
+      name: "Decimal Value"
+      description: "십진수로 표현한 원래 값"
+    - id: fixed
+      kind: "고정 위치"
+      name: "Fixed Point"
+      description: "소수점 위치를 미리 정한 표현"
+    - id: floating
+      kind: "분해 표현"
+      name: "Floating Point"
+      description: "부호·지수·가수로 나눈 표현"
+    - id: precision
+      kind: "저장 한계"
+      name: "Finite Precision"
+      description: "제한된 비트 수에 맞춰 반올림되는 정밀도"
+  steps:
+    - title: "1. 소수점 위치 약속"
+      from: "Decimal Value"
+      to: "Fixed Point"
+      route_label: "정해 둔 자릿수에 정수부와 소수부를 배치한다."
+      active_actors: [input, fixed]
+      description: "고정 소수점은 소수점이 움직이지 않으므로 표현 범위와 정밀도 배분을 먼저 정해야 한다."
+      payload: ["정수부", "소수부", "고정 위치"]
+      outcomes:
+        - status: info
+          text: "구조가 단순하지만 큰 범위와 세밀한 정밀도를 동시에 얻기 어렵다."
+    - title: "2. 이진 분수 변환"
+      from: "Decimal Value"
+      to: "Floating Point"
+      route_label: "십진 값을 이진수의 부호와 정규화된 형태로 바꾼다."
+      active_actors: [input, floating]
+      description: "부동 소수점은 값의 크기와 세밀함을 서로 다른 필드로 나누어 표현한다."
+      payload: ["부호", "지수", "가수"]
+      outcomes:
+        - status: info
+          text: "지수는 범위를, 가수는 유효한 정밀도를 좌우한다."
+    - title: "3. 반복되는 0.1"
+      from: "Decimal Value"
+      to: "Floating Point"
+      route_label: "0.1의 이진 분수는 끝나지 않아 저장 가능한 비트에서 잘린다."
+      active_actors: [input, floating, precision]
+      description: "십진수의 유한한 표기가 이진수에서도 유한하다는 보장은 없으므로 근삿값이 저장될 수 있다."
+      payload: ["0.1₁₀", "반복 이진 분수", "근삿값"]
+      outcomes:
+        - status: warning
+          text: "저장값과 수학적으로 정확한 0.1을 구분해야 한다."
+    - title: "4. 연산 후 오차"
+      from: "Floating Point"
+      to: "Finite Precision"
+      route_label: "제한된 비트 수가 중간 계산과 비교 결과에 영향을 줄 수 있다."
+      active_actors: [floating, precision]
+      description: "부동 소수점 비교에서는 표현 오차와 허용 오차를 함께 고려해야 한다."
+      payload: ["반올림", "표현 오차", "허용 오차"]
+      outcomes:
+        - status: warning
+          text: "실수 비교를 단순한 동등 비교로만 처리하지 않는다."
+
+hamming_syndrome:
+  eyebrow: "Interactive flow"
+  title: "Hamming(7,4) 오류 검출과 수정"
+  summary: "패리티 검사 결과를 신드롬으로 합치면 한 비트 오류의 위치를 가리킬 수 있다."
+  actors:
+    - id: data
+      kind: "원본 데이터"
+      name: "Data Bits"
+      description: "패리티를 제외한 네 개의 데이터 비트"
+    - id: parity
+      kind: "검사 비트"
+      name: "P1 · P2 · P4"
+      description: "각 위치 묶음의 홀짝을 확인하는 비트"
+    - id: syndrome
+      kind: "오류 위치"
+      name: "S4 · S2 · S1"
+      description: "검사 결과를 이진 위치 번호로 합친 값"
+    - id: decoder
+      kind: "수정기"
+      name: "Decoder"
+      description: "신드롬이 가리킨 비트를 반전하는 처리"
+  steps:
+    - title: "1. 데이터 배치"
+      from: "Data Bits"
+      to: "P1 · P2 · P4"
+      route_label: "데이터 비트 사이에 위치 1·2·4의 패리티 자리를 둔다."
+      active_actors: [data, parity]
+      description: "Hamming(7,4)은 일곱 위치 중 네 곳에 데이터를 배치하고 세 곳을 검사 비트로 사용한다."
+      payload: ["0110", "위치 1·2·4", "7비트 코드워드"]
+      outcomes:
+        - status: info
+          text: "위치 번호와 패리티 묶음을 먼저 분리해 읽는다."
+    - title: "2. 수신 코드워드 검사"
+      from: "P1 · P2 · P4"
+      to: "S4 · S2 · S1"
+      route_label: "각 패리티 묶음의 홀짝 결과를 S1·S2·S4로 계산한다."
+      active_actors: [parity, syndrome]
+      description: "검사 결과가 모두 0이면 오류가 없거나 검출 범위를 벗어난 상황으로 해석한다."
+      payload: ["S1", "S2", "S4", "홀짝 검사"]
+      outcomes:
+        - status: info
+          text: "검사 비트 자체가 오류 위치 계산에도 참여한다."
+    - title: "3. 신드롬 101"
+      from: "S4 · S2 · S1"
+      to: "Decoder"
+      route_label: "S4·S2·S1을 위치 번호 101₂로 읽어 5번 비트를 찾는다."
+      active_actors: [syndrome, decoder]
+      description: "신드롬은 오류가 의심되는 코드워드 위치를 이진수로 표현한다."
+      payload: ["101₂", "5번 위치", "오류 검출"]
+      outcomes:
+        - status: warning
+          text: "신드롬 비트의 읽는 순서를 바꾸면 다른 위치가 된다."
+    - title: "4. 한 비트 반전"
+      from: "Decoder"
+      to: "Data Bits"
+      route_label: "가리킨 위치의 비트를 반전한 뒤 데이터 위치를 다시 읽는다."
+      active_actors: [decoder, data]
+      description: "기본 Hamming(7,4)은 한 비트 오류를 전제로 위치를 찾아 수정한다."
+      payload: ["5번 비트 반전", "0110 복원", "단일 오류"]
+      outcomes:
+        - status: allow
+          text: "여러 비트 오류에는 기본 코드의 보장 범위를 벗어날 수 있다."
+
+bytecode_jvm:
+  eyebrow: "Interactive flow"
+  title: "Java 바이트코드와 플랫폼별 JVM"
+  summary: "JAR의 바이트코드는 재사용할 수 있지만 JVM과 네이티브 라이브러리는 대상 환경에 맞아야 한다."
+  actors:
+    - id: app
+      kind: "애플리케이션"
+      name: "Java JAR"
+      description: "공통 Java 바이트코드를 담은 패키지"
+    - id: jvm
+      kind: "실행기"
+      name: "Target JVM"
+      description: "클래스 파일과 API를 해석하는 환경별 JVM"
+    - id: platform
+      kind: "플랫폼"
+      name: "OS + CPU"
+      description: "Linux x86-64 또는 Linux ARM64 같은 실행 환경"
+    - id: native
+      kind: "추가 의존성"
+      name: "Native Library"
+      description: "JNI 등으로 연결되는 플랫폼별 바이너리"
+  steps:
+    - title: "1. 공통 바이트코드"
+      from: "Java JAR"
+      to: "Target JVM"
+      route_label: "같은 JAR의 클래스 파일을 대상 JVM이 읽는다."
+      active_actors: [app, jvm]
+      description: "Java 소스에서 빌드한 바이트코드는 JVM이 제공하는 실행 추상화에 올라간다."
+      payload: [".class", "JAR", "Java 버전"]
+      outcomes:
+        - status: info
+          text: "JAR이 같다는 사실만으로 실행 환경 호환성이 완성되지는 않는다."
+    - title: "2. JVM 선택"
+      from: "OS + CPU"
+      to: "Target JVM"
+      route_label: "Linux x86-64와 Linux ARM64에 맞는 JVM 구현을 선택한다."
+      active_actors: [platform, jvm]
+      description: "JVM 자체가 대상 OS와 CPU에서 동작하고 클래스 파일 버전과 API를 지원해야 한다."
+      payload: ["Linux x86-64", "Linux ARM64", "JVM 배포판"]
+      outcomes:
+        - status: allow
+          text: "플랫폼에 맞는 JVM이 있으면 같은 바이트코드를 실행할 수 있다."
+    - title: "3. 네이티브 의존성 확인"
+      from: "Java JAR"
+      to: "Native Library"
+      route_label: "JNI 라이브러리가 있으면 OS와 CPU용 바이너리를 별도로 확인한다."
+      active_actors: [app, native, platform]
+      description: "네이티브 코드는 바이트코드처럼 JVM이 자동으로 이식해 주지 않는다."
+      payload: ["JNI", "x86-64 바이너리", "ARM64 바이너리"]
+      outcomes:
+        - status: warning
+          text: "CPU가 같아도 운영체제가 다르면 라이브러리가 호환되지 않을 수 있다."
+    - title: "4. 실제 실행 검증"
+      from: "Target JVM"
+      to: "OS + CPU"
+      route_label: "대상 환경에서 클래스 파일·API·네이티브 의존성을 함께 실행해 확인한다."
+      active_actors: [jvm, platform, native]
+      description: "버전 숫자만 비교하지 말고 실제 배포 환경에서 시작과 주요 기능을 검증한다."
+      payload: ["클래스 파일 버전", "API 지원", "실행 테스트"]
+      outcomes:
+        - status: info
+          text: "호환성 판단은 구성 요소별 조건을 확인한 뒤 실행으로 마무리한다."
+
+multiplatform_image:
+  eyebrow: "Interactive flow"
+  title: "Docker 멀티 플랫폼 이미지 선택"
+  summary: "하나의 이미지 이름 아래 매니페스트가 플랫폼별 이미지를 연결하고 런타임이 맞는 변형을 고른다."
+  actors:
+    - id: tag
+      kind: "이미지 이름"
+      name: "One Image Tag"
+      description: "사용자가 pull·run에 지정하는 공통 이름"
+    - id: manifest
+      kind: "선택 목록"
+      name: "Manifest List"
+      description: "linux/amd64와 linux/arm64 변형을 연결하는 목록"
+    - id: platform
+      kind: "실행 환경"
+      name: "Host Platform"
+      description: "현재 호스트의 OS와 CPU 조합"
+    - id: image
+      kind: "실제 이미지"
+      name: "Platform Image"
+      description: "선택된 플랫폼 전용 레이어 묶음"
+  steps:
+    - title: "1. 공통 태그 요청"
+      from: "One Image Tag"
+      to: "Manifest List"
+      route_label: "런타임이 하나의 이미지 이름으로 매니페스트 목록을 조회한다."
+      active_actors: [tag, manifest]
+      description: "사용자는 플랫폼별 태그를 직접 고르지 않고 공통 이미지 이름을 요청할 수 있다."
+      payload: ["image:latest", "pull", "run"]
+      outcomes:
+        - status: info
+          text: "공통 태그는 여러 플랫폼 변형을 가리킬 수 있다."
+    - title: "2. 호스트 플랫폼 판별"
+      from: "Host Platform"
+      to: "Manifest List"
+      route_label: "매니페스트에서 현재 OS와 CPU에 맞는 항목을 찾는다."
+      active_actors: [platform, manifest]
+      description: "linux/amd64와 linux/arm64처럼 플랫폼 식별자가 선택 기준이 된다."
+      payload: ["os", "architecture", "variant"]
+      outcomes:
+        - status: allow
+          text: "호스트와 일치하는 이미지 변형을 선택할 수 있다."
+    - title: "3. 플랫폼 이미지 선택"
+      from: "Manifest List"
+      to: "Platform Image"
+      route_label: "선택된 매니페스트 항목이 해당 플랫폼의 이미지 레이어를 가리킨다."
+      active_actors: [manifest, image]
+      description: "매니페스트는 실제 실행에 사용할 플랫폼 전용 이미지의 위치를 연결한다."
+      payload: ["linux/amd64", "linux/arm64", "digest"]
+      outcomes:
+        - status: info
+          text: "같은 애플리케이션 버전이어도 플랫폼별 레이어가 다를 수 있다."
+    - title: "4. 컨테이너 실행"
+      from: "Platform Image"
+      to: "Host Platform"
+      route_label: "선택된 이미지가 현재 OS와 CPU에서 실행된다."
+      active_actors: [image, platform]
+      description: "네이티브 라이브러리나 실행 환경의 추가 제약은 이미지 선택 뒤에도 확인해야 한다."
+      payload: ["컨테이너", "CPU 명령어", "실행 환경"]
+      outcomes:
+        - status: warning
+          text: "플랫폼 이미지가 있어도 내부 네이티브 의존성의 호환성은 별도 문제다."
+
+array_memory:
+  eyebrow: "Interactive comparison"
+  title: "기본형 배열과 참조형 배열의 메모리 구조"
+  summary: "기본형 배열은 값 슬롯을 담고 참조형 배열은 객체를 가리키는 참조 슬롯과 별도 객체를 가진다."
+  actors:
+    - id: array
+      kind: "배열"
+      name: "Array Slots"
+      description: "인덱스로 접근하는 연속된 슬롯"
+    - id: value
+      kind: "기본형"
+      name: "Primitive Values"
+      description: "슬롯 안에 직접 저장되는 값"
+    - id: reference
+      kind: "참조형"
+      name: "References"
+      description: "별도 객체를 가리키는 참조 값"
+    - id: object
+      kind: "객체"
+      name: "Heap Objects"
+      description: "참조가 가리키는 실제 객체 데이터"
+  steps:
+    - title: "1. 기본형 값 저장"
+      from: "Array Slots"
+      to: "Primitive Values"
+      route_label: "배열 슬롯에 int·double 같은 기본형 값이 직접 놓인다."
+      active_actors: [array, value]
+      description: "기본형 배열은 인덱스가 가리키는 위치에서 값을 바로 읽는 구조로 생각할 수 있다."
+      payload: ["int[]", "값 슬롯", "index"]
+      outcomes:
+        - status: info
+          text: "배열 길이와 요소 타입이 저장 구조를 결정한다."
+    - title: "2. 참조 저장"
+      from: "Array Slots"
+      to: "References"
+      route_label: "참조형 배열의 슬롯에는 객체 자체가 아니라 참조가 저장된다."
+      active_actors: [array, reference]
+      description: "각 슬롯의 참조는 같은 객체를 가리킬 수도 있고 null일 수도 있다."
+      payload: ["String[]", "참조 슬롯", "null"]
+      outcomes:
+        - status: info
+          text: "슬롯의 값과 객체의 실제 데이터 위치를 구분한다."
+    - title: "3. 객체 접근"
+      from: "References"
+      to: "Heap Objects"
+      route_label: "슬롯의 참조를 따라 힙에 있는 객체의 필드와 값을 읽는다."
+      active_actors: [reference, object]
+      description: "참조형 배열은 배열 영역과 각 객체 영역을 함께 생각해야 한다."
+      payload: ["reference → object", "필드", "객체 수명"]
+      outcomes:
+        - status: info
+          text: "배열의 요소 접근과 객체 내부 접근은 서로 다른 단계다."
+
+linked_list_traversal:
+  eyebrow: "Interactive flow"
+  title: "연결 리스트의 인덱스 탐색"
+  summary: "이중 연결 리스트는 인덱스와 head·tail의 거리를 비교해 가까운 끝에서 노드를 따라간다."
+  actors:
+    - id: index
+      kind: "조회 요청"
+      name: "Index 7"
+      description: "찾으려는 논리적 위치"
+    - id: head
+      kind: "앞 포인터"
+      name: "Head"
+      description: "첫 노드를 가리키는 시작점"
+    - id: tail
+      kind: "뒤 포인터"
+      name: "Tail"
+      description: "마지막 노드를 가리키는 시작점"
+    - id: node
+      kind: "연결 노드"
+      name: "Linked Nodes"
+      description: "prev·next로 이웃과 연결된 노드"
+  steps:
+    - title: "1. 인덱스 거리 비교"
+      from: "Index 7"
+      to: "Head / Tail"
+      route_label: "인덱스 7이 head와 tail 중 어느 쪽에 가까운지 계산한다."
+      active_actors: [index, head, tail]
+      description: "이중 연결 리스트는 양쪽 끝을 모두 알고 있어 탐색 시작점을 선택할 수 있다."
+      payload: ["index = 7", "head 거리", "tail 거리"]
+      outcomes:
+        - status: allow
+          text: "가까운 끝에서 시작하면 불필요한 이동을 줄인다."
+    - title: "2. Tail에서 시작"
+      from: "Tail"
+      to: "Linked Nodes"
+      route_label: "tail에서 prev 포인터를 따라 9, 8, 7 순서로 이동한다."
+      active_actors: [tail, node, index]
+      description: "뒤에서 접근하는 편이 가까운 예시에서는 tail이 인덱스 탐색의 시작점이 된다."
+      payload: ["tail", "prev", "9 → 8 → 7"]
+      outcomes:
+        - status: info
+          text: "노드 수를 세는 것이 아니라 링크를 따라 이동한다."
+    - title: "3. 대상 노드 도착"
+      from: "Linked Nodes"
+      to: "Index 7"
+      route_label: "일곱 번째 위치의 노드에 도착해 값을 반환한다."
+      active_actors: [node, index]
+      description: "연결 리스트의 인덱스 접근은 배열처럼 즉시 주소를 계산하는 연산이 아니다."
+      payload: ["target node", "value", "반환"]
+      outcomes:
+        - status: info
+          text: "탐색 비용은 시작점과 대상 위치 사이의 이동 거리와 연결된다."
+    - title: "4. 비용 해석"
+      from: "Head / Tail"
+      to: "Index 7"
+      route_label: "가까운 끝에서 이동한 노드 수가 최종 접근 비용이 된다."
+      active_actors: [head, tail, index]
+      description: "이중 연결 리스트도 임의 인덱스 접근이 배열의 O(1)과 같아지는 것은 아니다."
+      payload: ["탐색 거리", "O(min(i, n-i))", "연결 추적"]
+      outcomes:
+        - status: warning
+          text: "빈번한 인덱스 접근에는 배열이 더 적합할 수 있다."
+
+array_list_insertion:
+  eyebrow: "Interactive comparison"
+  title: "배열과 연결 리스트의 중간 삽입"
+  summary: "배열은 뒤 요소를 이동하고 연결 리스트는 주변 노드의 링크를 바꾼다."
+  actors:
+    - id: position
+      kind: "삽입 위치"
+      name: "Insert Position"
+      description: "새 요소 X가 들어갈 위치"
+    - id: array
+      kind: "연속 저장"
+      name: "Array"
+      description: "인덱스 순서대로 붙어 있는 요소들"
+    - id: linked
+      kind: "연결 저장"
+      name: "Linked List"
+      description: "노드의 next 링크로 이어진 요소들"
+    - id: element
+      kind: "새 요소"
+      name: "Element X"
+      description: "중간에 추가할 값 또는 노드"
+  steps:
+    - title: "1. 배열 위치 확보"
+      from: "Insert Position"
+      to: "Array"
+      route_label: "삽입 위치 뒤의 요소를 한 칸씩 뒤로 옮겨 빈 슬롯을 만든다."
+      active_actors: [position, array]
+      description: "연속 저장 구조에서는 중간 공간을 만들기 위해 여러 요소의 위치가 바뀐다."
+      payload: ["index", "shift right", "빈 슬롯"]
+      outcomes:
+        - status: warning
+          text: "이동해야 하는 요소 수가 많으면 삽입 비용이 커진다."
+    - title: "2. 배열에 X 저장"
+      from: "Element X"
+      to: "Array"
+      route_label: "확보한 슬롯에 새 요소 X를 기록한다."
+      active_actors: [element, array]
+      description: "배열 삽입은 공간 확보와 값 기록을 나누어 생각할 수 있다."
+      payload: ["X", "index", "연속 슬롯"]
+      outcomes:
+        - status: allow
+          text: "인덱스 접근은 빠르지만 중간 삽입은 이동 비용을 부담한다."
+    - title: "3. 연결 리스트 위치 찾기"
+      from: "Insert Position"
+      to: "Linked List"
+      route_label: "삽입 지점의 앞 노드와 뒤 노드를 찾는다."
+      active_actors: [position, linked]
+      description: "링크를 바꾸기 전에 대상 위치까지 노드를 따라가야 한다."
+      payload: ["prev", "next", "탐색"]
+      outcomes:
+        - status: info
+          text: "연결 리스트도 위치 탐색 비용은 별도로 발생한다."
+    - title: "4. 링크 재연결"
+      from: "Element X"
+      to: "Linked List"
+      route_label: "앞 노드와 X, 뒤 노드의 링크를 새 순서로 연결한다."
+      active_actors: [element, linked]
+      description: "노드 위치를 모두 이동시키는 대신 제한된 포인터를 수정해 삽입을 마무리한다."
+      payload: ["prev.next = X", "X.next = next", "링크 변경"]
+      outcomes:
+        - status: allow
+          text: "위치를 이미 알고 있다면 연결 변경 자체는 일정한 작업이다."
+
+arraylist_capacity:
+  eyebrow: "Interactive flow"
+  title: "ArrayList의 size와 capacity"
+  summary: "size는 실제 요소 수이고 capacity는 현재 내부 배열이 담을 수 있는 슬롯 수다."
+  actors:
+    - id: list
+      kind: "컬렉션"
+      name: "ArrayList"
+      description: "동적 배열을 감싸는 리스트"
+    - id: size
+      kind: "사용량"
+      name: "size = 3"
+      description: "현재 실제로 들어 있는 요소 개수"
+    - id: capacity
+      kind: "저장 공간"
+      name: "capacity = 6"
+      description: "내부 배열이 수용할 수 있는 슬롯 개수"
+    - id: resize
+      kind: "확장 처리"
+      name: "Resize"
+      description: "더 큰 배열을 만들고 기존 요소를 복사하는 작업"
+  steps:
+    - title: "1. 실제 요소 세기"
+      from: "ArrayList"
+      to: "size = 3"
+      route_label: "리스트가 현재 보유한 A·B·C 세 요소를 size로 센다."
+      active_actors: [list, size]
+      description: "size는 사용 중인 요소의 개수이지 내부 배열의 전체 슬롯 수가 아니다."
+      payload: ["A", "B", "C", "size = 3"]
+      outcomes:
+        - status: info
+          text: "요소를 제거하면 size가 줄어든다."
+    - title: "2. 여유 슬롯 확인"
+      from: "ArrayList"
+      to: "capacity = 6"
+      route_label: "내부 배열에 세 개의 사용 중 슬롯과 세 개의 여유 슬롯이 남아 있다."
+      active_actors: [list, capacity]
+      description: "capacity는 추가 삽입을 즉시 수용할 수 있는 현재 공간의 크기다."
+      payload: ["capacity = 6", "사용 3", "여유 3"]
+      outcomes:
+        - status: allow
+          text: "여유가 있으면 내부 배열을 다시 만들지 않고 삽입할 수 있다."
+    - title: "3. 공간 부족"
+      from: "size = 3"
+      to: "Resize"
+      route_label: "요소를 계속 추가해 size가 capacity에 도달하면 확장이 필요하다."
+      active_actors: [size, capacity, resize]
+      description: "capacity가 가득 찬 순간 다음 삽입을 위해 더 큰 저장 공간을 준비한다."
+      payload: ["size == capacity", "다음 삽입", "확장"]
+      outcomes:
+        - status: warning
+          text: "확장 시 기존 요소를 새 배열로 복사하는 비용이 발생한다."
+    - title: "4. 새 배열로 복사"
+      from: "Resize"
+      to: "ArrayList"
+      route_label: "더 큰 내부 배열로 기존 요소를 복사한 뒤 새 요소를 추가한다."
+      active_actors: [resize, list, capacity]
+      description: "동적 배열은 매번 한 칸씩 늘리기보다 여유를 포함해 확장해 평균 삽입 비용을 낮춘다."
+      payload: ["copy", "larger array", "새 capacity"]
+      outcomes:
+        - status: info
+          text: "개별 확장은 비싸지만 전체 삽입 비용은 분산될 수 있다."
+
+stack_queue_deque:
+  eyebrow: "Interactive comparison"
+  title: "Stack·Queue·Deque의 처리 순서"
+  summary: "같은 입력도 자료구조가 허용하는 삽입·삭제 위치에 따라 LIFO, FIFO, 양방향 결과가 달라진다."
+  actors:
+    - id: input
+      kind: "입력"
+      name: "A → B → C"
+      description: "차례로 들어오는 세 요소"
+    - id: stack
+      kind: "한쪽 끝"
+      name: "Stack"
+      description: "마지막에 넣은 요소를 먼저 꺼내는 구조"
+    - id: queue
+      kind: "양 끝 역할 분리"
+      name: "Queue"
+      description: "먼저 들어온 요소를 먼저 꺼내는 구조"
+    - id: deque
+      kind: "양쪽 끝"
+      name: "Deque"
+      description: "앞과 뒤에서 삽입·삭제할 수 있는 구조"
+  steps:
+    - title: "1. 입력 순서"
+      from: "A → B → C"
+      to: "Stack / Queue / Deque"
+      route_label: "A, B, C를 같은 순서로 세 자료구조에 넣는다."
+      active_actors: [input, stack, queue, deque]
+      description: "처리 결과를 비교하려면 입력 순서를 먼저 고정해야 한다."
+      payload: ["A", "B", "C", "push / offer"]
+      outcomes:
+        - status: info
+          text: "차이는 입력 자체가 아니라 꺼내는 규칙에서 생긴다."
+    - title: "2. Stack LIFO"
+      from: "Stack"
+      to: "A → B → C"
+      route_label: "마지막에 들어온 C부터 B, A 순서로 꺼낸다."
+      active_actors: [stack, input]
+      description: "Stack은 한쪽 끝에서 넣고 빼므로 후입선출 순서가 된다."
+      payload: ["push", "pop", "C → B → A"]
+      outcomes:
+        - status: info
+          text: "호출 스택과 되돌리기 기능 같은 흐름을 설명할 때 유용하다."
+    - title: "3. Queue FIFO"
+      from: "Queue"
+      to: "A → B → C"
+      route_label: "먼저 들어온 A부터 B, C 순서로 꺼낸다."
+      active_actors: [queue, input]
+      description: "Queue는 한쪽에서 넣고 반대쪽에서 빼므로 선입선출 순서가 된다."
+      payload: ["offer", "poll", "A → B → C"]
+      outcomes:
+        - status: info
+          text: "작업 대기열처럼 도착 순서를 보존해야 하는 흐름에 맞다."
+    - title: "4. Deque 양방향"
+      from: "Deque"
+      to: "A → B → C"
+      route_label: "앞과 뒤 어느 쪽에서도 삽입·삭제해 순서를 정책으로 선택한다."
+      active_actors: [deque, input]
+      description: "Deque는 Stack과 Queue 동작을 모두 표현할 수 있는 양방향 구조다."
+      payload: ["addFirst", "addLast", "removeFirst / removeLast"]
+      outcomes:
+        - status: allow
+          text: "양쪽 연산을 허용하는 만큼 사용 규칙을 코드로 분명히 해야 한다."
+
+heap_mapping:
+  eyebrow: "Interactive comparison"
+  title: "Min Heap의 트리와 배열 매핑"
+  summary: "완전 이진 트리는 빈 슬롯 없이 채워지므로 부모·자식 관계를 인덱스 계산으로 표현할 수 있다."
+  actors:
+    - id: heap
+      kind: "우선순위 구조"
+      name: "Min Heap"
+      description: "부모가 자식보다 작거나 같은 완전 이진 트리"
+    - id: tree
+      kind: "논리 구조"
+      name: "Complete Tree"
+      description: "레벨 순서로 채워지는 트리 표현"
+    - id: array
+      kind: "물리 표현"
+      name: "Index Array"
+      description: "0번 인덱스부터 노드를 담는 배열"
+    - id: relation
+      kind: "인덱스 규칙"
+      name: "Parent / Child Index"
+      description: "부모와 자식 위치를 계산하는 관계"
+  steps:
+    - title: "1. 힙 조건"
+      from: "Min Heap"
+      to: "Complete Tree"
+      route_label: "각 부모의 값이 자식보다 작거나 같도록 트리를 유지한다."
+      active_actors: [heap, tree]
+      description: "Min Heap의 루트에는 전체 원소 중 가장 작은 값이 온다."
+      payload: ["2", "4", "7", "9", "8"]
+      outcomes:
+        - status: info
+          text: "힙은 전체 정렬이 아니라 부모·자식 사이의 부분 순서다."
+    - title: "2. 레벨 순서 저장"
+      from: "Complete Tree"
+      to: "Index Array"
+      route_label: "트리 노드를 위에서 아래, 왼쪽에서 오른쪽 순서로 배열에 담는다."
+      active_actors: [tree, array]
+      description: "완전 이진 트리는 배열에 빈 슬롯을 거의 두지 않고 표현할 수 있다."
+      payload: ["index 0", "level order", "[2, 4, 7, 9, 8]"]
+      outcomes:
+        - status: allow
+          text: "노드마다 별도 left·right 포인터를 저장하지 않아도 된다."
+    - title: "3. 부모·자식 계산"
+      from: "Index Array"
+      to: "Parent / Child Index"
+      route_label: "0번 기준으로 parent=(i-1)/2, left=2i+1, right=2i+2를 계산한다."
+      active_actors: [array, relation]
+      description: "배열 인덱스만으로 트리의 이웃 위치를 찾을 수 있다."
+      payload: ["parent(i)", "left(i)", "right(i)"]
+      outcomes:
+        - status: info
+          text: "인덱스 계산 규칙은 배열이 완전 이진 트리라는 전제에 기대고 있다."
+    - title: "4. 최소값 접근"
+      from: "Parent / Child Index"
+      to: "Min Heap"
+      route_label: "루트 인덱스 0의 값을 읽어 최솟값을 확인한다."
+      active_actors: [relation, heap]
+      description: "Min Heap은 루트 최소값 접근을 빠르게 제공하지만 임의 값 전체 순서를 보장하지 않는다."
+      payload: ["root = array[0]", "min = 2", "부분 순서"]
+      outcomes:
+        - status: allow
+          text: "우선순위 큐의 최솟값 확인과 제거에 적합하다."
+
+heap_sift:
+  eyebrow: "Interactive flow"
+  title: "Min Heap의 Sift Up과 Sift Down"
+  summary: "삽입은 부모 방향으로, 루트 제거는 더 작은 자식 방향으로 이동하며 힙 조건을 복구한다."
+  actors:
+    - id: heap
+      kind: "힙"
+      name: "Min Heap"
+      description: "부모가 자식보다 작거나 같은 구조"
+    - id: inserted
+      kind: "삽입 값"
+      name: "Inserted 1"
+      description: "새로 추가되어 위치를 찾아야 하는 값"
+    - id: root
+      kind: "제거 대상"
+      name: "Root 2"
+      description: "최솟값이라 먼저 제거되는 루트"
+    - id: child
+      kind: "비교 후보"
+      name: "Smaller Child"
+      description: "아래로 내려갈 때 선택하는 더 작은 자식"
+  steps:
+    - title: "1. 1 삽입"
+      from: "Inserted 1"
+      to: "Min Heap"
+      route_label: "새 값 1을 배열의 마지막 빈 위치에 넣는다."
+      active_actors: [inserted, heap]
+      description: "완전 이진 트리 모양을 유지하기 위해 새 노드는 마지막 위치에서 시작한다."
+      payload: ["insert 1", "last slot", "힙 조건 위반"]
+      outcomes:
+        - status: warning
+          text: "부모보다 작다면 현재 위치에서 바로 멈출 수 없다."
+    - title: "2. Sift Up"
+      from: "Inserted 1"
+      to: "Min Heap"
+      route_label: "부모와 비교하며 1이 더 작으면 위로 교환한다."
+      active_actors: [inserted, heap]
+      description: "삽입 후에는 부모 방향으로 이동해 루트까지 힙 조건을 확인한다."
+      payload: ["compare parent", "swap", "sift up"]
+      outcomes:
+        - status: allow
+          text: "조건을 만족하는 위치에 도달하면 삽입 복구가 끝난다."
+    - title: "3. 루트 제거"
+      from: "Root 2"
+      to: "Min Heap"
+      route_label: "루트 2를 제거하고 마지막 원소를 루트 자리로 옮긴다."
+      active_actors: [root, heap]
+      description: "최솟값을 꺼낸 뒤 빈 루트를 채우는 과정에서 아래쪽 조건이 깨질 수 있다."
+      payload: ["remove min", "move last", "root replacement"]
+      outcomes:
+        - status: warning
+          text: "루트 교체만으로는 자식과의 순서가 보장되지 않는다."
+    - title: "4. Sift Down"
+      from: "Min Heap"
+      to: "Smaller Child"
+      route_label: "더 작은 자식과 비교하며 조건이 맞을 때까지 아래로 교환한다."
+      active_actors: [heap, child]
+      description: "두 자식 중 작은 값을 선택해야 다음 단계에서도 부모·자식 조건을 유지할 수 있다."
+      payload: ["left child", "right child", "smaller child"]
+      outcomes:
+        - status: allow
+          text: "삽입은 Sift Up, 루트 제거는 Sift Down으로 구분한다."
+
+tree_types:
+  eyebrow: "Interactive comparison"
+  title: "이진 트리의 형태 조건"
+  summary: "자식 수와 레벨을 얼마나 채우는지에 따라 일반·정·완전·포화 이진 트리를 구분한다."
+  actors:
+    - id: tree
+      kind: "트리"
+      name: "Binary Tree"
+      description: "각 노드가 최대 두 자식을 가지는 구조"
+    - id: children
+      kind: "자식 조건"
+      name: "Children Count"
+      description: "노드마다 자식이 몇 개인지 보는 기준"
+    - id: level
+      kind: "레벨 조건"
+      name: "Level Filling"
+      description: "마지막 레벨까지 노드를 채우는 방식"
+    - id: shape
+      kind: "형태 분류"
+      name: "Tree Shape"
+      description: "조건을 만족하는 트리 유형"
+  steps:
+    - title: "1. 최대 두 자식"
+      from: "Binary Tree"
+      to: "Children Count"
+      route_label: "각 노드가 자식을 0·1·2개까지 가질 수 있는지 확인한다."
+      active_actors: [tree, children]
+      description: "이진 트리는 자식 수의 상한만 정하고 모든 레벨을 채우라는 규칙은 없다."
+      payload: ["0 children", "1 child", "2 children"]
+      outcomes:
+        - status: info
+          text: "자식 수 조건만으로 정·완전·포화 여부를 결정할 수 없다."
+    - title: "2. 정이진 트리"
+      from: "Children Count"
+      to: "Tree Shape"
+      route_label: "모든 내부 노드가 자식 2개를 가지는지 확인한다."
+      active_actors: [children, shape]
+      description: "정이진 트리는 한쪽 자식만 있는 내부 노드를 허용하지 않는다."
+      payload: ["0 or 2", "한쪽 자식 없음", "Full Binary Tree"]
+      outcomes:
+        - status: info
+          text: "레벨이 모두 채워졌다는 뜻은 아니다."
+    - title: "3. 완전 이진 트리"
+      from: "Level Filling"
+      to: "Tree Shape"
+      route_label: "마지막 레벨 전까지 채우고 마지막 레벨은 왼쪽부터 채우는지 본다."
+      active_actors: [level, shape]
+      description: "완전 이진 트리는 배열 기반 힙처럼 레벨 순서 표현과 잘 맞는다."
+      payload: ["앞 레벨 완성", "마지막 레벨 왼쪽부터", "Complete"]
+      outcomes:
+        - status: allow
+          text: "마지막 레벨이 일부만 차도 왼쪽 정렬이면 완전할 수 있다."
+    - title: "4. 포화 이진 트리"
+      from: "Level Filling"
+      to: "Tree Shape"
+      route_label: "모든 내부 노드가 두 자식이고 모든 잎이 같은 레벨인지 확인한다."
+      active_actors: [children, level, shape]
+      description: "포화 이진 트리는 각 레벨이 빠짐없이 채워진 가장 엄격한 형태다."
+      payload: ["2 children", "same leaf level", "Perfect"]
+      outcomes:
+        - status: info
+          text: "포화 조건은 정이진·완전 조건을 함께 강하게 만족시킨다."
+
+tree_representation:
+  eyebrow: "Interactive comparison"
+  title: "트리의 배열 표현과 연결 표현"
+  summary: "같은 트리도 배열은 위치와 빈 슬롯을 보존하고 연결 표현은 실제 자식 관계만 참조한다."
+  actors:
+    - id: tree
+      kind: "논리 구조"
+      name: "Tree A–F"
+      description: "A부터 F까지의 동일한 트리 관계"
+    - id: array
+      kind: "순차 표현"
+      name: "Array Slots"
+      description: "인덱스 위치에 노드를 저장하는 표현"
+    - id: linked
+      kind: "포인터 표현"
+      name: "Child References"
+      description: "왼쪽·오른쪽 자식 참조로 관계를 저장하는 표현"
+    - id: slot
+      kind: "빈 위치"
+      name: "Empty Slots"
+      description: "배열에서 존재하지 않는 위치를 표시하는 자리"
+  steps:
+    - title: "1. 같은 트리 고정"
+      from: "Tree A–F"
+      to: "Array Slots"
+      route_label: "A부터 F까지 같은 논리 관계를 두 표현으로 옮길 준비를 한다."
+      active_actors: [tree, array]
+      description: "표현 방법을 비교하려면 값과 부모·자식 관계가 같은 트리를 사용해야 한다."
+      payload: ["A", "B", "C", "D", "E", "F"]
+      outcomes:
+        - status: info
+          text: "자료구조의 논리와 저장 표현을 분리해 본다."
+    - title: "2. 배열 위치 보존"
+      from: "Tree A–F"
+      to: "Array Slots"
+      route_label: "레벨 순서 인덱스에 노드를 두고 없는 자리는 빈 슬롯으로 남긴다."
+      active_actors: [tree, array, slot]
+      description: "배열은 부모와 자식의 위치 계산을 쉽게 하지만 희소한 트리에서는 공간을 낭비할 수 있다."
+      payload: ["index", "빈 슬롯", "level order"]
+      outcomes:
+        - status: warning
+          text: "트리 모양이 치우치면 빈 슬롯이 늘어날 수 있다."
+    - title: "3. 연결 관계만 저장"
+      from: "Tree A–F"
+      to: "Child References"
+      route_label: "각 노드가 실제로 가진 왼쪽·오른쪽 자식만 참조한다."
+      active_actors: [tree, linked]
+      description: "연결 표현은 빈 위치를 저장하지 않고 존재하는 관계를 포인터로 나타낸다."
+      payload: ["left", "right", "null reference"]
+      outcomes:
+        - status: allow
+          text: "모양이 불규칙한 트리도 빈 슬롯 없이 표현할 수 있다."
+
+tree_traversal:
+  eyebrow: "Interactive comparison"
+  title: "이진 트리 순회 순서"
+  summary: "같은 트리라도 현재 노드를 처리하는 시점과 레벨 처리 방식에 따라 방문 결과가 달라진다."
+  actors:
+    - id: tree
+      kind: "대상 구조"
+      name: "Tree A–F"
+      description: "모든 순회가 공유하는 동일한 이진 트리"
+    - id: preorder
+      kind: "현재 노드 먼저"
+      name: "Preorder"
+      description: "현재 → 왼쪽 → 오른쪽"
+    - id: inorder
+      kind: "왼쪽 뒤 현재"
+      name: "Inorder"
+      description: "왼쪽 → 현재 → 오른쪽"
+    - id: postorder
+      kind: "자식 뒤 현재"
+      name: "Postorder"
+      description: "왼쪽 → 오른쪽 → 현재"
+    - id: level
+      kind: "레벨 순서"
+      name: "Level Order"
+      description: "같은 깊이를 왼쪽부터 처리"
+  steps:
+    - title: "1. 전위 순회"
+      from: "Tree A–F"
+      to: "Preorder"
+      route_label: "현재 노드를 처리한 뒤 왼쪽, 오른쪽 서브트리로 내려간다."
+      active_actors: [tree, preorder]
+      description: "전위 순회는 부모를 자식보다 먼저 방문한다."
+      payload: ["현재", "왼쪽", "오른쪽", "A B D E C F"]
+      outcomes:
+        - status: info
+          text: "방문 결과는 트리 구조와 현재 노드 처리 시점에 의해 결정된다."
+    - title: "2. 중위 순회"
+      from: "Tree A–F"
+      to: "Inorder"
+      route_label: "왼쪽 서브트리를 처리한 뒤 현재 노드와 오른쪽을 처리한다."
+      active_actors: [tree, inorder]
+      description: "중위 순회는 이진 탐색 트리의 정렬 순서와 연결해 설명할 수 있지만 모든 이진 트리에서 정렬되지는 않는다."
+      payload: ["왼쪽", "현재", "오른쪽", "D B E A C F"]
+      outcomes:
+        - status: info
+          text: "정렬 결과라는 해석에는 이진 탐색 트리의 추가 규칙이 필요하다."
+    - title: "3. 후위 순회"
+      from: "Tree A–F"
+      to: "Postorder"
+      route_label: "두 서브트리를 모두 처리한 뒤 현재 노드를 방문한다."
+      active_actors: [tree, postorder]
+      description: "후위 순회는 자식 결과를 모은 뒤 부모를 처리하는 흐름을 표현한다."
+      payload: ["왼쪽", "오른쪽", "현재", "D E B F C A"]
+      outcomes:
+        - status: info
+          text: "서브트리 삭제나 계산 결과 조합을 설명할 때 자주 사용한다."
+    - title: "4. 레벨 순회"
+      from: "Tree A–F"
+      to: "Level Order"
+      route_label: "깊이로 내려가기보다 같은 레벨의 노드를 왼쪽부터 처리한다."
+      active_actors: [tree, level]
+      description: "레벨 순회는 큐를 사용해 현재 깊이의 노드를 다음 깊이보다 먼저 방문한다."
+      payload: ["level 0", "level 1", "level 2", "A B C D E F"]
+      outcomes:
+        - status: allow
+          text: "전체 순회는 노드 수에 비례해 O(n)으로 처리한다."
+
+btree_split_merge:
+  eyebrow: "Interactive flow"
+  title: "B-Tree 노드 분할·재분배·병합"
+  summary: "삽입은 가득 찬 노드를 나누고 삭제는 형제 여유에 따라 재분배하거나 부모 경계 키와 병합한다."
+  actors:
+    - id: node
+      kind: "현재 노드"
+      name: "Target Node"
+      description: "삽입 또는 삭제가 발생한 B-Tree 노드"
+    - id: parent
+      kind: "상위 경계"
+      name: "Parent Separator"
+      description: "자식 범위를 나누는 부모 키"
+    - id: sibling
+      kind: "형제 노드"
+      name: "Sibling"
+      description: "키를 빌려주거나 병합하는 이웃 노드"
+    - id: root
+      kind: "루트"
+      name: "Root"
+      description: "높이 증가와 감소가 시작되는 최상위 노드"
+  steps:
+    - title: "1. 가득 찬 노드 분할"
+      from: "Target Node"
+      to: "Parent Separator"
+      route_label: "삽입으로 가득 찬 노드를 둘로 나누고 가운데 키를 부모로 올린다."
+      active_actors: [node, parent]
+      description: "분할 뒤에도 각 자식 노드의 키 범위와 최소 조건을 유지한다."
+      payload: ["split", "middle key", "promote"]
+      outcomes:
+        - status: allow
+          text: "루트가 분할되면 트리 높이가 증가할 수 있다."
+    - title: "2. 삭제 후 형제 확인"
+      from: "Target Node"
+      to: "Sibling"
+      route_label: "삭제로 노드가 부족해지면 먼저 형제에게 빌릴 여유가 있는지 본다."
+      active_actors: [node, sibling, parent]
+      description: "재분배는 부모의 경계 키와 형제 키를 함께 조정하는 작업이다."
+      payload: ["underflow", "borrow", "redistribute"]
+      outcomes:
+        - status: info
+          text: "형제 키 하나를 단순 복사하는 것과는 다르다."
+    - title: "3. 형제와 병합"
+      from: "Sibling"
+      to: "Parent Separator"
+      route_label: "빌릴 키가 없으면 부모 경계 키와 두 노드를 하나로 합친다."
+      active_actors: [sibling, node, parent]
+      description: "병합 후 부모의 키와 자식 포인터가 줄어 상위 노드에서도 부족이 이어질 수 있다."
+      payload: ["merge", "parent key", "child pointer 감소"]
+      outcomes:
+        - status: warning
+          text: "부족 조건이 부모 방향으로 전파될 수 있다."
+    - title: "4. 루트 높이 조정"
+      from: "Parent Separator"
+      to: "Root"
+      route_label: "루트가 분할되면 높이가 늘고 루트 병합으로 하나의 자식만 남으면 높이가 줄어든다."
+      active_actors: [parent, root]
+      description: "삽입과 삭제의 루트 처리는 트리 높이를 바꾸는 특별한 경계 사례다."
+      payload: ["root split", "root merge", "height ± 1"]
+      outcomes:
+        - status: info
+          text: "높이 변화도 각 노드의 최소·최대 조건을 지키는 결과다."
+
+btree_vs_bplus:
+  eyebrow: "Interactive comparison"
+  title: "B-Tree와 B+Tree의 검색 경로"
+  summary: "B-Tree는 내부 노드에도 데이터가 있을 수 있고 B+Tree는 인덱스 키를 따라 리프와 리프 연결로 접근한다."
+  actors:
+    - id: query
+      kind: "검색 요청"
+      name: "Search Key"
+      description: "정확한 일치 또는 범위를 찾는 키"
+    - id: btree
+      kind: "혼합 저장"
+      name: "B-Tree"
+      description: "내부 노드와 리프에 데이터가 있을 수 있는 구조"
+    - id: bplus
+      kind: "리프 집중"
+      name: "B+Tree"
+      description: "내부는 안내 키, 실제 데이터는 리프에 모이는 구조"
+    - id: leaf
+      kind: "데이터 페이지"
+      name: "Linked Leaves"
+      description: "범위 검색을 이어 가는 연결된 리프 페이지"
+  steps:
+    - title: "1. B-Tree 내부 확인"
+      from: "Search Key"
+      to: "B-Tree"
+      route_label: "검색 키가 내부 노드에서 데이터와 일치하면 그 자리에서 도달할 수 있다."
+      active_actors: [query, btree]
+      description: "B-Tree는 내부 키가 데이터 또는 데이터 접근 정보를 함께 가질 수 있다."
+      payload: ["internal key", "data", "검색 종료 가능"]
+      outcomes:
+        - status: info
+          text: "모든 검색이 리프까지 내려간다고 단정하지 않는다."
+    - title: "2. B+Tree 리프 도달"
+      from: "Search Key"
+      to: "B+Tree"
+      route_label: "내부 키는 방향을 안내하고 실제 항목은 리프까지 내려가 확인한다."
+      active_actors: [query, bplus]
+      description: "B+Tree에서는 내부 키와 같은 값을 만나도 리프의 실제 데이터를 확인한다."
+      payload: ["separator key", "child pointer", "leaf data"]
+      outcomes:
+        - status: info
+          text: "내부 노드와 데이터 페이지의 책임이 분리된다."
+    - title: "3. 리프 연결 따라가기"
+      from: "B+Tree"
+      to: "Linked Leaves"
+      route_label: "시작 리프를 찾은 뒤 다음 리프 포인터를 따라 범위를 읽는다."
+      active_actors: [bplus, leaf]
+      description: "리프 연결은 범위 검색에서 다음 페이지로 이동하는 통로가 된다."
+      payload: ["start leaf", "next leaf", "range scan"]
+      outcomes:
+        - status: allow
+          text: "범위 검색을 리프 순서로 이어가기 쉽다."
+    - title: "4. 페이지 I/O 분리"
+      from: "Search Key"
+      to: "Linked Leaves"
+      route_label: "논리적 페이지 방문과 버퍼에 없는 페이지의 실제 디스크 읽기를 따로 센다."
+      active_actors: [query, btree, bplus, leaf]
+      description: "검색 경로의 페이지 수와 저장 장치 I/O 수는 캐시 상태에 따라 달라질 수 있다."
+      payload: ["logical page", "buffer hit", "disk I/O"]
+      outcomes:
+        - status: info
+          text: "페이지 방문 횟수와 실제 디스크 읽기 횟수를 같은 값으로 보지 않는다."
+
+database_key:
+  eyebrow: "Interactive flow"
+  title: "외래키와 복합 UNIQUE 제약조건"
+  summary: "외래키는 참조 대상의 존재를 확인하고 복합 UNIQUE는 같은 관계의 중복 저장을 막는다."
+  actors:
+    - id: member
+      kind: "참조 대상"
+      name: "Members"
+      description: "찜을 저장한 회원 테이블"
+    - id: restaurant
+      kind: "참조 대상"
+      name: "Restaurants"
+      description: "찜 대상 음식점 테이블"
+    - id: relation
+      kind: "관계 행"
+      name: "MemberRestaurants"
+      description: "회원과 음식점을 연결하는 자식 테이블"
+    - id: constraint
+      kind: "무결성 규칙"
+      name: "FK + UNIQUE"
+      description: "존재·필수·중복을 검증하는 제약조건 묶음"
+  steps:
+    - title: "1. 회원 참조"
+      from: "MemberRestaurants"
+      to: "Members"
+      route_label: "member_id FK가 members.id에 존재하는지 확인한다."
+      active_actors: [relation, member, constraint]
+      description: "존재하지 않는 회원을 가리키는 찜 행은 외래키 검사에서 거부된다."
+      payload: ["member_id", "members.id", "FK"]
+      outcomes:
+        - status: allow
+          text: "참조 대상의 존재를 보장한다."
+    - title: "2. 음식점 참조"
+      from: "MemberRestaurants"
+      to: "Restaurants"
+      route_label: "restaurant_id FK가 restaurants.id에 존재하는지 확인한다."
+      active_actors: [relation, restaurant, constraint]
+      description: "외래키는 음식점 참조도 검증하지만 같은 조합의 중복까지 판단하지는 않는다."
+      payload: ["restaurant_id", "restaurants.id", "FK"]
+      outcomes:
+        - status: allow
+          text: "두 참조 대상이 모두 존재해야 관계를 저장할 수 있다."
+    - title: "3. 필수 관계 확인"
+      from: "MemberRestaurants"
+      to: "FK + UNIQUE"
+      route_label: "필수 관계라면 member_id와 restaurant_id에 NOT NULL도 적용한다."
+      active_actors: [relation, constraint]
+      description: "FK와 NULL 허용 여부는 서로 다른 질문이므로 필요한 규칙을 각각 둔다."
+      payload: ["NOT NULL", "필수 관계", "참조 무결성"]
+      outcomes:
+        - status: info
+          text: "외래키가 있다고 모든 컬럼 값이 반드시 존재하는 것은 아니다."
+    - title: "4. 중복 관계 차단"
+      from: "MemberRestaurants"
+      to: "FK + UNIQUE"
+      route_label: "UNIQUE(member_id, restaurant_id)로 같은 찜 관계의 두 번째 행을 막는다."
+      active_actors: [relation, constraint]
+      description: "외래키는 대상 존재를, 복합 UNIQUE는 관계 조합의 중복을 담당한다."
+      payload: ["(member_id, restaurant_id)", "UNIQUE", "중복 거부"]
+      outcomes:
+        - status: reject
+          text: "같은 회원과 음식점 조합을 두 번 저장할 수 없다."
+
+join_results:
+  eyebrow: "Interactive comparison"
+  title: "JOIN 종류와 결과 행 수"
+  summary: "JOIN은 어떤 쪽 행을 보존할지 정하고 결과 행 수는 매칭되는 행 조합으로 결정된다."
+  actors:
+    - id: restaurant
+      kind: "왼쪽 테이블"
+      name: "Restaurant"
+      description: "음식점 세 행을 가진 기준 테이블"
+    - id: visit
+      kind: "오른쪽 테이블"
+      name: "Visit"
+      description: "음식점별 방문 기록 테이블"
+    - id: join
+      kind: "연결 조건"
+      name: "ON restaurant_id"
+      description: "두 테이블을 연결하는 매칭 조건"
+    - id: result
+      kind: "결과 집합"
+      name: "Joined Rows"
+      description: "매칭 조합과 보존 규칙으로 만들어진 행들"
+  steps:
+    - title: "1. 매칭 조합 만들기"
+      from: "Restaurant"
+      to: "ON restaurant_id"
+      route_label: "각 음식점 행과 같은 restaurant_id를 가진 방문 기록을 찾는다."
+      active_actors: [restaurant, visit, join]
+      description: "한 음식점에 방문 기록이 여러 개면 하나의 왼쪽 행이 여러 결과 조합으로 늘어난다."
+      payload: ["restaurant.id", "visit.restaurant_id", "매칭"]
+      outcomes:
+        - status: info
+          text: "결과 행 수를 왼쪽 테이블 행 수만으로 예측하지 않는다."
+    - title: "2. INNER JOIN"
+      from: "ON restaurant_id"
+      to: "Joined Rows"
+      route_label: "양쪽에 매칭되는 음식점과 방문 기록 조합만 결과에 남긴다."
+      active_actors: [restaurant, visit, join, result]
+      description: "매칭되지 않는 왼쪽 또는 오른쪽 행은 INNER JOIN 결과에서 제외된다."
+      payload: ["INNER", "matched pairs", "NULL 행 없음"]
+      outcomes:
+        - status: info
+          text: "보존 규칙은 양쪽 매칭 행만 남기는 것이다."
+    - title: "3. LEFT JOIN"
+      from: "Restaurant"
+      to: "Joined Rows"
+      route_label: "모든 음식점을 남기고 방문 기록이 없으면 오른쪽 컬럼을 NULL로 채운다."
+      active_actors: [restaurant, visit, result]
+      description: "방문 기록이 없는 파스타집도 LEFT JOIN 결과에서는 보존된다."
+      payload: ["LEFT", "all restaurants", "NULL visit"]
+      outcomes:
+        - status: allow
+          text: "왼쪽 행 보존과 오른쪽 매칭 개수에 따라 결과 행 수가 달라진다."
+    - title: "4. FULL OUTER JOIN"
+      from: "Restaurant + Visit"
+      to: "Joined Rows"
+      route_label: "양쪽 행을 모두 보존하고 반대편이 없으면 해당 컬럼을 NULL로 채운다."
+      active_actors: [restaurant, visit, result]
+      description: "외래키가 없는 방문 기록까지 있다면 음식점 쪽 컬럼이 NULL인 행도 남을 수 있다."
+      payload: ["FULL OUTER", "양쪽 보존", "NULL"]
+      outcomes:
+        - status: info
+          text: "JOIN 종류는 보존할 행의 기준을 선택하는 문법이다."
+
+on_where_join:
+  eyebrow: "Interactive comparison"
+  title: "LEFT JOIN에서 ON과 WHERE의 차이"
+  summary: "ON 조건은 매칭 대상을 줄이면서 왼쪽 행을 보존하고 WHERE 조건은 JOIN 결과 행 자체를 걸러낸다."
+  actors:
+    - id: left
+      kind: "보존 대상"
+      name: "Restaurant"
+      description: "LEFT JOIN에서 항상 남겨야 하는 왼쪽 행"
+    - id: on
+      kind: "매칭 조건"
+      name: "ON visit.youtuber = '철수'"
+      description: "오른쪽에서 연결할 행을 제한하는 조건"
+    - id: where
+      kind: "후처리 조건"
+      name: "WHERE visit.youtuber = '철수'"
+      description: "JOIN 결과 전체에 적용되는 필터"
+    - id: result
+      kind: "결과 집합"
+      name: "Joined Result"
+      description: "조건 위치에 따라 달라지는 결과 행"
+  steps:
+    - title: "1. LEFT JOIN 시작"
+      from: "Restaurant"
+      to: "Joined Result"
+      route_label: "모든 음식점 행을 기준으로 방문 기록을 붙일 준비를 한다."
+      active_actors: [left, result]
+      description: "LEFT JOIN의 기본 약속은 왼쪽 테이블의 행을 보존하는 것이다."
+      payload: ["LEFT JOIN", "all left rows", "매칭 준비"]
+      outcomes:
+        - status: info
+          text: "보존 규칙과 필터 적용 시점을 분리해 읽는다."
+    - title: "2. ON에서 철수 제한"
+      from: "ON visit.youtuber = '철수'"
+      to: "Joined Result"
+      route_label: "철수 방문 기록만 매칭하고 방문 기록이 없는 음식점은 NULL로 남긴다."
+      active_actors: [left, on, result]
+      description: "ON 조건은 오른쪽 매칭 후보를 줄이지만 LEFT JOIN의 왼쪽 행 보존은 유지한다."
+      payload: ["ON", "철수", "NULL 보존"]
+      outcomes:
+        - status: allow
+          text: "왼쪽 행을 유지한 채 연결할 오른쪽 행만 제한한다."
+    - title: "3. WHERE에서 철수 제한"
+      from: "Joined Result"
+      to: "WHERE visit.youtuber = '철수'"
+      route_label: "JOIN 후 오른쪽 컬럼이 NULL인 행까지 WHERE 조건으로 다시 검사한다."
+      active_actors: [result, where]
+      description: "NULL은 철수와 같지 않으므로 방문 기록이 없는 음식점 행이 제거될 수 있다."
+      payload: ["WHERE", "NULL 비교", "후처리 필터"]
+      outcomes:
+        - status: warning
+          text: "WHERE에 오른쪽 조건을 두면 LEFT JOIN이 INNER JOIN처럼 보일 수 있다."
+    - title: "4. 조건 위치 선택"
+      from: "ON / WHERE"
+      to: "Joined Result"
+      route_label: "왼쪽 행을 보존할지, 매칭된 결과만 남길지 의도에 맞춰 조건 위치를 정한다."
+      active_actors: [on, where, result, left]
+      description: "조건 자체보다 JOIN 전 매칭 제한인지 JOIN 후 행 제거인지가 결과를 바꾼다."
+      payload: ["보존 필요", "매칭 제한", "결과 필터"]
+      outcomes:
+        - status: info
+          text: "SQL을 읽을 때 ON과 WHERE를 처리 순서와 함께 확인한다."

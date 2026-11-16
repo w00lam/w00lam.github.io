@@ -115,7 +115,7 @@ JVM은 하드웨어와 운영체제에 독립적인 추상 머신을 제공하�
 
 Java 21로 빌드했다는 이유만으로 모든 대상 JVM이 실행된다고 단정할 수는 없다. 반대로 버전 숫자가 완전히 같아야만 실행된다고 말하는 것도 정확하지 않다. 클래스 파일 버전과 사용하는 API를 대상 JVM이 지원하는지 확인하고 실제 애플리케이션을 실행해야 한다.
 
-![공통 Java 바이트코드를 담은 JAR과 Linux x86-64·ARM64용 JVM 및 CPU의 관계](/assets/images/2026-10-02-processor-isa-java-arm/bytecode-jvm-platform.svg)
+{% include interactive/flow-card.html flow='bytecode_jvm' %}
 
 *그림 1. 바이트코드는 재사용할 수 있지만 JVM 구현체는 대상 OS와 CPU에 맞아야 한다. 네이티브 라이브러리는 별도로 호환성을 확인해야 한다.*
 
@@ -163,7 +163,7 @@ Windows나 macOS에서 Linux 컨테이너가 실행되는 경우가 있어도 �
     └── linux/arm64: JVM + 라이브러리 + 애플리케이션
 ```
 
-![하나의 이미지 이름 아래 매니페스트 목록이 linux/amd64와 linux/arm64 이미지를 연결하고 실행 환경에 맞는 변형을 선택하는 구조](/assets/images/2026-10-02-processor-isa-java-arm/multi-platform-image-selection.svg)
+{% include interactive/flow-card.html flow='multiplatform_image' %}
 
 *그림 2. 멀티 플랫폼 이미지는 하나의 범용 실행 파일이 아니라 플랫폼별 이미지를 하나의 이름 아래 연결하는 구조다.*
 
