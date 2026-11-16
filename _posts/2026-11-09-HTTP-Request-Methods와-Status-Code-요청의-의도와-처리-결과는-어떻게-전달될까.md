@@ -88,7 +88,7 @@ DELETE를 여러 번 요청하면 첫 번째 요청은 `204 No Content`를 반�
 
 GET 요청 뒤에 접근 로그가 남는다고 해서 GET이 안전하지 않은 것도 아니다. 안전성과 멱등성은 보안 수준이나 서버에서 발생하는 모든 내부 동작을 한꺼번에 설명하는 단어가 아니다. 메서드가 표현하는 요청 의미를 기준으로 판단하는 성질이다.
 
-![GET, HEAD, POST, PUT, PATCH, DELETE의 역할과 안전성·멱등성 비교](/assets/images/2026-11-09-http-methods-status-codes/http-method-safety-idempotency.svg)
+{% include interactive/flow-card.html flow='http_methods' %}
 
 *그림 1. HTTP 메서드는 요청의 의미에 따라 안전성과 멱등성이 달라진다. PATCH는 구현한 변경 방식에 따라 멱등적인 요청으로 설계할 수 있지만 메서드 자체가 이를 보장하지는 않는다.*
 
@@ -154,7 +154,7 @@ HTTP 메서드가 클라이언트의 요청 의도를 나타낸다면 상태 코
 
 `504 Gateway Timeout`은 게이트웨이가 상위 서버의 응답을 기다렸지만 정해진 시간 안에 받지 못한 경우다. 그래서 502는 응답을 받았지만 유효하지 않았고 504는 제때 응답을 받지 못했다는 차이가 있다. 503은 특정 요청의 응답이 잘못되거나 늦었다는 의미보다 서버가 지금 요청을 받을 준비가 되었는지를 표현하는 코드다.
 
-![클라이언트와 게이트웨이와 애플리케이션 서버 사이에서 발생하는 5xx 오류 위치](/assets/images/2026-11-09-http-methods-status-codes/http-5xx-failure-locations.svg)
+{% include interactive/flow-card.html flow='http_5xx' %}
 
 *그림 2. 500은 애플리케이션 처리 실패, 502는 게이트웨이가 받은 상위 서버 응답의 문제, 503은 일시적으로 요청을 처리할 수 없는 상태, 504는 게이트웨이가 상위 서버 응답을 제시간에 받지 못한 상황을 나타낸다.*
 

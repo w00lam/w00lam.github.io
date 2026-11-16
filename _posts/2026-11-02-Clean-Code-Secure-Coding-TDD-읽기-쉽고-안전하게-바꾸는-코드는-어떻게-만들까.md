@@ -97,7 +97,7 @@ void scoreResult() {
 
 TDD의 흐름은 기대 동작을 테스트로 작성하고 그 테스트를 통과하도록 구현한 뒤 내부 구조를 개선하고 다시 검증하는 순서로 이어진다. 학습 과정에서 이 단계를 보충 용어인 Red-Green-Refactor로도 정리했지만 오늘 활용한 원문은 테스트 우선 작성과 구현과 수정의 반복이라는 흐름으로 설명한다.
 
-![TDD에서 테스트 작성과 구현, 리팩토링, 재검증이 반복되는 흐름](/assets/images/2026-11-02-clean-code-secure-coding-tdd/tdd-cycle.svg)
+{% include interactive/flow-card.html flow='tdd_cycle' %}
 
 *그림 1. 기대 동작을 테스트로 먼저 표현하고 구현과 통과 여부를 확인한 뒤 내부 구조를 개선하고 다시 검증하는 흐름. 리팩토링은 테스트와 구분되는 내부 구조 개선 단계다.*
 

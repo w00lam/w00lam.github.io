@@ -76,7 +76,7 @@ Uniform Interface는 클라이언트와 서버가 일관된 인터페이스로 �
 
 이 방식의 장점은 클라이언트가 서버 내부 클래스나 데이터베이스 구조를 몰라도 약속된 인터페이스를 사용하게 한다는 데 있다. 반대로 너무 일반적인 인터페이스를 쓰면 특정 애플리케이션에 최적화된 호출보다 효율이 떨어질 수 있다는 trade-off도 있다.
 
-![REST API에서 Resource, URI, Representation이 연결되는 구조](/assets/images/2026-11-10-rest-api-web-server-was/rest-resource-uri-representation.svg)
+{% include interactive/flow-card.html flow='rest_resource' %}
 
 *그림 1. URI는 리소스를 식별하고 HTTP Method는 요청의 의미를 나타낸다. 서버는 리소스의 현재 상태를 Representation으로 만들어 응답한다.*
 
@@ -206,7 +206,7 @@ Nginx는 외부 요청을 어디로 전달할지 결정하고 HTTPS 연결을 �
 
 Nginx를 추가한다고 성능이 무조건 좋아지는 것은 아니다. 프록시 계층은 라우팅과 TLS 처리와 부하 분산에 도움을 주지만, 구성과 네트워크 홉과 운영 대상도 늘린다. 추가하기 전에 해결하려는 문제가 무엇인지부터 확인해야 한다.
 
-![Nginx와 Spring Boot 내장 Tomcat의 요청 처리 흐름](/assets/images/2026-11-10-rest-api-web-server-was/nginx-spring-boot-request-flow.svg)
+{% include interactive/flow-card.html flow='nginx_spring' %}
 
 *그림 2. Nginx와 Spring Boot를 함께 사용하는 경우의 예시다. Nginx는 Reverse Proxy로 요청을 전달하고, Tomcat과 Spring MVC는 애플리케이션 요청을 실행한다. 두 구성요소를 반드시 함께 사용해야 한다는 뜻은 아니다.*
 

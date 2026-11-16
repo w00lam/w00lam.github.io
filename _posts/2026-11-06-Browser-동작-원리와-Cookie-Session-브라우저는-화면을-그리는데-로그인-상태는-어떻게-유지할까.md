@@ -18,7 +18,7 @@ permalink: /posts/browser-cookie-session/
 
 브라우저는 서버에서 받은 HTML과 CSS를 그대로 화면에 올리지 않는다. HTML을 읽어 문서 구조를 만들고 CSS 규칙을 적용한 뒤 표시할 요소의 크기와 위치를 계산해 시각적인 결과를 그린다. 이미지나 글꼴처럼 더 필요한 자원이 있으면 그 요청도 이 흐름에 들어온다. 결국 응답은 해석과 계산을 거쳐 화면의 픽셀로 바뀐다.
 
-![브라우저가 웹 자원을 화면의 픽셀로 바꾸는 흐름](/assets/images/2026-11-06-browser-cookie-session/browser-rendering-flow.svg)
+{% include interactive/flow-card.html flow='browser_rendering' %}
 
 *그림 1. URL 입력 뒤 자원 요청과 응답, 문서 구조와 스타일 계산, 배치와 그리기를 거쳐 화면이 만들어지는 흐름이다.*
 
@@ -64,7 +64,7 @@ Cookie는 서버가 브라우저에 보내고 브라우저가 저장했다가 �
 
 RFC 6265는 Cookie와 `Set-Cookie` 헤더로 무상태에 가까운 HTTP 위에서 서버가 세션 상태를 유지하는 방식을 정의한다. [MDN의 Using HTTP cookies](https://developer.mozilla.org/en-US/docs/Web/HTTP/Guides/Cookies)도 브라우저가 쿠키를 저장했다가 이후 요청에 돌려보내고 서버가 세션 ID를 확인하는 기본 로그인 흐름을 설명한다.
 
-![Cookie와 서버 Session으로 로그인 상태를 이어가는 흐름](/assets/images/2026-11-06-browser-cookie-session/cookie-session-login-flow.svg)
+{% include interactive/flow-card.html flow='cookie_session' %}
 
 *그림 2. 브라우저에는 세션 ID가 저장되고 서버에는 사용자별 Session 상태가 저장되며 두 값이 세션 ID로 연결된다.*
 

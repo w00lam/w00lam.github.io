@@ -292,3 +292,1147 @@ xss:
           text: "단순 텍스트는 textContent 같은 안전한 DOM API로 출력한다."
         - status: info
           text: "HTML을 허용해야 한다면 Sanitization과 CSP를 함께 검토한다."
+
+oauth_code:
+  eyebrow: "Interactive flow"
+  title: "OAuth Authorization Code Grant 흐름"
+  summary: "브라우저 리다이렉트와 서버 간 토큰 교환을 분리해 인가 코드의 역할을 확인한다."
+  layout: six
+  actors:
+    - id: user
+      kind: "Resource Owner"
+      name: "User"
+      description: "로그인하고 애플리케이션의 권한 요청에 동의함"
+    - id: client
+      kind: "애플리케이션"
+      name: "Client"
+      description: "인가 요청을 만들고 코드를 토큰으로 교환함"
+    - id: auth_server
+      kind: "인가 서버"
+      name: "Authorization Server"
+      description: "로그인·동의를 처리하고 토큰을 발급함"
+    - id: resource_server
+      kind: "보호된 API"
+      name: "Resource Server"
+      description: "Access Token을 검증하고 사용자 정보를 제공함"
+  steps:
+    - title: "1. 인가 요청 준비"
+      from: "User"
+      to: "Client"
+      route_label: "Client가 사용자 대신 인가 요청을 시작한다."
+      active_actors: [user, client]
+      description: "Client는 state와 code_challenge를 포함해 Authorization Server로 보낼 요청을 준비한다."
+      payload: ["state", "code_challenge", "Redirect URI"]
+      outcomes:
+        - status: info
+          text: "사용자의 비밀번호는 Client에 전달하지 않는다."
+    - title: "2. 브라우저 리다이렉트"
+      from: "Client"
+      to: "Authorization Server"
+      route_label: "브라우저가 인가 요청을 Authorization Server로 전달한다."
+      active_actors: [client, auth_server]
+      description: "Authorization Server는 등록된 Redirect URI와 요청의 state·PKCE 값을 기준으로 로그인과 동의를 진행한다."
+      payload: ["인가 요청", "state", "code_challenge"]
+      outcomes:
+        - status: info
+          text: "State는 시작한 요청과 돌아온 응답을 연결한다."
+    - title: "3. Authorization Code 반환"
+      from: "Authorization Server"
+      to: "Client"
+      route_label: "동의가 끝나면 Redirect URI로 일회성에 가까운 Code를 돌려준다."
+      active_actors: [user, auth_server, client]
+      description: "브라우저가 받은 Authorization Code는 보호된 API를 호출하는 Access Token이 아니라 토큰 교환을 위한 중간 자격 증명이다."
+      payload: ["Redirect URI", "Authorization Code"]
+      outcomes:
+        - status: allow
+          text: "Client가 Code를 받았지만 아직 Resource Server를 호출할 수는 없다."
+    - title: "4. 서버 간 Code 교환"
+      from: "Client"
+      to: "Authorization Server"
+      route_label: "Client가 Code와 code_verifier를 서버 간 요청으로 교환한다."
+      active_actors: [client, auth_server]
+      description: "Authorization Server는 PKCE의 code_verifier를 비교하고 Code의 유효성과 Redirect URI를 확인한다."
+      payload: ["Authorization Code", "code_verifier"]
+      outcomes:
+        - status: reject
+          text: "검증에 실패하면 토큰을 발급하지 않는다."
+    - title: "5. Access Token 발급"
+      from: "Authorization Server"
+      to: "Client"
+      route_label: "검증을 통과한 Client에 Access Token을 발급한다."
+      active_actors: [auth_server, client]
+      description: "Code 교환이 끝나면 Client는 보호된 API를 호출할 수 있는 Access Token을 받는다."
+      payload: ["Access Token"]
+      outcomes:
+        - status: allow
+          text: "Authorization Code와 API 호출용 Access Token의 역할을 구분한다."
+    - title: "6. 보호된 API 요청"
+      from: "Client"
+      to: "Resource Server"
+      route_label: "Client가 Access Token을 Bearer 요청에 담아 보낸다."
+      active_actors: [client, resource_server]
+      description: "Resource Server는 토큰을 검증한 뒤 허용된 범위의 리소스만 제공한다."
+      payload: ["Bearer Access Token"]
+      outcomes:
+        - status: info
+          text: "Access Token은 보호된 API를 호출하는 자격 증명이다."
+    - title: "7. 사용자 정보 응답"
+      from: "Resource Server"
+      to: "Client"
+      route_label: "검증된 토큰의 범위에 맞는 사용자 정보를 반환한다."
+      active_actors: [client, resource_server]
+      description: "Client는 Resource Server가 반환한 리소스 표현을 사용해 사용자 화면이나 기능을 구성한다."
+      payload: ["사용자 정보", "리소스 표현"]
+      outcomes:
+        - status: allow
+          text: "허용된 범위의 리소스만 Client에 전달된다."
+
+jwt_structure:
+  eyebrow: "Interactive structure"
+  title: "JWT Header·Payload·Signature 구조"
+  summary: "디코딩할 수 있는 정보와 신뢰성을 확인해야 하는 정보를 나눠 본다."
+  actors:
+    - id: header
+      kind: "첫 번째 부분"
+      name: "Header"
+      description: "서명 알고리즘과 토큰 유형 같은 메타데이터를 담음"
+    - id: payload
+      kind: "두 번째 부분"
+      name: "Payload"
+      description: "sub·iss·exp 같은 Claim을 담음"
+    - id: signature
+      kind: "세 번째 부분"
+      name: "Signature"
+      description: "Header와 Payload의 무결성과 서명을 검증함"
+    - id: verifier
+      kind: "검증 경계"
+      name: "API Verifier"
+      description: "서명과 Claim, API 권한을 확인한 뒤 토큰을 신뢰함"
+  steps:
+    - title: "1. Header 확인"
+      from: "JWT"
+      to: "Header"
+      route_label: "첫 번째 점 앞의 부분에서 메타데이터를 읽는다."
+      active_actors: [header]
+      description: "Header에는 alg와 typ이 들어가며 서버는 허용할 알고리즘과 검증 키를 관리한다."
+      payload: ["alg: HS256", "typ: JWT"]
+      outcomes:
+        - status: info
+          text: "Header를 읽을 수 있다는 사실만으로 토큰을 신뢰할 수는 없다."
+    - title: "2. Payload 디코딩"
+      from: "JWT"
+      to: "Payload"
+      route_label: "두 번째 부분을 Base64URL로 디코딩해 Claim을 확인한다."
+      active_actors: [payload]
+      description: "Payload는 일반적인 서명 JWT에서 암호화되지 않으므로 외부에서 읽을 수 있고 민감정보를 넣지 않아야 한다."
+      payload: ["sub", "iss", "exp", "Base64URL"]
+      outcomes:
+        - status: warning
+          text: "Base64URL 인코딩은 암호화가 아니며 기밀성을 제공하지 않는다."
+    - title: "3. Signature 검증"
+      from: "Header + Payload"
+      to: "Signature"
+      route_label: "서버가 Header와 Payload에 대한 서명 또는 MAC을 검증한다."
+      active_actors: [header, payload, signature]
+      description: "Signature는 내용이 바뀌지 않았는지와 신뢰할 수 있는 발급자가 서명했는지를 확인하는 값이다."
+      payload: ["Header + Payload", "검증 키"]
+      outcomes:
+        - status: reject
+          text: "서명 검증 실패 → 토큰을 인증 정보로 사용하지 않는다."
+        - status: allow
+          text: "서명 검증 성공 → 다음 Claim 검증으로 진행한다."
+    - title: "4. Claim과 권한 검증"
+      from: "Signature"
+      to: "API Verifier"
+      route_label: "서명 뒤 iss·aud·exp와 API 권한을 순서대로 확인한다."
+      active_actors: [signature, verifier]
+      description: "서명만 맞는지 보지 않고 발급자·대상·만료 시각과 요청 권한까지 확인해야 토큰을 신뢰할 수 있다."
+      payload: ["iss", "aud", "exp", "API 권한"]
+      outcomes:
+        - status: allow
+          text: "모든 검증을 통과한 경우에만 보호된 요청을 처리한다."
+
+refresh_rotation:
+  eyebrow: "Interactive flow"
+  title: "Refresh Token Rotation과 재사용 거부"
+  summary: "R1을 사용해 R2를 발급한 뒤 폐기된 R1의 재제출을 탐지하는 흐름이다."
+  actors:
+    - id: client
+      kind: "토큰 보유자"
+      name: "Client"
+      description: "만료된 Access Token과 Refresh Token을 제출함"
+    - id: auth_server
+      kind: "검증 주체"
+      name: "Auth Server"
+      description: "Refresh Token의 만료·폐기·재사용을 확인함"
+    - id: token_pair
+      kind: "새 자격 증명"
+      name: "A2 + R2"
+      description: "정상 재발급으로 만들어지는 새 토큰 쌍"
+    - id: reuse_policy
+      kind: "보호 정책"
+      name: "Reuse Detection"
+      description: "이미 폐기된 Refresh Token의 재사용을 탐지함"
+  steps:
+    - title: "1. 만료와 R1 제출"
+      from: "Client"
+      to: "Auth Server"
+      route_label: "Access Token이 만료되면 Client가 Refresh Token R1을 제출한다."
+      active_actors: [client, auth_server]
+      description: "Refresh Token은 새 Access Token을 발급받기 위한 자격 증명이며 존재만으로 재발급이 허용되지는 않는다."
+      payload: ["Access Token 만료", "Refresh Token R1"]
+      outcomes:
+        - status: info
+          text: "서버는 R1의 유효 기간과 상태를 확인해야 한다."
+    - title: "2. R1 검증"
+      from: "Auth Server"
+      to: "Reuse Detection"
+      route_label: "서버가 만료·폐기·재사용 여부를 확인한다."
+      active_actors: [auth_server, reuse_policy]
+      description: "Rotation을 적용하려면 Refresh Token 상태와 현재 클라이언트에 연결된 토큰인지 서버가 관리해야 한다."
+      payload: ["만료 확인", "폐기 확인", "재사용 확인"]
+      outcomes:
+        - status: reject
+          text: "유효하지 않거나 이미 사용된 R1이면 발급을 중단한다."
+        - status: allow
+          text: "정상 R1이면 새 토큰 발급으로 진행한다."
+    - title: "3. 새 토큰 발급과 R1 폐기"
+      from: "Auth Server"
+      to: "A2 + R2"
+      route_label: "정상 R1에 대해 A2와 R2를 발급하고 기존 R1을 무효화한다."
+      active_actors: [auth_server, token_pair, reuse_policy]
+      description: "새 토큰을 발급하는 순간 기존 R1의 사용 가능 상태를 명시적으로 폐기해야 Rotation이 성립한다."
+      payload: ["Access Token A2", "Refresh Token R2", "R1 폐기"]
+      outcomes:
+        - status: allow
+          text: "정상 재발급 뒤 다음 Refresh Token은 R2가 된다."
+    - title: "4. 폐기된 R1 재사용"
+      from: "Client"
+      to: "Auth Server"
+      route_label: "공격자나 오래된 Client가 이미 폐기된 R1을 다시 제출한다."
+      active_actors: [client, auth_server, reuse_policy]
+      description: "R2를 발급받은 뒤 R1이 다시 제출되면 단순한 만료 여부가 아니라 토큰 재사용 사건으로 볼 수 있다."
+      payload: ["Refresh Token R1", "재사용 요청"]
+      outcomes:
+        - status: warning
+          text: "새 토큰을 발급했다는 사실만으로 이전 토큰이 자동 무효화되지는 않는다."
+    - title: "5. 재사용 거부와 세션 폐기"
+      from: "Reuse Detection"
+      to: "Client"
+      route_label: "서버가 재사용을 탐지하고 요청과 관련 토큰군을 거부한다."
+      active_actors: [auth_server, reuse_policy, client]
+      description: "정책에 따라 관련 토큰군이나 세션을 폐기해 탈취된 Refresh Token의 확산을 막는다."
+      payload: ["요청 거부", "토큰군 폐기", "세션 폐기"]
+      outcomes:
+        - status: reject
+          text: "폐기된 R1 재사용 → 재발급 거부"
+
+rest_resource:
+  eyebrow: "Interactive flow"
+  title: "REST API의 Resource·URI·Representation"
+  summary: "URI가 대상을 식별하고 HTTP Method가 의도를 나타내며 Representation이 현재 상태를 전달한다."
+  actors:
+    - id: client
+      kind: "요청 주체"
+      name: "Client"
+      description: "HTTP Method와 URI로 리소스 표현을 요청함"
+    - id: uri
+      kind: "식별자"
+      name: "URI"
+      description: "대상 Resource를 식별함"
+    - id: server
+      kind: "처리 주체"
+      name: "Server"
+      description: "요청 의미에 따라 Resource를 처리함"
+    - id: representation
+      kind: "응답 데이터"
+      name: "Representation"
+      description: "특정 시점의 Resource 상태를 표현함"
+  steps:
+    - title: "1. HTTP 요청 작성"
+      from: "Client"
+      to: "URI"
+      route_label: "Client가 GET /orders/123처럼 Method와 URI를 함께 보낸다."
+      active_actors: [client, uri]
+      description: "HTTP Method는 리소스에 어떤 동작을 요청하는지, URI는 어떤 대상을 가리키는지 나타낸다."
+      payload: ["GET", "/orders/123"]
+      outcomes:
+        - status: info
+          text: "Client가 서버 내부 클래스나 DB 구조를 알 필요는 없다."
+    - title: "2. Resource 식별"
+      from: "URI"
+      to: "Server"
+      route_label: "서버가 URI를 보고 123번 Order Resource를 식별한다."
+      active_actors: [uri, server]
+      description: "URI는 리소스 자체와 동일한 데이터가 아니라 요청 대상의 식별자 역할을 한다."
+      payload: ["Order Resource", "ID: 123"]
+      outcomes:
+        - status: allow
+          text: "요청 대상이 일관된 URI 규칙으로 식별된다."
+    - title: "3. Representation 생성"
+      from: "Server"
+      to: "Representation"
+      route_label: "서버가 리소스의 현재 상태를 JSON Representation으로 만든다."
+      active_actors: [server, representation]
+      description: "Representation은 Resource 그 자체가 아니라 특정 시점의 상태를 전달하는 데이터다."
+      payload: ["HTTP 200 OK", "JSON", "status: PAID"]
+      outcomes:
+        - status: info
+          text: "응답 표현과 서버 내부 저장 구조를 분리할 수 있다."
+    - title: "4. 응답 전달"
+      from: "Representation"
+      to: "Client"
+      route_label: "Client가 상태 표현을 받아 다음 동작을 결정한다."
+      active_actors: [representation, client]
+      description: "응답은 리소스의 현재 상태와 요청 처리 결과를 Client가 이해할 수 있는 형태로 전달한다."
+      payload: ["HTTP 200 OK", "JSON Representation"]
+      outcomes:
+        - status: allow
+          text: "Method·URI·Representation을 한 요청 흐름에서 함께 읽는다."
+
+nginx_spring:
+  eyebrow: "Interactive flow"
+  title: "Nginx와 Spring Boot 요청 처리 흐름"
+  summary: "Nginx는 전달을 담당하고 Tomcat과 Spring MVC는 애플리케이션 요청을 실행한다."
+  layout: six
+  actors:
+    - id: client
+      kind: "외부 요청"
+      name: "Client"
+      description: "HTTPS 요청을 보냄"
+    - id: nginx
+      kind: "Reverse Proxy"
+      name: "Nginx"
+      description: "TLS 종료·라우팅·전달을 담당함"
+    - id: tomcat
+      kind: "Servlet Container"
+      name: "Embedded Tomcat"
+      description: "HTTP 요청을 받을 실행 환경을 제공함"
+    - id: mvc
+      kind: "Front Controller"
+      name: "DispatcherServlet"
+      description: "Spring MVC의 요청 진입점으로 동작함"
+    - id: controller
+      kind: "웹 계층"
+      name: "Controller"
+      description: "요청을 매핑하고 응답 조합을 시작함"
+    - id: domain
+      kind: "애플리케이션 계층"
+      name: "Service → Repository → DB"
+      description: "비즈니스 규칙을 처리하고 저장소와 데이터베이스에 접근함"
+  steps:
+    - title: "1. 외부 HTTPS 요청"
+      from: "Client"
+      to: "Nginx"
+      route_label: "Client가 Nginx로 HTTPS Request를 보낸다."
+      active_actors: [client, nginx]
+      description: "앞단에 Nginx를 두는 구성에서는 외부 연결과 애플리케이션 전달을 분리할 수 있다."
+      payload: ["HTTPS Request"]
+      outcomes:
+        - status: info
+          text: "Nginx 없이 Embedded Tomcat이 직접 외부 요청을 받을 수도 있다."
+    - title: "2. Reverse Proxy 전달"
+      from: "Nginx"
+      to: "Embedded Tomcat"
+      route_label: "Nginx가 라우팅한 요청을 Spring Boot의 Tomcat으로 전달한다."
+      active_actors: [nginx, tomcat]
+      description: "Nginx는 TLS·정적 파일·라우팅·부하 분산을 담당할 수 있지만 비즈니스 규칙을 실행하지는 않는다."
+      payload: ["Reverse Proxy", "Routing"]
+      outcomes:
+        - status: info
+          text: "프록시 계층은 선택 가능한 구성 요소다."
+    - title: "3. Servlet 요청 진입"
+      from: "Embedded Tomcat"
+      to: "DispatcherServlet"
+      route_label: "Tomcat이 HTTP 요청을 DispatcherServlet에 연결한다."
+      active_actors: [tomcat, mvc]
+      description: "Tomcat은 Servlet Container로서 HTTP 처리 환경을 제공하고 Spring MVC 진입점으로 요청을 넘긴다."
+      payload: ["Servlet Request", "Spring MVC"]
+      outcomes:
+        - status: info
+          text: "컨테이너 처리와 애플리케이션 라우팅을 구분한다."
+    - title: "4. Controller 매핑"
+      from: "DispatcherServlet"
+      to: "Controller"
+      route_label: "DispatcherServlet이 요청을 매핑된 Controller로 전달한다."
+      active_actors: [mvc, controller]
+      description: "Controller는 요청을 받아 애플리케이션 계층에 필요한 작업을 요청하고 응답을 조합한다."
+      payload: ["요청 매핑", "Controller"]
+      outcomes:
+        - status: allow
+          text: "Spring MVC Front Controller 뒤에서 구체적인 Controller가 선택된다."
+    - title: "5. 비즈니스 처리와 저장"
+      from: "Controller"
+      to: "Service → Repository → DB"
+      route_label: "Controller가 Service를 거쳐 Repository와 Database 작업을 수행한다."
+      active_actors: [controller, domain]
+      description: "주문 조회나 권한 판단처럼 애플리케이션 의미를 이해해야 하는 로직은 이 계층에서 실행된다."
+      payload: ["비즈니스 규칙", "Repository", "Database"]
+      outcomes:
+        - status: allow
+          text: "요청 처리의 핵심은 Spring 애플리케이션 계층에서 수행된다."
+    - title: "6. 응답 역방향 전달"
+      from: "Controller"
+      to: "Client"
+      route_label: "처리 결과가 같은 경로를 거꾸로 지나 Client에 응답된다."
+      active_actors: [client, nginx, tomcat, mvc, controller]
+      description: "Controller가 만든 응답은 Tomcat과 필요하면 Nginx를 거쳐 외부 Client로 돌아간다."
+      payload: ["Response"]
+      outcomes:
+        - status: allow
+          text: "Nginx와 Spring Boot를 반드시 함께 사용해야 한다는 뜻은 아니다."
+
+http_methods:
+  eyebrow: "Interactive comparison"
+  title: "HTTP 메서드의 안전성과 멱등성"
+  summary: "안전성은 상태 변경 요청 여부이고, 멱등성은 의도한 효과를 반복해도 같은지의 기준이다."
+  layout: six
+  actors:
+    - id: get
+      kind: "조회"
+      name: "GET"
+      description: "리소스 표현 조회 · 안전 예 · 멱등 예"
+    - id: head
+      kind: "메타데이터"
+      name: "HEAD"
+      description: "GET과 같은 대상 · 본문 없음 · 안전 예"
+    - id: post
+      kind: "제출·처리"
+      name: "POST"
+      description: "데이터 제출 · 안전 아니오 · 멱등 아니오"
+    - id: put
+      kind: "생성·교체"
+      name: "PUT"
+      description: "지정한 상태로 맞춤 · 안전 아니오 · 멱등 예"
+    - id: patch
+      kind: "부분 변경"
+      name: "PATCH"
+      description: "변경 방식에 따라 멱등성이 조건부"
+    - id: delete
+      kind: "연결 제거"
+      name: "DELETE"
+      description: "리소스와 연결 제거 · 안전 아니오 · 멱등 예"
+  steps:
+    - title: "1. GET"
+      from: "GET"
+      to: "GET"
+      route_label: "리소스 표현을 조회한다."
+      active_actors: [get]
+      description: "GET은 서버 상태 변경을 요청하지 않으며 같은 요청을 반복해도 의도된 상태 효과가 같다."
+      payload: ["안전: 예", "멱등: 예"]
+      outcomes:
+        - status: allow
+          text: "조회 메서드"
+    - title: "2. HEAD"
+      from: "HEAD"
+      to: "HEAD"
+      route_label: "GET과 같은 대상의 메타데이터를 확인한다."
+      active_actors: [head]
+      description: "HEAD는 응답 본문 없이 GET과 같은 대상의 메타데이터를 확인하는 안전하고 멱등적인 요청이다."
+      payload: ["안전: 예", "멱등: 예", "본문 없음"]
+      outcomes:
+        - status: allow
+          text: "메타데이터 확인"
+    - title: "3. POST"
+      from: "POST"
+      to: "POST"
+      route_label: "데이터 제출이나 처리를 요청한다."
+      active_actors: [post]
+      description: "POST는 일반적으로 서버 상태를 변경하고 같은 요청을 반복했을 때 동일한 결과를 보장하지 않는다."
+      payload: ["안전: 아니오", "멱등: 아니오"]
+      outcomes:
+        - status: warning
+          text: "반복 요청의 효과를 API 설계에서 별도로 다뤄야 한다."
+    - title: "4. PUT"
+      from: "PUT"
+      to: "PUT"
+      route_label: "리소스 표현을 지정한 상태로 생성하거나 교체한다."
+      active_actors: [put]
+      description: "PUT은 안전하지 않지만 같은 표현을 반복해도 의도한 상태에 도달하는 멱등 요청으로 설계된다."
+      payload: ["안전: 아니오", "멱등: 예"]
+      outcomes:
+        - status: allow
+          text: "지정 상태로 맞추는 요청"
+    - title: "5. PATCH"
+      from: "PATCH"
+      to: "PATCH"
+      route_label: "리소스의 일부 변경을 적용한다."
+      active_actors: [patch]
+      description: "PATCH 자체는 멱등성을 보장하지 않으며 특정 값 설정인지 1씩 증가인지 구현한 변경 방식에 따라 결과가 달라진다."
+      payload: ["안전: 아니오", "멱등: 조건부"]
+      outcomes:
+        - status: warning
+          text: "메서드 이름만으로 멱등성을 판단하지 않는다."
+    - title: "6. DELETE"
+      from: "DELETE"
+      to: "DELETE"
+      route_label: "리소스와의 연결 제거를 요청한다."
+      active_actors: [delete]
+      description: "DELETE는 안전하지 않지만 첫 요청 뒤 의도한 리소스가 없는 상태가 유지된다면 멱등으로 볼 수 있다."
+      payload: ["안전: 아니오", "멱등: 예"]
+      outcomes:
+        - status: allow
+          text: "응답 코드가 같아야 한다는 뜻은 아니다."
+
+http_5xx:
+  eyebrow: "Interactive diagnosis"
+  title: "5xx 오류가 발생한 위치"
+  summary: "Client·Gateway·Application Server의 요청 경로에서 실패 지점과 의미를 함께 확인한다."
+  actors:
+    - id: client
+      kind: "요청 주체"
+      name: "Client"
+      description: "요청을 보내고 응답을 받음"
+    - id: gateway
+      kind: "전달 경계"
+      name: "Gateway"
+      description: "Reverse Proxy로 상위 서버에 요청을 전달함"
+    - id: application
+      kind: "처리 주체"
+      name: "Application Server"
+      description: "요청 처리와 응답 생성을 담당함"
+    - id: status
+      kind: "실패 결과"
+      name: "5xx Status"
+      description: "실패 지점에 따라 다른 처리 결과를 표현함"
+  steps:
+    - title: "1. 500 Internal Server Error"
+      from: "Application Server"
+      to: "5xx Status"
+      route_label: "애플리케이션 서버 내부의 예상하지 못한 처리 실패를 500으로 표현한다."
+      active_actors: [application, status]
+      description: "더 적절한 5xx가 없는 경우 애플리케이션 내부 처리 실패를 500으로 반환할 수 있다."
+      payload: ["500", "Internal Server Error"]
+      outcomes:
+        - status: reject
+          text: "애플리케이션 처리 실패"
+    - title: "2. 502 Bad Gateway"
+      from: "Gateway"
+      to: "5xx Status"
+      route_label: "Gateway가 상위 서버에서 유효하지 않은 응답을 받으면 502를 반환한다."
+      active_actors: [gateway, application, status]
+      description: "502는 게이트웨이가 응답을 받았지만 프로토콜이나 내용상 유효하게 해석하지 못한 상황이다."
+      payload: ["502", "유효하지 않은 상위 응답"]
+      outcomes:
+        - status: reject
+          text: "응답은 받았지만 해석할 수 없음"
+    - title: "3. 504 Gateway Timeout"
+      from: "Gateway"
+      to: "5xx Status"
+      route_label: "Gateway가 상위 서버의 응답을 제한 시간 안에 받지 못하면 504를 반환한다."
+      active_actors: [gateway, application, status]
+      description: "504는 502와 달리 상위 서버의 응답을 제때 받지 못해 기다림이 시간 제한을 넘은 상황이다."
+      payload: ["504", "Gateway Timeout"]
+      outcomes:
+        - status: warning
+          text: "응답을 받지 못함"
+    - title: "4. 503 Service Unavailable"
+      from: "Gateway"
+      to: "5xx Status"
+      route_label: "현재 요청을 처리할 준비가 되지 않은 상태를 503으로 표현한다."
+      active_actors: [client, gateway, application, status]
+      description: "503은 특정 구성 요소에 고정된 코드가 아니라 유지보수나 과부하처럼 일시적인 처리 불가 상태를 나타낸다."
+      payload: ["503", "Service Unavailable", "Retry-After"]
+      outcomes:
+        - status: warning
+          text: "게이트웨이에서도 반환될 수 있다."
+
+browser_rendering:
+  eyebrow: "Interactive flow"
+  title: "브라우저가 응답을 픽셀로 바꾸는 흐름"
+  summary: "자원 요청부터 DOM·스타일 계산, Layout·Paint를 거쳐 화면이 만들어지는 과정을 본다."
+  layout: six
+  actors:
+    - id: input
+      kind: "시작"
+      name: "URL Input"
+      description: "주소와 경로를 입력함"
+    - id: network
+      kind: "자원 확보"
+      name: "Request / Response"
+      description: "HTML·CSS·이미지 같은 자원을 주고받음"
+    - id: dom
+      kind: "문서 구조"
+      name: "HTML → DOM"
+      description: "HTML을 파싱해 문서 구조를 만듦"
+    - id: style
+      kind: "스타일 계산"
+      name: "CSS → Style"
+      description: "CSS를 파싱하고 계산된 스타일을 만듦"
+    - id: layout
+      kind: "표시 모델"
+      name: "Render → Layout"
+      description: "표시 대상의 크기와 위치를 계산함"
+    - id: paint
+      kind: "화면 출력"
+      name: "Paint → Pixels"
+      description: "색·글자·테두리를 그려 픽셀로 표시함"
+  steps:
+    - title: "1. URL 입력"
+      from: "URL Input"
+      to: "Request / Response"
+      route_label: "브라우저가 URL에 필요한 자원을 요청한다."
+      active_actors: [input, network]
+      description: "HTML뿐 아니라 CSS와 이미지·글꼴처럼 화면에 필요한 자원도 요청과 응답 흐름에 포함된다."
+      payload: ["URL", "HTML", "CSS", "이미지"]
+      outcomes:
+        - status: info
+          text: "HTML 전체 도착을 기다리지 않고 도착한 부분부터 파싱될 수 있다."
+    - title: "2. HTML 파싱"
+      from: "Request / Response"
+      to: "HTML → DOM"
+      route_label: "받은 HTML을 파싱해 DOM을 만든다."
+      active_actors: [network, dom]
+      description: "브라우저는 HTML을 그대로 화면에 올리는 대신 문서 구조로 해석한다."
+      payload: ["받은 HTML", "DOM"]
+      outcomes:
+        - status: info
+          text: "자원 응답과 문서 구조 생성을 구분한다."
+    - title: "3. CSS 계산"
+      from: "Request / Response"
+      to: "CSS → Style"
+      route_label: "CSS 규칙을 파싱해 계산된 스타일을 만든다."
+      active_actors: [network, style]
+      description: "CSS 파싱 결과는 각 표시 대상에 적용할 색·크기·배치 관련 스타일을 결정하는 입력이 된다."
+      payload: ["CSS", "계산된 스타일"]
+      outcomes:
+        - status: info
+          text: "DOM과 스타일 계산은 화면 표시를 위한 서로 다른 입력이다."
+    - title: "4. 렌더 트리와 Layout"
+      from: "HTML → DOM"
+      to: "Render → Layout"
+      route_label: "DOM과 계산된 스타일을 바탕으로 표시 대상과 크기·위치를 계산한다."
+      active_actors: [dom, style, layout]
+      description: "렌더 트리는 표시할 요소를 구성하고 Layout 단계는 화면에서 차지할 위치와 크기를 계산한다."
+      payload: ["Render Tree", "크기", "위치"]
+      outcomes:
+        - status: info
+          text: "브라우저 내부 단계는 이해를 돕기 위한 단순화된 모델이다."
+    - title: "5. Paint와 픽셀 표시"
+      from: "Render → Layout"
+      to: "Paint → Pixels"
+      route_label: "계산된 모델을 색·글자·테두리로 그려 화면에 표시한다."
+      active_actors: [layout, paint]
+      description: "Paint는 준비된 표시 대상에 시각적 표현을 적용하고 최종 화면 픽셀을 만든다."
+      payload: ["Layout", "Paint", "Pixels"]
+      outcomes:
+        - status: allow
+          text: "응답이 해석과 계산을 거쳐 화면으로 바뀐다."
+
+cookie_session:
+  eyebrow: "Interactive flow"
+  title: "Cookie와 Session으로 로그인 상태 유지"
+  summary: "브라우저는 세션 ID를 전달하고 서버는 그 ID로 사용자 상태를 조회한다."
+  actors:
+    - id: browser
+      kind: "클라이언트"
+      name: "Browser"
+      description: "로그인 요청과 이후 Cookie를 보냄"
+    - id: cookie
+      kind: "브라우저 저장소"
+      name: "Cookie"
+      description: "sessionId 같은 식별자를 저장함"
+    - id: server
+      kind: "상태 처리"
+      name: "Server"
+      description: "자격 증명을 확인하고 Session을 조회함"
+    - id: session
+      kind: "서버 저장소"
+      name: "Session Store"
+      description: "사용자별 로그인 상태를 보관함"
+  steps:
+    - title: "1. 로그인 요청"
+      from: "Browser"
+      to: "Server"
+      route_label: "Browser가 로그인 정보를 서버에 보낸다."
+      active_actors: [browser, server]
+      description: "HTTP 요청 자체는 이전 요청의 사용자 상태를 자동으로 포함하지 않으므로 로그인 절차가 필요하다."
+      payload: ["로그인 정보"]
+      outcomes:
+        - status: info
+          text: "서버가 자격 증명을 확인한다."
+    - title: "2. Session 상태 저장"
+      from: "Server"
+      to: "Session Store"
+      route_label: "서버가 로그인 상태와 사용자 식별 정보를 Session에 저장한다."
+      active_actors: [server, session]
+      description: "Session은 여러 요청에 걸친 사용자 상태를 서버가 관리하는 저장 방식이다."
+      payload: ["로그인 상태", "사용자 식별 정보"]
+      outcomes:
+        - status: allow
+          text: "Session ID와 연결할 서버 측 상태가 만들어진다."
+    - title: "3. Set-Cookie 응답"
+      from: "Server"
+      to: "Cookie"
+      route_label: "서버가 세션 ID를 Set-Cookie로 Browser에 저장하게 한다."
+      active_actors: [server, browser, cookie]
+      description: "일반적인 세션 로그인에서는 로그인 정보 전체가 아니라 Session을 찾을 식별자를 Cookie에 담는다."
+      payload: ["Set-Cookie", "sessionId=abc..."]
+      outcomes:
+        - status: info
+          text: "브라우저에는 세션 ID만 저장된다."
+    - title: "4. 이후 요청에 Cookie 전송"
+      from: "Cookie"
+      to: "Server"
+      route_label: "조건에 맞는 이후 요청에 Browser가 sessionId Cookie를 포함한다."
+      active_actors: [browser, cookie, server]
+      description: "Cookie는 브라우저가 저장했다가 조건에 맞는 요청에 다시 보내는 데이터다."
+      payload: ["Cookie: sessionId=abc..."]
+      outcomes:
+        - status: info
+          text: "Cookie와 Session은 같은 저장 방식이 아니다."
+    - title: "5. Session ID 조회"
+      from: "Server"
+      to: "Session Store"
+      route_label: "서버가 받은 세션 ID로 사용자 상태를 찾아 요청을 처리한다."
+      active_actors: [server, session]
+      description: "서버는 Cookie의 식별자를 Session Store의 상태와 연결해 여러 요청을 한 로그인 흐름으로 묶는다."
+      payload: ["sessionId", "로그인 상태"]
+      outcomes:
+        - status: allow
+          text: "세션 ID로 확인된 사용자 상태를 요청 처리에 사용한다."
+
+observability:
+  eyebrow: "Interactive comparison"
+  title: "관측 도구가 답하는 운영 질문"
+  summary: "Health·Metrics·Trace ID·로그는 서로 다른 운영 질문에 답하며 함께 읽어야 흐름이 연결된다."
+  actors:
+    - id: health
+      kind: "현재 상태"
+      name: "Health"
+      description: "지금 요청을 받을 수 있는지 확인함"
+    - id: metrics
+      kind: "시간에 따른 수치"
+      name: "Metrics"
+      description: "지연과 사용량의 변화를 보여 줌"
+    - id: trace
+      kind: "요청 흐름 식별자"
+      name: "Trace ID"
+      description: "하나의 요청이 거친 경로를 연결함"
+    - id: logs
+      kind: "이벤트 기록"
+      name: "Logs"
+      description: "무슨 일이 언제 발생했는지 기록함"
+  steps:
+    - title: "1. Health 확인"
+      from: "Health"
+      to: "Health"
+      route_label: "현재 서비스가 요청을 받을 준비가 되었는지 확인한다."
+      active_actors: [health]
+      description: "Health는 특정 시점의 현재 상태를 확인하는 질문에 답한다."
+      payload: ["현재 상태", "Ready 여부"]
+      outcomes:
+        - status: info
+          text: "지금 요청을 받을 수 있는가?"
+    - title: "2. Metrics 확인"
+      from: "Metrics"
+      to: "Metrics"
+      route_label: "시간에 따른 지연과 사용량의 변화를 확인한다."
+      active_actors: [metrics]
+      description: "Metrics는 p95처럼 여러 요청의 지연 분포나 사용량 변화를 요약한다."
+      payload: ["p95", "사용량", "시간 변화"]
+      outcomes:
+        - status: info
+          text: "지연과 사용량은 어떻게 변했는가?"
+    - title: "3. Trace ID 연결"
+      from: "Trace ID"
+      to: "Trace ID"
+      route_label: "같은 Trace ID로 서비스와 DB 호출을 한 요청으로 묶는다."
+      active_actors: [trace]
+      description: "Trace ID는 요청이 어느 컴포넌트를 거쳤는지 찾는 식별자이며 지연 분포 자체를 대신하지 않는다."
+      payload: ["Trace ID", "서비스 호출", "DB 호출"]
+      outcomes:
+        - status: info
+          text: "이 요청은 어디를 거쳤는가?"
+    - title: "4. 로그 사건 확인"
+      from: "Logs"
+      to: "Logs"
+      route_label: "오류·상태 변화·처리 결과를 이벤트 기록으로 확인한다."
+      active_actors: [logs]
+      description: "로그는 특정 시점의 사건을 남기며 여러 인스턴스의 기록을 모아 Trace ID와 함께 검색할 수 있다."
+      payload: ["오류 메시지", "상태 변화", "처리 결과"]
+      outcomes:
+        - status: info
+          text: "무슨 일이 언제 기록되었는가?"
+
+db_redis_lock:
+  eyebrow: "Interactive structure"
+  title: "수평 확장과 DB 연결 상한·공유 Redis 락"
+  summary: "DB 연결 수는 인스턴스별 풀이 합산되고 분산 락 상태는 공통 Redis에서 공유된다."
+  actors:
+    - id: app_a
+      kind: "애플리케이션"
+      name: "App Instance A"
+      description: "커넥션 풀 최대 N을 보유함"
+    - id: app_b
+      kind: "애플리케이션"
+      name: "App Instance B"
+      description: "독립된 커넥션 풀 최대 N을 보유함"
+    - id: db
+      kind: "데이터베이스"
+      name: "DB"
+      description: "모든 인스턴스 연결 상한을 함께 부담함"
+    - id: redis
+      kind: "공유 자원"
+      name: "Common Redis"
+      description: "모든 인스턴스가 확인하는 분산 락 상태를 저장함"
+  steps:
+    - title: "1. Instance A의 DB 연결"
+      from: "App Instance A"
+      to: "DB"
+      route_label: "Instance A의 커넥션 풀이 DB 연결 상한을 사용한다."
+      active_actors: [app_a, db]
+      description: "인스턴스 하나의 풀 최대가 N이면 해당 인스턴스가 사용할 수 있는 연결 수의 상한이 된다."
+      payload: ["Pool max N"]
+      outcomes:
+        - status: info
+          text: "인스턴스별 풀이 따로 존재한다."
+    - title: "2. Instance B의 DB 연결"
+      from: "App Instance B"
+      to: "DB"
+      route_label: "Instance B의 풀도 같은 DB의 전체 연결 상한에 더해진다."
+      active_actors: [app_b, db]
+      description: "앱을 수평 확장하면 DB가 부담하는 연결 수는 대략 N × 인스턴스 수로 합산된다."
+      payload: ["Pool max N", "N × instance count"]
+      outcomes:
+        - status: warning
+          text: "인스턴스 증설은 DB 연결 비용도 함께 바꾼다."
+    - title: "3. 공통 Redis에 락 저장"
+      from: "App Instance A"
+      to: "Common Redis"
+      route_label: "여러 인스턴스가 같은 키의 분산 락 상태를 Redis에 기록한다."
+      active_actors: [app_a, app_b, redis]
+      description: "로컬 메모리가 아니라 공통 Redis에 락을 두어 Instance A와 B가 같은 상태를 확인하게 한다."
+      payload: ["공유 Lock Key", "분산 락 상태"]
+      outcomes:
+        - status: allow
+          text: "모든 인스턴스가 같은 락 상태를 볼 수 있다."
+    - title: "4. 락 획득 여부 확인"
+      from: "Common Redis"
+      to: "App Instance B"
+      route_label: "각 인스턴스가 Redis의 같은 키를 확인하고 획득 여부를 판단한다."
+      active_actors: [app_a, app_b, redis]
+      description: "Redis를 공통으로 사용한다고 모든 상태가 자동 공유되는 것은 아니며 공유해야 할 상태만 공통 자원에 둬야 한다."
+      payload: ["같은 키 확인", "획득 성공·실패"]
+      outcomes:
+        - status: info
+          text: "공유 범위와 보관 위치를 먼저 정한다."
+
+functional_pipeline:
+  eyebrow: "Interactive flow"
+  title: "filter·map·reduce 데이터 처리 흐름"
+  summary: "여러 항목을 선택하고 변환한 뒤 하나의 결과로 누적한다."
+  actors:
+    - id: input
+      kind: "입력"
+      name: "Input Data"
+      description: "여러 항목의 목록을 제공함"
+    - id: filter
+      kind: "선택"
+      name: "filter"
+      description: "조건에 맞는 항목만 남김"
+    - id: map
+      kind: "변환"
+      name: "map"
+      description: "각 항목을 다른 값으로 바꿈"
+    - id: reduce
+      kind: "누적"
+      name: "reduce"
+      description: "여러 항목을 하나의 결과로 모음"
+  steps:
+    - title: "1. 입력 목록"
+      from: "Input Data"
+      to: "filter"
+      route_label: "여러 항목의 목록을 조건 선택 단계로 넘긴다."
+      active_actors: [input, filter]
+      description: "전체 데이터에서 먼저 어떤 항목을 처리할지 선택한다."
+      payload: ["여러 항목", "목록"]
+      outcomes:
+        - status: info
+          text: "다음 단계는 선택된 항목만 받는다."
+    - title: "2. 조건에 맞게 선택"
+      from: "filter"
+      to: "map"
+      route_label: "filter가 조건에 맞는 항목만 map으로 전달한다."
+      active_actors: [filter, map]
+      description: "filter는 값을 변환하지 않고 처리 대상의 범위를 줄이는 역할을 한다."
+      payload: ["조건", "선택된 목록"]
+      outcomes:
+        - status: allow
+          text: "예시 결과: [5, 7]"
+    - title: "3. 각 항목 변환"
+      from: "map"
+      to: "reduce"
+      route_label: "map이 선택된 항목을 각각 다른 값으로 바꾼다."
+      active_actors: [map, reduce]
+      description: "map은 여러 항목 각각에 같은 변환 함수를 적용해 새로운 목록을 만든다."
+      payload: ["변환 함수", "변환된 목록"]
+      outcomes:
+        - status: allow
+          text: "예시 결과: [9, 16]"
+    - title: "4. 하나의 결과로 누적"
+      from: "reduce"
+      to: "Result"
+      route_label: "reduce가 여러 값을 하나의 결과로 합친다."
+      active_actors: [reduce]
+      description: "reduce는 누적 규칙에 따라 목록을 하나의 값으로 접어 전체 처리 흐름을 마무리한다."
+      payload: ["누적 규칙", "결과: 10"]
+      outcomes:
+        - status: allow
+          text: "선택·변환·누적의 역할이 분리된다."
+
+devops_feedback:
+  eyebrow: "Interactive structure"
+  title: "Agile·지속적 통합·DevOps의 피드백"
+  summary: "개발과 운영은 한쪽이 끝난 뒤 넘겨받는 순서가 아니라 양방향 피드백으로 연결된다."
+  actors:
+    - id: development
+      kind: "변경 생성"
+      name: "Development"
+      description: "기능과 변경을 만듦"
+    - id: operations
+      kind: "운영 관점"
+      name: "Operations"
+      description: "운영 중 문제와 요구를 공유함"
+    - id: agile
+      kind: "연관 실천"
+      name: "Agile"
+      description: "짧은 주기와 피드백으로 다음 작업을 조정함"
+    - id: ci
+      kind: "연관 실천"
+      name: "Continuous Integration"
+      description: "초기부터 반복 통합하고 품질을 확인함"
+  steps:
+    - title: "1. 개발 변경"
+      from: "Development"
+      to: "Operations"
+      route_label: "개발에서 만든 변경과 배포가 운영으로 이어진다."
+      active_actors: [development, operations]
+      description: "DevOps는 개발과 운영을 별도의 인수인계 단계로 나누기보다 변경과 운영을 연결한다."
+      payload: ["기능", "변경", "배포"]
+      outcomes:
+        - status: info
+          text: "운영은 개발이 끝난 뒤 시작되는 별도 단계가 아니다."
+    - title: "2. 운영 피드백"
+      from: "Operations"
+      to: "Development"
+      route_label: "운영 중 발견한 문제와 요구를 다음 개발에 전달한다."
+      active_actors: [operations, development]
+      description: "양방향 피드백은 실제 운영 조건을 다음 구현과 배포 판단에 반영하게 한다."
+      payload: ["운영 문제", "요구", "피드백"]
+      outcomes:
+        - status: allow
+          text: "개발과 운영의 협업이 반복된다."
+    - title: "3. Agile과 연결"
+      from: "Agile"
+      to: "Development"
+      route_label: "짧은 개발 주기와 피드백으로 다음 작업을 조정한다."
+      active_actors: [agile, development]
+      description: "Agile은 DevOps와 연관되지만 DevOps 전체와 같은 개념이거나 먼저 끝나는 단계는 아니다."
+      payload: ["짧은 주기", "피드백", "우선순위 조정"]
+      outcomes:
+        - status: info
+          text: "관련은 있지만 동일한 개념은 아니다."
+    - title: "4. 지속적 통합과 연결"
+      from: "Continuous Integration"
+      to: "Development"
+      route_label: "초기부터 반복 통합하고 품질을 확인해 빠른 피드백을 얻는다."
+      active_actors: [ci, development]
+      description: "지속적 통합은 DevOps와 연결되는 실천이지만 DevOps 전체를 뜻하지는 않는다."
+      payload: ["반복 통합", "품질 확인", "빠른 피드백"]
+      outcomes:
+        - status: info
+          text: "서로 연결되지만 순차적으로 한 번씩 밟는 단계는 아니다."
+
+agile_scrum:
+  eyebrow: "Interactive flow"
+  title: "Agile과 Scrum의 반복 흐름"
+  summary: "Product Backlog에서 Sprint와 피드백을 거쳐 다음 작업을 조정한다."
+  actors:
+    - id: product_backlog
+      kind: "제품 전체"
+      name: "Product Backlog"
+      description: "제품 요구사항과 우선순위를 담음"
+    - id: sprint_backlog
+      kind: "이번 주기"
+      name: "Sprint Backlog"
+      description: "이번 Sprint에 진행할 작업을 담음"
+    - id: sprint
+      kind: "반복 개발"
+      name: "Sprint"
+      description: "짧은 주기 동안 실행 가능한 결과물을 만듦"
+    - id: review
+      kind: "검토"
+      name: "Review"
+      description: "결과물을 보고 고객 피드백을 확인함"
+    - id: next_work
+      kind: "조정"
+      name: "Next Work"
+      description: "피드백을 반영해 다음 작업 우선순위를 정함"
+  steps:
+    - title: "1. Product Backlog 정리"
+      from: "Product Backlog"
+      to: "Sprint Backlog"
+      route_label: "제품 전체 요구사항 중 이번 Sprint 작업을 선택한다."
+      active_actors: [product_backlog, sprint_backlog]
+      description: "Product Backlog는 제품 전체의 요구사항과 우선순위를 담고 Sprint Backlog는 이번 주기에 실제 진행할 일을 담는다."
+      payload: ["요구사항", "우선순위", "Sprint 목표"]
+      outcomes:
+        - status: info
+          text: "두 Backlog의 범위를 구분한다."
+    - title: "2. Sprint 실행"
+      from: "Sprint Backlog"
+      to: "Sprint"
+      route_label: "선택한 작업으로 짧은 반복 개발 주기를 진행한다."
+      active_actors: [sprint_backlog, sprint]
+      description: "팀은 Sprint 목표에 필요한 작업을 진행하고 실행 가능한 결과물을 만든다."
+      payload: ["Sprint 목표", "진행 작업", "결과물"]
+      outcomes:
+        - status: allow
+          text: "짧은 주기 안에서 결과물을 만든다."
+    - title: "3. 결과물 검토"
+      from: "Sprint"
+      to: "Review"
+      route_label: "Sprint 결과물을 고객과 함께 검토한다."
+      active_actors: [sprint, review]
+      description: "검토는 모든 요구를 즉시 바꾸는 단계가 아니라 실제 결과에 대한 피드백을 확인하는 단계다."
+      payload: ["실행 가능한 결과물", "고객 피드백"]
+      outcomes:
+        - status: info
+          text: "Burn Down Chart는 시간과 남은 작업량을 확인하는 보조 도구다."
+    - title: "4. 다음 작업 조정"
+      from: "Review"
+      to: "Next Work"
+      route_label: "검토한 피드백으로 다음 작업의 우선순위를 조정한다."
+      active_actors: [review, next_work]
+      description: "피드백을 Product Backlog에 반영하고 다음 Sprint에서 진행할 작업을 다시 정한다."
+      payload: ["피드백 반영", "우선순위 조정"]
+      outcomes:
+        - status: allow
+          text: "다음 반복 주기로 이어진다."
+    - title: "5. 다음 Sprint로 반복"
+      from: "Next Work"
+      to: "Product Backlog"
+      route_label: "조정한 다음 작업을 다시 제품 Backlog와 Sprint 계획에 반영한다."
+      active_actors: [next_work, product_backlog, sprint_backlog]
+      description: "Agile과 Scrum의 핵심은 짧은 결과물과 피드백을 기준으로 다음 작업을 조정하는 반복이다."
+      payload: ["다음 Sprint", "새 우선순위"]
+      outcomes:
+        - status: allow
+          text: "계획을 한 번 고정하는 대신 학습 결과를 다음 주기에 반영한다."
+
+object_dependency:
+  eyebrow: "Interactive structure"
+  title: "객체에 모은 책임과 추상 타입 의존성"
+  summary: "관련 데이터와 기능은 객체에 모으고 고수준 정책은 추상 타입을 바라보게 한다."
+  actors:
+    - id: book
+      kind: "응집된 객체"
+      name: "Book"
+      description: "제목·저자·페이지와 읽기·예약 책임을 함께 관리함"
+    - id: service
+      kind: "고수준 정책"
+      name: "LibraryService"
+      description: "도서 처리 정책을 수행함"
+    - id: abstraction
+      kind: "추상 타입"
+      name: "BookReader"
+      description: "read() 메시지로 구현체와 정책 사이를 분리함"
+    - id: implementation
+      kind: "구현체"
+      name: "Memory / File"
+      description: "같은 추상 메시지에 저장 방식별로 응답함"
+  steps:
+    - title: "1. 책임을 Book에 모으기"
+      from: "Book"
+      to: "Book"
+      route_label: "상태와 그 상태를 다루는 기능을 같은 객체 경계에 둔다."
+      active_actors: [book]
+      description: "관련 데이터와 기능을 함께 관리하면 변경될 책임과 객체 사이의 관계를 따라 코드를 읽기 쉬워진다."
+      payload: ["제목·저자·페이지", "읽기", "예약"]
+      outcomes:
+        - status: allow
+          text: "응집도를 높이고 관련 변경을 가까이 둔다."
+    - title: "2. 고수준 정책의 추상 의존"
+      from: "LibraryService"
+      to: "BookReader"
+      route_label: "LibraryService가 구체 클래스 대신 BookReader 추상 타입에 의존한다."
+      active_actors: [service, abstraction]
+      description: "고수준 정책과 저수준 구현 사이에 추상 타입을 두면 구현 교체가 정책 코드로 번지는 범위를 줄일 수 있다."
+      payload: ["고수준 정책", "read()", "추상 타입"]
+      outcomes:
+        - status: info
+          text: "의존성의 방향을 구체 구현에서 추상 계약 쪽으로 둔다."
+    - title: "3. 구현체 선택"
+      from: "BookReader"
+      to: "Memory / File"
+      route_label: "같은 read() 메시지를 Memory와 File 구현체가 각 방식으로 처리한다."
+      active_actors: [abstraction, implementation]
+      description: "구현체가 바뀌어도 고수준 정책은 BookReader라는 같은 메시지와 계약을 사용할 수 있다."
+      payload: ["Memory", "File", "같은 메시지"]
+      outcomes:
+        - status: allow
+          text: "구체 구현에 대한 결합도를 낮춘다."
+
+tdd_cycle:
+  eyebrow: "Interactive flow"
+  title: "TDD의 테스트·구현·리팩토링·재검증"
+  summary: "기대 동작을 먼저 표현하고 구현한 뒤 내부 구조를 개선하고 다시 검증한다."
+  actors:
+    - id: test
+      kind: "기대 표현"
+      name: "Test"
+      description: "기대 입력과 결과를 코드로 표현함"
+    - id: implementation
+      kind: "동작 구현"
+      name: "Implementation"
+      description: "테스트를 통과하도록 기능을 작성함"
+    - id: refactoring
+      kind: "구조 개선"
+      name: "Refactoring"
+      description: "외부 동작을 유지하며 내부 구조를 개선함"
+    - id: verification
+      kind: "회귀 확인"
+      name: "Re-verification"
+      description: "기존 기대 동작이 계속 유지되는지 확인함"
+  steps:
+    - title: "1. 테스트 작성"
+      from: "Test"
+      to: "Test"
+      route_label: "기대 입력과 결과를 테스트로 먼저 표현한다."
+      active_actors: [test]
+      description: "테스트는 단순한 오류 검출을 넘어 다른 개발자가 기대 동작을 파악하는 문서 역할도 한다."
+      payload: ["입력", "기대 결과"]
+      outcomes:
+        - status: info
+          text: "개발의 기준을 코드로 남긴다."
+    - title: "2. 구현"
+      from: "Test"
+      to: "Implementation"
+      route_label: "테스트를 통과하도록 필요한 동작을 구현한다."
+      active_actors: [test, implementation]
+      description: "구현은 테스트가 표현한 기대 결과를 만족하도록 작성하며 새 동작의 기준을 명확히 한다."
+      payload: ["기능 코드", "테스트 통과"]
+      outcomes:
+        - status: allow
+          text: "기대 동작이 실행 가능한 코드가 된다."
+    - title: "3. 리팩토링"
+      from: "Implementation"
+      to: "Refactoring"
+      route_label: "외부 동작을 바꾸지 않고 내부 구조를 개선한다."
+      active_actors: [implementation, refactoring]
+      description: "리팩토링은 TDD와 같은 개념이 아니라 TDD 사이클 안에서 수행되는 구조 개선 단계다."
+      payload: ["중복 제거", "구조 개선", "동작 유지"]
+      outcomes:
+        - status: info
+          text: "새 동작 추가와 내부 구조 개선을 구분한다."
+    - title: "4. 재검증"
+      from: "Refactoring"
+      to: "Re-verification"
+      route_label: "같은 테스트를 다시 실행해 기존 기대 동작을 확인한다."
+      active_actors: [refactoring, verification, test]
+      description: "리팩토링 후에도 테스트가 같은 결과를 요구하므로 변경 전후의 외부 동작을 비교할 수 있다."
+      payload: ["회귀 테스트", "기존 기대 동작"]
+      outcomes:
+        - status: allow
+          text: "검증이 끝나면 다음 동작의 테스트 작성으로 다시 이어진다."
