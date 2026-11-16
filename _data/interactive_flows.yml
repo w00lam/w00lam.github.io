@@ -14317,3 +14317,321 @@ pr_actions_ci:
       outcomes:
         - status: allow
           text: "검증된 변경만 기본 브랜치와 배포 흐름에 들어간다."
+
+bst_insertion_order:
+  eyebrow: "Interactive comparison"
+  title: "BST 삽입 순서와 탐색 경로"
+  summary: "같은 키 집합도 삽입 순서에 따라 균형과 탐색 비교 횟수가 달라진다."
+  actors:
+    - id: values
+      kind: "입력"
+      name: "Insertion Order"
+      description: "BST에 순서대로 삽입할 키들"
+    - id: root
+      kind: "비교 시작"
+      name: "Root Node"
+      description: "검색 경로의 첫 번째 비교 노드"
+    - id: path
+      kind: "탐색 경로"
+      name: "Left / Right Path"
+      description: "키 비교 결과에 따라 내려가는 노드 경로"
+    - id: result
+      kind: "비용"
+      name: "Comparisons / Moves"
+      description: "탐색에 필요한 비교와 이동 횟수"
+  steps:
+    - title: "1. 삽입 순서 선택"
+      from: "Insertion Order"
+      to: "Root Node"
+      route_label: "30·20·10처럼 한 방향으로 삽입하거나 20·10·30처럼 양쪽으로 나눈다."
+      active_actors: [values, root]
+      description: "키 집합이 같아도 삽입 순서가 트리 모양을 결정한다."
+      payload: ["30,20,10", "20,10,30", "root"]
+      outcomes:
+        - status: info
+          text: "BST의 평균 탐색 비용은 트리 높이에 영향을 받는다."
+    - title: "2. 키 비교 이동"
+      from: "Root Node"
+      to: "Left / Right Path"
+      route_label: "찾는 키가 작으면 왼쪽, 크면 오른쪽 자식으로 이동하며 비교한다."
+      active_actors: [root, path]
+      description: "균형 트리는 경로가 짧고 한쪽으로 치우친 트리는 선형 구조에 가까워진다."
+      payload: ["target 10", "<", ">", "child"]
+      outcomes:
+        - status: allow
+          text: "탐색 경로가 BST의 정렬 불변식을 따른다."
+    - title: "3. 비용 비교"
+      from: "Left / Right Path"
+      to: "Comparisons / Moves"
+      route_label: "도달한 경로의 비교·이동 횟수로 삽입 순서의 탐색 비용 차이를 확인한다."
+      active_actors: [path, result, values]
+      description: "모양이 균형에 가까울수록 탐색 높이를 줄일 수 있다."
+      payload: ["height", "comparison count", "search cost"]
+      outcomes:
+        - status: allow
+          text: "삽입 순서가 자료구조 성능에 직접 영향을 준다."
+
+bst_delete_two_children:
+  eyebrow: "Interactive flow"
+  title: "BST 자식 둘인 노드 삭제"
+  summary: "삭제 대상의 오른쪽 서브트리에서 후속자 후보를 찾아 대체하고 연결을 다시 조정한다."
+  actors:
+    - id: target
+      kind: "삭제 대상"
+      name: "Target Node 50"
+      description: "왼쪽과 오른쪽 자식을 모두 가진 삭제 대상"
+    - id: right
+      kind: "후속자 탐색"
+      name: "Right Subtree"
+      description: "삭제 대상보다 큰 값들이 있는 오른쪽 서브트리"
+    - id: successor
+      kind: "대체 키"
+      name: "Minimum Successor 60"
+      description: "오른쪽 서브트리의 최솟값으로 대체 후보가 되는 노드"
+    - id: tree
+      kind: "재연결"
+      name: "Reconnected BST"
+      description: "대체 키와 자식 연결을 반영한 최종 트리"
+  steps:
+    - title: "1. 두 자식 확인"
+      from: "Target Node 50"
+      to: "Right Subtree"
+      route_label: "삭제 대상에 왼쪽·오른쪽 자식이 모두 있어 오른쪽 서브트리의 후속자를 찾는다."
+      active_actors: [target, right]
+      description: "자식이 둘인 노드는 바로 한쪽 자식으로 대체할 수 없다."
+      payload: ["target 50", "left child", "right child"]
+      outcomes:
+        - status: info
+          text: "삭제 후에도 BST 정렬 조건을 유지해야 한다."
+    - title: "2. 최솟값 선택"
+      from: "Right Subtree"
+      to: "Minimum Successor 60"
+      route_label: "오른쪽 서브트리에서 가장 작은 값 60을 후속자 후보로 선택한다."
+      active_actors: [right, successor]
+      description: "후속자는 삭제 대상보다 크면서 오른쪽 영역에서 가장 가까운 값이다."
+      payload: ["successor", "minimum", "value 60"]
+      outcomes:
+        - status: allow
+          text: "대체 키가 왼쪽·오른쪽 정렬 조건을 만족할 수 있다."
+    - title: "3. 연결 조정"
+      from: "Minimum Successor 60"
+      to: "Reconnected BST"
+      route_label: "50의 위치를 60으로 대체하고 기존 60 노드의 자식 연결을 다시 잇는다."
+      active_actors: [successor, tree, target]
+      description: "대체 노드가 원래 위치에서 빠지면서 생기는 빈 연결도 처리해야 한다."
+      payload: ["replace", "unlink", "reconnect"]
+      outcomes:
+        - status: allow
+          text: "삭제 후에도 BST의 정렬 불변식이 유지된다."
+
+hash_collision_resize:
+  eyebrow: "Interactive flow"
+  title: "Hash 충돌과 리사이징"
+  summary: "서로 다른 키가 같은 버킷에 충돌하면 충돌을 처리하고 용량이 커지면 버킷 기준으로 다시 배치한다."
+  actors:
+    - id: keys
+      kind: "입력"
+      name: "Keys 1, 6, 11"
+      description: "모듈러 해시에서 같은 나머지를 만들 수 있는 키들"
+    - id: bucket
+      kind: "저장 위치"
+      name: "Hash Buckets"
+      description: "해시 결과를 기준으로 키를 저장하는 배열 슬롯"
+    - id: collision
+      kind: "충돌 처리"
+      name: "Collision Chain / Probe"
+      description: "같은 버킷에 들어온 여러 키를 구분하는 구조"
+    - id: resize
+      kind: "확장"
+      name: "Resize + Rehash"
+      description: "버킷 수를 늘리고 모든 키의 위치를 다시 계산하는 작업"
+  steps:
+    - title: "1. 버킷 계산"
+      from: "Keys 1, 6, 11"
+      to: "Hash Buckets"
+      route_label: "hash(key) % bucketCount로 각 키가 들어갈 버킷 위치를 계산한다."
+      active_actors: [keys, bucket]
+      description: "서로 다른 키도 버킷 수가 작으면 같은 위치를 가리킬 수 있다."
+      payload: ["hash", "% 5", "bucket index"]
+      outcomes:
+        - status: info
+          text: "해시 함수가 같아도 버킷 수가 위치 분포를 바꾼다."
+    - title: "2. 충돌 저장"
+      from: "Hash Buckets"
+      to: "Collision Chain / Probe"
+      route_label: "같은 버킷에 들어온 키를 체인이나 probing 규칙으로 함께 관리한다."
+      active_actors: [bucket, collision, keys]
+      description: "충돌은 해시 테이블에서 정상적으로 가능한 상황이며 처리 방식이 필요하다."
+      payload: ["collision", "chain", "probe"]
+      outcomes:
+        - status: allow
+          text: "충돌 키도 equals 같은 최종 비교로 구분한다."
+    - title: "3. 리사이징·재해싱"
+      from: "Collision Chain / Probe"
+      to: "Resize + Rehash"
+      route_label: "버킷을 5개에서 10개로 늘리고 모든 키를 새 모듈러 기준으로 재배치한다."
+      active_actors: [collision, resize, bucket]
+      description: "버킷 수가 바뀌면 기존 위치를 그대로 복사할 수 없어 해시를 다시 계산한다."
+      payload: ["capacity 10", "rehash", "redistribute"]
+      outcomes:
+        - status: allow
+          text: "충돌 밀도와 평균 탐색 비용을 낮출 수 있다."
+
+trie_prefix_end:
+  eyebrow: "Interactive flow"
+  title: "Trie 접두사 공유와 단어 종료"
+  summary: "공통 접두사 노드를 공유하되 단어가 끝나는 위치를 별도 표시해 완성 단어와 접두사를 구분한다."
+  actors:
+    - id: words
+      kind: "입력 단어"
+      name: "pen / pet"
+      description: "p·e까지 공통이고 n·t로 갈라지는 단어들"
+    - id: shared
+      kind: "공유 경로"
+      name: "p → e"
+      description: "두 단어가 함께 사용하는 Trie 접두사 노드"
+    - id: branch
+      kind: "분기"
+      name: "n / t Nodes"
+      description: "pen과 pet을 구분하는 마지막 문자 노드"
+    - id: end
+      kind: "종료 표시"
+      name: "Word End Flag"
+      description: "해당 노드에서 실제 단어가 끝났음을 표시"
+  steps:
+    - title: "1. 공통 문자 삽입"
+      from: "pen / pet"
+      to: "p → e"
+      route_label: "두 단어의 p와 e 경로를 하나의 노드로 공유한다."
+      active_actors: [words, shared]
+      description: "Trie는 공통 접두사를 반복 저장하지 않고 경로로 공유한다."
+      payload: ["p", "e", "shared prefix"]
+      outcomes:
+        - status: allow
+          text: "공통 접두사 검색 경로가 한 번만 만들어진다."
+    - title: "2. 단어별 분기"
+      from: "p → e"
+      to: "n / t Nodes"
+      route_label: "e 다음에 n과 t를 각각 연결해 pen과 pet을 구분한다."
+      active_actors: [shared, branch, words]
+      description: "분기 노드가 서로 다른 단어의 나머지 경로를 표현한다."
+      payload: ["n", "t", "branch"]
+      outcomes:
+        - status: info
+          text: "경로 공유와 단어 식별은 종료 표시와 함께 완성된다."
+    - title: "3. 종료 표시"
+      from: "n / t Nodes"
+      to: "Word End Flag"
+      route_label: "n과 t에 종료 표시를 두어 두 경로가 실제 저장 단어로 끝났음을 표시한다."
+      active_actors: [branch, end]
+      description: "중간 노드 e에 종료 표시가 없으면 e만으로는 저장된 단어가 아니다."
+      payload: ["isEnd", "pen", "pet"]
+      outcomes:
+        - status: allow
+          text: "접두사와 완성 단어를 정확히 구분한다."
+
+trie_delete_shared_path:
+  eyebrow: "Interactive comparison"
+  title: "Trie 공유 경로 삭제"
+  summary: "한 단어만 삭제할 때는 종료 표시만 끄고, 공유되지 않는 마지막 경로만 실제로 제거한다."
+  actors:
+    - id: trie
+      kind: "초기 구조"
+      name: "car / care Trie"
+      description: "car와 care가 car 경로를 공유하는 Trie"
+    - id: car
+      kind: "삭제 대상"
+      name: "Delete car"
+      description: "care의 접두사이기도 한 car 단어"
+    - id: flag
+      kind: "표시 변경"
+      name: "Unset Word End"
+      description: "car 노드의 단어 종료 표시를 해제"
+    - id: path
+      kind: "경로 정리"
+      name: "Remove Unshared e"
+      description: "care 삭제 후 다른 단어가 사용하지 않는 마지막 노드"
+  steps:
+    - title: "1. 공유 여부 확인"
+      from: "car / care Trie"
+      to: "Delete car"
+      route_label: "삭제할 단어의 각 노드가 다른 단어의 접두사·경로로 사용되는지 확인한다."
+      active_actors: [trie, car]
+      description: "삭제 대상이 다른 단어의 접두사라면 전체 경로를 지우면 안 된다."
+      payload: ["car", "care", "shared path"]
+      outcomes:
+        - status: info
+          text: "Trie 삭제는 단어 존재와 경로 공유를 함께 판단한다."
+    - title: "2. 종료 표시 해제"
+      from: "Delete car"
+      to: "Unset Word End"
+      route_label: "car를 삭제할 때 c-a-r 노드는 유지하고 단어 종료 표시만 해제한다."
+      active_actors: [car, flag, trie]
+      description: "care 검색에 필요한 공유 경로는 보존한다."
+      payload: ["isEnd false", "preserve path", "care"]
+      outcomes:
+        - status: allow
+          text: "car는 사라지지만 care의 검색 경로는 유지된다."
+    - title: "3. 비공유 경로 제거"
+      from: "Delete car"
+      to: "Remove Unshared e"
+      route_label: "care를 삭제할 때 다른 단어가 사용하지 않는 e 같은 마지막 경로만 뒤에서부터 제거한다."
+      active_actors: [car, path, trie]
+      description: "공유되지 않은 노드만 제거해 Trie 크기를 줄인다."
+      payload: ["care", "backtrack", "prune"]
+      outcomes:
+        - status: allow
+          text: "삭제 후에도 남은 단어의 경로와 종료 표시를 보존한다."
+
+trie_prefix_conflict:
+  eyebrow: "Interactive comparison"
+  title: "Trie 접두사 충돌"
+  summary: "짧은 단어가 긴 단어의 접두사이거나 긴 단어가 먼저 저장돼도 종료 표시와 자식 경로를 분리한다."
+  actors:
+    - id: short
+      kind: "짧은 단어"
+      name: "911"
+      description: "긴 숫자 단어의 접두사가 될 수 있는 값"
+    - id: long
+      kind: "긴 단어"
+      name: "9112"
+      description: "짧은 단어 뒤에 자식 경로를 가진 값"
+    - id: node
+      kind: "공유 노드"
+      name: "Prefix Node"
+      description: "911 경로의 마지막 노드와 자식 여부"
+    - id: result
+      kind: "판정"
+      name: "End Flag + Children"
+      description: "단어 종료와 더 긴 단어의 계속 경로를 함께 판단"
+  steps:
+    - title: "1. 긴 단어 저장"
+      from: "9112"
+      to: "Prefix Node"
+      route_label: "9112를 저장하면 9-1-1 노드에 2라는 자식 경로가 생긴다."
+      active_actors: [long, node]
+      description: "911 경로가 존재해도 종료 표시가 없으면 911은 저장 단어가 아니다."
+      payload: ["9", "1", "1", "2", "child"]
+      outcomes:
+        - status: info
+          text: "경로 존재와 단어 존재를 구분한다."
+    - title: "2. 짧은 단어 추가"
+      from: "911"
+      to: "End Flag + Children"
+      route_label: "911을 추가하면 같은 마지막 노드에 종료 표시를 켜고 9112 자식 경로는 유지한다."
+      active_actors: [short, node, result]
+      description: "한 노드가 단어의 끝이면서 다른 단어의 접두사일 수 있다."
+      payload: ["isEnd true", "children", "prefix"]
+      outcomes:
+        - status: allow
+          text: "911과 9112를 동시에 정확히 검색할 수 있다."
+    - title: "3. 검색 판정"
+      from: "Prefix Node"
+      to: "End Flag + Children"
+      route_label: "검색은 마지막 노드의 종료 표시와 추가 자식 경로를 각각 확인한다."
+      active_actors: [node, result, short, long]
+      description: "접두사 검색과 정확한 단어 검색은 종료 표시를 다르게 해석한다."
+      payload: ["exact match", "prefix match", "children"]
+      outcomes:
+        - status: allow
+          text: "Trie가 정확 검색과 접두사 검색을 모두 지원한다."
