@@ -68,7 +68,7 @@ EC2
 
 Kubernetes가 필요한 지점이 바로 여기라고 이해했다.
 
-![Docker Compose에서 Kubernetes로 확장되는 배포 구조](/assets/images/2026-07-03-kubernetes-after-docker-compose/docker-compose-to-kubernetes.png)
+{% include interactive/flow-card.html flow='compose_k8s' %}
 
 ---
 

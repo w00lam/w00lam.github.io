@@ -34,7 +34,7 @@ deploy (서버 배포)
 
 이 시기에는 GitHub Actions에서 제공하는 구문들—`jobs`, `steps`, `needs`, `if` 등—의 문법적 규칙을 완벽하게 맞추고 각 단계가 순서대로 에러 없이 초록 불(Success)을 켜는 것에만 집착했습니다. 빌드가 성공하고 배포 단계가 종료되어 GitHub 화면에 초록색 체크마크가 뜨면 그것으로 배포가 끝난 줄 알았습니다.
 
-![처음 이해한 CI/CD 흐름](/assets/images/2026-07-01-cicd-design-not-yaml/cicd_pipeline_initial.png)
+{% include interactive/flow-card.html flow='cicd_initial' %}
 > 처음에는 CI/CD를 `verify → build-and-push → deploy` 순서를 맞추는 작업으로 이해했다.
 
 ---
@@ -58,7 +58,7 @@ deploy (서버 배포)
 * **진정한 배포 성공**은 컨테이너가 살아있는 상태가 아니라 애플리케이션이 기동을 완료하고 **실제 운영 트래픽을 처리할 준비가 되어 헬스체크(Health Check)를 통과한 상태**이다.
 * 그 결과 배포 파이프라인의 `deploy` 단계는 단순한 '명령어 실행' 단계가 아니라 **새 버전이 운영 트래픽을 감당해도 되는지 검증하는 마지막 확인 관문**이어야 한다.
 
-![컨테이너 실행과 서비스 정상 응답의 차이](/assets/images/2026-07-01-cicd-design-not-yaml/container_vs_healthcheck.png)
+{% include interactive/flow-card.html flow='container_health' %}
 > 컨테이너가 실행 중이어도 애플리케이션이 정상 응답하지 않으면 배포 성공이라고 볼 수 없다.
 
 ---
@@ -105,7 +105,7 @@ EC2 인스턴스 SSH 접속
 
 배포 파이프라인을 아무리 매끄럽게 자동화하더라도 단일 EC2라는 인프라 구조의 불안정성 자체는 해결할 수 없습니다. 자동화는 비효율적인 반복 작업을 대신 해줄 뿐, 서비스의 높은 가용성과 회복탄력성을 보장해 주지는 못합니다.
 
-![단일 EC2 배포 구조](/assets/images/2026-07-01-cicd-design-not-yaml/single_ec2_architecture.png)
+{% include interactive/flow-card.html flow='single_ec2' %}
 > 단일 EC2 배포는 구조가 단순하지만 EC2 한 대가 곧 전체 서비스의 장애 지점이 될 수 있다.
 
 ---
@@ -140,7 +140,7 @@ EC2 인스턴스 SSH 접속
 
 롤링 배포를 제대로 활용하려면 **하위 호환성 설계(Backward Compatibility)**, **점진적인 DB 스키마 마이그레이션(Expand/Contract 패턴)**, 그리고 **배포 단계별 헬스체크 기준 설정**과 **실패 시 중단 조건**을 미리 정밀하게 맞춰 두어야 합니다.
 
-![ASG 롤링 배포 흐름](/assets/images/2026-07-01-cicd-design-not-yaml/asg_rolling_deployment.png)
+{% include interactive/flow-card.html flow='asg_rolling' %}
 > ASG 롤링 배포는 모든 서버를 한 번에 바꾸지 않고 헬스체크를 확인하며 순차적으로 교체한다.
 
 > 롤링 배포 중에는 v1과 v2가 동시에 트래픽을 받을 수 있으므로 하위 호환성을 고려해야 한다.
@@ -170,7 +170,7 @@ Green = 새 버전이 임시 배포되어 검증 대기 중인 환경 (v2)
 
 Blue-Green 배포는 **"새 버전을 곧바로 실서버에 반영하지 않고, 철저한 사전 검증을 마친 후에 트래픽 제어권을 매끄럽게 넘겨받는 설계"**의 중요성을 잘 보여줍니다.
 
-![Blue-Green 배포 흐름](/assets/images/2026-07-01-cicd-design-not-yaml/blue_green_deployment.png)
+{% include interactive/flow-card.html flow='blue_green_deployment' %}
 > Blue-Green 배포는 새 버전을 별도 환경에서 검증한 뒤 트래픽만 전환하는 방식이다.
 
 ---

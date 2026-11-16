@@ -97,7 +97,7 @@ proxy_pass http://app:8080;
 
 > Docker 환경에서 localhost는 항상 서버 전체를 의미하지 않는다. 컨테이너 내부에서 localhost는 해당 컨테이너 자신을 의미한다. 컨테이너 간 통신에는 localhost가 아니라 Compose 서비스 이름을 사용해야 한다.
 
-![Docker Compose에서 localhost와 service name 차이](/assets/images/2026-07-06-nginx-deployment-switching-point/localhost-service-name.png)
+{% include interactive/flow-card.html flow='localhost_service' %}
 
 ---
 
@@ -255,7 +255,7 @@ upstream backend {
 
 > Load Balancing은 여러 서버에 요청을 나눠 보내는 구조이고 Blue-Green 배포는 현재 트래픽을 받는 버전을 새 버전으로 전환하는 구조다.
 
-![Nginx upstream에서 Load Balancing과 Blue-Green 배포 차이](/assets/images/2026-07-06-nginx-deployment-switching-point/upstream-load-balancing-blue-green.png)
+{% include interactive/flow-card.html flow='blue_green_lb' %}
 
 단일 EC2 + Docker Compose 환경에서 Blue-Green을 흉내 낸다면 Nginx는 사용자의 요청을 Blue로 보낼지 Green으로 보낼지 결정하는 전환 지점이 될 수 있다.
 

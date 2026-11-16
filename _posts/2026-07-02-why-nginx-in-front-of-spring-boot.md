@@ -74,7 +74,7 @@ Client → Nginx → Spring Boot
 Client / Browser → Nginx (80 / 443) → Spring Boot (8080) → MySQL / Redis
 ```
 
-![Nginx Reverse Proxy 구조](/assets/images/2026-07-02-nginx/nginx-reverse-proxy.png)
+{% include interactive/flow-card.html flow='nginx_reverse' %}
 
 이 구조를 보고 나니 Nginx가 단순히 정적 파일을 서빙하는 웹 서버로만 보이지 않았다. Spring Boot 배포에서는 외부 요청을 받아 내부 애플리케이션으로 연결해주는 앞단 서버에 가깝게 느껴졌다.
 
@@ -158,7 +158,7 @@ Spring Boot : 8080
 
 Spring Boot는 애플리케이션을 실행하고 비즈니스 로직을 처리한다. Nginx는 외부 요청을 안정적으로 받아 내부 애플리케이션으로 전달한다. 둘의 책임이 다르다.
 
-![Nginx가 없는 구조와 있는 구조 비교](/assets/images/2026-07-02-nginx/nginx-comparison.png)
+{% include interactive/flow-card.html flow='nginx_comparison' %}
 
 ---
 

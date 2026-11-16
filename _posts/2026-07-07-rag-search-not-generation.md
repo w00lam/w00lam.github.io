@@ -14,7 +14,7 @@ RAG를 처음 봤을 때는 단순히 "LLM 답변을 더 잘하게 만드는 기
 
 비유하면 오픈북 시험과 비슷하다. 모델에게 책을 외우게 하는 것이 아니라 답하기 전에 책을 펴놓고 보게 만드는 방식이다. 그래서 RAG의 성패는 모델 성능만큼이나, 아니 경우에 그 결과는 모델보다 더 검색 품질에 크게 좌우된다.
 
-![RAG 오픈북 시험 비유](/assets/images/2026-07-07-rag-search-not-generation/rag-open-book.svg)
+{% include interactive/flow-card.html flow='rag_openbook' %}
 
 이전에 [Vector DB를 정리하면서](/posts/vector-db-guide/) 임베딩과 유사도 검색을 학습했는데 이번에는 그 검색 결과를 LLM의 근거로 사용하는 RAG 구조까지 이어서 이해해볼 수 있었다.
 
@@ -51,7 +51,7 @@ RAG를 하나의 흐름으로만 보면 "질문을 받는다 -> 검색한다 -> 
 - 적재 파이프라인: 문서를 검색 가능한 형태로 만들어 저장하는 과정
 - 질의 파이프라인: 사용자 질문에 맞는 문서를 찾아 답변에 넣는 과정
 
-![RAG 전체 파이프라인](/assets/images/2026-07-07-rag-search-not-generation/rag-pipeline.svg)
+{% include interactive/flow-card.html flow='rag_pipeline' %}
 
 ### 적재 파이프라인
 
@@ -85,7 +85,7 @@ RAG를 하나의 흐름으로만 보면 "질문을 받는다 -> 검색한다 -> 
 
 임베딩은 청크 하나를 하나의 벡터로 표현한다. 청크가 너무 작으면 필요한 문맥이 빠지고 너무 크면 한 벡터 안에 여러 의미가 섞인다. 둘 다 검색 품질을 떨어뜨린다.
 
-![청크 크기 비교](/assets/images/2026-07-07-rag-search-not-generation/chunk-size-comparison.svg)
+{% include interactive/flow-card.html flow='chunk_size' %}
 
 청킹 전략은 여러 가지가 있다.
 
@@ -147,7 +147,7 @@ Naive RAG는 보통 벡터 검색만으로 관련 문서를 찾는다. 벡터 �
 
 > 빠르고 거친 검색으로 후보를 좁히고 느리지만 정밀한 리랭커로 최종 근거를 고르는 구조다.
 
-![검색 품질 보강 스택](/assets/images/2026-07-07-rag-search-not-generation/search-quality-stack.svg)
+{% include interactive/flow-card.html flow='search_quality' %}
 
 ### 쿼리 변환
 
@@ -167,7 +167,7 @@ RAG를 튜닝할 때 "좋아진 것 같다"는 느낌만으로 판단하면 위�
 
 그래서 평가는 검색 평가와 생성 평가를 나누어 보는 것이 좋다.
 
-![RAG 평가 구조](/assets/images/2026-07-07-rag-search-not-generation/rag-evaluation.svg)
+{% include interactive/flow-card.html flow='rag_evaluation' %}
 
 검색 평가는 "정답 근거 문서를 잘 찾았는가"를 본다.
 
@@ -193,7 +193,7 @@ RAG를 튜닝할 때 "좋아진 것 같다"는 느낌만으로 판단하면 위�
 
 백엔드 개발자 관점에서 RAG는 만들어놓고 끝나는 기능이 아니다. 운영해야 하는 데이터 파이프라인에 가깝다.
 
-![RAG 운영 루프](/assets/images/2026-07-07-rag-search-not-generation/rag-ops-loop.svg)
+{% include interactive/flow-card.html flow='rag_ops' %}
 
 ### 문서 갱신
 

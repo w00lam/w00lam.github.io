@@ -80,7 +80,7 @@ Kafka ──관련됨──> 중복 소비 문제
 
 > **택소노미는 지식을 분류하고 온톨로지는 관계의 규칙을 정의하며 지식 그래프는 그 규칙으로 실제 지식을 연결한다.**
 
-![택소노미·온톨로지·지식 그래프 비교](/assets/images/2026-07-10-ontology-second-brain/taxonomy-ontology-knowledge-graph.png)
+{% include interactive/flow-card.html flow='ontology_layers' %}
 
 ## 3. AI 세컨드 브레인은 일반 메모 앱과 무엇이 다른가
 
@@ -129,7 +129,7 @@ RAG의 역할은 크게 세 가지다.
 
 하지만 의미적으로 비슷한 문서를 찾는 것과 문서 사이의 관계를 정확히 이해하는 것은 다른 문제다. RAG만으로는 같은 기술이 서로 다른 역할로 사용됐는지, 어떤 결정이 어떤 문제를 해결했는지를 항상 명확하게 구분하기 어렵다.
 
-![RAG 기반 AI 세컨드 브레인의 동작 흐름](/assets/images/2026-07-10-ontology-second-brain/rag-second-brain-flow.png)
+{% include interactive/flow-card.html flow='rag_second_brain' %}
 
 ## 5. RAG와 온톨로지는 각각 어떤 역할을 하는가
 
@@ -162,7 +162,7 @@ Redis ──분산 락으로 사용됨──> 주문 동시성 제어
 
 > **RAG는 관련 정보를 찾는 방법이고 온톨로지는 정보의 의미와 관계를 정의하는 방법이다.**
 
-![RAG와 온톨로지의 역할 비교](/assets/images/2026-07-10-ontology-second-brain/rag-vs-ontology.png)
+{% include interactive/flow-card.html flow='rag_ontology' %}
 
 ## 6. 온톨로지가 AI 세컨드 브레인에 주는 가치
 

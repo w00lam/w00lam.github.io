@@ -99,7 +99,7 @@ payment-completed.DLT
 
 토픽 설계는 이벤트 이름을 나열하는 작업이 아니라 소비자 관심사와 운영 정책을 나누는 작업에 가깝다.
 
-![Kafka 이벤트 토픽 분리 구조](/assets/images/2026-07-09-kafka-retry-dlt-operation/kafka-event-topic-separation.png)
+{% include interactive/flow-card.html flow='kafka_topics' %}
 
 ## 3. Consumer 에러는 실패 원인에 따라 다르게 처리해야 한다
 
@@ -197,7 +197,7 @@ payment-completed
 
 지연 재시도는 모든 이벤트에 붙이는 기본 장식이 아니라 도메인 정합성에 영향을 주는 이벤트에 우선 적용하는 운영 전략에 가깝다.
 
-![Kafka 재처리 흐름](/assets/images/2026-07-09-kafka-retry-dlt-operation/kafka-retry-flow.png)
+{% include interactive/flow-card.html flow='kafka_retry' %}
 
 ## 5. DLT는 실패 메시지 저장소가 아니라 운영 프로세스의 시작점이다
 
@@ -271,7 +271,7 @@ DLT에 함께 남기면 좋은 정보는 다음과 같다.
 
 이 정보를 남겨야 운영자가 "어떤 데이터를 기준으로, 어떤 원인 때문에 어디서 실패했는지"를 빠르게 확인할 수 있다. DLT는 실패 메시지 저장소가 아니라 운영 프로세스의 시작점이다.
 
-![Kafka DLT 운영 프로세스](/assets/images/2026-07-09-kafka-retry-dlt-operation/kafka-dlt-operation.png)
+{% include interactive/flow-card.html flow='kafka_dlt' %}
 
 ## 6. 재처리를 고려하면 멱등성과 순서도 함께 설계해야 한다
 
@@ -318,7 +318,7 @@ payment-completed 이벤트 수신
 
 Kafka 기반 설계에서는 Producer가 올바른 key를 선택하는 일과 Consumer가 현재 상태를 검증하는 일이 함께 필요하다. 파티션 순서는 중요한 힌트지만 도메인 상태 검증을 대체하지는 못한다.
 
-![Kafka 파티션 key와 순서 보장](/assets/images/2026-07-09-kafka-retry-dlt-operation/kafka-partition-ordering.png)
+{% include interactive/flow-card.html flow='kafka_partition' %}
 
 ## 7. 정리
 

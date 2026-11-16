@@ -47,7 +47,7 @@ Spring Boot Application
 
 하지만 공통점이 있다. 모두 현재 상태를 계속 지켜보다가 내가 원하는 상태와 다르면 바로잡아야 하는 문제다.
 
-![Docker에서 Kubernetes가 필요한 이유](/assets/images/2026-07-08-kubernetes-reconciliation-loop/docker-to-kubernetes-orchestration.png)
+{% include interactive/flow-card.html flow='docker_k8s' %}
 
 Docker가 컨테이너 실행을 쉽게 만들어줬다면 Kubernetes는 여러 서버 위에서 많은 컨테이너를 어떻게 계속 원하는 상태로 운영할 것인가에 초점을 둔다. 그래서 Kubernetes를 이해할 때는 "컨테이너 실행 도구"보다 "컨테이너 운영 시스템"이라는 관점이 더 잘 맞는 것 같다.
 
@@ -108,7 +108,7 @@ spec:
 
 이때 원하는 상태는 "Pod가 3개 떠 있어야 한다"이다. 그런데 실제로는 Pod가 2개만 떠 있다면 현재 상태와 원하는 상태 사이에 차이가 생긴다. Kubernetes의 Controller는 이 차이를 보고 Pod 하나를 더 만들려고 한다.
 
-![Kubernetes Reconciliation Loop](/assets/images/2026-07-08-kubernetes-reconciliation-loop/reconciliation-loop.png)
+{% include interactive/flow-card.html flow='reconciliation_loop' %}
 
 이 구조는 에어컨 온도 조절기와 비슷하다. 내가 원하는 온도를 24도로 설정하면 에어컨은 현재 온도를 계속 관찰한다. 현재 온도가 28도라면 냉방을 하고 24도에 가까워지면 동작을 조절한다. 중요한 것은 내가 "압축기를 몇 초 동안 켜고, 팬을 몇 단계로 돌려라"라고 매번 명령하지 않는다는 점이다. 원하는 상태만 설정하면 시스템이 현재 상태를 관찰하며 맞춰간다.
 
@@ -136,7 +136,7 @@ Kubernetes 아키텍처도 암기식으로 보면 어렵다. API Server, etcd, S
 원하는 상태와 현재 상태의 차이를 계속 메워야 한다. 그래서 Controller Manager가 필요하다.
 각 노드에서는 실제로 Pod를 실행하고 상태를 보고해야 한다. 그래서 kubelet이 필요하다.
 
-![Kubernetes 아키텍처](/assets/images/2026-07-08-kubernetes-reconciliation-loop/kubernetes-architecture.svg)
+{% include interactive/flow-card.html flow='k8s_architecture' %}
 
 Control Plane은 클러스터의 상태를 판단하고 조정하는 쪽이다. Worker Node는 실제 워크로드가 실행되는 쪽이다.
 
@@ -158,7 +158,7 @@ Worker Node 쪽에서는 kubelet이 중요하다. kubelet은 해당 노드에서
 
 Kubernetes에서 실제 애플리케이션을 다룰 때 가장 먼저 만나는 흐름은 Deployment, ReplicaSet, Pod, Container의 계층 구조다.
 
-![Deployment ReplicaSet Pod Container 계층](/assets/images/2026-07-08-kubernetes-reconciliation-loop/deployment-replicaset-pod-container.svg)
+{% include interactive/flow-card.html flow='k8s_workload_hierarchy' %}
 
 Pod는 Kubernetes의 최소 실행 단위다. Docker만 사용할 때는 컨테이너를 직접 떠올리기 쉽지만 Kubernetes에서는 컨테이너가 Pod 안에서 실행된다. 대부분의 경우 하나의 Pod 안에 하나의 애플리케이션 컨테이너가 들어간다고 생각하면 출발점으로 충분하다.
 
@@ -174,7 +174,7 @@ Deployment는 ReplicaSet 위에서 배포 전략을 관리한다. 새 이미지 
 
 > Pod는 언제든 죽고 새로 만들어질 수 있기 때문에 클라이언트는 Pod 자체가 아니라 Service라는 고정된 문을 바라봐야 한다.
 
-![Kubernetes Service와 Pod 관계](/assets/images/2026-07-08-kubernetes-reconciliation-loop/service-label-selector.png)
+{% include interactive/flow-card.html flow='k8s_service_pod' %}
 
 Service는 Label과 Selector를 기준으로 요청을 보낼 Pod를 찾는다. 예를 들어 Service에 `app=my-spring-app`이라는 Selector가 있다면 같은 Label을 가진 Pod들이 대상이 된다.
 
@@ -210,7 +210,7 @@ Kubernetes가 흥미로운 이유는 조정 루프 패턴이 내장 리소스에
 
 Operator는 여기서 한 단계 더 나아간다. Operator는 사용자 정의 리소스의 원하는 상태를 보고 실제 시스템을 그 상태로 맞추는 Controller다.
 
-![Kubernetes CRD Operator GitOps 확장 구조](/assets/images/2026-07-08-kubernetes-reconciliation-loop/crd-operator-gitops.svg)
+{% include interactive/flow-card.html flow='operator_gitops' %}
 
 GitOps도 같은 맥락에서 이해할 수 있다. Git에 선언된 상태와 클러스터의 현재 상태를 비교하고 차이가 있으면 클러스터를 Git의 상태에 맞춘다. 여기에도 Desired State, Current State, Reconciliation Loop가 반복된다.
 
