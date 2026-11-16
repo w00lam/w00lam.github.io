@@ -75,6 +75,12 @@
     gap: 1rem;
   }
 
+  &[data-flow-layout='six'] {
+    .interactive-flow__actors {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+  }
+
   &__actors {
     display: grid;
     grid-template-columns: repeat(4, minmax(0, 1fr));
@@ -305,6 +311,10 @@
 
     &__actors,
     &__outcomes {
+      grid-template-columns: 1fr;
+    }
+
+    &[data-flow-layout='six'] .interactive-flow__actors {
       grid-template-columns: 1fr;
     }
 

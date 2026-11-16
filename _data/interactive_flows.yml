@@ -1,0 +1,294 @@
+spring_security:
+  eyebrow: "Interactive flow"
+  title: "Spring Security 인증 처리 흐름"
+  summary: "인증 결과를 검증하는 단계와 SecurityContext에 반영하는 단계를 나누어 본다."
+  layout: six
+  actors:
+    - id: client
+      kind: "요청 주체"
+      name: "Client"
+      description: "로그인 정보 또는 Bearer Token을 보냄"
+    - id: filter
+      kind: "인증 경계"
+      name: "Security Filter"
+      description: "인증 요청을 읽고 인증 객체를 생성함"
+    - id: manager
+      kind: "위임 조정"
+      name: "AuthenticationManager"
+      description: "사용할 인증 Provider를 선택함"
+    - id: provider
+      kind: "자격 증명"
+      name: "AuthenticationProvider"
+      description: "자격 증명을 검증함"
+    - id: context
+      kind: "현재 요청"
+      name: "SecurityContext"
+      description: "인증 결과와 현재 사용자 정보를 보관함"
+    - id: controller
+      kind: "애플리케이션"
+      name: "Controller"
+      description: "인가된 요청을 처리함"
+  steps:
+    - title: "1. 인증 요청"
+      from: "Client"
+      to: "Security Filter"
+      route_label: "Filter가 로그인 정보나 Bearer Token을 읽는다."
+      active_actors: [client, filter]
+      description: "인증 필터가 요청에서 인증에 필요한 값을 읽고 인증 전 Authentication을 만든다."
+      payload: ["로그인 정보", "Bearer Token"]
+      outcomes:
+        - status: info
+          text: "아직 인증이 끝난 상태가 아닌 Authentication이 만들어진다."
+    - title: "2. 인증 위임"
+      from: "Security Filter"
+      to: "AuthenticationManager"
+      route_label: "Filter가 인증 전 Authentication을 Manager에 전달한다."
+      active_actors: [filter, manager]
+      description: "AuthenticationManager는 직접 모든 방식을 검증하지 않고 적절한 Provider에 처리를 위임한다."
+      payload: ["인증 전 Authentication"]
+      outcomes:
+        - status: info
+          text: "인증 방식에 따른 Provider 선택이 Manager의 책임이다."
+    - title: "3. 자격 증명 검증"
+      from: "AuthenticationManager"
+      to: "AuthenticationProvider"
+      route_label: "Manager가 선택한 Provider가 자격 증명을 검증한다."
+      active_actors: [manager, provider]
+      description: "Provider는 자신이 지원하는 인증 방식으로 자격 증명을 확인하고 인증된 Authentication을 반환한다."
+      payload: ["검증할 자격 증명", "인증된 Authentication"]
+      outcomes:
+        - status: allow
+          text: "검증에 성공하면 인증된 Authentication이 반환된다."
+    - title: "4. 인증 결과 반환"
+      from: "AuthenticationProvider"
+      to: "Security Filter"
+      route_label: "Provider의 인증 결과가 Filter로 돌아온다."
+      active_actors: [provider, filter]
+      description: "Provider가 결과를 반환하는 것과 SecurityContext에 저장하는 것은 서로 다른 단계다."
+      payload: ["인증된 Authentication"]
+      outcomes:
+        - status: info
+          text: "Provider가 SecurityContext에 직접 저장한다고 단정하지 않는다."
+    - title: "5. SecurityContext 설정"
+      from: "Security Filter"
+      to: "SecurityContext"
+      route_label: "인증 필터가 반환된 인증 결과를 현재 보안 컨텍스트에 설정한다."
+      active_actors: [filter, context]
+      description: "인증 필터가 인증된 결과를 SecurityContext에 반영해 현재 요청의 인증 정보를 준비한다."
+      payload: ["인증된 Authentication", "SecurityContext"]
+      outcomes:
+        - status: allow
+          text: "현재 요청에서 인증 정보를 사용할 수 있는 상태가 된다."
+    - title: "6. 인가 후 요청 처리"
+      from: "SecurityContext"
+      to: "Controller"
+      route_label: "인가 단계가 권한을 확인한 뒤 Controller로 요청을 이어 보낸다."
+      active_actors: [context, controller]
+      description: "인증 정보의 권한을 확인한 뒤 허용된 요청만 애플리케이션 Controller로 전달된다."
+      payload: ["현재 사용자 정보", "권한 확인 결과"]
+      outcomes:
+        - status: allow
+          text: "인가를 통과한 요청이 Controller 처리로 이어진다."
+
+slf4j_logback:
+  eyebrow: "Interactive structure"
+  title: "SLF4J와 Logback의 관계"
+  summary: "애플리케이션 코드는 API를 호출하고, 구현체가 실제 로그를 출력한다."
+  actors:
+    - id: application
+      kind: "호출자"
+      name: "Application"
+      description: "Logger API를 사용해 로그를 호출함"
+    - id: slf4j
+      kind: "추상화 계층"
+      name: "SLF4J"
+      description: "로깅 API와 호출 규약을 제공함"
+    - id: logback
+      kind: "구현체"
+      name: "Logback"
+      description: "로그 출력과 관리를 수행함"
+    - id: appender
+      kind: "출력 구성"
+      name: "Appender / Layout"
+      description: "로그의 출력 대상과 형식을 결정함"
+  steps:
+    - title: "1. Logger 호출"
+      from: "Application"
+      to: "SLF4J"
+      route_label: "애플리케이션이 SLF4J Logger API를 호출한다."
+      active_actors: [application, slf4j]
+      description: "애플리케이션 코드는 log.info() 같은 SLF4J API를 사용하고 특정 구현체의 API를 직접 호출하지 않는다."
+      payload: ["Logger 호출", "log.info()"]
+      outcomes:
+        - status: info
+          text: "호출 규약과 실제 출력 구현을 분리할 수 있다."
+    - title: "2. 추상화 계층"
+      from: "SLF4J"
+      to: "Logback"
+      route_label: "SLF4J 호출이 연결된 로깅 구현체로 전달된다."
+      active_actors: [slf4j, logback]
+      description: "SLF4J는 애플리케이션 코드와 실제 로깅 구현체 사이의 추상화 계층으로 동작한다."
+      payload: ["로깅 API", "구현체 연결"]
+      outcomes:
+        - status: info
+          text: "실제 연결은 의존성과 설정에 따라 결정된다."
+    - title: "3. 출력과 관리"
+      from: "Logback"
+      to: "Appender / Layout"
+      route_label: "Logback이 Appender와 Layout을 사용해 로그를 처리한다."
+      active_actors: [logback, appender]
+      description: "Logback은 Logger, Appender, Layout을 조합해 로그 출력과 관리, 형식 구성을 담당한다."
+      payload: ["Logger", "Appender", "Layout"]
+      outcomes:
+        - status: allow
+          text: "구현체가 실제 로그 출력과 관리 책임을 맡는다."
+    - title: "4. 구현체 교체 기준"
+      from: "Application"
+      to: "Logback"
+      route_label: "구현체를 바꾸더라도 애플리케이션 호출부 변경을 줄일 수 있다."
+      active_actors: [application, slf4j, logback]
+      description: "SLF4J를 사이에 두면 애플리케이션이 구현체에 직접 묶이지 않지만 실제 동작은 의존성과 설정을 확인해야 한다."
+      payload: ["추상화", "의존성", "설정"]
+      outcomes:
+        - status: info
+          text: "SLF4J 사용만으로 항상 같은 출력 방식이 보장되는 것은 아니다."
+
+csrf:
+  eyebrow: "Interactive flow"
+  title: "CSRF 공격과 토큰 검증 흐름"
+  summary: "공격자는 Cookie 값을 읽지 않아도 피해자의 브라우저가 대상 서버에 요청하도록 유도할 수 있다."
+  actors:
+    - id: user
+      kind: "주체"
+      name: "User"
+      description: "대상 서버에 로그인한 사용자"
+    - id: browser
+      kind: "클라이언트"
+      name: "Browser"
+      description: "인증 Cookie를 보관하고 요청을 보냄"
+    - id: attacker
+      kind: "외부 사이트"
+      name: "Attacker Site"
+      description: "피해자의 브라우저가 요청하도록 유도"
+    - id: server
+      kind: "서버"
+      name: "Target Server"
+      description: "Cookie와 CSRF Token을 검증"
+  steps:
+    - title: "1. 로그인"
+      from: "User"
+      to: "Browser"
+      route_label: "로그인 정보가 Browser로 전달된다."
+      active_actors: [user, browser]
+      description: "사용자가 대상 서버에 로그인하고 Browser가 인증 상태를 맡는다."
+      payload: ["로그인 정보"]
+      outcomes:
+        - status: allow
+          text: "Browser가 인증 Cookie를 저장한다."
+    - title: "2. 인증 상태 유지"
+      from: "Browser"
+      to: "Target Server"
+      route_label: "정상 요청에는 인증 Cookie가 포함될 수 있다."
+      active_actors: [browser, server]
+      description: "Browser는 대상 서버와 통신할 때 조건에 맞는 인증 Cookie를 전송할 수 있다."
+      payload: ["인증 Cookie"]
+      outcomes:
+        - status: info
+          text: "공격자가 Cookie 값을 직접 읽어야 하는 것은 아니다."
+    - title: "3. 공격 페이지 방문"
+      from: "Attacker Site"
+      to: "Browser"
+      route_label: "공격 페이지가 Browser에 대상 서버 요청을 유도한다."
+      active_actors: [attacker, browser]
+      description: "로그인 상태의 사용자가 공격자가 준비한 페이지를 방문한다."
+      payload: ["상태 변경 요청 유도"]
+      outcomes:
+        - status: warning
+          text: "피해자의 Browser가 요청을 시작하도록 이용된다."
+    - title: "4. 대상 서버 요청"
+      from: "Browser"
+      to: "Target Server"
+      route_label: "Browser가 대상 서버로 상태 변경 요청을 보낸다."
+      active_actors: [browser, server]
+      description: "Cookie 전송 조건이 충족되면 공격자가 만든 요청에도 인증 Cookie가 포함될 수 있다."
+      payload: ["상태 변경 요청", "Cookie는 요청 조건에 따라 포함"]
+      outcomes:
+        - status: warning
+          text: "SameSite 정책과 요청 조건에 따라 Cookie 전송 여부가 달라진다."
+    - title: "5. CSRF Token 검증"
+      from: "Browser"
+      to: "Target Server"
+      route_label: "Target Server가 CSRF Token을 검증한다."
+      active_actors: [browser, server]
+      description: "보호 대상 요청은 유효한 CSRF Token이 있는지 확인한 뒤 처리 여부를 결정한다."
+      payload: ["CSRF Token"]
+      outcomes:
+        - status: reject
+          text: "Token 없음·불일치 → 보호 대상 요청 거부"
+        - status: allow
+          text: "유효한 Token → 애플리케이션 정책에 따라 처리"
+
+xss:
+  eyebrow: "Interactive comparison"
+  title: "Stored XSS와 Reflected XSS"
+  summary: "저장 여부와 악성 입력이 응답에 들어오는 경로가 다르다."
+  actors:
+    - id: attacker
+      kind: "입력 주체"
+      name: "Attacker Input"
+      description: "악성 문자열이나 준비된 요청을 전달함"
+    - id: application
+      kind: "처리 경계"
+      name: "Application"
+      description: "입력을 저장하거나 응답에 반영함"
+    - id: storage
+      kind: "저장 경로"
+      name: "Server / DB"
+      description: "Stored XSS 입력을 보관함"
+    - id: browser
+      kind: "실행 환경"
+      name: "Victim Browser"
+      description: "응답을 문맥에 따라 해석함"
+  steps:
+    - title: "1. Stored XSS: 저장"
+      from: "Attacker Input"
+      to: "Server / DB"
+      route_label: "악성 입력이 게시글이나 댓글처럼 서버에 저장된다."
+      active_actors: [attacker, application, storage]
+      description: "Stored XSS에서는 공격자 입력이 서버나 데이터베이스에 저장된 뒤 나중에 조회된다."
+      payload: ["악성 입력", "게시글·댓글"]
+      outcomes:
+        - status: warning
+          text: "저장된 콘텐츠를 여러 사용자의 응답에 포함할 수 있다."
+    - title: "2. Stored XSS: 조회 응답"
+      from: "Server / DB"
+      to: "Victim Browser"
+      route_label: "저장된 입력이 다른 사용자의 조회 응답에 포함된다."
+      active_actors: [storage, application, browser]
+      description: "출력 처리가 취약하면 브라우저가 저장된 입력을 실행 가능한 문맥으로 해석할 수 있다."
+      payload: ["조회 응답", "저장된 입력"]
+      outcomes:
+        - status: reject
+          text: "안전한 출력 처리를 사용하면 실행 가능한 문맥을 만들지 않는다."
+    - title: "3. Reflected XSS: 준비된 요청"
+      from: "Attacker Input"
+      to: "Application"
+      route_label: "공격자가 준비한 요청의 입력이 서버로 전달된다."
+      active_actors: [attacker, application]
+      description: "Reflected XSS에서는 입력이 저장되지 않고 현재 요청의 파라미터나 오류 메시지 등에 들어온다."
+      payload: ["준비된 요청", "검색어·오류 입력"]
+      outcomes:
+        - status: info
+          text: "저장되지 않았다는 이유만으로 안전하다고 판단할 수 없다."
+    - title: "4. Reflected XSS: 현재 응답"
+      from: "Application"
+      to: "Victim Browser"
+      route_label: "서버가 요청 입력을 현재 응답에 반영한다."
+      active_actors: [application, browser]
+      description: "두 유형 모두 브라우저가 입력을 실행 가능한 출력 문맥으로 해석하고 방어가 부족할 때 문제가 된다."
+      payload: ["현재 응답", "출력 문맥"]
+      outcomes:
+        - status: reject
+          text: "단순 텍스트는 textContent 같은 안전한 DOM API로 출력한다."
+        - status: info
+          text: "HTML을 허용해야 한다면 Sanitization과 CSP를 함께 검토한다."

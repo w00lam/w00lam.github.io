@@ -1,0 +1,107 @@
+{% assign flow = site.data.interactive_flows[include.flow] %}
+
+<div
+  class="interactive-flow"
+  data-interactive-flow
+  data-flow-layout="{{ flow.layout | default: 'four' }}"
+  tabindex="0"
+  role="group"
+  aria-labelledby="interactive-flow-{{ include.flow }}-title"
+>
+  <div class="interactive-flow__header">
+    <p class="interactive-flow__eyebrow">{{ flow.eyebrow }}</p>
+    <h3 id="interactive-flow-{{ include.flow }}-title">{{ flow.title }}</h3>
+    <p>{{ flow.summary }}</p>
+  </div>
+
+  <div class="interactive-flow__progress" aria-live="polite">
+    <strong data-flow-step-title>{{ flow.steps[0].title }}</strong>
+    <span data-flow-step-count>1 / {{ flow.steps.size }}</span>
+  </div>
+
+  <div class="interactive-flow__stage">
+    <div class="interactive-flow__actors" role="list" aria-label="{{ flow.title }}의 참여 주체">
+      {% for actor in flow.actors %}
+        <article class="interactive-flow__actor" data-actor="{{ actor.id }}" role="listitem">
+          <span class="interactive-flow__actor-kind">{{ actor.kind }}</span>
+          <h4>{{ actor.name }}</h4>
+          <p>{{ actor.description }}</p>
+          <span class="interactive-flow__actor-state" data-actor-state>대기</span>
+        </article>
+      {% endfor %}
+    </div>
+
+    <div class="interactive-flow__route" aria-live="polite">
+      <div class="interactive-flow__route-participants">
+        <span data-flow-from>{{ flow.steps[0].from }}</span>
+        <span class="interactive-flow__route-arrow" aria-hidden="true">→</span>
+        <span data-flow-to>{{ flow.steps[0].to }}</span>
+      </div>
+      <p data-flow-route-label>{{ flow.steps[0].route_label }}</p>
+      <ul class="interactive-flow__payload" data-flow-payload>
+        {% for item in flow.steps[0].payload %}
+          <li class="interactive-flow__payload-item">{{ item }}</li>
+        {% endfor %}
+      </ul>
+    </div>
+
+    <div class="interactive-flow__outcomes" data-flow-outcomes aria-live="polite">
+      {% for outcome in flow.steps[0].outcomes %}
+        <div class="interactive-flow__outcome is-{{ outcome.status }}">
+          <span class="interactive-flow__outcome-status">
+            {% case outcome.status %}
+              {% when 'allow' %}처리
+              {% when 'reject' %}거부
+              {% when 'warning' %}주의
+              {% else %}참고
+            {% endcase %}
+          </span>
+          <span class="interactive-flow__outcome-text">{{ outcome.text }}</span>
+        </div>
+      {% endfor %}
+    </div>
+  </div>
+
+  <p class="interactive-flow__description" data-flow-description>{{ flow.steps[0].description }}</p>
+
+  <div class="interactive-flow__controls" aria-label="시각화 단계 제어">
+    <button type="button" class="btn btn-outline-secondary btn-sm" data-flow-action="previous" disabled>이전</button>
+    <button type="button" class="btn btn-outline-secondary btn-sm" data-flow-action="reset" disabled>처음으로</button>
+    <button type="button" class="btn btn-outline-secondary btn-sm" data-flow-action="next" disabled>다음</button>
+  </div>
+
+  <p class="interactive-flow__error" data-flow-error role="alert" hidden>
+    인터랙티브 단계 초기화에 실패했다. 아래 단계 목록에서 핵심 흐름을 확인할 수 있다.
+  </p>
+
+  <ol class="interactive-flow__step-data" data-flow-step-data>
+    {% for step in flow.steps %}
+      <li
+        data-step-id="{{ forloop.index0 }}"
+        data-flow-from="{{ step.from }}"
+        data-flow-to="{{ step.to }}"
+        data-flow-route-label="{{ step.route_label }}"
+        data-active-actors="{{ step.active_actors | join: ',' }}"
+      >
+        <strong data-step-title>{{ step.title }}</strong>
+        <p data-step-description>{{ step.description }}</p>
+        <ul data-step-payload>
+          {% for item in step.payload %}<li>{{ item }}</li>{% endfor %}
+        </ul>
+        <ul data-step-outcomes>
+          {% for outcome in step.outcomes %}
+            <li data-outcome-status="{{ outcome.status }}">{{ outcome.text }}</li>
+          {% endfor %}
+        </ul>
+      </li>
+    {% endfor %}
+  </ol>
+
+  <noscript>
+    <p class="interactive-flow__noscript">
+      JavaScript가 꺼져 있어 단계 제어를 사용할 수 없다. 위 단계 목록에서 {{ flow.title }}의 핵심 관계를 확인할 수 있다.
+    </p>
+  </noscript>
+</div>
+
+<script defer src="{{ '/assets/js/interactive-flow.js' | relative_url }}"></script>
