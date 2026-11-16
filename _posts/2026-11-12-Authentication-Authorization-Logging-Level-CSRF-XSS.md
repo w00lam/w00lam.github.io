@@ -188,7 +188,7 @@ CSRF는 Cross-Site Request Forgery의 약자다. 사용자가 대상 서버에 �
 
 중요한 점은 공격자가 인증 Cookie의 값을 직접 읽어야 하는 것은 아니라는 것이다. 공격자는 피해자의 브라우저가 요청을 보내도록 유도할 뿐이고 Cookie를 읽지 못해도 공격이 성립한다. 다만 Cookie가 모든 교차 출처 요청에 항상 포함되는 것은 아니다. `SameSite` 속성과 브라우저의 Cookie 전송 정책에 따라 전송 여부가 달라진다.
 
-![CSRF 공격과 토큰 검증 흐름](/assets/images/2026-11-12-auth-logging-csrf-xss/csrf-request-flow.svg?v=9bf1d8f)
+{% include interactive/csrf-request-flow.html %}
 
 *그림 3. 공격자는 Cookie 값을 읽지 않아도 피해자의 브라우저가 대상 서버로 요청을 보내도록 유도한다. `SameSite` 정책과 요청 조건에 따라 Cookie가 전송되지 않을 수도 있으며 서버가 CSRF Token을 요구하면 토큰 검증에서 요청이 거부된다.*
 
