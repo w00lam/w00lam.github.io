@@ -135,7 +135,7 @@ ALB는 들어온 요청을 여러 EC2 인스턴스 중 하나로 전달한다. �
 
 이 상황을 그림으로 보면 더 분명하다.
 
-![다중 서버 환경에서 EC2-A의 로컬 세션을 EC2-B가 찾지 못하는 구조](/assets/images/2026-08-07-session-auth-scaling/local-session-failure.png)
+{% include interactive/flow-card.html flow='session_local_failure' %}
 _EC2-A에는 `Session: abc123`이 있지만 다음 요청을 받은 EC2-B에는 해당 세션이 없다._
 
 브라우저가 쿠키를 잃어버린 것이 아니다. Session ID도 그대로 `abc123`이다. 문제는 **Session ID를 해석할 세션 상태가 특정 서버의 메모리에만 존재한다는 것**이다.
@@ -207,7 +207,7 @@ ALB
 5. EC2-B는 `abc123`을 Redis에서 조회한다.
 6. EC2-B도 User A의 세션을 확인하고 인증된 요청으로 처리한다.
 
-![여러 EC2 인스턴스가 하나의 Redis 세션 저장소를 공유하는 구조](/assets/images/2026-08-07-session-auth-scaling/redis-session-sharing.png)
+{% include interactive/flow-card.html flow='redis_session_sharing' %}
 _세션이 Redis에 있으므로 ALB가 어떤 EC2로 요청을 전달해도 같은 로그인 상태를 조회할 수 있다._
 
 ### Spring Session + Redis

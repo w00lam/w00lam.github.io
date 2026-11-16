@@ -38,7 +38,7 @@ CPU는 한 순간에 하나의 실행 흐름만 실행할 수 있다. CPU 코어
 
 다이어그램으로 보면 다음 흐름이다.
 
-![Thread A에서 Thread B로 Context Switching이 일어나는 흐름](/assets/images/2026-08-12-thread-pool-context-switching/context-switching-flow.svg)
+{% include interactive/flow-card.html flow='context_switching' %}
 
 Context Switching은 단순히 “다음 스레드를 고르는 것”이 아니다. 현재 상태를 안전하게 보관하고 다른 실행 흐름의 상태를 되살린 뒤 CPU가 그 위치에서 다시 실행하도록 만드는 과정이다.
 
@@ -109,7 +109,7 @@ CPU 상태 저장/복원
 
 하지만 스레드 수가 계속 늘어난다고 처리량이 선형으로 증가하지는 않는다. CPU 코어가 4개인데 Runnable 상태의 스레드가 100개라고 해 보자. 한 순간에 실제로 실행되는 스레드는 최대 4개뿐이고 나머지는 CPU를 배정받기를 기다린다.
 
-![CPU 코어보다 Runnable Thread가 많아졌을 때의 스케줄링 비용](/assets/images/2026-08-12-thread-pool-context-switching/thread-count-and-switching.svg)
+{% include interactive/flow-card.html flow='thread_switching_cost' %}
 
 이때 스레드가 많아질수록 다음 비용이 함께 커진다.
 
@@ -179,7 +179,7 @@ Thread Pool을 500개로 늘렸다고 DB 작업이 500개 동시에 실행되는
 
 서버 처리량은 Thread Pool 하나로 결정되지 않는다. 하나의 요청이 끝나기까지 통과하는 자원 중 가장 느린 구간이 병목이 될 수 있다.
 
-![Spring 서버의 Thread Pool과 DB Connection Pool 병목 구조](/assets/images/2026-08-12-thread-pool-context-switching/spring-thread-pool-bottleneck.svg)
+{% include interactive/flow-card.html flow='pool_bottleneck' %}
 
 다음과 같은 자원을 함께 확인해야 한다.
 

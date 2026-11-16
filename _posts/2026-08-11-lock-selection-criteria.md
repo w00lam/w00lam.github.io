@@ -123,7 +123,7 @@ WHERE id = ?
 
 두 트랜잭션이 모두 `version = 1`을 읽었다고 하자. A가 먼저 수정하면 해당 행의 버전은 `2`가 된다. 그다음 B가 자신이 읽었던 `version = 1`을 조건으로 UPDATE를 실행하면 조건에 맞는 행이 없으므로 변경 행 수가 0이 된다. JPA는 이를 낙관적 락 충돌로 감지하고 예외를 발생시킨다.
 
-![낙관적 락의 버전 비교와 재시도 흐름](/assets/images/2026-08-11-lock-selection-criteria/optimistic-lock-flow.svg)
+{% include interactive/flow-card.html flow='optimistic_lock' %}
 
 여기서 중요한 점은 낙관적 락이 **충돌을 막는 방식이 아니라 충돌을 감지하는 방식**이라는 것이다. 충돌이 발생했을 때 어떻게 응답할지까지 설계해야 한다.
 
@@ -168,7 +168,7 @@ Optional<Product> findByIdForUpdate(@Param("id") Long id);
 
 트랜잭션 A가 이 조회를 실행하면 해당 행에 Row Lock을 획득한다. 그동안 트랜잭션 B가 같은 행을 수정하거나 같은 방식으로 잠그려 하면 A가 커밋 또는 롤백하여 락을 반환할 때까지 기다린다.
 
-![비관적 락의 Row Lock 대기 흐름](/assets/images/2026-08-11-lock-selection-criteria/pessimistic-lock-flow.svg)
+{% include interactive/flow-card.html flow='pessimistic_lock' %}
 
 비관적 락은 충돌 후 실패하고 재시도하는 대신, 처음부터 같은 데이터의 접근을 순서대로 처리한다. 충돌이 매우 잦고 재시도해도 대부분 다시 충돌하는 상황에서는 오히려 예측 가능한 선택이 될 수 있다.
 
@@ -203,7 +203,7 @@ Optional<Product> findByIdForUpdate(@Param("id") Long id);
 
 그렇다면 계속 실패하고 재시도하는 것보다 처음부터 락을 획득해 순차적으로 처리하는 편이 나을 수 있다. 단, 처리 시간이 짧고 락을 오래 잡지 않는다는 전제가 필요하다.
 
-![아토믹 업데이트·낙관적 락·비관적 락 선택 흐름](/assets/images/2026-08-11-lock-selection-criteria/lock-selection-flow.svg)
+{% include interactive/flow-card.html flow='lock_selection' %}
 
 ## 6. 가장 중요한 판단 기준 — 충돌 비용과 대기 비용
 

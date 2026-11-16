@@ -5360,3 +5360,1222 @@ combined_payment_design:
       outcomes:
         - status: info
           text: "인터페이스와 추상 클래스는 경쟁 도구가 아니라 다른 책임을 맡는다."
+
+session_local_failure:
+  eyebrow: "Interactive flow"
+  title: "다중 서버의 로컬 세션 문제"
+  summary: "서버별 메모리에 세션을 저장하면 다음 요청이 다른 서버로 갔을 때 로그인 상태를 찾지 못할 수 있다."
+  actors:
+    - id: client
+      kind: "클라이언트"
+      name: "Browser"
+      description: "세션 ID 쿠키를 보내는 브라우저"
+    - id: lb
+      kind: "분산 장치"
+      name: "Load Balancer"
+      description: "요청을 여러 EC2 인스턴스로 분산하는 장치"
+    - id: a
+      kind: "서버 A"
+      name: "EC2-A Session"
+      description: "A의 로컬 메모리에만 저장된 세션"
+    - id: b
+      kind: "서버 B"
+      name: "EC2-B Session"
+      description: "A의 세션을 모르는 다른 서버"
+  steps:
+    - title: "1. 로그인 처리"
+      from: "Browser"
+      to: "EC2-A Session"
+      route_label: "첫 로그인 요청이 EC2-A로 가고 세션이 A의 로컬 메모리에 저장된다."
+      active_actors: [client, a, lb]
+      description: "브라우저는 세션 ID를 받지만 세션 데이터는 A 프로세스 안에만 있다."
+      payload: ["login", "session id", "local memory"]
+      outcomes:
+        - status: allow
+          text: "같은 서버로 계속 가면 로컬 세션이 동작한다."
+    - title: "2. 다음 요청 분산"
+      from: "Browser"
+      to: "EC2-B Session"
+      route_label: "다음 요청이 로드 밸런서를 통해 EC2-B로 전달된다."
+      active_actors: [client, lb, b]
+      description: "B의 로컬 메모리에는 A가 만든 세션 데이터가 없다."
+      payload: ["session cookie", "request", "different instance"]
+      outcomes:
+        - status: warning
+          text: "서버가 로그인 상태를 찾지 못해 인증 실패처럼 보일 수 있다."
+    - title: "3. 공유 상태로 이동"
+      from: "EC2-A Session"
+      to: "EC2-B Session"
+      route_label: "세션을 공용 저장소에 두거나 요청 고정 전략을 선택한다."
+      active_actors: [a, b, lb]
+      description: "여러 서버가 같은 인증 상태를 보려면 상태 위치와 라우팅 정책을 함께 설계해야 한다."
+      payload: ["shared store", "sticky session", "scaling"]
+      outcomes:
+        - status: info
+          text: "서버 수를 늘리는 것과 세션 상태를 공유하는 것은 별도 문제다."
+
+redis_session_sharing:
+  eyebrow: "Interactive flow"
+  title: "Redis 공유 세션 저장소"
+  summary: "여러 애플리케이션 서버가 같은 Redis 세션 저장소를 참조하면 요청이 어느 서버로 가도 상태를 조회할 수 있다."
+  actors:
+    - id: client
+      kind: "클라이언트"
+      name: "Browser"
+      description: "세션 ID 쿠키를 전송하는 브라우저"
+    - id: servers
+      kind: "애플리케이션 계층"
+      name: "EC2-A · B · C"
+      description: "요청을 나누어 처리하는 여러 서버"
+    - id: redis
+      kind: "공유 저장소"
+      name: "Redis Session Store"
+      description: "서버들이 함께 읽고 쓰는 세션 데이터 저장소"
+    - id: response
+      kind: "인증 결과"
+      name: "Authenticated Request"
+      description: "세션 조회 후 처리되는 요청"
+  steps:
+    - title: "1. 요청 분산"
+      from: "Browser"
+      to: "EC2-A · B · C"
+      route_label: "로드 밸런서가 브라우저 요청을 여러 애플리케이션 서버에 전달한다."
+      active_actors: [client, servers]
+      description: "특정 서버의 로컬 메모리에 의존하지 않는 구조를 준비한다."
+      payload: ["session cookie", "load balancing", "request"]
+      outcomes:
+        - status: info
+          text: "같은 사용자의 요청이 매번 다른 서버에 도착할 수 있다."
+    - title: "2. 공용 세션 조회"
+      from: "EC2-A · B · C"
+      to: "Redis Session Store"
+      route_label: "어느 서버든 쿠키의 세션 ID로 Redis에서 인증 상태를 조회한다."
+      active_actors: [servers, redis, client]
+      description: "세션 상태의 기준이 특정 JVM이 아니라 공용 저장소로 이동한다."
+      payload: ["session id", "GET session", "shared state"]
+      outcomes:
+        - status: allow
+          text: "서버가 달라도 같은 세션 데이터를 확인할 수 있다."
+    - title: "3. 요청 처리"
+      from: "Redis Session Store"
+      to: "Authenticated Request"
+      route_label: "조회한 사용자 상태로 권한을 확인하고 요청을 처리한다."
+      active_actors: [redis, servers, response]
+      description: "공유 저장소도 네트워크 지연·장애·만료 정책을 함께 운영해야 한다."
+      payload: ["user context", "TTL", "response"]
+      outcomes:
+        - status: info
+          text: "세션 공유가 인증·인가 정책 전체를 자동으로 해결하는 것은 아니다."
+
+basic_vs_session:
+  eyebrow: "Interactive comparison"
+  title: "Basic Auth와 세션 인증의 요청 흐름"
+  summary: "Basic Auth는 매 요청 자격 증명을 보내고 세션 인증은 로그인 후 세션 ID로 서버 상태를 조회한다."
+  actors:
+    - id: client
+      kind: "클라이언트"
+      name: "Browser"
+      description: "인증 요청을 보내는 브라우저"
+    - id: basic
+      kind: "무상태 인증"
+      name: "Basic Auth"
+      description: "매 요청 Authorization 헤더에 자격 증명을 담는 방식"
+    - id: session
+      kind: "상태 기반 인증"
+      name: "Session Auth"
+      description: "로그인 후 세션 ID 쿠키를 보내는 방식"
+    - id: store
+      kind: "서버 상태"
+      name: "Session Store"
+      description: "세션 ID와 사용자 상태를 저장하는 서버 측 저장소"
+  steps:
+    - title: "1. Basic 자격 증명"
+      from: "Browser"
+      to: "Basic Auth"
+      route_label: "브라우저가 매 요청에 아이디와 비밀번호를 Authorization 헤더로 보낸다."
+      active_actors: [client, basic]
+      description: "서버가 세션 상태를 저장하지 않아도 요청마다 자격 증명을 검증할 수 있다."
+      payload: ["Authorization", "username", "password"]
+      outcomes:
+        - status: warning
+          text: "전송 보호와 자격 증명 노출 범위를 별도로 관리해야 한다."
+    - title: "2. 세션 로그인"
+      from: "Browser"
+      to: "Session Auth"
+      route_label: "최초 로그인 후 서버가 세션을 만들고 세션 ID 쿠키를 발급한다."
+      active_actors: [client, session, store]
+      description: "이후 요청은 비밀번호 대신 세션 ID를 전송한다."
+      payload: ["login once", "Set-Cookie", "session id"]
+      outcomes:
+        - status: allow
+          text: "서버가 인증 상태를 세션 저장소에서 관리한다."
+    - title: "3. 세션 조회"
+      from: "Session Auth"
+      to: "Session Store"
+      route_label: "서버가 쿠키의 세션 ID로 사용자 상태를 조회하고 요청을 처리한다."
+      active_actors: [session, store, client]
+      description: "세션 방식은 서버 상태를 관리하므로 여러 서버 배치에서 저장소 전략이 중요해진다."
+      payload: ["Cookie", "lookup", "user state"]
+      outcomes:
+        - status: info
+          text: "두 방식은 인증 상태를 어디에 둘지의 선택 문제다."
+
+shared_session_store:
+  eyebrow: "Interactive flow"
+  title: "로드 밸런서와 공용 Redis 세션"
+  summary: "여러 애플리케이션 서버가 로컬 세션 대신 공용 Redis를 참조해 같은 로그인 상태를 공유한다."
+  actors:
+    - id: lb
+      kind: "분산"
+      name: "Load Balancer"
+      description: "들어온 요청을 서버 중 하나로 전달"
+    - id: apps
+      kind: "서버 묶음"
+      name: "Application Servers"
+      description: "서로 다른 인스턴스로 실행되는 서버들"
+    - id: redis
+      kind: "상태 저장소"
+      name: "Shared Redis"
+      description: "세션을 중앙에서 관리하는 저장소"
+    - id: user
+      kind: "사용자 상태"
+      name: "Authenticated User"
+      description: "세션 조회로 복원되는 사용자 정보"
+  steps:
+    - title: "1. 요청 분배"
+      from: "Load Balancer"
+      to: "Application Servers"
+      route_label: "로드 밸런서가 요청을 서버 A·B·C 중 하나로 보낸다."
+      active_actors: [lb, apps]
+      description: "서버 선택이 바뀌어도 인증 상태를 잃지 않는 것이 목표다."
+      payload: ["request", "server A/B/C", "distribution"]
+      outcomes:
+        - status: info
+          text: "스티키 세션 없이도 공용 상태를 사용할 수 있다."
+    - title: "2. Redis 조회"
+      from: "Application Servers"
+      to: "Shared Redis"
+      route_label: "선택된 서버가 세션 ID로 공용 Redis를 조회한다."
+      active_actors: [apps, redis]
+      description: "인증 상태를 특정 서버의 로컬 메모리에서 분리한다."
+      payload: ["session id", "GET", "TTL"]
+      outcomes:
+        - status: allow
+          text: "어느 서버가 처리해도 같은 세션 데이터에 접근한다."
+    - title: "3. 사용자 복원"
+      from: "Shared Redis"
+      to: "Authenticated User"
+      route_label: "Redis 결과로 현재 요청의 사용자·권한 정보를 복원한다."
+      active_actors: [redis, user, apps]
+      description: "저장소 장애나 만료 시 인증 실패 처리를 별도로 정의해야 한다."
+      payload: ["principal", "roles", "request context"]
+      outcomes:
+        - status: info
+          text: "세션 저장소는 확장성과 함께 가용성 설계 대상이 된다."
+
+deployment_runtime:
+  eyebrow: "Interactive flow"
+  title: "배포 성공과 런타임 실패의 경계"
+  summary: "CI/CD가 서버에 아티팩트를 배포하는 데 성공해도 애플리케이션 시작·설정·의존성 단계에서 실패할 수 있다."
+  actors:
+    - id: pipeline
+      kind: "배포 자동화"
+      name: "GitHub Actions"
+      description: "빌드와 배포 작업을 실행하는 파이프라인"
+    - id: artifact
+      kind: "배포 결과"
+      name: "Artifact on Server"
+      description: "서버에 업로드된 JAR 또는 이미지"
+    - id: runtime
+      kind: "실행 단계"
+      name: "Application Runtime"
+      description: "프로세스 시작과 의존성 로딩 단계"
+    - id: health
+      kind: "서비스 상태"
+      name: "Health Check"
+      description: "실제 요청 가능 여부를 확인하는 검증"
+  steps:
+    - title: "1. 빌드 성공"
+      from: "GitHub Actions"
+      to: "Artifact on Server"
+      route_label: "파이프라인이 코드를 빌드하고 아티팩트를 서버에 배포한다."
+      active_actors: [pipeline, artifact]
+      description: "배포 작업의 성공은 파일 전달과 명령 실행 성공을 의미할 수 있다."
+      payload: ["build", "upload", "deploy"]
+      outcomes:
+        - status: info
+          text: "배포 성공 배지가 애플리케이션 정상 동작을 보장하지는 않는다."
+    - title: "2. 런타임 시작"
+      from: "Artifact on Server"
+      to: "Application Runtime"
+      route_label: "서버가 JAR·컨테이너를 실행하고 환경 설정과 의존성을 로드한다."
+      active_actors: [artifact, runtime]
+      description: "잘못된 설정, 포트, 권한, DB 연결은 배포 이후 시작 단계에서 드러날 수 있다."
+      payload: ["start", "environment", "dependency"]
+      outcomes:
+        - status: warning
+          text: "프로세스가 즉시 종료되거나 시작은 되어도 기능이 실패할 수 있다."
+    - title: "3. 실제 상태 확인"
+      from: "Application Runtime"
+      to: "Health Check"
+      route_label: "로그·헬스 체크·실제 요청으로 서비스가 정상 응답하는지 확인한다."
+      active_actors: [runtime, health]
+      description: "배포 결과와 운영 중인 애플리케이션 상태를 별도 단계로 검증한다."
+      payload: ["startup log", "health endpoint", "smoke test"]
+      outcomes:
+        - status: allow
+          text: "배포 성공과 서비스 준비 완료를 구분해서 기록한다."
+
+code_config_mismatch:
+  eyebrow: "Interactive comparison"
+  title: "애플리케이션 코드와 Parameter Store 설정"
+  summary: "코드가 기대하는 키·타입·환경과 실제 Parameter Store 값이 맞지 않으면 런타임에서 실패한다."
+  actors:
+    - id: code
+      kind: "기대 계약"
+      name: "Application Code"
+      description: "환경 변수와 설정 키를 읽는 코드"
+    - id: parameter
+      kind: "외부 설정"
+      name: "Parameter Store"
+      description: "배포 환경별 값을 제공하는 설정 저장소"
+    - id: binding
+      kind: "바인딩"
+      name: "Config Binding"
+      description: "문자열 설정을 애플리케이션 타입으로 연결하는 과정"
+    - id: runtime
+      kind: "실행 결과"
+      name: "Runtime"
+      description: "정상 시작 또는 설정 오류로 실패하는 애플리케이션"
+  steps:
+    - title: "1. 코드 키 정의"
+      from: "Application Code"
+      to: "Config Binding"
+      route_label: "코드가 필요한 키 이름과 타입, 필수 여부를 정의한다."
+      active_actors: [code, binding]
+      description: "코드가 기대하는 설정 계약을 배포 환경과 맞춰야 한다."
+      payload: ["key", "type", "required"]
+      outcomes:
+        - status: info
+          text: "환경별 값이 있어도 키 이름이 다르면 연결되지 않는다."
+    - title: "2. 외부 값 조회"
+      from: "Parameter Store"
+      to: "Config Binding"
+      route_label: "런타임이 Parameter Store에서 실제 환경의 값을 가져온다."
+      active_actors: [parameter, binding]
+      description: "권한·리전·경로와 값의 형식을 함께 확인해야 한다."
+      payload: ["parameter path", "IAM", "environment value"]
+      outcomes:
+        - status: warning
+          text: "설정 조회 권한이나 경로가 틀리면 코드까지 값이 도달하지 않는다."
+    - title: "3. 일치 여부 확인"
+      from: "Config Binding"
+      to: "Application Code"
+      route_label: "키·타입·필수값이 일치하면 애플리케이션 설정으로 바인딩한다."
+      active_actors: [binding, code, parameter]
+      description: "코드와 외부 설정의 계약이 어긋나면 시작 오류나 기능 오류가 발생한다."
+      payload: ["name match", "type conversion", "value"]
+      outcomes:
+        - status: reject
+          text: "배포 성공과 설정 계약 성공은 별도로 검증해야 한다."
+
+cloudwatch_alarm:
+  eyebrow: "Interactive flow"
+  title: "CloudWatch 알람 원인 추적"
+  summary: "알람 발생 시 지표·로그·배포 이력을 같은 시간 범위에 놓고 원인 후보를 좁힌다."
+  actors:
+    - id: alarm
+      kind: "신호"
+      name: "CloudWatch Alarm"
+      description: "임계치를 넘은 메트릭 알람"
+    - id: metric
+      kind: "수치"
+      name: "Metrics"
+      description: "CPU·지연·오류율 같은 시간 series"
+    - id: logs
+      kind: "상세 사실"
+      name: "Application Logs"
+      description: "요청·예외·배포 이후의 상세 기록"
+    - id: cause
+      kind: "원인 후보"
+      name: "Root Cause"
+      description: "상관관계를 검증해 좁힌 원인"
+  steps:
+    - title: "1. 알람 발생"
+      from: "Metrics"
+      to: "CloudWatch Alarm"
+      route_label: "메트릭이 설정한 임계치를 넘어 알람이 발생한다."
+      active_actors: [metric, alarm]
+      description: "알람은 이상 신호이지 원인을 직접 알려주는 진단 결과는 아니다."
+      payload: ["threshold", "period", "breach"]
+      outcomes:
+        - status: warning
+          text: "알람 메시지 하나만으로 원인을 단정하지 않는다."
+    - title: "2. 시간 범위 맞추기"
+      from: "CloudWatch Alarm"
+      to: "Application Logs"
+      route_label: "같은 시작·종료 시각의 로그에서 오류와 요청 변화를 확인한다."
+      active_actors: [alarm, logs, metric]
+      description: "메트릭 그래프와 로그의 시간축을 맞춰 실제 사건의 순서를 확인한다."
+      payload: ["time window", "error log", "request id"]
+      outcomes:
+        - status: info
+          text: "지연이 늘어난 시간과 오류가 기록된 시간이 다를 수 있다."
+    - title: "3. 배포·외부 변화 대조"
+      from: "Application Logs"
+      to: "Root Cause"
+      route_label: "배포 이력·설정 변경·외부 의존성 상태와 로그를 대조해 원인을 좁힌다."
+      active_actors: [logs, cause, alarm]
+      description: "상관관계를 원인으로 확정하기 전에 재현·추가 지표·롤백 결과를 확인한다."
+      payload: ["deploy history", "config change", "dependency"]
+      outcomes:
+        - status: allow
+          text: "알람은 조사 시작점이고 원인은 여러 증거를 연결해 확정한다."
+
+metric_log_deploy:
+  eyebrow: "Interactive comparison"
+  title: "Metric·로그·배포 이력의 상관관계"
+  summary: "수치 변화와 상세 로그, 변경 이력을 같은 타임라인에 겹쳐 원인 후보를 검증한다."
+  actors:
+    - id: metric
+      kind: "수치"
+      name: "Metric Timeline"
+      description: "지연·오류율·처리량의 변화"
+    - id: logs
+      kind: "상세 기록"
+      name: "Log Timeline"
+      description: "예외·경고·요청의 시간순 기록"
+    - id: deploy
+      kind: "변경 이력"
+      name: "Deploy Timeline"
+      description: "배포와 설정 변경 시각"
+    - id: hypothesis
+      kind: "검증"
+      name: "Incident Hypothesis"
+      description: "세 신호를 대조해 만든 원인 가설"
+  steps:
+    - title: "1. 수치 이상 포착"
+      from: "Metric Timeline"
+      to: "Incident Hypothesis"
+      route_label: "오류율이나 지연 시간이 변한 시점을 표시한다."
+      active_actors: [metric, hypothesis]
+      description: "메트릭은 언제 이상이 시작됐는지 알려주지만 무엇이 바뀌었는지는 말하지 않는다."
+      payload: ["latency", "error rate", "timestamp"]
+      outcomes:
+        - status: info
+          text: "변화 시작 시각을 조사 기준점으로 삼는다."
+    - title: "2. 로그 대조"
+      from: "Log Timeline"
+      to: "Incident Hypothesis"
+      route_label: "같은 시간대에 예외·경고·요청 패턴이 나타났는지 확인한다."
+      active_actors: [logs, hypothesis]
+      description: "로그의 상세 사실이 수치 변화와 같은 사건을 가리키는지 검증한다."
+      payload: ["exception", "request path", "correlation id"]
+      outcomes:
+        - status: info
+          text: "관련 없는 로그를 원인으로 연결하지 않도록 시간과 요청을 함께 본다."
+    - title: "3. 배포 이력 대조"
+      from: "Deploy Timeline"
+      to: "Incident Hypothesis"
+      route_label: "이상 시작 직전에 배포·설정 변경이 있었는지 확인한다."
+      active_actors: [deploy, hypothesis, metric]
+      description: "변경 시각과 증상 시각이 맞더라도 재현과 롤백으로 인과관계를 확인한다."
+      payload: ["release", "config", "rollback"]
+      outcomes:
+        - status: allow
+          text: "세 자료는 서로 대체하지 않고 함께 원인을 좁히는 증거가 된다."
+
+good_bad_alarm:
+  eyebrow: "Interactive comparison"
+  title: "좋은 알람과 나쁜 알람"
+  summary: "행동 가능한 조건과 명확한 책임이 있는 알람은 대응을 돕고 노이즈성 알람은 피로를 만든다."
+  actors:
+    - id: signal
+      kind: "관측 신호"
+      name: "Metric Signal"
+      description: "서비스 상태를 나타내는 측정값"
+    - id: good
+      kind: "좋은 알람"
+      name: "Actionable Alert"
+      description: "임계치·지속 시간·담당자가 명확한 알람"
+    - id: bad
+      kind: "나쁜 알람"
+      name: "Noisy Alert"
+      description: "원인과 행동이 불명확한 반복 알람"
+    - id: action
+      kind: "대응"
+      name: "Runbook Action"
+      description: "알람 수신자가 수행할 조치"
+  steps:
+    - title: "1. 신호 정의"
+      from: "Metric Signal"
+      to: "Actionable Alert"
+      route_label: "사용자 영향이나 운영 위험과 연결된 메트릭을 선택한다."
+      active_actors: [signal, good]
+      description: "단순히 숫자가 변했다는 이유보다 실제 대응 필요성을 기준으로 한다."
+      payload: ["SLO", "error rate", "duration"]
+      outcomes:
+        - status: allow
+          text: "측정값이 어떤 장애 위험을 의미하는지 설명할 수 있다."
+    - title: "2. 행동 가능한 조건"
+      from: "Actionable Alert"
+      to: "Runbook Action"
+      route_label: "지속 시간과 심각도를 정하고 알람 발생 시 실행할 대응을 연결한다."
+      active_actors: [good, action]
+      description: "좋은 알람은 수신자가 무엇을 확인하고 누구에게 알릴지 알 수 있다."
+      payload: ["threshold", "for 5m", "runbook"]
+      outcomes:
+        - status: allow
+          text: "알람이 실제 운영 행동으로 이어진다."
+    - title: "3. 노이즈 제거"
+      from: "Metric Signal"
+      to: "Noisy Alert"
+      route_label: "일시적 변화나 의미 없는 조건을 매번 알람으로 만들면 노이즈가 쌓인다."
+      active_actors: [signal, bad, action]
+      description: "반복되는 오탐은 중요한 알람의 신뢰도와 대응 속도를 떨어뜨린다."
+      payload: ["flapping", "no owner", "false positive"]
+      outcomes:
+        - status: warning
+          text: "알람 개수보다 행동 가능성과 신뢰도가 중요하다."
+
+merge_commit_squash:
+  eyebrow: "Interactive comparison"
+  title: "Merge Commit과 Squash Merge"
+  summary: "Merge는 브랜치의 여러 커밋을 그래프에 보존하고 Squash는 변경을 하나의 대표 커밋으로 묶어 반영한다."
+  actors:
+    - id: feature
+      kind: "작업 브랜치"
+      name: "Feature Commits"
+      description: "기능 브랜치에 쌓인 여러 작업 커밋"
+    - id: merge
+      kind: "병합 방식"
+      name: "Merge Commit"
+      description: "두 부모를 가진 병합 커밋을 만드는 방식"
+    - id: squash
+      kind: "병합 방식"
+      name: "Squash Merge"
+      description: "여러 변경을 하나의 새 커밋으로 합치는 방식"
+    - id: main
+      kind: "기준 브랜치"
+      name: "main"
+      description: "최종 통합 커밋을 받는 브랜치"
+  steps:
+    - title: "1. 기능 커밋 축적"
+      from: "Feature Commits"
+      to: "main"
+      route_label: "기능 브랜치에 여러 작업 커밋이 쌓이고 통합 시점을 기다린다."
+      active_actors: [feature, main]
+      description: "커밋 그래프의 세부 작업 기록을 어느 정도까지 보존할지 결정한다."
+      payload: ["commit A", "commit B", "PR"]
+      outcomes:
+        - status: info
+          text: "브랜치의 작업 기록과 최종 통합 기록은 서로 다른 관심사다."
+    - title: "2. Merge Commit"
+      from: "Feature Commits"
+      to: "Merge Commit"
+      route_label: "기능 브랜치의 커밋 흐름을 보존하고 main에 병합 커밋을 추가한다."
+      active_actors: [feature, merge, main]
+      description: "두 부모를 가진 커밋으로 브랜치가 언제 합쳐졌는지 그래프에 남는다."
+      payload: ["two parents", "history preserved", "merge"]
+      outcomes:
+        - status: info
+          text: "상세한 브랜치 그래프가 필요할 때 유용하다."
+    - title: "3. Squash Merge"
+      from: "Feature Commits"
+      to: "Squash Merge"
+      route_label: "여러 기능 커밋의 변경을 하나의 대표 커밋으로 만들어 main에 반영한다."
+      active_actors: [feature, squash, main]
+      description: "main의 히스토리는 단순해지지만 원래 커밋 단위는 대표 커밋 안으로 접힌다."
+      payload: ["squash", "one commit", "linear history"]
+      outcomes:
+        - status: allow
+          text: "최종 이력의 읽기 쉬움과 원본 작업 기록 보존을 기준으로 선택한다."
+
+final_merge_strategy:
+  eyebrow: "Interactive flow"
+  title: "프로젝트의 최종 머지 전략"
+  summary: "작업 브랜치의 리뷰와 검증을 거친 뒤 프로젝트가 정한 병합 방식으로 기준 브랜치에 반영한다."
+  actors:
+    - id: branch
+      kind: "작업 단위"
+      name: "Feature Branch"
+      description: "작은 변경을 담은 작업 브랜치"
+    - id: review
+      kind: "검증"
+      name: "Review + CI"
+      description: "코드 리뷰와 자동 테스트·빌드"
+    - id: strategy
+      kind: "정책"
+      name: "Merge Policy"
+      description: "Merge, Squash, Rebase 중 프로젝트가 선택한 방식"
+    - id: main
+      kind: "통합 결과"
+      name: "Main Branch"
+      description: "배포 가능한 기준 브랜치"
+  steps:
+    - title: "1. 작업 브랜치 생성"
+      from: "Main Branch"
+      to: "Feature Branch"
+      route_label: "기준 브랜치에서 목적이 분명한 작업 브랜치를 만든다."
+      active_actors: [main, branch]
+      description: "작업을 분리하면 리뷰 대상과 변경 범위를 명확하게 만들 수 있다."
+      payload: ["branch", "small change", "isolated work"]
+      outcomes:
+        - status: info
+          text: "작업 브랜치는 통합 전 변경을 격리하는 경계다."
+    - title: "2. 리뷰와 CI"
+      from: "Feature Branch"
+      to: "Review + CI"
+      route_label: "Pull Request에서 리뷰와 테스트·빌드 검증을 수행한다."
+      active_actors: [branch, review]
+      description: "병합 방식보다 먼저 변경 내용과 자동 검증이 통과해야 한다."
+      payload: ["pull request", "review", "tests"]
+      outcomes:
+        - status: allow
+          text: "검증 가능한 상태가 병합의 전제다."
+    - title: "3. 정책에 따른 통합"
+      from: "Review + CI"
+      to: "Merge Policy"
+      route_label: "프로젝트가 정한 이력 정책에 따라 Merge 또는 Squash로 통합한다."
+      active_actors: [review, strategy, main]
+      description: "팀의 릴리스·감사·히스토리 요구에 맞는 하나의 일관된 전략을 사용한다."
+      payload: ["merge", "squash", "rebase policy"]
+      outcomes:
+        - status: allow
+          text: "통합 이력이 프로젝트의 읽기·복구·배포 흐름과 맞는다."
+
+tdd_edd:
+  eyebrow: "Interactive comparison"
+  title: "TDD와 EDD 개발 사이클"
+  summary: "TDD는 코드 동작의 테스트를 먼저 만들고 EDD는 배포 후 평가와 운영 피드백까지 개발 사이클에 포함한다."
+  actors:
+    - id: intent
+      kind: "기대 결과"
+      name: "Expected Behavior"
+      description: "코드가 만족해야 할 동작과 품질 기준"
+    - id: test
+      kind: "빠른 검증"
+      name: "TDD Test"
+      description: "구현 전 작성하는 자동 테스트"
+    - id: deploy
+      kind: "운영 반영"
+      name: "Deploy"
+      description: "검증된 기능을 실제 환경에 배포하는 단계"
+    - id: eval
+      kind: "운영 평가"
+      name: "EDD Evaluation"
+      description: "실제 결과를 측정하고 다음 개선으로 연결하는 평가"
+  steps:
+    - title: "1. 기대 행동 정의"
+      from: "Expected Behavior"
+      to: "TDD Test"
+      route_label: "구현 전에 성공·실패 조건을 테스트로 표현한다."
+      active_actors: [intent, test]
+      description: "TDD는 코드를 먼저 쓰는 대신 검증 가능한 행동을 먼저 고정한다."
+      payload: ["red", "expected result", "test"]
+      outcomes:
+        - status: info
+          text: "테스트가 구현 방향과 회귀 기준을 제공한다."
+    - title: "2. 구현과 통과"
+      from: "TDD Test"
+      to: "Deploy"
+      route_label: "실패하는 테스트를 통과시키고 리팩터링한 뒤 배포 가능한 상태를 만든다."
+      active_actors: [test, deploy]
+      description: "TDD의 빠른 피드백 루프는 코드 수준 품질을 다룬다."
+      payload: ["green", "refactor", "CI"]
+      outcomes:
+        - status: allow
+          text: "자동 테스트가 배포 전 회귀를 줄인다."
+    - title: "3. 운영 결과 평가"
+      from: "Deploy"
+      to: "EDD Evaluation"
+      route_label: "실제 사용 결과와 품질 지표를 측정해 다음 개발 입력으로 삼는다."
+      active_actors: [deploy, eval, intent]
+      description: "EDD는 배포 성공만으로 끝내지 않고 실제 결과가 기대와 맞는지 확인한다."
+      payload: ["production", "metric", "feedback"]
+      outcomes:
+        - status: info
+          text: "테스트 통과와 제품 가치 달성은 서로 다른 평가다."
+
+rag_agent_eval:
+  eyebrow: "Interactive comparison"
+  title: "RAG와 AI Agent의 단계별 평가"
+  summary: "검색 품질과 생성 품질, 도구 사용과 최종 업무 결과를 단계별로 따로 평가한다."
+  actors:
+    - id: query
+      kind: "입력"
+      name: "User Query"
+      description: "사용자가 해결하려는 질문이나 작업"
+    - id: retrieval
+      kind: "검색"
+      name: "RAG Retrieval"
+      description: "관련 문서와 근거를 찾는 단계"
+    - id: generation
+      kind: "응답 생성"
+      name: "Generation"
+      description: "검색 결과를 이용해 답변을 작성하는 단계"
+    - id: agent
+      kind: "행동 실행"
+      name: "Agent Tools"
+      description: "도구 호출과 작업 계획을 수행하는 단계"
+  steps:
+    - title: "1. 질문 해석"
+      from: "User Query"
+      to: "RAG Retrieval"
+      route_label: "질문을 검색 쿼리로 바꾸고 관련 문서를 찾는다."
+      active_actors: [query, retrieval]
+      description: "검색 평가에서는 관련성·재현율·근거 포함 여부를 확인한다."
+      payload: ["query", "embedding", "top-k"]
+      outcomes:
+        - status: info
+          text: "검색 결과가 좋지 않으면 생성 모델만 바꿔도 근거 문제는 남는다."
+    - title: "2. 근거 기반 생성"
+      from: "RAG Retrieval"
+      to: "Generation"
+      route_label: "검색한 문서의 근거를 바탕으로 답변을 생성한다."
+      active_actors: [retrieval, generation]
+      description: "생성 평가는 정확성·충실성·인용과 검색 근거의 일치 여부를 본다."
+      payload: ["context", "answer", "citation"]
+      outcomes:
+        - status: allow
+          text: "검색 품질과 답변 품질을 분리해 진단할 수 있다."
+    - title: "3. Agent 실행 평가"
+      from: "User Query"
+      to: "Agent Tools"
+      route_label: "행동이 필요한 질문은 계획·도구 호출·최종 결과를 단계별로 평가한다."
+      active_actors: [query, agent, generation]
+      description: "Agent는 답변 텍스트뿐 아니라 올바른 도구 선택과 작업 완료 여부도 평가 대상이다."
+      payload: ["plan", "tool call", "task success"]
+      outcomes:
+        - status: info
+          text: "최종 응답 점수 하나만으로 전체 Agent 품질을 설명하지 않는다."
+
+edd_feedback:
+  eyebrow: "Interactive flow"
+  title: "EDD 운영 피드백 루프"
+  summary: "배포 후 실제 사용 데이터를 평가하고 개선 항목을 다시 요구사항과 테스트로 연결한다."
+  actors:
+    - id: release
+      kind: "변경 반영"
+      name: "Release"
+      description: "검증된 기능을 운영 환경에 배포한 결과"
+    - id: observe
+      kind: "관측"
+      name: "Production Signals"
+      description: "사용자 행동·오류·품질·비용 지표"
+    - id: evaluate
+      kind: "판단"
+      name: "Evaluation"
+      description: "기대 결과와 실제 결과를 비교하는 과정"
+    - id: backlog
+      kind: "다음 작업"
+      name: "Improvement Backlog"
+      description: "검증된 개선 요구사항과 우선순위"
+  steps:
+    - title: "1. 운영 배포"
+      from: "Release"
+      to: "Production Signals"
+      route_label: "기능을 실제 사용자와 트래픽이 있는 환경에 배포한다."
+      active_actors: [release, observe]
+      description: "배포 자체의 성공과 사용 중 품질은 별도의 관측 대상이다."
+      payload: ["release", "traffic", "users"]
+      outcomes:
+        - status: info
+          text: "운영 결과를 수집할 준비가 되어 있어야 한다."
+    - title: "2. 기대와 실제 비교"
+      from: "Production Signals"
+      to: "Evaluation"
+      route_label: "실제 지표와 사전에 정한 성공 기준을 비교한다."
+      active_actors: [observe, evaluate]
+      description: "EDD는 느낌이 아니라 측정 가능한 결과로 다음 의사결정을 만든다."
+      payload: ["quality", "latency", "cost", "success rate"]
+      outcomes:
+        - status: allow
+          text: "검증 결과가 개선의 근거가 된다."
+    - title: "3. 다음 개선으로 환류"
+      from: "Evaluation"
+      to: "Improvement Backlog"
+      route_label: "평가에서 확인한 문제와 기회를 다음 요구사항·테스트로 등록한다."
+      active_actors: [evaluate, backlog, release]
+      description: "운영 결과가 다음 개발 사이클의 입력으로 다시 들어간다."
+      payload: ["feedback", "priority", "next experiment"]
+      outcomes:
+        - status: info
+          text: "배포를 사이클의 끝이 아니라 학습의 시작으로 본다."
+
+context_switching:
+  eyebrow: "Interactive flow"
+  title: "Thread Context Switching"
+  summary: "CPU가 Thread A의 레지스터 상태를 저장하고 Thread B의 상태를 복원한 뒤 실행을 이어 간다."
+  actors:
+    - id: scheduler
+      kind: "스케줄러"
+      name: "Scheduler"
+      description: "다음에 실행할 Runnable Thread를 선택하는 OS 구성요소"
+    - id: a
+      kind: "현재 실행"
+      name: "Thread A"
+      description: "CPU를 사용하던 Thread"
+    - id: b
+      kind: "다음 실행"
+      name: "Thread B"
+      description: "CPU를 이어받을 Thread"
+    - id: context
+      kind: "상태 저장"
+      name: "Thread Context"
+      description: "레지스터·PC 등 실행 재개에 필요한 상태"
+  steps:
+    - title: "1. A 실행"
+      from: "Scheduler"
+      to: "Thread A"
+      route_label: "스케줄러가 A를 선택하고 CPU가 A의 명령을 실행한다."
+      active_actors: [scheduler, a]
+      description: "현재 실행 중인 Thread의 CPU 상태가 존재한다."
+      payload: ["running", "registers", "program counter"]
+      outcomes:
+        - status: info
+          text: "Thread 전환은 단순한 함수 호출과 다른 커널 수준 작업이다."
+    - title: "2. A 상태 저장"
+      from: "Thread A"
+      to: "Thread Context"
+      route_label: "A의 레지스터와 실행 위치를 컨텍스트에 저장한다."
+      active_actors: [a, context]
+      description: "나중에 A가 다시 선택되면 저장한 지점부터 실행을 재개할 수 있다."
+      payload: ["save", "registers", "PC"]
+      outcomes:
+        - status: info
+          text: "상태 저장 비용이 전환의 일부다."
+    - title: "3. B 상태 복원"
+      from: "Thread Context"
+      to: "Thread B"
+      route_label: "B의 저장된 컨텍스트를 복원하고 CPU를 B에 배정한다."
+      active_actors: [context, b, scheduler]
+      description: "복원 뒤 B는 이전 실행 위치에서 계속 진행한다."
+      payload: ["restore", "dispatch", "resume"]
+      outcomes:
+        - status: allow
+          text: "동시에 실행되는 것처럼 보여도 한 코어에서는 전환이 시간을 나눈다."
+
+thread_switching_cost:
+  eyebrow: "Interactive comparison"
+  title: "Runnable Thread 수와 Context Switching 비용"
+  summary: "CPU 코어보다 Runnable Thread가 많으면 대기와 전환이 늘어 실제 작업에 쓰는 시간이 줄 수 있다."
+  actors:
+    - id: cores
+      kind: "실행 자원"
+      name: "CPU Cores"
+      description: "동시에 실행할 수 있는 코어 수"
+    - id: runnable
+      kind: "대기 작업"
+      name: "Runnable Threads"
+      description: "실행 가능 상태로 대기 중인 Thread 수"
+    - id: scheduler
+      kind: "선택"
+      name: "Scheduler"
+      description: "실행 순서와 시간을 나누는 스케줄러"
+    - id: overhead
+      kind: "부가 비용"
+      name: "Switch Overhead"
+      description: "컨텍스트 저장·복원과 캐시 영향"
+  steps:
+    - title: "1. 코어 수 확인"
+      from: "CPU Cores"
+      to: "Runnable Threads"
+      route_label: "실행 가능한 Thread 수를 CPU 코어 수와 비교한다."
+      active_actors: [cores, runnable]
+      description: "Runnable Thread가 코어보다 적으면 모든 작업이 동시에 실행되지 않을 수 있다."
+      payload: ["cores", "runnable", "ready queue"]
+      outcomes:
+        - status: info
+          text: "Thread 수를 늘리는 것만으로 CPU 처리량이 늘지는 않는다."
+    - title: "2. 스케줄링"
+      from: "Runnable Threads"
+      to: "Scheduler"
+      route_label: "스케줄러가 실행할 Thread를 선택하고 시간을 배분한다."
+      active_actors: [runnable, scheduler]
+      description: "대기열의 Thread들은 차례로 CPU를 받기 위해 경쟁한다."
+      payload: ["run queue", "time slice", "dispatch"]
+      outcomes:
+        - status: info
+          text: "응답성과 공정성은 스케줄링 정책과 부하에 영향을 받는다."
+    - title: "3. 전환 비용 증가"
+      from: "Scheduler"
+      to: "Switch Overhead"
+      route_label: "실행할 Thread가 자주 바뀌면 저장·복원과 캐시 손실 비용이 누적된다."
+      active_actors: [scheduler, overhead, runnable]
+      description: "I/O 대기와 CPU 작업의 성격을 고려해 적절한 Thread 수와 풀 크기를 선택한다."
+      payload: ["context switch", "cache miss", "overhead"]
+      outcomes:
+        - status: warning
+          text: "Thread를 많이 만들면 병렬성이 아니라 전환 비용이 커질 수 있다."
+
+pool_bottleneck:
+  eyebrow: "Interactive flow"
+  title: "Spring Thread Pool과 DB Connection Pool 병목"
+  summary: "요청 Thread가 충분해도 DB Connection Pool이 부족하면 요청은 연결을 기다리며 병목이 생긴다."
+  actors:
+    - id: requests
+      kind: "외부 부하"
+      name: "HTTP Requests"
+      description: "동시에 들어오는 웹 요청"
+    - id: threads
+      kind: "처리 풀"
+      name: "Spring Thread Pool"
+      description: "요청을 실행하는 Thread 집합"
+    - id: connections
+      kind: "DB 자원"
+      name: "DB Connection Pool"
+      description: "데이터베이스 연결을 재사용하는 풀"
+    - id: db
+      kind: "외부 시스템"
+      name: "Database"
+      description: "쿼리를 실행하는 데이터베이스"
+  steps:
+    - title: "1. 요청 수신"
+      from: "HTTP Requests"
+      to: "Spring Thread Pool"
+      route_label: "HTTP 요청이 서버 Thread Pool의 작업으로 들어온다."
+      active_actors: [requests, threads]
+      description: "요청 수가 Thread Pool 크기를 넘으면 실행 전 대기열이 생긴다."
+      payload: ["request", "worker thread", "queue"]
+      outcomes:
+        - status: info
+          text: "Thread Pool 크기만으로 전체 처리 용량을 판단하지 않는다."
+    - title: "2. 연결 대기"
+      from: "Spring Thread Pool"
+      to: "DB Connection Pool"
+      route_label: "실행된 Thread가 DB 연결을 빌리기 위해 Connection Pool을 조회한다."
+      active_actors: [threads, connections]
+      description: "사용 가능한 연결이 없으면 Thread가 DB 작업 전부터 대기한다."
+      payload: ["borrow", "connection limit", "wait time"]
+      outcomes:
+        - status: warning
+          text: "Thread Pool을 키워도 DB 연결 부족으로 지연이 더 커질 수 있다."
+    - title: "3. 쿼리 실행"
+      from: "DB Connection Pool"
+      to: "Database"
+      route_label: "빌린 연결로 쿼리를 실행하고 반환한 뒤 다음 요청이 재사용한다."
+      active_actors: [connections, db, threads]
+      description: "병목 분석에서는 Thread 대기와 Connection 대기, 실제 쿼리 시간을 분리한다."
+      payload: ["query", "execute", "release"]
+      outcomes:
+        - status: allow
+          text: "풀 크기와 DB 처리 시간을 함께 조정해야 한다."
+
+optimistic_lock:
+  eyebrow: "Interactive flow"
+  title: "낙관적 락의 버전 비교와 재시도"
+  summary: "수정 시점에 읽은 version과 현재 version을 비교해 충돌을 감지하고 실패한 작업은 정책에 따라 재시도한다."
+  actors:
+    - id: tx
+      kind: "트랜잭션"
+      name: "Transaction"
+      description: "엔티티를 읽고 수정하는 작업"
+    - id: version
+      kind: "검증 값"
+      name: "Version"
+      description: "마지막으로 읽은 엔티티 버전"
+    - id: db
+      kind: "저장 상태"
+      name: "Database Row"
+      description: "현재 데이터와 version을 가진 행"
+    - id: retry
+      kind: "충돌 처리"
+      name: "Retry / Conflict"
+      description: "충돌을 실패로 반환하거나 다시 시도하는 정책"
+  steps:
+    - title: "1. 버전 읽기"
+      from: "Transaction"
+      to: "Database Row"
+      route_label: "트랜잭션이 현재 데이터와 version을 함께 읽는다."
+      active_actors: [tx, db, version]
+      description: "낙관적 락은 읽을 때 잠그기보다 수정할 때 충돌을 확인한다."
+      payload: ["SELECT", "version = 3", "snapshot"]
+      outcomes:
+        - status: info
+          text: "읽은 버전이 이후 UPDATE 조건의 기준이 된다."
+    - title: "2. 조건부 수정"
+      from: "Transaction"
+      to: "Version"
+      route_label: "UPDATE WHERE id와 version이 모두 일치할 때만 저장하고 version을 증가시킨다."
+      active_actors: [tx, version, db]
+      description: "다른 트랜잭션이 먼저 수정했다면 영향을 받은 행 수가 0이 된다."
+      payload: ["WHERE version = 3", "UPDATE", "version + 1"]
+      outcomes:
+        - status: allow
+          text: "버전이 그대로면 충돌 없이 커밋할 수 있다."
+    - title: "3. 충돌 재시도"
+      from: "Database Row"
+      to: "Retry / Conflict"
+      route_label: "버전이 다르면 충돌로 판단해 실패를 알리거나 최신 값을 읽고 재시도한다."
+      active_actors: [db, retry, tx]
+      description: "재시도 가능 여부는 작업의 멱등성·사용자 경험·최대 횟수 정책에 달려 있다."
+      payload: ["affected rows = 0", "conflict", "retry"]
+      outcomes:
+        - status: reject
+          text: "충돌을 무조건 조용히 덮어쓰지 않는다."
+
+pessimistic_lock:
+  eyebrow: "Interactive flow"
+  title: "비관적 락의 Row Lock 대기"
+  summary: "트랜잭션이 행을 잠그고 있는 동안 다른 트랜잭션은 락이 풀릴 때까지 기다린다."
+  actors:
+    - id: txa
+      kind: "선점 트랜잭션"
+      name: "Transaction A"
+      description: "먼저 해당 행을 잠근 트랜잭션"
+    - id: row
+      kind: "공유 자원"
+      name: "Database Row"
+      description: "동시에 변경될 수 있는 하나의 행"
+    - id: txb
+      kind: "대기 트랜잭션"
+      name: "Transaction B"
+      description: "같은 행의 락을 기다리는 트랜잭션"
+    - id: commit
+      kind: "해제 시점"
+      name: "Commit / Rollback"
+      description: "락을 해제하고 다음 트랜잭션을 진행시키는 경계"
+  steps:
+    - title: "1. 행 잠금 획득"
+      from: "Transaction A"
+      to: "Database Row"
+      route_label: "A가 SELECT FOR UPDATE 등으로 대상 행의 Row Lock을 획득한다."
+      active_actors: [txa, row]
+      description: "잠금이 유지되는 동안 다른 트랜잭션의 충돌 변경을 막는다."
+      payload: ["FOR UPDATE", "row lock", "exclusive"]
+      outcomes:
+        - status: allow
+          text: "A가 임계 구역을 먼저 확보한다."
+    - title: "2. B 대기"
+      from: "Transaction B"
+      to: "Database Row"
+      route_label: "B가 같은 행을 잠그려 하면 A의 락이 풀릴 때까지 대기한다."
+      active_actors: [txb, row, txa]
+      description: "대기는 일관성을 높이는 대신 연결 점유 시간과 데드락 위험을 만든다."
+      payload: ["lock wait", "timeout", "same row"]
+      outcomes:
+        - status: warning
+          text: "긴 트랜잭션은 다른 요청의 지연으로 이어질 수 있다."
+    - title: "3. 락 해제"
+      from: "Commit / Rollback"
+      to: "Transaction B"
+      route_label: "A가 커밋·롤백하면 락이 풀리고 B가 행을 다시 확인한다."
+      active_actors: [commit, txa, txb, row]
+      description: "비관적 락은 충돌 후 복구보다 충돌 자체를 줄이는 전략이다."
+      payload: ["commit", "rollback", "unlock"]
+      outcomes:
+        - status: info
+          text: "락 범위·대기 시간·데드락 정책을 함께 설계한다."
+
+lock_selection:
+  eyebrow: "Interactive comparison"
+  title: "원자 업데이트·낙관적 락·비관적 락 선택"
+  summary: "충돌 가능성과 작업 범위에 따라 짧은 원자 연산, 버전 검증, 선점 잠금 중 전략을 선택한다."
+  actors:
+    - id: operation
+      kind: "변경 작업"
+      name: "Update Request"
+      description: "재고·포인트·예약처럼 공유 값을 변경하는 요청"
+    - id: atomic
+      kind: "짧은 연산"
+      name: "Atomic UPDATE"
+      description: "조건을 포함한 한 번의 원자 SQL"
+    - id: optimistic
+      kind: "버전 검증"
+      name: "Optimistic Lock"
+      description: "version 비교로 충돌을 감지하는 전략"
+    - id: pessimistic
+      kind: "선점 잠금"
+      name: "Pessimistic Lock"
+      description: "행을 먼저 잠그고 작업하는 전략"
+  steps:
+    - title: "1. 단순 조건 변경"
+      from: "Update Request"
+      to: "Atomic UPDATE"
+      route_label: "한 번의 조건부 UPDATE로 재고 감소처럼 짧은 변경을 처리한다."
+      active_actors: [operation, atomic]
+      description: "상태를 읽고 복잡한 계산을 하지 않는다면 원자 SQL이 가장 간단할 수 있다."
+      payload: ["WHERE stock > 0", "stock = stock - 1", "affected rows"]
+      outcomes:
+        - status: allow
+          text: "잠금 객체를 애플리케이션에 노출하지 않고 경쟁을 줄인다."
+    - title: "2. 충돌 감지 필요"
+      from: "Update Request"
+      to: "Optimistic Lock"
+      route_label: "여러 단계를 읽고 계산하지만 충돌이 드물다면 version으로 변경을 검증한다."
+      active_actors: [operation, optimistic]
+      description: "충돌 시 사용자에게 알리거나 재시도할 수 있는 작업에 적합하다."
+      payload: ["version", "conflict", "retry policy"]
+      outcomes:
+        - status: info
+          text: "읽기 경쟁을 허용하고 수정 시점에 충돌을 판단한다."
+    - title: "3. 선점 필요"
+      from: "Update Request"
+      to: "Pessimistic Lock"
+      route_label: "동시에 처리되면 안 되는 임계 구역을 행 잠금으로 선점한다."
+      active_actors: [operation, pessimistic]
+      description: "충돌 비용이 크고 대기 허용 범위가 명확할 때 검토한다."
+      payload: ["row lock", "wait", "deadlock"]
+      outcomes:
+        - status: warning
+          text: "락 대기와 데드락·타임아웃 비용을 반드시 함께 평가한다."
+
+interrupt_full:
+  eyebrow: "Interactive flow"
+  title: "Interrupt 전체 실행 흐름"
+  summary: "장치나 프로그램의 인터럽트 요청을 CPU가 받아 현재 상태를 저장하고 핸들러 실행 후 원래 흐름으로 복귀한다."
+  actors:
+    - id: device
+      kind: "발생 주체"
+      name: "Device / Program"
+      description: "처리가 필요하다는 인터럽트를 발생시키는 주체"
+    - id: cpu
+      kind: "현재 실행"
+      name: "CPU"
+      description: "현재 명령을 처리 중인 프로세서"
+    - id: handler
+      kind: "운영체제 처리"
+      name: "Interrupt Handler"
+      description: "인터럽트 원인을 확인하고 처리하는 코드"
+    - id: resume
+      kind: "복귀"
+      name: "Resumed Program"
+      description: "저장한 실행 위치로 돌아가는 원래 프로그램"
+  steps:
+    - title: "1. 인터럽트 요청"
+      from: "Device / Program"
+      to: "CPU"
+      route_label: "장치나 프로그램이 CPU에 즉시 처리할 사건이 있음을 알린다."
+      active_actors: [device, cpu]
+      description: "인터럽트는 현재 실행 흐름과 별개로 처리 필요성을 전달한다."
+      payload: ["interrupt request", "IRQ", "event"]
+      outcomes:
+        - status: info
+          text: "인터럽트가 발생했다고 곧바로 모든 실행이 중단되는 것은 아니다."
+    - title: "2. 현재 상태 저장"
+      from: "CPU"
+      to: "Interrupt Handler"
+      route_label: "CPU가 복귀에 필요한 PC와 레지스터 상태를 저장하고 핸들러로 진입한다."
+      active_actors: [cpu, handler]
+      description: "중단된 프로그램을 나중에 이어가기 위해 실행 문맥을 보존한다."
+      payload: ["save context", "PC", "vector"]
+      outcomes:
+        - status: allow
+          text: "핸들러가 인터럽트 원인을 처리할 준비가 된다."
+    - title: "3. 처리 후 복귀"
+      from: "Interrupt Handler"
+      to: "Resumed Program"
+      route_label: "핸들러가 장치 상태를 처리한 뒤 저장한 문맥으로 원래 프로그램을 재개한다."
+      active_actors: [handler, resume, cpu]
+      description: "인터럽트 처리와 프로세스 전체의 문맥 전환은 범위가 다를 수 있다."
+      payload: ["acknowledge", "restore context", "return"]
+      outcomes:
+        - status: info
+          text: "중단된 흐름이 일관된 상태에서 다시 실행된다."
+
+interrupt_context:
+  eyebrow: "Interactive comparison"
+  title: "Interrupt와 Context Switching"
+  summary: "인터럽트는 CPU가 처리할 사건을 알리고, 스케줄러 판단이 더해지면 다른 Thread로 문맥 전환이 이어질 수 있다."
+  actors:
+    - id: current
+      kind: "현재 Thread"
+      name: "Running Thread"
+      description: "인터럽트가 발생한 시점의 실행 흐름"
+    - id: interrupt
+      kind: "사건 신호"
+      name: "Interrupt"
+      description: "외부 장치나 내부 사건의 알림"
+    - id: scheduler
+      kind: "선택 정책"
+      name: "Scheduler"
+      description: "현재 Thread를 계속 실행할지 결정하는 구성요소"
+    - id: next
+      kind: "다음 실행"
+      name: "Next Thread"
+      description: "스케줄러가 새로 선택한 실행 흐름"
+  steps:
+    - title: "1. 현재 실행 중단 지점"
+      from: "Running Thread"
+      to: "Interrupt"
+      route_label: "현재 Thread가 실행 중일 때 인터럽트 신호가 들어온다."
+      active_actors: [current, interrupt]
+      description: "인터럽트가 발생한 시점의 실행 상태를 보존해야 한다."
+      payload: ["running", "IRQ", "preemption point"]
+      outcomes:
+        - status: info
+          text: "인터럽트와 Thread 전환을 같은 개념으로 합치지 않는다."
+    - title: "2. 스케줄러 판단"
+      from: "Interrupt"
+      to: "Scheduler"
+      route_label: "인터럽트 처리 뒤 스케줄러가 현재 Thread를 계속 실행할지 확인한다."
+      active_actors: [interrupt, scheduler, current]
+      description: "스케줄링 정책과 우선순위에 따라 문맥 전환 여부가 결정된다."
+      payload: ["handler return", "priority", "preemption"]
+      outcomes:
+        - status: info
+          text: "모든 인터럽트가 다른 Thread 실행으로 이어지는 것은 아니다."
+    - title: "3. 문맥 전환"
+      from: "Scheduler"
+      to: "Next Thread"
+      route_label: "전환이 결정되면 현재 상태를 저장하고 다음 Thread 상태를 복원한다."
+      active_actors: [scheduler, current, next]
+      description: "인터럽트는 전환을 유발할 수 있는 계기이고 문맥 저장·복원은 별도 작업이다."
+      payload: ["save", "restore", "dispatch"]
+      outcomes:
+        - status: allow
+          text: "사건 처리와 CPU 실행 주체 변경을 시간 순서로 나누어 본다."
+
+io_state_transition:
+  eyebrow: "Interactive flow"
+  title: "I/O 요청과 스레드 상태 전환"
+  summary: "I/O를 기다리는 스레드는 Blocked 상태로 빠지고 완료 인터럽트 뒤 Runnable을 거쳐 다시 실행된다."
+  actors:
+    - id: thread
+      kind: "실행 주체"
+      name: "Application Thread"
+      description: "I/O 작업을 요청한 스레드"
+    - id: device
+      kind: "외부 작업"
+      name: "I/O Device"
+      description: "디스크·네트워크처럼 완료 시간이 필요한 장치"
+    - id: blocked
+      kind: "대기 상태"
+      name: "Blocked"
+      description: "I/O 완료를 기다리는 스레드 상태"
+    - id: runnable
+      kind: "재실행 대기"
+      name: "Runnable"
+      description: "CPU를 다시 받을 수 있는 상태"
+  steps:
+    - title: "1. I/O 요청"
+      from: "Application Thread"
+      to: "I/O Device"
+      route_label: "실행 중인 스레드가 디스크나 네트워크 I/O를 요청한다."
+      active_actors: [thread, device]
+      description: "장치 작업은 CPU 계산과 달리 완료까지 시간이 걸릴 수 있다."
+      payload: ["read", "write", "I/O request"]
+      outcomes:
+        - status: info
+          text: "요청을 보낸 뒤 스레드가 계속 실행 가능한지는 모델에 따라 달라진다."
+    - title: "2. 대기 상태"
+      from: "Application Thread"
+      to: "Blocked"
+      route_label: "완료를 기다리는 스레드는 Blocked 상태로 이동하고 CPU를 양보한다."
+      active_actors: [thread, blocked, device]
+      description: "대기 중인 스레드를 계속 실행하지 않으면 다른 작업이 CPU를 사용할 수 있다."
+      payload: ["wait", "blocked", "CPU release"]
+      outcomes:
+        - status: allow
+          text: "I/O 대기와 CPU 실행을 분리해 처리한다."
+    - title: "3. 완료 후 재실행"
+      from: "I/O Device"
+      to: "Runnable"
+      route_label: "장치 완료 신호가 오면 스레드를 Runnable 대기열로 되돌린다."
+      active_actors: [device, blocked, runnable, thread]
+      description: "Runnable은 즉시 실행 중이라는 뜻이 아니라 CPU를 받을 준비가 되었다는 뜻이다."
+      payload: ["completion", "interrupt", "ready queue"]
+      outcomes:
+        - status: info
+          text: "스케줄러가 선택한 뒤에야 실제 실행 상태가 된다."

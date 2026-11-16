@@ -90,7 +90,7 @@ Interrupt는 Kernel이 CPU의 제어권을 얻어 사건을 처리할 수 있게
 
 ### 시각 자료 1 — Interrupt 전체 흐름
 
-![Interrupt 전체 실행 흐름](/assets/images/2026-08-13-interrupt-execution-flow/interrupt-full-flow.png)
+{% include interactive/flow-card.html flow='interrupt_full' %}
 
 Interrupt가 발생하면 Kernel이 제어권을 얻고 Interrupt Handler가 사건을 처리한다. 이후 Scheduler가 실행될 수 있지만 항상 실행 대상이 바뀌는 것은 아니다.
 
@@ -182,7 +182,7 @@ Context Switching은 현재 실행 상태를 저장하고 다른 실행 흐름�
 
 ### 시각 자료 2 — Interrupt와 Context Switching의 관계
 
-![Interrupt 이후 실행 흐름과 Context Switching의 관계](/assets/images/2026-08-13-interrupt-execution-flow/interrupt-context-switching.png)
+{% include interactive/flow-card.html flow='interrupt_context' %}
 
 세 경로를 비교하면 Interrupt가 발생했다는 사실과 Context Switching이 발생했다는 사실을 분리해서 이해할 수 있다.
 
@@ -256,7 +256,7 @@ I/O 완료와 Thread 실행 사이에는 Scheduler의 선택 과정이 있을 �
 
 ### 시각 자료 3 — I/O 요청부터 재실행까지
 
-![I/O 요청부터 스레드 재실행까지의 상태 전환](/assets/images/2026-08-13-interrupt-execution-flow/io-state-transition.png)
+{% include interactive/flow-card.html flow='io_state_transition' %}
 
 I/O 완료 Interrupt 이후에도 Thread는 먼저 Ready 상태가 되고 Scheduler의 선택을 거쳐 Running 상태가 된다.
 

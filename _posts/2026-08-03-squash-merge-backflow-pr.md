@@ -108,7 +108,7 @@ A -- B -- C -- D   develop
 
 `D`와 `S`의 파일 내용은 동일할 수 있다. 하지만 `S`는 `B`, `C`, `D`와 계보상 아무 관계가 없는 커밋이다. Git에게 `S`는 `develop`에서 온 것이 아니라 `main`에서 독자적으로 만들어진 변경이다.
 
-![Merge Commit과 Squash Merge의 커밋 그래프 비교](/assets/images/2026-08-03-squash-merge-backflow-pr/merge-commit-vs-squash.png)
+{% include interactive/flow-card.html flow='merge_commit_squash' %}
 > Merge Commit은 develop의 커밋 계보를 main에 연결하지만 Squash Merge는 같은 코드를 담은 새로운 커밋을 독립적으로 생성한다.
 
 ---
@@ -207,7 +207,7 @@ Rebase Merge도 선형 히스토리를 만들 수 있어서 매력적으로 보�
 
 Rebase Merge가 무조건 나쁜 방식은 아니다. 개인 브랜치나 소규모 작업에서는 유용하다. 다만 이 프로젝트에서는 운영 복잡도와 팀 이해도를 고려했을 때 배포 PR에 Merge Commit을 사용하는 것이 더 현실적이라는 결론을 내렸다.
 
-![프로젝트의 최종 머지 전략 다이어그램](/assets/images/2026-08-03-squash-merge-backflow-pr/final-merge-strategy.png)
+{% include interactive/flow-card.html flow='final_merge_strategy' %}
 > feature에서는 Squash Merge로 커밋을 정리하고 develop에서 main으로는 Merge Commit으로 계보를 유지한다. main에서 develop으로의 역류는 운영 긴급 수정 시에만 수행한다.
 
 ---

@@ -43,7 +43,7 @@ CloudWatch 알람은 순간적인 1초 피크를 감지하기보다는 설정된
 
 실무에서 알람을 받았을 때 당황하지 않고 원인을 추적하기 위한 단계별 점검 순서는 다음과 같다.
 
-![CloudWatch 알람 원인 추적 흐름도](/assets/images/2026-08-05-cloudwatch-alarm/cloudwatch_alarm_flowchart.png)
+{% include interactive/flow-card.html flow='cloudwatch_alarm' %}
 _CloudWatch 알람 수신 후 리소스 식별부터 로그, 배포 이력, 사용자 영향 검증까지 이어지는 원인 추적 워크플로._
 
 ```text
@@ -78,7 +78,7 @@ _CloudWatch 알람 수신 후 리소스 식별부터 로그, 배포 이력, 사�
 
 >  **주의**: AWS 콘솔 기본 시각은 UTC로 표시될 수 있으므로 서버 로그의 local time(KST, UTC+9)과 반드시 맞추어 비교해야 한다.
 
-![Metric, 로그, 배포 이력의 상관관계](/assets/images/2026-08-05-cloudwatch-alarm/cloudwatch_timeline_correlation.png)
+{% include interactive/flow-card.html flow='metric_log_deploy' %}
 _동일 타임라인상에서 배포 이벤트, CPU 피크, Nginx 에러 로그, 애플리케이션 예외 시각을 타임라인별로 대조하는 원리._
 
 ### 3. 서버와 애플리케이션 로그 확인
@@ -191,7 +191,7 @@ CPU가 90%로 치솟았다고 해서 100% 장애인 것은 아니다. **실제 �
 
 알람의 개수가 많은 시스템이 좋은 모니터링 시스템은 아니다. 알람 메시지를 받았을 때 담당자가 **"무엇을 해야 할지"** 명확하지 않다면 그 알람은 지워야 할 노이즈에 가깝다.
 
-![좋은 알람과 나쁜 알람 비교](/assets/images/2026-08-05-cloudwatch-alarm/good_vs_bad_alarm_comparison.png)
+{% include interactive/flow-card.html flow='good_bad_alarm' %}
 _대응 절차 없이 알림만 반복되어 피로를 유발하는 알람(좌)과, 리소스·임계치·영향도·확인 체크리스트가 명시된 실행 가능한 알람(우)의 비교._
 
 잘 설계된 CloudWatch 알람에는 다음 6가지 요소가 알람 설명(Description)이나 메시지에 포함되어 있어야 한다.

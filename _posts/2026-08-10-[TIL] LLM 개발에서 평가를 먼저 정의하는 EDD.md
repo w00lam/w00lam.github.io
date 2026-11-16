@@ -93,7 +93,7 @@ EDD의 개발 흐름을 보면 다음과 같다.
 
 결과가 좋아 보인다는 느낌만으로 프롬프트를 계속 바꾸는 것이 아니라 평가셋을 기준으로 변경 전후를 비교한다. 어떤 케이스는 좋아졌지만 다른 케이스는 나빠졌는지도 확인한다.
 
-![TDD와 EDD 개발 사이클 비교](/assets/images/2026-08-10-edd/tdd-edd-cycle.png)
+{% include interactive/flow-card.html flow='tdd_edd' %}
 
 EDD는 단순히 LLM 테스트를 많이 작성하는 방법이라기보다 **평가를 개발 사이클의 중심에 두는 방법**에 가깝다고 이해했다.
 
@@ -260,7 +260,7 @@ LLM:
 
 최종 답변은 잘못됐지만 LLM의 Generation만 문제라고 단정할 수 없다. 애초에 Retrieval이 강남 식당을 찾지 못한 것이 원인일 수 있다.
 
-![RAG와 AI Agent 단계별 평가](/assets/images/2026-08-10-edd/rag-agent-eval-pipeline.png)
+{% include interactive/flow-card.html flow='rag_agent_eval' %}
 
 그래서 다음처럼 단계별로 평가할 필요가 있다.
 
@@ -375,7 +375,7 @@ Eval 개선
 다시 개발
 ```
 
-![EDD 운영 피드백 루프](/assets/images/2026-08-10-edd/edd-production-feedback-loop.png)
+{% include interactive/flow-card.html flow='edd_feedback' %}
 
 여기서 중요한 점은 AI 시스템만 개선하는 것이 아니라 **평가 체계 자체도 계속 개선한다는 것**이다. 처음 만든 평가 기준이 모든 사용자 경험을 설명해주지는 않는다. 그래서 새로운 실패가 발견되면 시스템을 고치는 동시에, 다음부터 그 실패를 감지할 수 있도록 평가셋과 기준도 보완해야 한다.
 

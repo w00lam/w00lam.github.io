@@ -16,7 +16,7 @@ GitHub Actions 워크플로가 초록색으로 끝났다. 빌드와 배포가 �
 
 하지만 워크플로 성공은 워크플로에 작성된 명령이 성공했다는 말이다. 프로세스가 재시작 직후 종료되거나, 애플리케이션 초기화 중 외부 시스템 연결에 실패하더라도 배포 스크립트가 이를 확인하지 않으면 Actions는 성공으로 끝날 수 있다.
 
-![배포 성공 이후에도 런타임 단계에서 실패할 수 있는 흐름](/assets/images/2026-08-04-github-actions-runtime/deployment-vs-runtime.png)
+{% include interactive/flow-card.html flow='deployment_runtime' %}
 _파일 전송과 프로세스 재시작이 끝나도 애플리케이션 초기화, 외부 인증, 헬스 체크까지 통과해야 실제 서비스가 정상이다._
 
 ## EC2에서 실행 상태부터 확인했다
@@ -47,7 +47,7 @@ sudo journalctl -u <서비스명> | grep -iE "error|exception|failed"
 
 애플리케이션의 인증 방식은 기존 Basic Auth에서 세션 기반 인증으로 변경되어 있었다. 그러나 Parameter Store에는 이전 방식에서 사용하던 값이 남아 있었고 새로운 인증 방식에 필요한 설정은 현재 코드가 기대하는 형태와 맞지 않았다.
 
-![애플리케이션 코드와 Parameter Store 설정의 일치·불일치 비교](/assets/images/2026-08-04-github-actions-runtime/code-config-mismatch.png)
+{% include interactive/flow-card.html flow='code_config_mismatch' %}
 _같은 코드라도 런타임에 읽는 설정이 맞지 않으면 초기화 결과가 달라진다._
 
 실패 과정은 다음처럼 정리할 수 있다.
