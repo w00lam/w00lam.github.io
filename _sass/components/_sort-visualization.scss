@@ -54,7 +54,7 @@
     align-items: center;
     justify-content: space-between;
     gap: 1rem;
-    min-height: 2rem;
+    min-height: 3.1rem;
     margin-bottom: 0.85rem;
     padding-bottom: 0.65rem;
     border-bottom: 1px solid var(--sort-border);
@@ -74,6 +74,7 @@
   &__stage {
     display: grid;
     gap: 0.85rem;
+    min-height: 19.25rem;
   }
 
   &__array-wrap {
@@ -209,10 +210,14 @@
     display: grid;
     grid-template-columns: repeat(4, minmax(0, 1fr));
     gap: 0.6rem;
+    height: 10.2rem;
+    align-content: start;
+    overflow-y: auto;
   }
 
   &__detail {
     min-width: 0;
+    min-height: 4.5rem;
     padding: 0.65rem;
     border: 1px solid var(--sort-border);
     border-radius: calc(v.$radius-lg - 0.15rem);
@@ -240,7 +245,7 @@
   &__description {
     display: flex;
     align-items: center;
-    min-height: 3.35rem;
+    height: 5rem;
     margin: 0.85rem 0 0;
     padding: 0.85rem 1rem;
     border-radius: calc(v.$radius-lg - 0.15rem);
@@ -248,6 +253,7 @@
     color: var(--text-color);
     font-size: 0.9rem;
     line-height: 1.55;
+    overflow-y: auto;
   }
 
   &__controls {
@@ -294,20 +300,35 @@
       align-items: flex-start;
       flex-direction: column;
       gap: 0.25rem;
+      min-height: 4rem;
+    }
+
+    &__stage {
+      min-height: 26rem;
     }
 
     &__details {
       grid-template-columns: repeat(2, minmax(0, 1fr));
+      height: 15rem;
     }
 
     &__description {
-      min-height: 0;
+      height: 8rem;
     }
   }
 
   @media all and (max-width: 420px) {
+    &__stage {
+      min-height: 36rem;
+    }
+
     &__details {
       grid-template-columns: 1fr;
+      height: 25.5rem;
+    }
+
+    &__description {
+      height: 9rem;
     }
   }
 

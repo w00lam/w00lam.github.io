@@ -6,11 +6,9 @@ tags: [Java, Algorithm, Sorting, Bubble Sort, Selection Sort, Insertion Sort, Qu
 permalink: /posts/sorting-algorithms-bubble-selection-insertion-quick/
 ---
 
-어제는 자료구조의 연산 비용을 공부하면서 같은 데이터라도 어떤 구조와 처리 순서를 선택하는지에 따라 비용이 달라진다는 점을 정리했다. 오늘은 그 흐름을 배열 정렬로 이어서 살펴봤다. Bubble Sort, Selection Sort, Insertion Sort, Quick Sort를 직접 구현해 보면서 값의 비교만 보는 것이 아니라 교환과 이동, 분할이 각각 어디에서 일어나는지 확인했다.
+앞선 학습에서는 자료구조의 연산 비용을 공부하면서 같은 데이터라도 어떤 구조와 처리 순서를 선택하는지에 따라 비용이 달라진다는 점을 정리했다. 오늘은 그 흐름을 배열 정렬로 이어서 살펴봤다. Bubble Sort, Selection Sort, Insertion Sort, Quick Sort를 직접 구현해 보면서 값의 비교만 보는 것이 아니라 교환과 이동, 분할이 각각 어디에서 일어나는지 확인했다.
 
 처음에는 Bubble Sort의 조건문을 조금 바꾸면 Selection Sort가 될 것이라고 생각했다. 하지만 Bubble Sort는 인접 원소를 비교하면서 바로 교환하고, Selection Sort는 미정렬 영역에서 최솟값의 인덱스를 찾은 뒤 한 번 교환한다. Insertion Sort에서는 현재 원소를 `key`로 보관한 뒤 큰 원소를 이동해야 했고, Quick Sort에서는 재귀 깊이와 전체 시간 복잡도를 같은 값처럼 설명하고 있었다. 오늘은 이 혼동을 구현과 배열 상태를 따라가며 고쳐 보았다.
-
-오늘은 면접 질문과 점수를 기록하는 것이 아니라 정렬 알고리즘을 기술적으로 이해하는 데 집중했다. 완성된 코드만 나열하기보다 어떤 인덱스를 비교하고 언제 배열이 바뀌는지를 중심으로 정리한다.
 
 ## 1. 정렬을 구현할 때 먼저 구분한 것
 
