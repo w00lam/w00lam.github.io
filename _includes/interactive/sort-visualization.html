@@ -1,0 +1,94 @@
+{% case include.kind %}
+  {% when 'bubble' %}
+    {% assign sort_title = 'Bubble Sort 단계 보기' %}
+    {% assign sort_summary = '인접한 원소를 비교하고 필요할 때 교환하면서 오른쪽부터 정렬한다.' %}
+  {% when 'selection' %}
+    {% assign sort_title = 'Selection Sort 단계 보기' %}
+    {% assign sort_summary = '미정렬 구간에서 최솟값의 인덱스를 찾은 뒤 한 번 교환한다.' %}
+  {% when 'insertion' %}
+    {% assign sort_title = 'Insertion Sort 단계 보기' %}
+    {% assign sort_summary = 'key를 보관하고 정렬된 왼쪽 구간의 큰 원소를 오른쪽으로 이동한다.' %}
+  {% when 'quick' %}
+    {% assign sort_title = 'Quick Sort Partition 단계 보기' %}
+    {% assign sort_summary = 'Lomuto Partition에서 Pivot을 기준으로 구간을 나누고 재귀 호출한다.' %}
+{% endcase %}
+
+<figure
+  class="sort-visualization"
+  data-sort-visualization
+  data-sort-kind="{{ include.kind }}"
+  data-sort-values="{{ include.values }}"
+  style="--sort-count: {{ include.values | split: ',' | size }};"
+  tabindex="0"
+  role="group"
+  aria-labelledby="sort-visualization-{{ include.kind }}-title"
+>
+  <div class="sort-visualization__header">
+    <p class="sort-visualization__eyebrow">Interactive sort</p>
+    <h3 id="sort-visualization-{{ include.kind }}-title">{{ sort_title }}</h3>
+    <p>{{ sort_summary }}</p>
+  </div>
+
+  <div class="sort-visualization__progress" aria-live="polite">
+    <strong data-sort-step-title>시작</strong>
+    <span data-sort-step-count>1 / 준비 중</span>
+  </div>
+
+  <div class="sort-visualization__stage" aria-live="polite">
+    <div class="sort-visualization__array-wrap">
+      <div class="sort-visualization__array" data-sort-array role="list" aria-label="정렬 배열"></div>
+    </div>
+
+    <div class="sort-visualization__legend" aria-label="배열 상태 범례">
+      <span><i class="is-compare" aria-hidden="true"></i>비교</span>
+      <span><i class="is-swap" aria-hidden="true"></i>교환·이동</span>
+      <span><i class="is-pivot" aria-hidden="true"></i>key·Pivot</span>
+      <span><i class="is-sorted" aria-hidden="true"></i>정렬 완료</span>
+    </div>
+
+    <div class="sort-visualization__details" data-sort-details></div>
+  </div>
+
+  <p class="sort-visualization__description" data-sort-description>
+    JavaScript가 준비되면 단계별 상태를 표시한다.
+  </p>
+
+  <div class="sort-visualization__controls" aria-label="정렬 시각화 단계 제어">
+    <button type="button" class="btn btn-outline-secondary btn-sm" data-sort-action="previous" disabled>이전</button>
+    <button type="button" class="btn btn-outline-secondary btn-sm" data-sort-action="reset" disabled>처음부터</button>
+    <button type="button" class="btn btn-outline-secondary btn-sm" data-sort-action="next" disabled>다음</button>
+  </div>
+
+  <p class="sort-visualization__error" data-sort-error role="alert" hidden>
+    인터랙티브 단계 초기화에 실패했다. 아래 정적 안내와 본문의 코드 예제에서 핵심 동작을 확인할 수 있다.
+  </p>
+
+  <ol class="sort-visualization__step-data" data-sort-step-data>
+    {% case include.kind %}
+      {% when 'bubble' %}
+        <li>인접한 두 원소를 비교한다.</li>
+        <li>앞의 값이 크면 두 원소를 교환한다.</li>
+        <li>한 순회가 끝나면 가장 큰 값이 오른쪽에 고정된다.</li>
+        <li>교환이 없으면 이미 정렬된 상태이므로 종료한다.</li>
+      {% when 'selection' %}
+        <li>미정렬 영역의 첫 위치를 현재 정렬 위치로 정한다.</li>
+        <li>나머지 영역을 탐색하며 최솟값의 인덱스를 갱신한다.</li>
+        <li>탐색이 끝난 뒤 필요한 경우 한 번 교환한다.</li>
+      {% when 'insertion' %}
+        <li>현재 원소를 key로 따로 보관한다.</li>
+        <li>key보다 큰 정렬 영역의 원소를 한 칸씩 오른쪽으로 이동한다.</li>
+        <li>반복이 끝난 빈 위치에 key를 삽입한다.</li>
+      {% when 'quick' %}
+        <li>현재 재귀 구간의 마지막 원소를 Pivot으로 선택한다.</li>
+        <li>Pivot보다 작은 원소를 왼쪽으로 모으는 Lomuto Partition을 수행한다.</li>
+        <li>Partition 반환 인덱스를 기준으로 왼쪽과 오른쪽을 재귀 호출한다.</li>
+        <li>구간 크기가 0개 또는 1개가 되면 재귀를 종료한다.</li>
+    {% endcase %}
+  </ol>
+
+  <noscript>
+    <p class="sort-visualization__noscript">
+      JavaScript가 꺼져 있어 단계 제어를 사용할 수 없다. 위 정적 단계 목록과 본문의 설명에서 {{ sort_title }}의 핵심 흐름을 확인할 수 있다.
+    </p>
+  </noscript>
+</figure>
