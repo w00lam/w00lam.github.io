@@ -7,7 +7,7 @@ tags: [UUID, ErrorCode, Hibernate, MySQL, gradle, Docker, ARM64, ALB, SecurityGr
 permalink: /posts/cloud-deployment-troubleshooting/
 ---
 
-![클라우드 배포 및 주요 장애 시나리오 한눈에 보기](/assets/images/2026-05-18-posting/cloud-troubleshooting-overview.png)
+{% include interactive/flow-card.html flow='cloud_troubleshooting' %}
 
 ## 들어가면서
 

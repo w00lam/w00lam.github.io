@@ -25,7 +25,7 @@ Harness는 이런 지침들을 해석해서 실제 환경에서 에이전트가 
 
 ## Harness의 구성 요소 — 런타임 아키텍처
 
-![AI 에이전트 하네스 아키텍처](/assets/images/2026-05-22-posting/ai-agent-harness-architecture-ko.png)
+{% include interactive/flow-card.html flow='agent_harness' %}
 
 
 AI 에이전트의 Harness는 여러 계층으로 나뉜다. 각 계층은 에이전트가 작업을 수행하는 데 꼭 필요한 역할을 맡는다. 덕분에 에이전트는 복잡한 태스크를 통제된 환경에서 안정적으로 실행한다.

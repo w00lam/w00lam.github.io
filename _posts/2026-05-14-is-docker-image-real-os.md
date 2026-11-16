@@ -20,7 +20,7 @@ permalink: /posts/docker-image-not-os/
 
 ---
 
-![Docker 이미지 구조와 RootFS](/assets/images/2026-05-14-posting/docker-image-rootfs-layers.png)
+{% include interactive/flow-card.html flow='docker_image_layers' %}
 
 ## 1. Docker 이미지는 OS인가?
 

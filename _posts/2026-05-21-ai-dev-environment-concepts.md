@@ -14,7 +14,7 @@ permalink: /posts/ai-dev-environment-concepts/
 
 ## Harness와 Instructions의 차이
 
-![Harness vs Instructions](/assets/images/2026-05-21-posting/harness-vs-instructions.png)
+{% include interactive/flow-card.html flow='harness_instructions' %}
 
 내가 이해한 기준으로는:
 

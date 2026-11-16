@@ -11296,3 +11296,745 @@ logging_pipeline:
       outcomes:
         - status: allow
           text: "로그 이벤트가 운영 의사결정의 근거가 된다."
+
+vm_container_compare:
+  eyebrow: "Interactive comparison"
+  title: "VM과 컨테이너 격리"
+  summary: "VM은 게스트 커널까지 가상화하고 컨테이너는 호스트 커널을 공유하면서 프로세스·자원 경계를 만든다."
+  actors:
+    - id: app
+      kind: "실행 단위"
+      name: "Application"
+      description: "실행할 애플리케이션과 의존성"
+    - id: vm
+      kind: "가상화"
+      name: "Virtual Machine"
+      description: "게스트 OS와 커널을 포함한 가상 실행 환경"
+    - id: container
+      kind: "프로세스 격리"
+      name: "Container"
+      description: "호스트 커널을 공유하면서 네임스페이스·cgroup으로 격리된 프로세스"
+    - id: host
+      kind: "호스트"
+      name: "Host Kernel / Hardware"
+      description: "시스템 콜과 CPU·메모리·디스크를 제공하는 호스트"
+  steps:
+    - title: "1. VM 실행"
+      from: "Application"
+      to: "Virtual Machine"
+      route_label: "애플리케이션이 게스트 OS와 커널을 포함한 VM 안에서 실행된다."
+      active_actors: [app, vm]
+      description: "강한 경계와 독립된 커널을 얻지만 이미지와 부팅 비용이 커진다."
+      payload: ["guest OS", "kernel", "virtual hardware"]
+      outcomes:
+        - status: info
+          text: "VM은 하드웨어 수준에 가까운 격리를 제공한다."
+    - title: "2. 컨테이너 실행"
+      from: "Application"
+      to: "Container"
+      route_label: "애플리케이션을 이미지로 묶고 호스트 커널 위의 격리된 프로세스로 실행한다."
+      active_actors: [app, container]
+      description: "컨테이너는 빠르고 가볍지만 호스트 커널과 런타임의 영향을 받는다."
+      payload: ["image", "namespace", "cgroup"]
+      outcomes:
+        - status: allow
+          text: "프로세스·파일 시스템·자원 사용량을 논리적으로 분리한다."
+    - title: "3. 시스템 콜 경계"
+      from: "Container"
+      to: "Host Kernel / Hardware"
+      route_label: "컨테이너 프로세스가 호스트 커널의 시스템 콜과 하드웨어 자원을 사용한다."
+      active_actors: [container, host, vm]
+      description: "격리 수준과 호환성 요구에 따라 VM과 컨테이너의 선택이 달라진다."
+      payload: ["system call", "CPU", "memory"]
+      outcomes:
+        - status: info
+          text: "컨테이너는 작은 VM이 아니라 커널을 공유하는 격리 방식이다."
+
+container_isolation:
+  eyebrow: "Interactive flow"
+  title: "컨테이너 Namespace와 Cgroup"
+  summary: "Namespace는 무엇을 볼 수 있는지 나누고 Cgroup은 얼마나 사용할 수 있는지 제한한다."
+  actors:
+    - id: process
+      kind: "프로세스"
+      name: "Container Process"
+      description: "컨테이너 안에서 실행되는 애플리케이션 프로세스"
+    - id: namespace
+      kind: "가시성 격리"
+      name: "Linux Namespace"
+      description: "PID·네트워크·마운트·사용자 공간을 분리하는 기능"
+    - id: cgroup
+      kind: "자원 제한"
+      name: "Control Group"
+      description: "CPU·메모리·I/O 사용량을 제한하고 집계하는 기능"
+    - id: host
+      kind: "공유 기반"
+      name: "Host Kernel"
+      description: "격리 기능과 실제 자원을 제공하는 호스트 커널"
+  steps:
+    - title: "1. 보이는 세계 분리"
+      from: "Container Process"
+      to: "Linux Namespace"
+      route_label: "프로세스가 자신의 PID·네트워크·마운트 공간만 보도록 네임스페이스를 적용한다."
+      active_actors: [process, namespace]
+      description: "컨테이너 프로세스가 호스트의 모든 프로세스와 인터페이스를 보지 않게 한다."
+      payload: ["PID", "network", "mount", "user"]
+      outcomes:
+        - status: allow
+          text: "프로세스 관점의 가시성이 분리된다."
+    - title: "2. 자원 사용량 제한"
+      from: "Container Process"
+      to: "Control Group"
+      route_label: "컨테이너별 CPU·메모리·I/O 한도와 사용량을 cgroup으로 관리한다."
+      active_actors: [process, cgroup]
+      description: "한 컨테이너의 폭주가 호스트와 다른 컨테이너 자원을 모두 소진하지 않도록 한다."
+      payload: ["CPU quota", "memory limit", "usage"]
+      outcomes:
+        - status: info
+          text: "격리와 제한은 별개이므로 두 기능을 함께 설계한다."
+    - title: "3. 호스트 커널 사용"
+      from: "Linux Namespace"
+      to: "Host Kernel"
+      route_label: "Namespace와 Cgroup이 호스트 커널의 기능으로 프로세스와 자원을 분리한다."
+      active_actors: [namespace, cgroup, host]
+      description: "컨테이너는 호스트 커널과 런타임의 보안 설정에 의존한다."
+      payload: ["kernel", "isolation", "security"]
+      outcomes:
+        - status: info
+          text: "컨테이너 보안은 이미지·권한·커널 설정까지 포함한다."
+
+docker_image_layers:
+  eyebrow: "Interactive flow"
+  title: "Docker 이미지와 RootFS"
+  summary: "Dockerfile 명령이 읽기 전용 레이어를 만들고 실행 시 컨테이너의 writable layer와 RootFS를 구성한다."
+  actors:
+    - id: dockerfile
+      kind: "정의"
+      name: "Dockerfile"
+      description: "베이스 이미지와 설치·복사 명령을 선언한 파일"
+    - id: layers
+      kind: "불변 레이어"
+      name: "Image Layers"
+      description: "명령별로 쌓이고 공유·캐시되는 읽기 전용 레이어"
+    - id: rootfs
+      kind: "실행 파일 시스템"
+      name: "Merged RootFS"
+      description: "레이어를 합쳐 컨테이너에 보이는 파일 시스템"
+    - id: writable
+      kind: "실행 변경"
+      name: "Writable Layer"
+      description: "실행 중 파일 변경이 기록되는 컨테이너 전용 영역"
+  steps:
+    - title: "1. 이미지 빌드"
+      from: "Dockerfile"
+      to: "Image Layers"
+      route_label: "베이스 이미지와 각 명령을 레이어로 빌드해 이미지 저장소에 저장한다."
+      active_actors: [dockerfile, layers]
+      description: "변경이 적은 명령을 앞에 두면 빌드 캐시와 레이어 공유를 활용할 수 있다."
+      payload: ["FROM", "RUN", "COPY", "layer"]
+      outcomes:
+        - status: allow
+          text: "이미지는 여러 불변 레이어의 조합으로 만들어진다."
+    - title: "2. RootFS 조합"
+      from: "Image Layers"
+      to: "Merged RootFS"
+      route_label: "런타임이 이미지 레이어를 합쳐 컨테이너에 보이는 RootFS를 만든다."
+      active_actors: [layers, rootfs]
+      description: "레이어를 공유하면서도 컨테이너마다 독립적인 실행 뷰를 제공한다."
+      payload: ["overlay", "rootfs", "read-only"]
+      outcomes:
+        - status: info
+          text: "이미지 레이어와 실행 파일 시스템을 같은 개념으로 보지 않는다."
+    - title: "3. 실행 중 쓰기"
+      from: "Merged RootFS"
+      to: "Writable Layer"
+      route_label: "컨테이너 실행 중 변경은 별도의 writable layer에 기록된다."
+      active_actors: [rootfs, writable]
+      description: "컨테이너를 삭제하면 이 실행 변경도 사라질 수 있어 영속 데이터는 볼륨으로 분리한다."
+      payload: ["copy-on-write", "runtime write", "volume"]
+      outcomes:
+        - status: warning
+          text: "이미지에 포함된 파일과 컨테이너 실행 데이터를 분리해야 한다."
+
+cloud_troubleshooting:
+  eyebrow: "Interactive flow"
+  title: "클라우드 배포 장애 진단"
+  summary: "배포 결과를 애플리케이션·네트워크·인프라·관찰 지표로 나눠 원인 범위를 좁힌다."
+  actors:
+    - id: deploy
+      kind: "변경"
+      name: "Deployment"
+      description: "새 이미지·설정·인프라를 반영한 배포 작업"
+    - id: app
+      kind: "애플리케이션"
+      name: "Application Health"
+      description: "시작 로그·헬스 엔드포인트·의존성 연결 상태"
+    - id: infra
+      kind: "인프라"
+      name: "Network / IAM / Compute"
+      description: "보안 그룹·라우팅·권한·인스턴스 자원"
+    - id: observe
+      kind: "관찰"
+      name: "Logs / Metrics / Alerts"
+      description: "실패 시점과 영향 범위를 확인하는 운영 신호"
+  steps:
+    - title: "1. 배포 시점 고정"
+      from: "Deployment"
+      to: "Logs / Metrics / Alerts"
+      route_label: "배포 버전·설정·실패 시간과 영향 범위를 먼저 고정한다."
+      active_actors: [deploy, observe]
+      description: "재현 가능한 사건 단위가 있어야 이전 정상 상태와 비교할 수 있다."
+      payload: ["release", "timestamp", "impact"]
+      outcomes:
+        - status: info
+          text: "증상과 배포 변경을 동일한 시간축에서 본다."
+    - title: "2. 앱 상태 확인"
+      from: "Logs / Metrics / Alerts"
+      to: "Application Health"
+      route_label: "시작 로그·헬스 체크·환경 변수·의존성 연결을 확인한다."
+      active_actors: [observe, app]
+      description: "애플리케이션이 시작하지 못했는지, 시작 후 요청만 실패하는지 나눈다."
+      payload: ["startup", "health", "config", "dependency"]
+      outcomes:
+        - status: allow
+          text: "애플리케이션 자체 문제의 범위를 좁힌다."
+    - title: "3. 인프라 경계 확인"
+      from: "Application Health"
+      to: "Network / IAM / Compute"
+      route_label: "앱이 정상이어도 네트워크 경로·권한·인스턴스 자원·로드밸런서 상태를 확인한다."
+      active_actors: [app, infra, observe]
+      description: "클라우드 장애는 코드·설정·권한·네트워크의 경계에서 생길 수 있다."
+      payload: ["security group", "route", "IAM", "capacity"]
+      outcomes:
+        - status: info
+          text: "관찰 가능한 증거를 기준으로 하나씩 범위를 줄인다."
+
+aws_request_flow:
+  eyebrow: "Interactive flow"
+  title: "AWS 요청과 VPC 내부 흐름"
+  summary: "사용자 요청이 진입점과 애플리케이션을 거쳐 VPC의 RDS PostgreSQL에 도달하고 응답으로 돌아온다."
+  actors:
+    - id: client
+      kind: "외부 요청"
+      name: "Client / DNS"
+      description: "도메인으로 서비스를 요청하는 클라이언트"
+    - id: edge
+      kind: "진입점"
+      name: "Load Balancer / Public Subnet"
+      description: "외부 요청을 VPC 내부 애플리케이션으로 전달하는 계층"
+    - id: app
+      kind: "업무 처리"
+      name: "Spring EC2 / Private Subnet"
+      description: "비즈니스 로직을 실행하는 애플리케이션 인스턴스"
+    - id: db
+      kind: "데이터"
+      name: "RDS PostgreSQL"
+      description: "VPC 내부에서 원본 데이터를 저장하는 관리형 DB"
+  steps:
+    - title: "1. 외부 진입"
+      from: "Client / DNS"
+      to: "Load Balancer / Public Subnet"
+      route_label: "DNS가 요청을 AWS 진입점으로 연결하고 로드밸런서가 대상 그룹을 선택한다."
+      active_actors: [client, edge]
+      description: "공개 서브넷과 보안 규칙은 외부에서 접근할 경계를 정의한다."
+      payload: ["DNS", "HTTP", "target group"]
+      outcomes:
+        - status: allow
+          text: "외부 요청이 애플리케이션 진입점에 도착한다."
+    - title: "2. 애플리케이션 처리"
+      from: "Load Balancer / Public Subnet"
+      to: "Spring EC2 / Private Subnet"
+      route_label: "로드밸런서가 사설 서브넷의 Spring 애플리케이션으로 요청을 전달한다."
+      active_actors: [edge, app]
+      description: "앱 인스턴스를 외부에 직접 노출하지 않고 네트워크 경계를 둔다."
+      payload: ["private subnet", "security group", "request"]
+      outcomes:
+        - status: info
+          text: "진입점과 업무 서버의 역할을 분리한다."
+    - title: "3. DB 조회·응답"
+      from: "Spring EC2 / Private Subnet"
+      to: "RDS PostgreSQL"
+      route_label: "애플리케이션이 내부 라우팅과 권한을 거쳐 RDS에서 데이터를 읽고 응답을 반환한다."
+      active_actors: [app, db, edge]
+      description: "DB는 퍼블릭 접근을 열기보다 애플리케이션 경계 안에서 연결한다."
+      payload: ["SQL", "RDS", "response"]
+      outcomes:
+        - status: allow
+          text: "요청·네트워크·애플리케이션·데이터 경계가 이어진다."
+
+deployment_automation:
+  eyebrow: "Interactive flow"
+  title: "CI/CD와 Auto Scaling 배포"
+  summary: "코드를 빌드해 이미지를 ECR에 저장하고 배포 신호가 ASG 인스턴스 교체로 이어진다."
+  actors:
+    - id: ci
+      kind: "검증·빌드"
+      name: "CI/CD Pipeline"
+      description: "테스트·빌드·배포 명령을 실행하는 파이프라인"
+    - id: ecr
+      kind: "이미지 저장"
+      name: "Amazon ECR"
+      description: "컨테이너 이미지를 버전별로 저장하는 레지스트리"
+    - id: asg
+      kind: "배포 대상"
+      name: "Auto Scaling Group"
+      description: "정상 인스턴스 수와 교체 정책을 관리하는 그룹"
+    - id: health
+      kind: "검증"
+      name: "Health Check / Load Balancer"
+      description: "새 인스턴스가 트래픽을 받을 수 있는지 확인"
+  steps:
+    - title: "1. 이미지 빌드·저장"
+      from: "CI/CD Pipeline"
+      to: "Amazon ECR"
+      route_label: "테스트를 통과한 코드를 이미지로 빌드하고 태그를 붙여 ECR에 푸시한다."
+      active_actors: [ci, ecr]
+      description: "배포 대상은 재현 가능한 이미지 버전으로 고정한다."
+      payload: ["test", "image", "tag"]
+      outcomes:
+        - status: allow
+          text: "배포 파이프라인과 실행 아티팩트가 연결된다."
+    - title: "2. 인스턴스 교체"
+      from: "Amazon ECR"
+      to: "Auto Scaling Group"
+      route_label: "ASG가 새 이미지로 인스턴스를 생성하거나 기존 인스턴스를 교체한다."
+      active_actors: [ecr, asg]
+      description: "교체 방식과 desired capacity가 배포 중 가용 용량을 결정한다."
+      payload: ["image tag", "instance", "desired capacity"]
+      outcomes:
+        - status: info
+          text: "한 번에 전체를 내리지 않는 배포 전략을 선택할 수 있다."
+    - title: "3. 헬스 확인"
+      from: "Auto Scaling Group"
+      to: "Health Check / Load Balancer"
+      route_label: "새 인스턴스가 시작·헬스 체크를 통과하면 트래픽 대상에 포함한다."
+      active_actors: [asg, health, ci]
+      description: "검증 실패 시 교체를 멈추고 롤백할 수 있는 기준이 필요하다."
+      payload: ["startup", "readiness", "traffic"]
+      outcomes:
+        - status: allow
+          text: "자동 배포가 검증과 롤백 정책까지 포함한다."
+
+harness_instructions:
+  eyebrow: "Interactive comparison"
+  title: "AI Harness와 Instructions"
+  summary: "Instructions는 무엇을 해야 하는지 설명하고 Harness는 실제 도구·상태·검증 루프를 실행한다."
+  actors:
+    - id: goal
+      kind: "규칙·목표"
+      name: "Instructions"
+      description: "프로젝트 규칙·목표·제약·작업 지침"
+    - id: harness
+      kind: "실행 환경"
+      name: "Harness"
+      description: "도구 호출·컨텍스트 로딩·권한·실행 상태를 조정하는 시스템"
+    - id: model
+      kind: "판단"
+      name: "AI Model"
+      description: "현재 목표와 관찰 결과를 바탕으로 다음 행동을 선택"
+    - id: feedback
+      kind: "검증"
+      name: "Tools / Tests"
+      description: "파일·셸·테스트·외부 시스템의 실제 결과"
+  steps:
+    - title: "1. 지침 제공"
+      from: "Instructions"
+      to: "AI Model"
+      route_label: "프로젝트 규칙과 작업 목표를 모델이 이해할 수 있는 컨텍스트로 제공한다."
+      active_actors: [goal, model]
+      description: "지침은 방향과 제약을 표현하지만 파일을 직접 수정하거나 테스트를 실행하지 않는다."
+      payload: ["goal", "rules", "constraints"]
+      outcomes:
+        - status: info
+          text: "무엇을 해야 하는지와 실제 실행 방법을 구분한다."
+    - title: "2. Harness 실행"
+      from: "AI Model"
+      to: "Harness"
+      route_label: "Harness가 모델의 계획을 도구 호출·파일 접근·실행 권한과 연결한다."
+      active_actors: [model, harness]
+      description: "에이전트의 재현성과 안전성은 Harness의 실행 경계에 크게 의존한다."
+      payload: ["tool call", "workspace", "permission"]
+      outcomes:
+        - status: allow
+          text: "계획이 실제 작업으로 변환된다."
+    - title: "3. 결과 피드백"
+      from: "Harness"
+      to: "Tools / Tests"
+      route_label: "도구와 테스트 결과를 다시 모델에 전달해 다음 행동이나 완료 여부를 판단한다."
+      active_actors: [harness, feedback, model]
+      description: "정답 지침만으로는 충분하지 않고 관찰 가능한 실행 결과가 필요하다."
+      payload: ["stdout", "test result", "error"]
+      outcomes:
+        - status: allow
+          text: "Instructions와 Harness가 목표·실행·검증 루프를 이룬다."
+
+agent_harness:
+  eyebrow: "Interactive flow"
+  title: "AI Agent Harness 구조"
+  summary: "에이전트 모델을 도구·컨텍스트·권한·검증·상태 관리와 연결하는 실행 기반을 구성한다."
+  actors:
+    - id: task
+      kind: "입력"
+      name: "Task + Context"
+      description: "사용자 요청과 프로젝트 규칙·현재 상태"
+    - id: planner
+      kind: "판단"
+      name: "Agent Model"
+      description: "다음 단계와 도구 사용을 계획하는 모델"
+    - id: runtime
+      kind: "실행 기반"
+      name: "Harness Runtime"
+      description: "도구 호출·권한·파일·실행 상태를 중재하는 런타임"
+    - id: verify
+      kind: "검증"
+      name: "Observation / Tests"
+      description: "실행 결과와 검증 결과를 다음 루프에 공급"
+  steps:
+    - title: "1. 컨텍스트 로딩"
+      from: "Task + Context"
+      to: "Agent Model"
+      route_label: "작업 요청에 필요한 규칙·파일·이전 결과를 선별해 모델에 제공한다."
+      active_actors: [task, planner]
+      description: "모든 정보를 무작정 넣기보다 현재 단계에 필요한 컨텍스트를 관리한다."
+      payload: ["task", "AGENTS", "files"]
+      outcomes:
+        - status: info
+          text: "컨텍스트 품질이 계획과 변경 범위에 영향을 준다."
+    - title: "2. 안전한 도구 실행"
+      from: "Agent Model"
+      to: "Harness Runtime"
+      route_label: "모델의 도구 계획을 권한·작업 디렉터리·승인 정책 안에서 실행한다."
+      active_actors: [planner, runtime]
+      description: "Harness가 모델과 운영 환경 사이의 안전 경계와 재현성 기준을 제공한다."
+      payload: ["tool", "sandbox", "approval"]
+      outcomes:
+        - status: allow
+          text: "모델이 직접 무제한 환경에 접근하지 않는다."
+    - title: "3. 관찰·재계획"
+      from: "Harness Runtime"
+      to: "Observation / Tests"
+      route_label: "도구 결과·테스트·오류를 관찰하고 필요하면 모델의 다음 계획을 갱신한다."
+      active_actors: [runtime, verify, planner]
+      description: "완료 기준과 중단 조건이 있어야 반복 실행이 통제된다."
+      payload: ["result", "test", "next plan"]
+      outcomes:
+        - status: allow
+          text: "계획·실행·검증 루프가 작업 결과로 수렴한다."
+
+dependency_reproducibility:
+  eyebrow: "Interactive comparison"
+  title: "GitHub Pages 의존성 재현성"
+  summary: "느슨한 버전 범위는 환경별 다른 의존성을 만들 수 있어 lock·Ruby·Jekyll 버전을 함께 고정한다."
+  actors:
+    - id: config
+      kind: "요구 정의"
+      name: "Gemfile / Config"
+      description: "Jekyll·테마·플러그인 버전 요구"
+    - id: resolver
+      kind: "해결"
+      name: "Bundler"
+      description: "Gemfile.lock 기준으로 실제 설치 버전을 결정"
+    - id: build
+      kind: "빌드"
+      name: "GitHub Actions"
+      description: "CI에서 의존성을 설치하고 Pages 결과물을 생성"
+    - id: pages
+      kind: "배포 결과"
+      name: "GitHub Pages"
+      description: "빌드 결과를 호스팅하는 배포 환경"
+  steps:
+    - title: "1. 버전 요구 정의"
+      from: "Gemfile / Config"
+      to: "Bundler"
+      route_label: "Jekyll·테마·플러그인과 Ruby 호환 범위를 프로젝트 설정으로 선언한다."
+      active_actors: [config, resolver]
+      description: "범위가 너무 넓으면 로컬과 CI가 서로 다른 버전을 선택할 수 있다."
+      payload: ["Gemfile", "version range", "Ruby"]
+      outcomes:
+        - status: warning
+          text: "의존성 요구와 실제 설치 버전을 분리해서 확인해야 한다."
+    - title: "2. lock 기반 설치"
+      from: "Bundler"
+      to: "GitHub Actions"
+      route_label: "lock 파일에 기록된 정확한 버전으로 CI 의존성을 설치하고 빌드한다."
+      active_actors: [resolver, build]
+      description: "빌드 환경이 달라도 같은 의존성 그래프를 재현하는 것이 목표다."
+      payload: ["Gemfile.lock", "bundle install", "cache"]
+      outcomes:
+        - status: allow
+          text: "로컬·CI 사이의 버전 드리프트를 줄인다."
+    - title: "3. 배포 검증"
+      from: "GitHub Actions"
+      to: "GitHub Pages"
+      route_label: "CI 빌드 결과와 링크·자산·페이지 렌더링을 검증한 뒤 Pages에 배포한다."
+      active_actors: [build, pages, config]
+      description: "의존성 재현성은 설치 성공뿐 아니라 실제 사이트 결과까지 확인해야 한다."
+      payload: ["build", "artifact", "deploy"]
+      outcomes:
+        - status: allow
+          text: "배포 환경에서 다시 만들 수 있는 사이트 결과를 얻는다."
+
+embedding_representation:
+  eyebrow: "Interactive flow"
+  title: "텍스트 임베딩 표현"
+  summary: "텍스트를 의미를 반영한 고차원 벡터로 변환하고 가까운 위치를 유사한 의미의 근거로 활용한다."
+  actors:
+    - id: text
+      kind: "입력"
+      name: "Text / Sentence"
+      description: "문서나 질문의 자연어 문장"
+    - id: model
+      kind: "변환"
+      name: "Embedding Model"
+      description: "문장의 의미를 수치 벡터로 변환하는 모델"
+    - id: space
+      kind: "표현 공간"
+      name: "Vector Space"
+      description: "문장 벡터 사이의 거리·각도로 의미 근접성을 표현"
+    - id: search
+      kind: "활용"
+      name: "Semantic Search"
+      description: "질문과 가까운 문서 벡터를 찾는 검색"
+  steps:
+    - title: "1. 문장 입력"
+      from: "Text / Sentence"
+      to: "Embedding Model"
+      route_label: "문서와 질문을 임베딩 모델의 입력으로 보낸다."
+      active_actors: [text, model]
+      description: "단어 자체가 아니라 문장 전체의 의미 맥락을 표현하려는 단계다."
+      payload: ["sentence", "document", "query"]
+      outcomes:
+        - status: info
+          text: "모델과 전처리 방식이 벡터 표현에 영향을 준다."
+    - title: "2. 벡터 변환"
+      from: "Embedding Model"
+      to: "Vector Space"
+      route_label: "텍스트를 고차원 수치 벡터의 한 점으로 매핑한다."
+      active_actors: [model, space]
+      description: "표현이 달라도 의미가 비슷하면 가까운 위치에 놓이도록 학습된 공간을 사용한다."
+      payload: ["vector", "dimension", "semantic position"]
+      outcomes:
+        - status: allow
+          text: "키워드가 완전히 같지 않아도 의미 유사도를 계산할 수 있다."
+    - title: "3. 의미 검색"
+      from: "Vector Space"
+      to: "Semantic Search"
+      route_label: "질문 벡터와 가까운 문서 벡터를 찾아 관련 근거 후보를 만든다."
+      active_actors: [space, search, text]
+      description: "검색 품질은 임베딩만이 아니라 청크·필터·재순위화와 함께 결정된다."
+      payload: ["cosine similarity", "nearest neighbors", "top-k"]
+      outcomes:
+        - status: allow
+          text: "의미 기반 후보 검색이 가능해진다."
+
+graph_representation:
+  eyebrow: "Interactive flow"
+  title: "지식 그래프 표현"
+  summary: "개체를 노드로, 개체 사이의 의미 관계를 엣지로 표현해 연결 구조를 따라 질문한다."
+  actors:
+    - id: entity
+      kind: "대상"
+      name: "Entity / Node"
+      description: "사람·프로젝트·기술·문서 같은 지식 단위"
+    - id: relation
+      kind: "관계"
+      name: "Relation / Edge"
+      description: "사용·의존·소속·결정 같은 의미 연결"
+    - id: graph
+      kind: "구조"
+      name: "Knowledge Graph"
+      description: "노드와 엣지를 함께 저장한 연결 구조"
+    - id: query
+      kind: "질문"
+      name: "Graph Query"
+      description: "관계 경로를 따라 관련 개체와 근거를 찾는 질의"
+  steps:
+    - title: "1. 개체 추출"
+      from: "Entity / Node"
+      to: "Relation / Edge"
+      route_label: "문서와 기록에서 의미 있는 개체와 개체 사이의 관계를 식별한다."
+      active_actors: [entity, relation]
+      description: "이름만 저장하지 않고 어떤 대상이 어떻게 연결되는지 표현한다."
+      payload: ["project", "technology", "entity"]
+      outcomes:
+        - status: info
+          text: "그래프 품질은 노드보다 관계 정의에 크게 좌우된다."
+    - title: "2. 그래프 구성"
+      from: "Relation / Edge"
+      to: "Knowledge Graph"
+      route_label: "개체와 관계를 노드·엣지 구조로 저장한다."
+      active_actors: [relation, graph, entity]
+      description: "계층·의존·원인·영향 같은 구조가 검색 가능한 데이터가 된다."
+      payload: ["node", "edge", "property"]
+      outcomes:
+        - status: allow
+          text: "관계 경로를 따라 연결된 지식을 조회할 수 있다."
+    - title: "3. 관계 질의"
+      from: "Knowledge Graph"
+      to: "Graph Query"
+      route_label: "출발 개체에서 관계를 따라 관련 프로젝트·결정·문서를 찾는다."
+      active_actors: [graph, query, relation]
+      description: "키워드 일치보다 관계 구조가 중요한 질문에 적합하다."
+      payload: ["path", "neighbor", "subgraph"]
+      outcomes:
+        - status: allow
+          text: "개체와 관계를 함께 설명하는 답변 근거를 만들 수 있다."
+
+embedding_graph_combination:
+  eyebrow: "Interactive flow"
+  title: "임베딩과 지식 그래프 결합"
+  summary: "임베딩은 의미가 가까운 후보를 찾고 그래프는 그 후보의 관계와 구조적 맥락을 보강한다."
+  actors:
+    - id: text
+      kind: "원문"
+      name: "Document / Query"
+      description: "검색하려는 질문과 지식 문서"
+    - id: vector
+      kind: "후보 검색"
+      name: "Embedding Retrieval"
+      description: "의미 유사도로 관련 문서와 개체 후보를 찾음"
+    - id: graph
+      kind: "관계 보강"
+      name: "Knowledge Graph"
+      description: "후보 개체의 관계·계층·의존 경로를 확인"
+    - id: answer
+      kind: "결과"
+      name: "Grounded Result"
+      description: "의미 검색과 관계 맥락을 함께 반영한 결과"
+  steps:
+    - title: "1. 의미 후보 찾기"
+      from: "Document / Query"
+      to: "Embedding Retrieval"
+      route_label: "질문과 의미가 가까운 문서·개체 후보를 벡터 검색으로 찾는다."
+      active_actors: [text, vector]
+      description: "표현이 달라도 관련 가능성이 있는 후보를 넓게 회수한다."
+      payload: ["embedding", "similarity", "candidate"]
+      outcomes:
+        - status: allow
+          text: "검색 후보를 의미 기반으로 확보한다."
+    - title: "2. 관계 확인"
+      from: "Embedding Retrieval"
+      to: "Knowledge Graph"
+      route_label: "후보 개체가 프로젝트·기술·결정과 어떻게 연결되는지 그래프에서 확인한다."
+      active_actors: [vector, graph]
+      description: "유사도만으로는 놓치는 상하위·의존·원인 관계를 보완한다."
+      payload: ["entity", "edge", "neighbor"]
+      outcomes:
+        - status: info
+          text: "후보의 의미와 구조적 맥락을 함께 평가한다."
+    - title: "3. 근거 조합"
+      from: "Knowledge Graph"
+      to: "Grounded Result"
+      route_label: "원문 근거와 그래프 경로를 결합해 설명 가능한 검색 결과를 만든다."
+      active_actors: [graph, answer, vector]
+      description: "검색 결과가 왜 관련 있는지 관계와 원문으로 확인할 수 있게 한다."
+      payload: ["source", "path", "context"]
+      outcomes:
+        - status: allow
+          text: "의미 검색의 유연성과 그래프의 설명력을 함께 얻는다."
+
+sdd_llm_workflow:
+  eyebrow: "Interactive flow"
+  title: "SDD와 LLM 협업 워크플로우"
+  summary: "요구사항을 명세로 고정하고 LLM이 설계·구현을 보조한 뒤 테스트와 사람 검토로 결과를 검증한다."
+  actors:
+    - id: request
+      kind: "문제 정의"
+      name: "Requirement"
+      description: "사용자 문제와 성공 조건을 담은 요청"
+    - id: spec
+      kind: "명세"
+      name: "Spec / Design"
+      description: "범위·계약·예외·수용 기준을 문서화한 설계"
+    - id: llm
+      kind: "보조 구현"
+      name: "LLM Assistant"
+      description: "명세를 바탕으로 코드·테스트·문서 초안을 만드는 도구"
+    - id: verify
+      kind: "검증"
+      name: "Tests + Human Review"
+      description: "자동 검증과 개발자의 설계·보안·제품 판단"
+  steps:
+    - title: "1. 명세 고정"
+      from: "Requirement"
+      to: "Spec / Design"
+      route_label: "문제를 범위·계약·예외·수용 기준이 있는 명세로 정리한다."
+      active_actors: [request, spec]
+      description: "LLM에게 구현을 맡기기 전에 무엇을 만들어야 하는지 판단 기준을 고정한다."
+      payload: ["scope", "contract", "acceptance"]
+      outcomes:
+        - status: allow
+          text: "코드보다 먼저 제품·기술 의도를 공유한다."
+    - title: "2. 구현 보조"
+      from: "Spec / Design"
+      to: "LLM Assistant"
+      route_label: "명세와 저장소 규칙을 컨텍스트로 주고 코드·테스트·문서 초안을 생성한다."
+      active_actors: [spec, llm]
+      description: "생성 결과의 품질은 입력 명세와 저장소 컨텍스트에 의존한다."
+      payload: ["context", "code", "tests"]
+      outcomes:
+        - status: info
+          text: "LLM 출력은 설계 결정을 대체하지 않고 작업을 가속한다."
+    - title: "3. 검증·수정"
+      from: "LLM Assistant"
+      to: "Tests + Human Review"
+      route_label: "테스트·린트·리뷰로 명세 충족과 부작용을 확인하고 필요한 부분을 수정한다."
+      active_actors: [llm, verify, spec]
+      description: "자동 생성이 성공해도 제품 의도와 운영 위험은 사람이 함께 확인한다."
+      payload: ["test", "review", "feedback"]
+      outcomes:
+        - status: allow
+          text: "명세·생성·검증의 반복으로 구현을 수렴시킨다."
+
+github_collaboration:
+  eyebrow: "Interactive flow"
+  title: "GitHub 협업 워크플로우"
+  summary: "이슈와 브랜치에서 작업하고 Pull Request 리뷰·CI를 거쳐 보호된 기본 브랜치에 병합한다."
+  actors:
+    - id: issue
+      kind: "작업 정의"
+      name: "Issue / Task"
+      description: "문제·범위·완료 조건을 기록한 협업 단위"
+    - id: branch
+      kind: "개발"
+      name: "Feature Branch"
+      description: "작업을 격리하고 커밋을 쌓는 브랜치"
+    - id: pr
+      kind: "검토"
+      name: "Pull Request"
+      description: "변경 내용·리뷰·CI 상태를 모으는 병합 요청"
+    - id: main
+      kind: "통합"
+      name: "Protected Main"
+      description: "검증된 변경만 병합되는 기본 브랜치"
+  steps:
+    - title: "1. 작업 범위 정의"
+      from: "Issue / Task"
+      to: "Feature Branch"
+      route_label: "이슈의 완료 조건과 범위를 기준으로 작업 브랜치를 만들고 커밋한다."
+      active_actors: [issue, branch]
+      description: "작업 단위를 작게 유지하면 리뷰와 롤백 범위도 줄어든다."
+      payload: ["issue", "branch", "commit"]
+      outcomes:
+        - status: allow
+          text: "변경의 목적과 코드 이력이 연결된다."
+    - title: "2. PR 검증"
+      from: "Feature Branch"
+      to: "Pull Request"
+      route_label: "Pull Request에서 diff·리뷰·자동 테스트·빌드 결과를 함께 확인한다."
+      active_actors: [branch, pr]
+      description: "사람의 설계 검토와 자동 검증을 같은 병합 기준으로 묶는다."
+      payload: ["diff", "review", "CI"]
+      outcomes:
+        - status: info
+          text: "검증 실패와 리뷰 의견을 반영한 뒤 병합한다."
+    - title: "3. 보호 브랜치 병합"
+      from: "Pull Request"
+      to: "Protected Main"
+      route_label: "필수 리뷰와 CI를 통과한 PR만 기본 브랜치에 병합한다."
+      active_actors: [pr, main, issue]
+      description: "병합 후 배포·릴리스와 이슈 상태를 연결해 작업을 닫는다."
+      payload: ["approval", "merge", "release"]
+      outcomes:
+        - status: allow
+          text: "협업의 기준과 배포 가능한 상태를 함께 관리한다."

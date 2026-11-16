@@ -7,7 +7,7 @@ tags: [Container, Docker, Kubernetes, Orchestration, Microservices, TIL]
 permalink: /posts/why-containers-are-not-enough/
 ---
 
-![컨테이너 오케스트레이션의 필요성](/assets/images/2026-05-15-posting/container-orchestration-necessity.png)
+{% include interactive/flow-card.html flow='docker_k8s' %}
 
 ## 들어가면서
 

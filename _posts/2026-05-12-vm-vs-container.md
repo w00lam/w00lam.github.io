@@ -21,7 +21,7 @@ permalink: /posts/vm-container-diff/
 
 ---
 
-![VM과 컨테이너의 시스템 콜 흐름 및 격리 메커니즘 비교](/assets/images/2026-05-12-posting/vm-container-syscall-isolation.png)
+{% include interactive/flow-card.html flow='vm_container_compare' %}
 
 ## 1. 컴퓨터 실행 계층 — 애플리케이션은 어떻게 동작하는가?
 

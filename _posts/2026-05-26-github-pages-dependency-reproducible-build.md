@@ -50,7 +50,7 @@ Make sure that `gem install sass-embedded -v '1.100.0' --source 'https://rubygem
 
 ## 의존성 버전 불일치 (Dependency Version Drift) 시각화
 
-![의존성 버전 불일치](/assets/images/2026-05-26-github-pages-dependency/dependency-version-drift.png)
+{% include interactive/flow-card.html flow='dependency_reproducibility' %}
 
 ## Gemfile vs Gemfile.lock — 재현 가능한 빌드의 핵심
 

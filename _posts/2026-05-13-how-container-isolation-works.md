@@ -22,7 +22,7 @@ permalink: /posts/container-isolation/
 
 ---
 
-![컨테이너 격리: Namespace와 Cgroup](/assets/images/2026-05-13-posting/container-isolation-namespace-cgroup.png)
+{% include interactive/flow-card.html flow='container_isolation' %}
 
 ## 1. 컨테이너는 어떻게 독립성을 얻을까?
 

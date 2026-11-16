@@ -38,7 +38,7 @@ permalink: /posts/how-aws-request-flow-works/
 
 각 서비스는 저마다 맡은 역할이 뚜렷하고 서로 맞물려 동작한다.
 
-![AWS 요청 흐름 및 VPC 구조 (RDS PostgreSQL)](/assets/images/2026-05-19-posting/aws-request-flow-vpc.png)
+{% include interactive/flow-card.html flow='aws_request_flow' %}
 
 
 ## 3. ALB, EC2, RDS는 왜 분리될까? 각 서비스의 역할과 책임

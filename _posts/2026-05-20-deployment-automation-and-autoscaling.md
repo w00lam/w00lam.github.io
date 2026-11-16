@@ -47,7 +47,7 @@ CI는 코드의 품질과 안정성을 보장하는 데, CD는 그 코드를 사
 4. **ECR 업로드 (Image Registry Push)**: 생성된 Docker 이미지를 컨테이너 이미지 저장소(예: AWS ECR, Docker Hub)에 푸시한다. 이때 이미지 태그(예: `my-app:v1.0.0`)를 사용하여 버전을 관리한다.
 5. *5. 서버 반영 (Deployment): CD 도구가 ECR에 새로운 이미지가 업로드된 것을 감지하거나, 수동 트리거에 의해 배포를 시작한다. 이 단계에서 오토스케일링 그룹(ASG)과 같은 인프라가 새로운 이미지를 사용하여 애플리케이션을 업데이트한다.
 
-![CI/CD, ECR, ASG 배포 흐름](/assets/images/2026-05-20-posting/deployment-automation-autoscaling-flow.png)
+{% include interactive/flow-card.html flow='deployment_automation' %}
 
 
 ## 3. ASG, Launch Template, User Data의 연결 — 새 서버가 떠도 같은 앱이 실행되는 이유

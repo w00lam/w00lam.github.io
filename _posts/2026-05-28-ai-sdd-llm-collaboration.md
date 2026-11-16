@@ -78,7 +78,7 @@ AI, 특히 LLM과 협업하다 보면 "컨텍스트(Context)"가 얼마나 중�
 
 **Spec은 AI와 협업할 때 컨텍스트 역할을 합니다.** 명확한 Spec은 AI에게 "이 프로젝트는 이런 규칙을 따르고, 이런 기능을 만들어야 하며, 이런 제약사항이 있다"고 알려주는 가장 효율적인 방법입니다.
 
-![SDD 워크플로우](/assets/images/2026-05-28-sdd-til/sdd-workflow.png)
+{% include interactive/flow-card.html flow='sdd_llm_workflow' %}
 
 ## 실제 개발 흐름 — Spec → Tasks → Implementation
 

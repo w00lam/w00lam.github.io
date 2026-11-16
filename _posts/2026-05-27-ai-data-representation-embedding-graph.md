@@ -22,7 +22,7 @@ permalink: /posts/ai-data-representation-embedding-graph/
 
 임베딩은 이렇게 의미적 위치를 만듭니다. "자율주행차"와 "무인 자동차"는 다른 단어지만 임베딩 공간에서는 매우 가까운 벡터 값을 갖죠. 그래서 "자율주행차"를 검색해도 "무인 자동차" 정보까지 함께 찾아냅니다. 임베딩의 핵심은 "비슷한 것 찾기"에 강하다는 점입니다.
 
-![임베딩 개념 시각화](/assets/images/2026-05-27-ai-data-representation/embedding-concept.png)
+{% include interactive/flow-card.html flow='embedding_representation' %}
 
 ## 임베딩의 한계 — 관계 추론에는 약하다
 
@@ -39,11 +39,11 @@ permalink: /posts/ai-data-representation-embedding-graph/
 
 그래프는 이렇게 관계 지도를 만듭니다. 그래프를 쓰면 "A는 B에 근무한다", "B는 C를 사용한다" 같은 관계를 명시적으로 담고 그 관계를 따라가며 정보를 탐색할 수 있습니다. 관계 추론이나 경로 탐색에 특히 강한 방식이죠.
 
-![그래프 개념 시각화](/assets/images/2026-05-27-ai-data-representation/graph-concept.png)
+{% include interactive/flow-card.html flow='graph_representation' %}
 
 ## 임베딩과 그래프의 차이 — 비슷한 것 vs 연결된 것
 
-![임베딩과 지식 그래프의 결합](/assets/images/2026-05-27-ai-data-representation/embedding-graph-combination.png)
+{% include interactive/flow-card.html flow='embedding_graph_combination' %}
 
 임베딩과 그래프는 데이터를 표현하는 방식도, 강점도 뚜렷이 다릅니다.
 

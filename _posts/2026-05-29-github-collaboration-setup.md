@@ -83,7 +83,7 @@ Kanban Board를 도입하고 얻은 가장 큰 수확은 **가시성(Visibility)
 
 앞서 설정한 도구들을 바탕으로 우리의 실제 개발 워크플로우는 다음과 같이 정립되었습니다.
 
-![GitHub 협업 워크플로우](/assets/images/2026-05-29-github-collaboration/workflow.png)
+{% include interactive/flow-card.html flow='github_collaboration' %}
 
 1. **Issue 생성**: 새로운 기능이나 버그 수정이 필요하면 가장 먼저 Issue를 생성하여 작업 내용을 정의합니다.
 2. **담당자 지정**: 해당 Issue를 처리할 담당자를 지정하고 Kanban Board에서 `Todo` 상태로 둡니다.
