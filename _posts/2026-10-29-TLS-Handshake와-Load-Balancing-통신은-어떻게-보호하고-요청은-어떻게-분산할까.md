@@ -36,7 +36,7 @@ TLS 1.3은 이 공유 비밀값을 HKDF 키 스케줄에 넣어 먼저 핸드셰
 
 TLS 1.2 ECDHE와 TLS 1.3 인증서 기반 흐름을 나란히 놓으면 메시지와 키 파생 방식이 서로 다르다는 점이 더 분명해진다.
 
-![TLS 1.2 ECDHE와 TLS 1.3 인증서 기반 핸드셰이크 흐름 비교](/assets/images/2026-10-29-tls-load-balancing/tls-handshake-comparison.svg)
+{% include interactive/flow-card.html flow='tls_handshake' %}
 
 *그림 1. TLS 1.2 ECDHE와 TLS 1.3 인증서 기반 핸드셰이크 흐름은 메시지와 키 파생 방식이 다르다.*
 
@@ -48,7 +48,7 @@ L4와 L7의 차이는 단순한 속도 차이가 아니라 요청을 분산할 �
 
 Spring Boot 인스턴스가 여러 대라면 클라이언트와 인스턴스 사이에 로드 밸런서를 둘 수 있다. 로드 밸런서는 정상 상태의 인스턴스 중 하나로 요청을 전달한다. 각 인스턴스는 공용 데이터베이스에서 사용자나 주문 같은 영속 데이터를 읽고 쓴다. 로드 밸런서의 선택 기준과 인스턴스가 공유하는 데이터는 별개의 문제다.
 
-![로드 밸런서와 Spring Boot 인스턴스의 요청 분산 구조](/assets/images/2026-10-29-tls-load-balancing/load-balancing-architecture.svg)
+{% include interactive/flow-card.html flow='load_balancing' %}
 
 *그림 2. 로드 밸런서는 계층별 기준으로 요청을 분산하고 비정상 인스턴스를 분배 대상에서 제외한다.*
 

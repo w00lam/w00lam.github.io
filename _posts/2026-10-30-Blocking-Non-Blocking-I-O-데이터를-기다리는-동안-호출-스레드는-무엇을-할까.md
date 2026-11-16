@@ -63,7 +63,7 @@ int readyCount = selector.select(); // 준비된 채널이 생길 때까지 기�
 
 Selector가 직접 채널의 데이터를 읽어 주는 것은 아니다. Selector는 “이 채널에 관심 있는 작업을 시도해 볼 준비가 되었다”는 정보를 모으고 애플리케이션은 그 알림을 바탕으로 실제 I/O를 수행한다. 준비 상태가 곧 I/O 완료를 뜻하지도 않는다. 공식 문서도 선택 키가 알려 주는 준비 상태는 힌트이며 실제 작업이 반드시 블로킹 없이 끝난다는 보장은 아니라고 설명한다.
 
-![Blocking I/O와 Selector 기반 Non-Blocking I/O에서 호출 스레드가 데이터를 기다리는 흐름 비교](/assets/images/2026-10-30-blocking-non-blocking-io/blocking-non-blocking-selector.svg)
+{% include interactive/flow-card.html flow='blocking_io' %}
 
 *그림 1. Blocking I/O에서는 `read()` 호출이 반환될 때까지 같은 흐름이 기다리고 Selector 기반 구조에서는 준비된 채널을 애플리케이션이 골라 처리한다.*
 

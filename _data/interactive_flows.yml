@@ -1436,3 +1436,532 @@ tdd_cycle:
       outcomes:
         - status: allow
           text: "검증이 끝나면 다음 동작의 테스트 작성으로 다시 이어진다."
+
+blocking_io:
+  eyebrow: "Interactive comparison"
+  title: "Blocking I/O와 Selector 기반 Non-Blocking I/O"
+  summary: "호출 스레드가 데이터를 기다리는 방식과 준비된 채널을 처리하는 방식을 비교한다."
+  actors:
+    - id: caller
+      kind: "호출 주체"
+      name: "Application Thread"
+      description: "read() 또는 채널 처리를 실행함"
+    - id: blocking
+      kind: "대기 방식"
+      name: "Blocking I/O"
+      description: "데이터가 도착할 때까지 같은 호출 스레드를 멈춤"
+    - id: selector
+      kind: "준비 상태 감시"
+      name: "Selector"
+      description: "여러 Non-Blocking 채널의 준비 상태를 확인함"
+    - id: channels
+      kind: "입출력 대상"
+      name: "Selectable Channels"
+      description: "읽기·쓰기 준비 상태를 애플리케이션에 알림"
+  steps:
+    - title: "1. Blocking read 호출"
+      from: "Application Thread"
+      to: "Blocking I/O"
+      route_label: "호출 스레드가 InputStream.read()를 호출한다."
+      active_actors: [caller, blocking]
+      description: "Blocking I/O에서는 호출한 스레드가 데이터 도착·스트림 종료·예외 중 하나가 될 때까지 반환을 기다린다."
+      payload: ["InputStream.read()"]
+      outcomes:
+        - status: warning
+          text: "같은 스레드는 대기 중 다음 줄을 실행하지 못한다."
+    - title: "2. Blocking 대기"
+      from: "Blocking I/O"
+      to: "Application Thread"
+      route_label: "데이터가 준비될 때까지 read() 호출이 돌아오지 않는다."
+      active_actors: [caller, blocking]
+      description: "Blocking이라는 이름은 호출한 흐름이 I/O 완료를 기다리는 호출 방식에 초점을 둔다."
+      payload: ["데이터 대기", "호출 스레드 정지"]
+      outcomes:
+        - status: info
+          text: "대기 시간 동안 같은 호출 흐름의 다음 처리가 멈춘다."
+    - title: "3. Blocking read 반환"
+      from: "Blocking I/O"
+      to: "Application Thread"
+      route_label: "데이터가 준비되면 read()가 반환되고 다음 처리가 실행된다."
+      active_actors: [caller, blocking]
+      description: "읽기 결과가 반환된 뒤에야 호출 스레드가 다음 줄의 애플리케이션 작업을 진행한다."
+      payload: ["read() 반환", "입력 데이터"]
+      outcomes:
+        - status: allow
+          text: "한 채널의 대기와 처리가 호출 흐름에 직접 묶인다."
+    - title: "4. 채널 등록"
+      from: "Application Thread"
+      to: "Selector"
+      route_label: "여러 SelectableChannel을 Non-Blocking 모드로 등록한다."
+      active_actors: [caller, selector, channels]
+      description: "Selector 기반 방식에서는 채널을 감시 대상으로 등록하고 애플리케이션이 준비된 채널을 나중에 처리한다."
+      payload: ["SelectableChannel", "Non-Blocking"]
+      outcomes:
+        - status: info
+          text: "여러 채널의 준비 상태를 한 Selector에서 확인할 수 있다."
+    - title: "5. 준비 상태 확인"
+      from: "Selector"
+      to: "Selectable Channels"
+      route_label: "Selector.select()가 읽기·쓰기 준비 상태를 확인한다."
+      active_actors: [selector, channels]
+      description: "Selector.select() 자체는 기다릴 수 있지만 각 채널의 실제 I/O 완료를 대신하는 것은 아니다."
+      payload: ["Selector.select()", "읽기 준비", "쓰기 준비"]
+      outcomes:
+        - status: info
+          text: "준비 상태 알림과 I/O 완료는 구분해야 한다."
+    - title: "6. 준비된 채널 처리"
+      from: "Selectable Channels"
+      to: "Application Thread"
+      route_label: "애플리케이션이 준비된 채널을 얻어 실제 read()·write()를 수행한다."
+      active_actors: [caller, channels, selector]
+      description: "준비된 채널만 골라 처리하므로 여러 채널의 대기를 하나의 이벤트 감시 흐름으로 묶을 수 있다."
+      payload: ["준비된 채널", "read()", "write()"]
+      outcomes:
+        - status: allow
+          text: "Non-Blocking은 모든 대기를 없애는 말이 아니라 호출과 준비 상태 처리를 분리하는 방식이다."
+
+tls_handshake:
+  eyebrow: "Interactive comparison"
+  title: "TLS 1.2 ECDHE와 TLS 1.3 핸드셰이크"
+  summary: "버전에 따라 메시지와 키 파생 흐름은 달라도 인증과 통신 키 설정 뒤 애플리케이션 데이터를 보호한다."
+  actors:
+    - id: client
+      kind: "통신 주체"
+      name: "Client"
+      description: "ClientHello와 암호화된 데이터 교환을 시작함"
+    - id: server
+      kind: "통신 주체"
+      name: "Server"
+      description: "인증서와 ServerHello를 보내고 핸드셰이크를 완료함"
+    - id: certificate
+      kind: "서버 인증"
+      name: "Certificate"
+      description: "서버 공개키와 신원을 증명하는 자료"
+    - id: keys
+      kind: "키 파생"
+      name: "Traffic Keys"
+      description: "공유 비밀과 HKDF 등으로 파생된 통신 키"
+  steps:
+    - title: "1. ClientHello"
+      from: "Client"
+      to: "Server"
+      route_label: "Client가 random 또는 key_share를 포함한 ClientHello를 보낸다."
+      active_actors: [client, server]
+      description: "TLS 1.2 ECDHE 예시와 TLS 1.3 모두 클라이언트가 핸드셰이크를 시작하지만 키 교환 메시지 구성은 다르다."
+      payload: ["ClientHello", "client_random", "key_share"]
+      outcomes:
+        - status: info
+          text: "버전에 따라 같은 이름의 단계가 같은 세부 흐름을 뜻하지는 않는다."
+    - title: "2. ServerHello와 인증서"
+      from: "Server"
+      to: "Client"
+      route_label: "Server가 선택 결과와 인증에 필요한 Certificate를 보낸다."
+      active_actors: [server, certificate, client]
+      description: "TLS 1.2에서는 ServerHello·Certificate·ServerKeyExchange 등이 이어지고 TLS 1.3에서는 메시지와 암호화 시점이 달라진다."
+      payload: ["ServerHello", "Certificate", "server_random"]
+      outcomes:
+        - status: info
+          text: "인증서가 서버 신원과 키 교환 검증의 한 축이 된다."
+    - title: "3. 공유 비밀과 키 파생"
+      from: "Client + Server"
+      to: "Traffic Keys"
+      route_label: "양쪽이 공유 비밀에서 방향별 핸드셰이크·애플리케이션 키를 파생한다."
+      active_actors: [client, server, keys]
+      description: "TLS 1.2 자료에서는 pre_master_secret과 master_secret을, TLS 1.3에서는 HKDF 기반 파생 흐름을 사용한다."
+      payload: ["공유 비밀", "master_secret", "HKDF"]
+      outcomes:
+        - status: info
+          text: "서로 같은 비밀을 계산하되 네트워크로 비밀값 자체를 보내지 않는다."
+    - title: "4. 인증서 검증"
+      from: "Certificate"
+      to: "Client"
+      route_label: "Client가 인증서와 CertificateVerify 등 서버 인증 자료를 검증한다."
+      active_actors: [certificate, client, server]
+      description: "TLS 1.3의 CertificateVerify는 인증서 개인키를 보유했다는 증명과 연결되며 버전별 메시지 위치를 구분해 봐야 한다."
+      payload: ["CertificateVerify", "서버 신원", "서명 검증"]
+      outcomes:
+        - status: reject
+          text: "인증 검증 실패 → 보호된 통신으로 진행하지 않는다."
+        - status: allow
+          text: "인증 검증 성공 → Finished 확인으로 진행한다."
+    - title: "5. Finished 교환"
+      from: "Client"
+      to: "Server"
+      route_label: "양쪽이 Finished로 핸드셰이크 무결성과 키 설정을 확인한다."
+      active_actors: [client, server, keys]
+      description: "Finished 확인이 끝나면 애플리케이션 데이터에 사용할 대칭키 설정이 합의된 상태가 된다."
+      payload: ["Finished", "핸드셰이크 무결성"]
+      outcomes:
+        - status: allow
+          text: "TLS 핸드셰이크가 완료된다."
+    - title: "6. 애플리케이션 데이터 보호"
+      from: "Traffic Keys"
+      to: "Client + Server"
+      route_label: "파생된 통신 키로 애플리케이션 데이터를 보호한다."
+      active_actors: [client, server, keys]
+      description: "핸드셰이크 뒤에는 합의한 대칭키로 애플리케이션 데이터를 암호화하고 무결성을 확인한다."
+      payload: ["Application Traffic Key", "암호화된 데이터"]
+      outcomes:
+        - status: allow
+          text: "통신 내용 보호가 시작된다."
+
+load_balancing:
+  eyebrow: "Interactive flow"
+  title: "로드 밸런서의 요청 분산과 헬스 체크"
+  summary: "L4·L7 판단과 헬스 체크 결과에 따라 정상 인스턴스에만 요청을 분배한다."
+  actors:
+    - id: client
+      kind: "요청 주체"
+      name: "Client"
+      description: "여러 사용자의 HTTP 요청을 보냄"
+    - id: load_balancer
+      kind: "분산 경계"
+      name: "Load Balancer"
+      description: "L4·L7 기준으로 전달 대상을 선택함"
+    - id: health
+      kind: "상태 검사"
+      name: "Health Check"
+      description: "인스턴스가 요청을 받을 수 있는지 주기적으로 확인함"
+    - id: instances
+      kind: "백엔드"
+      name: "Spring Boot Instances"
+      description: "정상 인스턴스는 받고 비정상 인스턴스는 새 요청에서 제외됨"
+  steps:
+    - title: "1. 요청 도착"
+      from: "Client"
+      to: "Load Balancer"
+      route_label: "Client가 Host·Path·Header를 포함한 HTTP 요청을 보낸다."
+      active_actors: [client, load_balancer]
+      description: "로드 밸런서는 여러 사용자의 요청을 받아 백엔드 선택 기준을 적용할 경계가 된다."
+      payload: ["HTTP Request", "Host", "Path", "Header"]
+      outcomes:
+        - status: info
+          text: "분산 판단을 요청 처리와 분리한다."
+    - title: "2. 전달 기준 판단"
+      from: "Load Balancer"
+      to: "Spring Boot Instances"
+      route_label: "L4는 IP·Port, L7은 Host·Path·Header 같은 기준으로 대상을 고른다."
+      active_actors: [load_balancer, instances]
+      description: "어떤 계층의 정보를 볼 수 있는지에 따라 선택 가능한 분산 기준이 달라진다."
+      payload: ["L4: IP·Port", "L7: Host·Path·Header"]
+      outcomes:
+        - status: info
+          text: "Round Robin·Weighted·Least Connections·IP Hash 등을 선택할 수 있다."
+    - title: "3. 헬스 체크"
+      from: "Load Balancer"
+      to: "Health Check"
+      route_label: "로드 밸런서가 인스턴스의 상태를 주기적으로 확인한다."
+      active_actors: [load_balancer, health, instances]
+      description: "헬스 체크 결과는 새 요청을 어느 인스턴스에 보낼 수 있는지 판단하는 입력이 된다."
+      payload: ["주기적 검사", "정상", "비정상"]
+      outcomes:
+        - status: allow
+          text: "정상 → 분배 대상에 포함"
+        - status: reject
+          text: "비정상 → 새 요청에서 제외"
+    - title: "4. 정상 인스턴스로 분산"
+      from: "Load Balancer"
+      to: "Spring Boot Instances"
+      route_label: "정상으로 확인된 A·B·C에 새 요청을 분산한다."
+      active_actors: [client, load_balancer, health, instances]
+      description: "비정상 D를 새 분배에서 제외하고 정상 인스턴스가 요청을 처리하도록 한다."
+      payload: ["Spring Boot A·B·C", "요청 처리"]
+      outcomes:
+        - status: allow
+          text: "회복이 확인되면 다시 분배 대상에 포함할 수 있다."
+
+tcp_control:
+  eyebrow: "Interactive comparison"
+  title: "TCP 흐름 제어와 혼잡 제어"
+  summary: "흐름 제어는 수신 버퍼를, 혼잡 제어는 네트워크 경로를 보호한다."
+  actors:
+    - id: sender
+      kind: "송신 주체"
+      name: "Sender"
+      description: "데이터를 네트워크로 전송함"
+    - id: receiver
+      kind: "수신 자원"
+      name: "Receiver Buffer"
+      description: "받은 데이터를 보관할 버퍼와 남은 공간을 가짐"
+    - id: flow
+      kind: "흐름 제어"
+      name: "rwnd"
+      description: "수신자가 감당할 수 있는 전송 범위를 알림"
+    - id: network
+      kind: "혼잡 제어"
+      name: "Network Path / cwnd"
+      description: "경로에 주입할 데이터 양과 혼잡 상태를 조절함"
+  steps:
+    - title: "1. 수신 버퍼 상태"
+      from: "Receiver Buffer"
+      to: "rwnd"
+      route_label: "수신 버퍼의 남은 공간을 rwnd로 알린다."
+      active_actors: [receiver, flow]
+      description: "흐름 제어는 송신자가 수신자가 처리할 수 있는 양보다 많이 보내 버퍼를 넘치게 하지 않도록 한다."
+      payload: ["수신 버퍼", "남은 공간", "rwnd"]
+      outcomes:
+        - status: info
+          text: "보호 대상은 수신 측 버퍼다."
+    - title: "2. 흐름 제어 적용"
+      from: "rwnd"
+      to: "Sender"
+      route_label: "송신자가 수신 윈도우에 맞춰 보낼 수 있는 범위를 줄이거나 늘린다."
+      active_actors: [sender, receiver, flow]
+      description: "수신 버퍼가 가득 차면 송신 가능한 데이터 범위를 줄여 수신 측 처리 속도와 균형을 맞춘다."
+      payload: ["rwnd", "송신 범위"]
+      outcomes:
+        - status: warning
+          text: "수신 버퍼가 흐름 제어의 기준이다."
+    - title: "3. 네트워크 혼잡 확인"
+      from: "Network Path / cwnd"
+      to: "Sender"
+      route_label: "송신자가 네트워크 경로의 혼잡에 맞춰 cwnd를 조절한다."
+      active_actors: [sender, network]
+      description: "혼잡 제어는 특정 수신 버퍼가 아니라 병목과 손실이 발생할 수 있는 네트워크 경로를 보호한다."
+      payload: ["cwnd", "병목", "혼잡 신호"]
+      outcomes:
+        - status: warning
+          text: "혼잡하면 증가 폭을 완만하게 하거나 전송량을 줄인다."
+    - title: "4. 두 제어를 함께 적용"
+      from: "Sender"
+      to: "Receiver Buffer"
+      route_label: "실제 전송량은 수신 버퍼와 네트워크 경로 양쪽의 제한을 함께 고려한다."
+      active_actors: [sender, receiver, flow, network]
+      description: "rwnd와 cwnd는 이름이 비슷한 전송량 제한이지만 각각 수신 측과 네트워크 경로라는 다른 대상을 보호한다."
+      payload: ["rwnd", "cwnd", "실제 전송 범위"]
+      outcomes:
+        - status: allow
+          text: "보호 대상이 다르므로 두 제어를 같은 개념으로 합치지 않는다."
+
+udp_header:
+  eyebrow: "Interactive structure"
+  title: "UDP 데이터그램 헤더와 데이터"
+  summary: "UDP 헤더는 네 개의 16비트 필드로 구성되고 길이는 헤더와 데이터를 모두 포함한다."
+  actors:
+    - id: datagram
+      kind: "전송 단위"
+      name: "UDP Datagram"
+      description: "헤더와 애플리케이션 데이터를 함께 담음"
+    - id: ports
+      kind: "주소 식별"
+      name: "Source / Destination Port"
+      description: "송신·수신 애플리케이션 포트를 표현함"
+    - id: length
+      kind: "크기 정보"
+      name: "Length"
+      description: "UDP 헤더 8바이트와 데이터 길이의 합을 나타냄"
+    - id: checksum
+      kind: "검사 정보"
+      name: "Checksum"
+      description: "데이터그램 오류 검사를 위한 필드"
+  steps:
+    - title: "1. 포트 필드"
+      from: "UDP Datagram"
+      to: "Source / Destination Port"
+      route_label: "출발지와 목적지 애플리케이션 포트를 헤더에 기록한다."
+      active_actors: [datagram, ports]
+      description: "UDP 헤더의 앞 두 필드는 송신 측과 수신 측 포트를 각각 16비트로 담는다."
+      payload: ["출발지 포트", "목적지 포트", "각 16비트"]
+      outcomes:
+        - status: info
+          text: "포트는 데이터그램을 애플리케이션과 연결하는 식별 정보다."
+    - title: "2. Length 필드"
+      from: "UDP Datagram"
+      to: "Length"
+      route_label: "헤더와 데이터 전체 길이를 Length에 기록한다."
+      active_actors: [datagram, length]
+      description: "UDP Length는 헤더 8바이트만이 아니라 UDP 데이터그램 전체 크기를 포함한다."
+      payload: ["UDP Header: 8 bytes", "Data length", "전체 길이"]
+      outcomes:
+        - status: allow
+          text: "Length = 헤더 길이 + 데이터 길이"
+    - title: "3. Checksum 필드"
+      from: "UDP Datagram"
+      to: "Checksum"
+      route_label: "데이터그램의 검사 값을 헤더에 포함한다."
+      active_actors: [datagram, checksum]
+      description: "Checksum은 UDP 데이터그램의 전송 중 오류를 확인하는 헤더 필드다."
+      payload: ["Checksum", "16비트"]
+      outcomes:
+        - status: info
+          text: "헤더 필드 자체와 애플리케이션 데이터의 역할을 구분한다."
+    - title: "4. 데이터그램 완성"
+      from: "Source / Destination Port"
+      to: "UDP Datagram"
+      route_label: "네 개의 헤더 필드와 데이터를 하나의 UDP 데이터그램으로 전송한다."
+      active_actors: [datagram, ports, length, checksum]
+      description: "UDP 데이터그램은 출발지 포트·목적지 포트·길이·체크섬 헤더와 애플리케이션 데이터를 함께 가진다."
+      payload: ["4 × 16비트 헤더 필드", "Application Data"]
+      outcomes:
+        - status: allow
+          text: "UDP 헤더의 기본 구조를 완성한다."
+
+osi_layers:
+  eyebrow: "Interactive flow"
+  title: "OSI 7계층과 데이터 단위"
+  summary: "송신 측은 상위에서 하위로 캡슐화하고 수신 측은 하위에서 상위로 해석한다."
+  actors:
+    - id: application
+      kind: "7~5계층"
+      name: "Application Data"
+      description: "응용·표현·세션 계층의 애플리케이션 데이터"
+    - id: transport
+      kind: "4계층"
+      name: "Transport"
+      description: "TCP 세그먼트 또는 UDP 데이터그램으로 전달함"
+    - id: network
+      kind: "3계층"
+      name: "Network"
+      description: "패킷 단위로 다음 네트워크를 선택함"
+    - id: link
+      kind: "2계층"
+      name: "Data Link"
+      description: "프레임 단위로 인접 노드에 전달함"
+    - id: physical
+      kind: "1계층"
+      name: "Physical"
+      description: "비트 신호로 실제 전송함"
+  steps:
+    - title: "1. 응용 데이터"
+      from: "Application Data"
+      to: "Transport"
+      route_label: "응용 데이터가 전송 계층으로 내려간다."
+      active_actors: [application, transport]
+      description: "응용·표현·세션 계층에서 다루는 데이터가 아래 계층으로 전달될 준비를 한다."
+      payload: ["데이터"]
+      outcomes:
+        - status: info
+          text: "송신 측에서는 위에서 아래로 흐름을 본다."
+    - title: "2. 전송 계층 캡슐화"
+      from: "Transport"
+      to: "Network"
+      route_label: "TCP 세그먼트 또는 UDP 데이터그램으로 포장해 전달한다."
+      active_actors: [transport, network]
+      description: "전송 계층은 애플리케이션 데이터에 전송 계층 정보를 붙여 세그먼트나 데이터그램으로 만든다."
+      payload: ["TCP Segment", "UDP Datagram"]
+      outcomes:
+        - status: info
+          text: "전송 계층 데이터 단위가 만들어진다."
+    - title: "3. 네트워크 계층"
+      from: "Transport"
+      to: "Network"
+      route_label: "전송 단위를 패킷으로 감싸 목적지 네트워크를 향하게 한다."
+      active_actors: [transport, network]
+      description: "네트워크 계층은 상위 전송 단위를 패킷에 담아 다음 경로를 따라 전달할 수 있게 한다."
+      payload: ["Packet"]
+      outcomes:
+        - status: info
+          text: "데이터 → 세그먼트·데이터그램 → 패킷"
+    - title: "4. 데이터 링크 계층"
+      from: "Network"
+      to: "Data Link"
+      route_label: "패킷을 프레임에 담아 인접 네트워크 장치로 전달한다."
+      active_actors: [network, link]
+      description: "데이터 링크 계층은 현재 링크에서 전달할 프레임 단위와 관련 정보를 다룬다."
+      payload: ["Frame"]
+      outcomes:
+        - status: info
+          text: "패킷이 프레임으로 캡슐화된다."
+    - title: "5. 물리 전송과 역캡슐화"
+      from: "Data Link"
+      to: "Physical"
+      route_label: "프레임을 비트 신호로 전송하고 수신 측은 아래에서 위로 해석한다."
+      active_actors: [link, physical, application]
+      description: "물리 계층에서 비트가 전송된 뒤 수신 측은 하위 계층에서 상위 계층으로 각 데이터 단위를 벗겨낸다."
+      payload: ["Bits", "Frame", "Packet", "Data"]
+      outcomes:
+        - status: allow
+          text: "수신 측에서는 아래에서 위로 흐름을 이해한다."
+
+tcp_handshake:
+  eyebrow: "Interactive flow"
+  title: "TCP 연결 수립과 정상 종료"
+  summary: "3-Way Handshake로 연결을 수립하고 FIN·ACK 교환으로 양방향 송신을 종료한다."
+  actors:
+    - id: host_a
+      kind: "연결 주체"
+      name: "Host A"
+      description: "연결을 시작하고 종료를 요청할 수 있음"
+    - id: host_b
+      kind: "연결 상대"
+      name: "Host B"
+      description: "요청을 확인하고 자신의 송신 종료를 알림"
+    - id: connection
+      kind: "연결 상태"
+      name: "TCP Connection"
+      description: "양쪽의 순서 번호와 확인 응답을 관리함"
+    - id: time_wait
+      kind: "종료 상태"
+      name: "TIME-WAIT"
+      description: "마지막 ACK와 지연 세그먼트를 고려하는 상태"
+  steps:
+    - title: "1. SYN"
+      from: "Host A"
+      to: "Host B"
+      route_label: "Host A가 연결 요청과 초기 순서 번호를 보낸다."
+      active_actors: [host_a, host_b, connection]
+      description: "3-Way Handshake의 첫 메시지는 연결을 시작하고 Host A의 순서 번호를 알린다."
+      payload: ["SYN", "초기 순서 번호"]
+      outcomes:
+        - status: info
+          text: "아직 양쪽의 연결 확인이 모두 끝난 상태는 아니다."
+    - title: "2. SYN-ACK"
+      from: "Host B"
+      to: "Host A"
+      route_label: "Host B가 요청을 확인하고 자신의 연결 요청을 함께 보낸다."
+      active_actors: [host_a, host_b, connection]
+      description: "Host B는 Host A의 SYN을 확인하는 ACK와 자신의 SYN을 하나의 응답으로 보낸다."
+      payload: ["SYN-ACK", "요청 확인", "서버의 요청"]
+      outcomes:
+        - status: info
+          text: "양쪽이 서로의 요청을 확인할 준비를 한다."
+    - title: "3. ACK와 연결 수립"
+      from: "Host A"
+      to: "Host B"
+      route_label: "Host A가 Host B의 SYN을 확인하는 ACK를 보낸다."
+      active_actors: [host_a, host_b, connection]
+      description: "세 번째 ACK까지 확인하면 양쪽의 요청과 응답을 바탕으로 통신을 시작할 수 있다."
+      payload: ["ACK", "연결 수립"]
+      outcomes:
+        - status: allow
+          text: "3-Way Handshake 완료"
+    - title: "4. 첫 번째 FIN"
+      from: "Host A"
+      to: "Host B"
+      route_label: "Host A가 자신의 송신 방향을 끝내겠다고 알린다."
+      active_actors: [host_a, host_b, connection]
+      description: "TCP 종료는 한 번에 양방향을 모두 끊는 것이 아니라 각 방향의 송신 종료를 따로 확인한다."
+      payload: ["FIN", "A 방향 송신 종료"]
+      outcomes:
+        - status: info
+          text: "Host B의 송신 방향은 아직 열려 있을 수 있다."
+    - title: "5. 첫 번째 FIN 확인"
+      from: "Host B"
+      to: "Host A"
+      route_label: "Host B가 첫 번째 FIN을 ACK로 확인한다."
+      active_actors: [host_a, host_b, connection]
+      description: "첫 번째 FIN에 대한 ACK는 Host A의 종료 요청을 받았다는 뜻이며 Host B의 송신 종료와는 별개다."
+      payload: ["ACK", "첫 FIN 확인"]
+      outcomes:
+        - status: info
+          text: "종료가 양방향에서 동시에 끝나는 것은 아니다."
+    - title: "6. 두 번째 FIN과 ACK"
+      from: "Host B"
+      to: "Host A"
+      route_label: "Host B가 자신의 FIN을 보내고 Host A가 마지막 ACK를 보낸다."
+      active_actors: [host_a, host_b, connection, time_wait]
+      description: "B의 FIN 뒤 A가 ACK를 보내면 정상 종료의 네 메시지 흐름이 완성된다."
+      payload: ["FIN", "ACK", "두 번째 송신 종료"]
+      outcomes:
+        - status: allow
+          text: "정상 종료 메시지 교환 완료"
+    - title: "7. TIME-WAIT 고려"
+      from: "Host A"
+      to: "TIME-WAIT"
+      route_label: "마지막 ACK 손실에 대비해 Host A가 TIME-WAIT 상태를 고려한다."
+      active_actors: [host_a, host_b, time_wait]
+      description: "마지막 ACK를 받지 못하면 B가 FIN을 재전송할 수 있으므로 종료 직후의 지연 세그먼트를 고려한다."
+      payload: ["TIME-WAIT", "FIN 재전송", "ACK 재전송"]
+      outcomes:
+        - status: info
+          text: "연결 종료 뒤에도 재전송 가능성을 고려한다."
