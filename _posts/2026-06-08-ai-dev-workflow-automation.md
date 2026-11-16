@@ -61,7 +61,7 @@ Agent OS는 AI에게 **"무엇을 어떻게 할지"**를 명확히 지시하는 
 
 제가 설계한 시스템은 여러 AI 에이전트가 유기적으로 연결돼 개발 워크플로우의 각 단계를 자동화하는 **에이전트 체인(Agent Chain)** 형태입니다. 에이전트마다 맡은 역할이 정해져 있고 앞선 에이전트의 결과물을 넘겨받아 다음 단계를 처리합니다.
 
-![직접 구축한 AI 개발 워크플로우 에이전트 체인](/assets/images/2026-06-08-ai-dev-workflow-automation/custom-agent-workflow-chain.png)
+{% include interactive/flow-card.html flow='custom_agent_chain' %}
 
 이 워크플로우는 다음과 같은 에이전트들로 구성됩니다.
 
@@ -79,7 +79,7 @@ Agent OS는 AI에게 **"무엇을 어떻게 할지"**를 명확히 지시하는 
 
 Agent OS의 철학에서 영감을 받아 `AGENTS.md`라는 파일을 도입해 **반복적인 컨텍스트 입력 문제**를 풀었습니다. 이 파일은 프로젝트의 모든 AI 에이전트가 공유하는 **Single Source of Truth** 역할을 합니다.
 
-![AGENTS.md를 중심으로 한 컨텍스트 흐름](/assets/images/2026-06-08-ai-dev-workflow-automation/agents-md-context-flow.png)
+{% include interactive/flow-card.html flow='agents_context_flow' %}
 
 `AGENTS.md`에는 다음과 같은 내용들이 포함됩니다.
 
@@ -95,7 +95,7 @@ Agent OS의 철학에서 영감을 받아 `AGENTS.md`라는 파일을 도입해 
 
 Agent OS와 제가 구축한 시스템은 AI 기반 개발 프로세스를 개선한다는 점은 같지만 책임 범위와 목표에서는 뚜렷이 갈립니다. 다음 표에 두 시스템의 주요 비교 항목을 정리했습니다.
 
-![Agent OS vs 직접 구축 시스템 비교](/assets/images/2026-06-08-ai-dev-workflow-automation/agent-os-vs-custom-system.png)
+{% include interactive/flow-card.html flow='agent_os_custom_compare' %}
 
 Agent OS는 **AI에게 작업을 위임하는 "지침서"**에 가깝고 제가 구축한 시스템은 그 지침서를 바탕으로 **실제 개발 워크플로우를 "실행하고 관리"하는 자동화 파이프라인**에 가깝습니다. 둘은 경쟁 관계가 아니라 책임 범위가 다를 뿐, 서로 보완하며 함께 쓸 수 있습니다.
 

@@ -31,7 +31,7 @@ QueryDSL을 처음 접하면 가장 먼저 만나는 개념 중 하나가 바로
 * **엔티티**: 도서관에 실제로 꽂혀 있는 책 한 권 한 권입니다. 이 책들이 실제 정보(데이터)를 담고 있죠.
 * **Q타입**: 그 책을 찾기 쉽게 만든 **검색 색인**입니다. 책의 제목, 저자, 출판일 등 검색에 필요한 정보를 미리 정리해둔 것이죠. 이 색인 자체는 책의 내용을 담고 있지 않습니다.
 
-![Q-Type 개념](/assets/images/2026-06-11-posting/q-type-concept.png)
+{% include interactive/flow-card.html flow='querydsl_qtype' %}
 
 * **QueryDSL**: 이 검색 색인(Q타입)으로 원하는 책(엔티티)을 효율적으로 찾는 **검색 도구**입니다.
 
@@ -72,7 +72,7 @@ QueryDSL을 쓰기 시작하면 "그럼 이제 `JpaRepository`는 필요 없는 
 
 > QueryDSL은 `JpaRepository`가 제공하는 기본 기능을 완전히 대체하는 게 아니라 `JpaRepository`만으로는 처리하기 어려운 **복잡한 조회 기능을 보완하는 도구**입니다. 보통 `JpaRepository`가 기본적인 데이터 접근을 맡고 QueryDSL이 `Custom Repository`로 복잡하고 동적인 조회 쿼리를 맡는 식으로 역할을 나눕니다. 그러면 코드의 가독성과 유지보수성도 좋아집니다.
 
-![Repository 역할 분담](/assets/images/2026-06-11-posting/repository-roles.png)
+{% include interactive/flow-card.html flow='repository_roles' %}
 
 ## 5. 단일 책임 원칙과 동적 검색 조건
 

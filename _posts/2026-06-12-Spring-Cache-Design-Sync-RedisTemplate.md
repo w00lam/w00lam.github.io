@@ -198,7 +198,7 @@ public class ProductCacheService {
 
 이때 Redis는 Java 객체를 그대로 저장하지 못하기 때문에 Spring이 **Serializer**로 Key와 Value를 Redis가 알아들을 수 있는 `byte[]` 형태로 바꿉니다. 이 과정을 **직렬화(Serialization)**라고 합니다. 예전에 쓴 [Redis 캐시에 객체를 저장할 때 직렬화가 필요한 이유](/posts/redis-cache-serialization/) 포스트에서 더 자세히 다뤘으니 함께 보면 좋습니다.
 
-![RedisTemplate 동작 흐름](/assets/images/2026-06-12-posting/redistemplate-workflow.png)
+{% include interactive/flow-card.html flow='redistemplate_workflow' %}
 
 `RedisTemplate`은 다음 흐름으로 Redis 명령을 실행합니다.
 

@@ -117,7 +117,7 @@ Our Server → Client: 결제 결과 응답
 
 ## 결제 상태 동기화 흐름 비교
 
-![결제 상태 동기화 흐름 비교](/assets/images/2026-06-09-payment-concurrency/payment-sync-flow-comparison.png)
+{% include interactive/flow-card.html flow='payment_sync_compare' %}
 
 ## 정리
 

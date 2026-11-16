@@ -42,11 +42,11 @@ permalink: /posts/payment-architecture-retrospective/
 
 이런 '실패 시나리오'들은 성공 시나리오보다 훨씬 더 많은 설계적 결정을 요구합니다. 단순히 `@Transactional`로 묶어서 해결될 문제가 아니기 때문입니다. 외부 시스템(PG)의 상태는 이미 변했는데 내부 DB만 롤백된다면 곧바로 [결제 상태 동기화 문제](/posts/payment-state-synchronization/)로 이어집니다. 결제 시스템에서는 실패 그 자체보다 **'실패 이후 시스템 상태를 어떻게 안전하게 복구하거나 일관성을 맞출 것인가'**가 더 중요하다는 점을 뼈저리게 느꼈습니다.
 
-![결제 실패 시 보상 트랜잭션 흐름](/assets/images/2026-06-10-payment-architecture-retrospective/payment-compensation-flow.png)
+{% include interactive/flow-card.html flow='payment_compensation' %}
 
 ## 3. 왜 이런 문제가 발생했을까 — Facade 중심 설계의 한계
 
-![Facade vs UseCase 아키텍처 비교](/assets/images/2026-06-10-payment-architecture-retrospective/facade-vs-usecase.png)
+{% include interactive/flow-card.html flow='facade_usecase_compare' %}
 
 현재 프로젝트의 구조를 간략히 보면 다음과 같습니다.
 
@@ -126,7 +126,7 @@ Domain Services (개별 도메인 로직)
 
 이번 프로젝트에서 Facade로 도메인을 조율해본 경험이 있었기에 자연스럽게 그 상위 계층인 유스케이스의 필요성을 절감할 수 있었습니다. 기술적인 구조를 먼저 잡기보다 **비즈니스 시나리오를 먼저 정의하고 그에 맞는 구조를 끼워 맞추는 방식**이 결제 시스템에는 더 적합하다는 결론을 내렸습니다.
 
-![아키텍처의 진화: 기술 중심에서 비즈니스 중심](/assets/images/2026-06-10-payment-architecture-retrospective/architecture-evolution.png)
+{% include interactive/flow-card.html flow='architecture_evolution' %}
 
 ## 7. 문제 인식 — 결제 성공 후 발생하는 데이터 불일치
 
@@ -164,7 +164,7 @@ Domain Services (개별 도메인 로직)
 
 이 경우 핵심은 환불이 아니라 **"보상 트랜잭션"**입니다. 서비스 레이어에서 실패 케이스를 명시적으로 드러내고 테스트 코드로 검증해야 합니다. 결제 시스템은 성공 케이스보다 실패 케이스 설계가 더 중요합니다.
 
-![분산 시스템 데이터 불일치](/assets/images/2026-06-10-payment-compensation/distributed-inconsistency.png)
+{% include interactive/flow-card.html flow='distributed_inconsistency' %}
 
 ## 8. 왜 트랜잭션 하나로 묶으면 안 되는가 — 분산 트랜잭션의 어려움
 
@@ -231,7 +231,7 @@ private void processPaid(WebhookEvent event, String paymentId) {
 
 이 패턴을 적용하면 `paymentPostProcessService.process`에서 직접 다른 도메인 서비스를 호출하는 대신, `Outbox`에 메시지를 저장하는 방식으로 바꿀 수 있습니다. 그러면 결제 후처리 로직의 실패가 전체 트랜잭션을 롤백시키지 않으면서도 메시지 발행의 신뢰성을 보장해 결과적 일관성을 달성할 수 있습니다.
 
-![트랜잭셔널 아웃박스 패턴](/assets/images/2026-06-10-payment-compensation/transactional-outbox-pattern.png)
+{% include interactive/flow-card.html flow='transactional_outbox' %}
 
 ## 11. 왜 재고/포인트는 Best-Effort가 될 수 없는가?
 
@@ -301,7 +301,7 @@ public class RefundPostProcessService {
 
 이러한 패턴으로 결제 시스템의 후처리 로직을 한층 견고하고 확장 가능하게 만들 수 있습니다. 특히 `WebhookProcessor`에서 `FAILED` 상태로만 남겨두었던 웹훅 이벤트들을 아웃박스 패턴과 Saga 패턴으로 자동 재시도하고 보상하는 메커니즘을 구축할 수 있습니다.
 
-![Saga 패턴 (오케스트레이션 방식)](/assets/images/2026-06-10-payment-compensation/saga-orchestration-pattern.png)
+{% include interactive/flow-card.html flow='saga_orchestration' %}
 
 ## 13. 느리게 가는 것이 가장 빠르게 가는 길 — 문서화의 가치
 
