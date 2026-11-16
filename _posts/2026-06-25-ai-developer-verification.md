@@ -97,7 +97,7 @@ AI와 여러 에이전트를 사용하면 많은 결정이 프롬프트 안에�
 
 과거에는 사람이 생산하고 사람이 검증했다. 이제는 AI가 생산한 결과를 사람이 **검증 가능한 구조 안에** 넣어야 한다.
 
-![AI 시대의 검증 구조](/assets/images/2026-06-25-ai-developer-verification/ai-verification-structure.png)
+{% include interactive/flow-card.html flow='ai_verification' %}
 
 검증 레이어는 크게 세 가지로 나눌 수 있다.
 

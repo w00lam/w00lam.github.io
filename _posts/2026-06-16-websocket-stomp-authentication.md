@@ -154,7 +154,7 @@ WebSocket과 STOMP의 관계는 마치 **도로와 교통 규칙**에 비유할 
 * **WebSocket = 도로**: 클라이언트와 서버가 연결되어 데이터를 주고받을 수 있는 물리적인 통신 채널을 제공합니다.
 * **STOMP = 교통 규칙**: 이 도로 위에서 메시지들이 어떻게 이동하고 어떤 규칙으로 소통해야 하는지를 정의합니다. 덕분에 메시지가 어디로 가야 할지(Destination), 누가 메시지를 받을지(Subscribe) 등을 명확하게 알 수 있습니다.
 
-![WebSocket과 STOMP 관계](/assets/images/2026-06-16-websocket-stomp-authentication/websocket-stomp-relation.png)
+{% include interactive/flow-card.html flow='websocket_stomp_relation' %}
 
 ### STOMP 사용 이유 (실무 관점)
 

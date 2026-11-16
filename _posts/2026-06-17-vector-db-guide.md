@@ -48,7 +48,7 @@ metadata    {"source": "company-policy", "section": "휴가 규정"}
 
 임베딩 모델은 "강아지 사료 추천"과 "반려견 먹이 고르는 법"처럼 표현은 달라도 뜻이 비슷한 문장을 벡터 공간에서 가까이 놓도록 학습됩니다. 반대로 "법인카드 정산 규정"처럼 뜻이 다른 문장은 멀찍이 떨어뜨려 둡니다. 그리고 Vector DB는 **질문 벡터와 가장 가까운 문서 벡터를 찾아주는 역할**을 합니다.
 
-![Vector Space와 Semantic Search 개념](/assets/images/2026-06-17-vector-db-guide/vector-concept.png)
+{% include interactive/flow-card.html flow='embedding_representation' %}
 
 > 질문 벡터와 가장 가까운 문서 벡터를 찾는다.
 
@@ -68,7 +68,7 @@ metadata    {"source": "company-policy", "section": "휴가 규정"}
 
 Vector DB에 데이터를 그냥 넣는다고 검색이 잘 되지는 않습니다. 검색 품질을 끌어올리려면 데이터를 적재하는 과정, 곧 **인제스천(Ingestion) 파이프라인**이 무척 중요합니다.
 
-![Vector DB Ingestion Pipeline](/assets/images/2026-06-17-vector-db-guide/ingestion-pipeline.png)
+{% include interactive/flow-card.html flow='vector_db_ingestion' %}
 
 ### 1. 문서 준비
 
@@ -251,7 +251,7 @@ ANN 성능을 볼 때는 **재현율(Recall)**이 중요합니다. 재현율은 
 
 RAG는 LLM이 답을 만들기 전에 관련 문서를 먼저 검색해 **근거(Context)**로 건네주는 식으로 이 문제를 풉니다. Vector DB는 이 과정에서 LLM에게 줄 관련 문서를 효율적으로 찾아내는 핵심 역할을 맡습니다.
 
-![RAG에서 Vector DB의 역할](/assets/images/2026-06-17-vector-db-guide/rag-role.png)
+{% include interactive/flow-card.html flow='vector_db_rag_role' %}
 
 ### RAG에서 역할 분담
 

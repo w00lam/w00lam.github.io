@@ -12,7 +12,7 @@ permalink: /posts/mysql-index-optimizer-explain/
 
 처음 인덱스를 접했을 때는 단순히 '빠른 검색을 위한 사전' 정도로만 생각했습니다. 하지만 실무에서 다양한 쿼리 성능 문제를 마주하며 인덱스는 개발자가 지정하는 명령이 아니라 **DB 옵티마이저에게 제공하는 힌트**에 가깝다는 사실을 깨달았습니다. 오늘은 초보 백엔드 개발자의 시선에서 인덱스를 언제 추가해야 하고 `EXPLAIN`으로 무엇을 확인해야 하는지 정리해 보려고 합니다.
 
-![MySQL 인덱스와 옵티마이저 개념도](/assets/images/2026-06-15-posting/mysql-index-concept.png)
+{% include interactive/flow-card.html flow='mysql_index_optimizer' %}
 
 ## 1. 인덱스는 직접 탐색 방식을 고르는 것이 아니다
 

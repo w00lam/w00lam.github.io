@@ -12,7 +12,7 @@ permalink: /posts/spec-kit-spec-driven-development/
 
 특히 AI 에이전트는 구현 속도를 크게 높여주지만 그만큼 합의되지 않은 결정이 코드에 먼저 반영될 위험도 있다. 이런 문제의식에서 GitHub의 [`spec-kit`](https://github.com/github/spec-kit) 저장소를 살펴보게 되었다.
 
-![Spec Kit 기반 개발 흐름](/assets/images/2026-06-24-spec-kit/spec-kit-workflow.png)
+{% include interactive/flow-card.html flow='spec_kit_workflow' %}
 
 ---
 

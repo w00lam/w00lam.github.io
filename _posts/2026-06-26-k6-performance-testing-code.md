@@ -49,7 +49,7 @@ mockMvc.perform(get("/api/products"))
 
 처음에는 200 OK가 나오면 어느 정도 안심할 수 있다고 생각했지만 실제 서비스 관점에서는 응답 시간과 실패율도 중요한 품질 기준이라는 것을 알게 되었다.
 
-![기능 테스트와 성능 테스트의 차이](/assets/images/2026-06-26-k6-performance-testing-code/functional_vs_performance_test.png)
+{% include interactive/flow-card.html flow='functional_performance_test' %}
 
 ---
 
@@ -135,7 +135,7 @@ k6를 처음 사용할 때 알아야 할 개념은 다음과 같다.
 | http_req_duration | HTTP 요청 응답 시간 |
 | http_req_failed | HTTP 요청 실패율 |
 
-![k6로 API 부하 테스트하는 구조](/assets/images/2026-06-26-k6-performance-testing-code/k6_load_test_structure.png)
+{% include interactive/flow-card.html flow='k6_load_test' %}
 
 ---
 
@@ -449,7 +449,7 @@ vus
 `checks`는 내가 작성한 검증 조건이 얼마나 통과했는지를 보여준다.
 예를 들어 상태 코드 200 검증이 많이 실패했다면 API가 정상 응답을 유지하지 못했다는 신호다.
 
-![k6 테스트 결과로 병목을 찾는 흐름](/assets/images/2026-06-26-k6-performance-testing-code/k6_bottleneck_troubleshooting.png)
+{% include interactive/flow-card.html flow='k6_bottleneck' %}
 
 ---
 

@@ -19,7 +19,7 @@ permalink: /posts/collaboration-design-retrospective/
 
 다만 스텁이나 페이크 객체는 임시 방편이라 실제 비즈니스 정책과 다르게 작동할 수 있습니다. 코드에 임시 구현체라는 사실을 명확히 남기고 실제 구현체로 교체하는 시점을 꼼꼼히 챙겨야 합니다.
 
-![의존성 분리 다이어그램](/assets/images/2026-06-22-collaboration-design-retrospective/dependency_inversion_diagram.png)
+{% include interactive/flow-card.html flow='dependency_inversion' %}
 
 ### 2. API 버저닝 — 클라이언트와 맺는 안전한 계약
 API 경로에 `/v1`이나 `/v2`를 붙이는 일은 단순한 형식이 아닙니다. 서비스를 배포하고 운영하다 보면 응답 필드가 바뀌거나 요청 구조가 바뀌는 일이 흔합니다. 기존 API를 그대로 수정하면 이미 개발해 둔 클라이언트가 멈춰 버립니다.
@@ -32,7 +32,7 @@ API 버저닝은 기존 사용자와 맺은 약속을 지키는 핵심 장치입
 
 버저닝이 변경을 안전하게 받아들이고 비즈니스를 지키는 실무 장치라는 걸 배웠습니다.
 
-![API 버전 관리 다이어그램](/assets/images/2026-06-22-collaboration-design-retrospective/api_versioning_diagram.png)
+{% include interactive/flow-card.html flow='api_versioning' %}
 
 ### 3. 요구사항 분석 — 기능 목록 작성을 넘어 정책과 경계 설정하기
 요구사항을 단순히 기능을 만든다고만 보고 접근하면 한계에 부딪힙니다. 요구사항에 담긴 정책이 무엇인지, 그 책임의 경계를 어디에 둘지 정의하는 과정이 중요합니다.

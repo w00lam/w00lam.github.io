@@ -64,7 +64,7 @@ this.managers.add(new Manager(user, this));
 
 Manager는 Todo 생성 시 함께 만들어지고 Todo에 종속되는 관계이므로 처음에는 `CascadeType.PERSIST`를 고려했습니다. 이후 Todo 삭제 시 담당자 정보도 함께 사라지는 것이 자연스럽고 Todo가 Manager의 생명주기를 전반적으로 관리한다고 판단하여 `CascadeType.ALL`과 `orphanRemoval = true` 조합을 선택했습니다.
 
-![JPA Cascade와 orphanRemoval 개념](/assets/images/2026-06-18-spring-todo-retrospective/jpa-cascade-concept.png)
+{% include interactive/flow-card.html flow='jpa_cascade_orphan' %}
 
 ```java
 @OneToMany(

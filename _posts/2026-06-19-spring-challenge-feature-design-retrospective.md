@@ -60,7 +60,7 @@ DTO를 재사용하면 코드 수는 줄일 수 있지만 서로 다른 목적�
 
 그래서 로그 저장 메서드에는 `Propagation.REQUIRES_NEW`를 사용했습니다. `REQUIRES_NEW`는 기존 트랜잭션을 잠시 중단하고 별도의 트랜잭션을 시작하므로 로그 저장을 메인 로직과 독립적으로 커밋할 수 있습니다.
 
-![REQUIRES_NEW를 사용한 감사 로그 트랜잭션 분리 흐름](/assets/images/2026-06-19-spring-challenge-feature-design-retrospective/manager-log-requires-new-flow.png)
+{% include interactive/flow-card.html flow='requires_new_audit' %}
 
 이 선택에는 분명한 트레이드오프가 있습니다. 메인 로직이 실패해도 로그가 남기 때문에 비즈니스 데이터와 항상 같은 상태를 가져야 하는 정합성 데이터에는 적합하지 않습니다. 반면 감사 로그, 이력, 요청 추적 데이터처럼 메인 트랜잭션의 결과와 독립적으로 보존되어야 하는 데이터에는 잘 맞습니다.
 
@@ -112,7 +112,7 @@ STOMP는 WebSocket 연결 위에서 메시지를 어떤 형식으로, 어느 des
 
 Simple Broker는 Spring 애플리케이션 내부에서 구독 destination을 기준으로 메시지를 구독자에게 전달하는 간단한 메시지 브로커입니다.
 
-![WebSocket과 STOMP, Simple Broker의 메시지 전달 흐름](/assets/images/2026-06-19-spring-challenge-feature-design-retrospective/websocket-stomp-simple-broker-flow.png)
+{% include interactive/flow-card.html flow='websocket_broker_flow' %}
 
 세 요소의 역할을 나눠 보면 WebSocket은 지속 연결을 담당하고 STOMP는 그 연결 위에서 메시지를 주고받는 규칙을 제공하며 Simple Broker는 구독자에게 메시지를 전달합니다.
 
@@ -149,7 +149,7 @@ messagingTemplate.convertAndSend(
 
 이 방식은 여러 destination으로 메시지를 보내거나 조건에 따라 다른 topic을 선택해야 할 때 유연합니다. WebSocket Controller가 아닌 서비스, 이벤트 리스너, Redis Subscriber 등에서 메시지를 발행해야 하는 경우에도 자연스럽게 사용할 수 있습니다.
 
-![SendTo와 SimpMessagingTemplate 메시지 발행 방식 비교](/assets/images/2026-06-19-spring-challenge-feature-design-retrospective/sendto-vs-simpmessagingtemplate.png)
+{% include interactive/flow-card.html flow='sendto_template_compare' %}
 
 초기 구현은 Redis 없이 Simple Broker만 사용했고 메시지의 입력과 출력 경로도 단순했기 때문에 `@SendTo`를 선택했습니다. 아직 필요하지 않은 유연성을 위해 발행 로직을 직접 제어하기보다 현재 요구사항을 가장 명확하게 표현하는 방법을 택했습니다.
 

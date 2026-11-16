@@ -28,7 +28,7 @@ PR 단계에서 실패가 발견되면 main 브랜치를 건드리지 않고 기
 
 그래서 이제 PR은 단순한 리뷰 요청이 아니라 main에 들어가기 전 첫 번째 자동 검증 지점이라고 생각하게 되었다.
 
-![PR 검증 및 배포 흐름](/assets/images/2026-06-30-pr-github-actions-ci/cover.png)
+{% include interactive/flow-card.html flow='pr_actions_ci' %}
 
 ## 3. GitHub Actions가 PR에서 검증하는 것
 

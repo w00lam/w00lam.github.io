@@ -61,7 +61,7 @@ AI 브라우저 에이전트는 챗봇처럼 질문에 답하는 것이 아니�
 
 ## AI가 브라우저를 사용한다는 의미
 
-![AI 브라우저 에이전트 흐름](/assets/images/posts/ai-browser-agent/ai-browser-agent-flow.png)
+{% include interactive/flow-card.html flow='browser_agent' %}
 
 브라우저는 사람이 웹 서비스를 사용하는 가장 기본적인 인터페이스다.
 그동안 우리는 브라우저를 사람만 쓰는 것으로 당연하게 여겨왔다.

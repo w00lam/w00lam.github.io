@@ -68,7 +68,7 @@ private boolean isValidClaims(TokenClaims claims) {
 
 각 검증 단계를 분리해서 살펴보면 서로가 해결하고자 하는 책임의 차이가 명확하게 보입니다.
 
-![JWT 인증 필터의 검증 책임 분리](/assets/images/2026-06-29-why-split-jwt-validation-responsibilities/jwt_validation_flow.png)
+{% include interactive/flow-card.html flow='jwt_validation' %}
 
 ---
 
