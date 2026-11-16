@@ -57,7 +57,7 @@ MMU를 단순히 “주소를 바꾸는 장치”라고만 이해하면 아쉽�
 
 프로세스의 논리 주소 공간이 Page 여러 개로 나뉘고 실제 RAM은 같은 크기의 Frame 여러 개로 나뉜다. 그러면 논리 공간의 Page를 물리 메모리의 연속된 공간에 모두 배치하지 않아도 된다. Page 0은 Frame 3에, Page 1은 Frame 7에, Page 2는 Frame 1에 놓이는 식으로 흩어져 배치할 수 있다.
 
-![Paging 주소 변환: Page와 Frame의 매핑](/assets/images/2026-08-18-paging-page-replacement/paging-address-translation.png)
+{% include interactive/flow-card.html flow='paging_translation' %}
 
 이렇게 하면 프로세스 전체가 RAM에 연속해서 올라가야 한다는 제약이 줄어든다. 프로세스가 당장 사용하지 않는 Page를 메모리에 올리지 않는 것도 가능해진다. 대신 “이 Page가 현재 어느 Frame에 있는가?”를 추적할 관리 정보가 필요하다.
 
@@ -143,7 +143,7 @@ Victim Page 선택
 명령 다시 수행
 ```
 
-![Page Fault와 Page Replacement 처리 흐름](/assets/images/2026-08-18-paging-page-replacement/page-fault-replacement-flow.png)
+{% include interactive/flow-card.html flow='page_fault' %}
 
 여기서 가장 중요한 구분은 다음이다.
 
@@ -187,7 +187,7 @@ Page Fault가 발생해도 빈 Frame이 있다면 그곳에 필요한 Page를 �
 - OPT: 미래에 다시 참조되지 않는 Page 1
 - LRU: 가장 오랫동안 사용되지 않은 Page 7
 
-![FIFO, OPT, LRU의 Victim Page 선택 비교](/assets/images/2026-08-18-paging-page-replacement/replacement-algorithms-comparison-v2.png)
+{% include interactive/flow-card.html flow='replacement_algorithms' %}
 
 ## Locality와 LRU의 관계
 

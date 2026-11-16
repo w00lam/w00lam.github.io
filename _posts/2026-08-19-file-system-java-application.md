@@ -61,7 +61,7 @@ SSD나 HDD는 데이터를 물리적인 블록 단위로 저장한다. 애플리
 
 파일 시스템이 없다면 프로그램마다 이런 기능을 따로 구현해야 한다. 파일 시스템은 공통으로 사용할 수 있는 저장장치 관리 규칙을 운영체제 수준에서 제공한다.
 
-![Java 애플리케이션에서 저장장치까지의 계층 흐름](/assets/images/2026-08-19-filesystem/java-to-storage.png)
+{% include interactive/flow-card.html flow='filesystem_layers' %}
 
 위 그림처럼 애플리케이션이 바라보는 파일과 실제 저장장치 사이에는 여러 계층이 있다. 각 계층이 책임을 나누기 때문에 Java 코드는 물리 블록의 배치 방식과 무관하게 파일을 사용할 수 있다.
 
@@ -208,7 +208,7 @@ A → B → C → A
 
 실제 파일 시스템에서도 하드 링크나 심볼릭 링크처럼 공유와 참조를 지원하는 기능을 볼 수 있다. 그래서 겉으로 보이는 경로 구조는 트리처럼 보이더라도 링크까지 따라가면 그래프처럼 동작할 수 있다는 점을 기억할 필요가 있다.
 
-![Single-Level부터 Graph까지 디렉터리 구조 비교](/assets/images/2026-08-19-filesystem/directory-structures.png)
+{% include interactive/flow-card.html flow='directory_structures' %}
 
 ## 6. File System과 Database는 무엇이 다른가
 

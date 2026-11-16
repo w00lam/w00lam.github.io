@@ -6579,3 +6579,533 @@ io_state_transition:
       outcomes:
         - status: info
           text: "스케줄러가 선택한 뒤에야 실제 실행 상태가 된다."
+
+encapsulation:
+  eyebrow: "Interactive comparison"
+  title: "Java 캡슐화 전후"
+  summary: "필드를 외부에 직접 노출하지 않고 객체의 메서드가 상태 변경과 불변식을 관리한다."
+  actors:
+    - id: caller
+      kind: "호출부"
+      name: "External Caller"
+      description: "객체의 상태를 사용하거나 변경하려는 코드"
+    - id: field
+      kind: "상태"
+      name: "Private Field"
+      description: "객체 내부에서만 직접 접근하는 값"
+    - id: method
+      kind: "행동 경계"
+      name: "Domain Method"
+      description: "검증과 상태 변경 정책을 함께 가진 메서드"
+    - id: invariant
+      kind: "규칙"
+      name: "Invariant"
+      description: "항상 지켜져야 하는 객체 상태 조건"
+  steps:
+    - title: "1. 직접 필드 노출"
+      from: "External Caller"
+      to: "Private Field"
+      route_label: "호출부가 필드에 직접 값을 쓰면 객체 내부 규칙을 우회할 수 있다."
+      active_actors: [caller, field]
+      description: "공개 필드는 상태 변경 위치가 여러 곳으로 퍼지기 쉽다."
+      payload: ["public field", "direct write", "coupling"]
+      outcomes:
+        - status: warning
+          text: "잘못된 값이 검증 없이 저장될 수 있다."
+    - title: "2. 메서드로 변경"
+      from: "External Caller"
+      to: "Domain Method"
+      route_label: "호출부는 changeName 같은 행동 메서드를 호출하고 필드는 직접 만지지 않는다."
+      active_actors: [caller, method, field]
+      description: "변경 의도를 메서드 이름으로 드러내면 정책을 한 경계에 모을 수 있다."
+      payload: ["changeName()", "validate", "encapsulation"]
+      outcomes:
+        - status: allow
+          text: "상태 변경 책임이 객체 내부로 이동한다."
+    - title: "3. 불변식 유지"
+      from: "Domain Method"
+      to: "Invariant"
+      route_label: "메서드가 입력을 검증한 뒤 허용된 상태만 필드에 반영한다."
+      active_actors: [method, field, invariant]
+      description: "캡슐화는 private 키워드만이 아니라 상태 변경 규칙을 지키는 설계다."
+      payload: ["validation", "valid state", "policy"]
+      outcomes:
+        - status: allow
+          text: "변경 정책을 나중에 추가해도 호출부의 세부 수정이 줄어든다."
+
+constructor_state:
+  eyebrow: "Interactive flow"
+  title: "Constructor와 객체 상태 관리"
+  summary: "생성자는 객체가 유효한 초기 상태를 만들고 이후 행동 메서드가 상태 변경 규칙을 적용한다."
+  actors:
+    - id: input
+      kind: "생성 입력"
+      name: "Constructor Arguments"
+      description: "객체 생성에 필요한 초기 값"
+    - id: constructor
+      kind: "초기화"
+      name: "Constructor"
+      description: "필수 상태를 검증하고 초기화하는 경계"
+    - id: object
+      kind: "도메인 객체"
+      name: "Valid Object"
+      description: "유효한 불변식으로 만들어진 객체"
+    - id: behavior
+      kind: "상태 변경"
+      name: "Object Behavior"
+      description: "객체가 제공하는 의도 중심의 행동 메서드"
+  steps:
+    - title: "1. 생성 입력 검증"
+      from: "Constructor Arguments"
+      to: "Constructor"
+      route_label: "생성자가 필수 값과 초기 조건을 확인한다."
+      active_actors: [input, constructor]
+      description: "생성 시점에 만족해야 하는 규칙과 이후 변경 규칙을 구분한다."
+      payload: ["required value", "validation", "initial state"]
+      outcomes:
+        - status: reject
+          text: "유효하지 않은 객체를 먼저 만든 뒤 나중에 고치는 흐름을 피한다."
+    - title: "2. 유효한 객체 생성"
+      from: "Constructor"
+      to: "Valid Object"
+      route_label: "검증을 통과한 값으로 객체의 초기 상태를 만든다."
+      active_actors: [constructor, object]
+      description: "객체가 생성된 뒤에는 기본 불변식이 항상 성립한다고 기대할 수 있다."
+      payload: ["fields", "invariant", "new object"]
+      outcomes:
+        - status: allow
+          text: "호출부가 부분 초기화 상태를 다룰 필요가 줄어든다."
+    - title: "3. 행동으로 변경"
+      from: "Valid Object"
+      to: "Object Behavior"
+      route_label: "이후 변경은 setter 남발보다 객체의 의미 있는 행동으로 표현한다."
+      active_actors: [object, behavior]
+      description: "상태 변경 정책과 이력·검증을 도메인 메서드 안에서 함께 관리할 수 있다."
+      payload: ["change state", "domain method", "policy"]
+      outcomes:
+        - status: info
+          text: "Dirty Checking의 필수 조건과 좋은 객체 설계의 선택을 혼동하지 않는다."
+
+short_circuit:
+  eyebrow: "Interactive comparison"
+  title: "Java &&와 &의 단락 평가"
+  summary: "&&는 왼쪽 결과로 전체 결과가 정해지면 오른쪽을 건너뛰고 &는 두 피연산자를 모두 평가한다."
+  actors:
+    - id: left
+      kind: "첫 조건"
+      name: "Left Operand"
+      description: "먼저 평가되는 boolean 조건"
+    - id: right
+      kind: "둘째 조건"
+      name: "Right Operand"
+      description: "두 번째로 평가될 수 있는 조건 또는 메서드 호출"
+    - id: and
+      kind: "단락 연산"
+      name: "&&"
+      description: "왼쪽이 false면 오른쪽을 평가하지 않는 연산자"
+    - id: bit
+      kind: "전체 평가"
+      name: "&"
+      description: "boolean에서도 양쪽 피연산자를 모두 평가하는 연산자"
+  steps:
+    - title: "1. 왼쪽 조건 평가"
+      from: "Left Operand"
+      to: "&&"
+      route_label: "&& 표현식이 왼쪽 조건을 먼저 계산한다."
+      active_actors: [left, and]
+      description: "왼쪽 결과가 오른쪽 평가 여부를 결정할 수 있다."
+      payload: ["left", "boolean", "short circuit"]
+      outcomes:
+        - status: info
+          text: "평가 순서가 연산 결과와 부수 효과에 영향을 준다."
+    - title: "2. false면 건너뜀"
+      from: "&&"
+      to: "Right Operand"
+      route_label: "왼쪽이 false면 &&는 전체가 false이므로 오른쪽을 호출하지 않는다."
+      active_actors: [and, right]
+      description: "null 검사 뒤 메서드를 호출하는 패턴처럼 안전한 단락 평가에 활용한다."
+      payload: ["left = false", "right skipped", "false"]
+      outcomes:
+        - status: allow
+          text: "불필요한 계산과 위험한 호출을 줄일 수 있다."
+    - title: "3. &는 모두 평가"
+      from: "&"
+      to: "Right Operand"
+      route_label: "boolean 연산의 &는 왼쪽 결과와 관계없이 오른쪽까지 평가한다."
+      active_actors: [left, right, bit]
+      description: "부수 효과가 있는 조건에서 &&와 &를 바꾸면 실행 흐름이 달라진다."
+      payload: ["left", "right", "both evaluated"]
+      outcomes:
+        - status: warning
+          text: "의도한 단락 평가인지 비트 연산인지 문맥에 맞춰 선택한다."
+
+primitive_reference:
+  eyebrow: "Interactive comparison"
+  title: "기본 타입과 참조 타입의 전달"
+  summary: "기본 타입은 값이 복사되고 참조 타입은 참조값이 복사되어 같은 객체를 가리킬 수 있다."
+  actors:
+    - id: caller
+      kind: "호출부"
+      name: "Caller Variable"
+      description: "메서드에 값을 전달하는 원래 변수"
+    - id: primitive
+      kind: "기본 값"
+      name: "Primitive Copy"
+      description: "int·boolean 같은 값 자체의 복사본"
+    - id: reference
+      kind: "참조 값"
+      name: "Reference Copy"
+      description: "객체를 가리키는 참조값의 복사본"
+    - id: object
+      kind: "객체"
+      name: "Heap Object"
+      description: "복사된 참조들이 함께 가리킬 수 있는 객체"
+  steps:
+    - title: "1. 기본 값 복사"
+      from: "Caller Variable"
+      to: "Primitive Copy"
+      route_label: "메서드 호출 시 기본 타입의 값 자체가 매개변수에 복사된다."
+      active_actors: [caller, primitive]
+      description: "메서드 안에서 복사본을 바꿔도 호출부 변수는 바뀌지 않는다."
+      payload: ["int x", "copy value", "local change"]
+      outcomes:
+        - status: info
+          text: "Java의 매개변수 전달은 기본 타입에서도 값 복사다."
+    - title: "2. 참조값 복사"
+      from: "Caller Variable"
+      to: "Reference Copy"
+      route_label: "참조 타입에서는 객체를 가리키는 참조값이 매개변수에 복사된다."
+      active_actors: [caller, reference, object]
+      description: "참조 자체가 복사되지만 두 참조가 같은 Heap 객체를 가리킬 수 있다."
+      payload: ["User user", "copy reference", "same object"]
+      outcomes:
+        - status: info
+          text: "Java가 참조 자체를 call by reference로 전달한다는 뜻은 아니다."
+    - title: "3. 객체 상태 변경"
+      from: "Reference Copy"
+      to: "Heap Object"
+      route_label: "메서드가 복사된 참조로 객체 필드를 바꾸면 공유 객체 상태가 바뀐다."
+      active_actors: [reference, object, caller]
+      description: "참조값 복사와 객체 mutation을 분리해서 설명해야 전달 규칙이 선명해진다."
+      payload: ["user.name = ...", "mutation", "caller observes"]
+      outcomes:
+        - status: allow
+          text: "참조 타입도 매개변수 전달 자체는 값 복사지만 객체 변경은 공유된다."
+
+pass_by_value:
+  eyebrow: "Interactive flow"
+  title: "참조 타입의 Pass by Value"
+  summary: "메서드는 참조값의 복사본을 받으므로 지역 참조 재대입은 호출부에 영향을 주지 않지만 객체 변경은 공유된다."
+  actors:
+    - id: caller
+      kind: "호출부 참조"
+      name: "caller.user"
+      description: "원래 객체를 가리키는 호출부 변수"
+    - id: parameter
+      kind: "매개변수 복사"
+      name: "method user"
+      description: "호출부 참조값을 복사한 지역 변수"
+    - id: object
+      kind: "공유 객체"
+      name: "User Object"
+      description: "두 참조가 같은 객체를 가리키는 상태"
+    - id: reassigned
+      kind: "지역 재대입"
+      name: "Local Reassignment"
+      description: "메서드 안에서만 바뀌는 매개변수 참조"
+  steps:
+    - title: "1. 참조값 전달"
+      from: "caller.user"
+      to: "method user"
+      route_label: "호출부의 참조값이 매개변수 변수에 복사된다."
+      active_actors: [caller, parameter, object]
+      description: "두 변수는 같은 User 객체를 가리킬 수 있지만 변수 자체는 별개다."
+      payload: ["copy reference", "same heap object", "pass by value"]
+      outcomes:
+        - status: info
+          text: "참조를 전달해도 참조 변수 자체를 공유하는 것은 아니다."
+    - title: "2. 지역 참조 재대입"
+      from: "method user"
+      to: "Local Reassignment"
+      route_label: "메서드 안에서 parameter가 다른 객체를 가리키도록 재대입한다."
+      active_actors: [parameter, reassigned, caller]
+      description: "복사본인 매개변수만 바뀌므로 호출부의 caller.user는 그대로다."
+      payload: ["user = new User()", "local only", "caller unchanged"]
+      outcomes:
+        - status: allow
+          text: "참조 변수 재대입은 호출부까지 전파되지 않는다."
+    - title: "3. 객체 mutation"
+      from: "method user"
+      to: "User Object"
+      route_label: "재대입이 아니라 user.name 같은 필드를 바꾸면 같은 객체의 상태가 변경된다."
+      active_actors: [parameter, object, caller]
+      description: "호출부와 메서드가 같은 객체를 가리키는 동안 mutation은 공유된다."
+      payload: ["field mutation", "shared state", "caller sees change"]
+      outcomes:
+        - status: warning
+          text: "재대입과 객체 내부 변경을 같은 결과로 설명하지 않는다."
+
+filesystem_layers:
+  eyebrow: "Interactive flow"
+  title: "Java 애플리케이션에서 저장장치까지"
+  summary: "Java API 호출은 운영체제 파일 시스템과 장치 드라이버를 거쳐 저장장치의 블록에 도달한다."
+  actors:
+    - id: app
+      kind: "응용 계층"
+      name: "Java Application"
+      description: "File·Stream API를 호출하는 애플리케이션"
+    - id: os
+      kind: "운영체제"
+      name: "OS + File System"
+      description: "파일 이름·권한·블록 매핑을 관리하는 계층"
+    - id: driver
+      kind: "장치 연결"
+      name: "Device Driver"
+      description: "운영체제 요청을 장치 명령으로 바꾸는 계층"
+    - id: storage
+      kind: "물리 저장"
+      name: "Storage Device"
+      description: "SSD·HDD의 실제 블록과 페이지"
+  steps:
+    - title: "1. 파일 API 호출"
+      from: "Java Application"
+      to: "OS + File System"
+      route_label: "Java 애플리케이션이 파일 열기·읽기·쓰기 API를 호출한다."
+      active_actors: [app, os]
+      description: "애플리케이션은 저장장치의 물리 위치보다 파일 추상화를 사용한다."
+      payload: ["Path", "read", "write"]
+      outcomes:
+        - status: info
+          text: "Java 코드가 곧바로 디스크 블록을 조작하는 것은 아니다."
+    - title: "2. 파일 시스템 매핑"
+      from: "OS + File System"
+      to: "Device Driver"
+      route_label: "운영체제가 파일 위치와 권한을 해석해 장치 I/O 요청으로 만든다."
+      active_actors: [os, driver]
+      description: "파일 이름에서 실제 블록으로 내려가는 책임이 운영체제에 있다."
+      payload: ["inode", "block mapping", "I/O request"]
+      outcomes:
+        - status: allow
+          text: "파일 시스템과 장치 접근 계층이 연결된다."
+    - title: "3. 저장장치 접근"
+      from: "Device Driver"
+      to: "Storage Device"
+      route_label: "드라이버가 장치 명령을 보내 저장장치가 블록을 읽거나 쓴다."
+      active_actors: [driver, storage]
+      description: "지연 시간과 내구성은 파일 API보다 아래 계층의 특성에도 영향을 받는다."
+      payload: ["block", "page", "read / write"]
+      outcomes:
+        - status: info
+          text: "애플리케이션·OS·장치의 책임을 층별로 나누어 본다."
+
+directory_structures:
+  eyebrow: "Interactive comparison"
+  title: "디렉터리 구조의 변화"
+  summary: "단일 디렉터리에서 계층형 트리와 링크를 허용하는 그래프 구조로 갈수록 이름 충돌과 공유 요구를 다르게 해결한다."
+  actors:
+    - id: single
+      kind: "초기 구조"
+      name: "Single-Level"
+      description: "모든 파일이 하나의 디렉터리에 있는 구조"
+    - id: two
+      kind: "분리 구조"
+      name: "Two-Level"
+      description: "사용자별 또는 그룹별로 분리된 디렉터리"
+    - id: tree
+      kind: "계층 구조"
+      name: "Tree Directories"
+      description: "하위 디렉터리를 중첩할 수 있는 구조"
+    - id: graph
+      kind: "공유 구조"
+      name: "Acyclic / General Graph"
+      description: "링크로 여러 경로에서 대상을 공유하는 구조"
+  steps:
+    - title: "1. 단일 공간"
+      from: "Single-Level"
+      to: "Two-Level"
+      route_label: "파일이 많아지면 사용자·그룹별 디렉터리로 이름 공간을 나눈다."
+      active_actors: [single, two]
+      description: "단일 구조는 단순하지만 파일 이름 충돌과 관리 범위 문제가 커진다."
+      payload: ["one directory", "name collision", "user scope"]
+      outcomes:
+        - status: info
+          text: "이름 공간을 나누는 것이 첫 번째 확장 방향이다."
+    - title: "2. 트리 확장"
+      from: "Two-Level"
+      to: "Tree Directories"
+      route_label: "하위 디렉터리를 중첩해 프로젝트·기능·날짜별 계층을 만든다."
+      active_actors: [two, tree]
+      description: "트리 구조는 경로로 파일을 구분하고 관리 범위를 세분화한다."
+      payload: ["path", "parent", "child directory"]
+      outcomes:
+        - status: allow
+          text: "계층을 따라 탐색과 권한 관리를 구성할 수 있다."
+    - title: "3. 링크와 공유"
+      from: "Tree Directories"
+      to: "Acyclic / General Graph"
+      route_label: "같은 파일이나 디렉터리를 여러 경로에서 참조하려면 링크를 허용한다."
+      active_actors: [tree, graph]
+      description: "공유 링크는 유연하지만 순환 참조·삭제·권한 의미를 추가로 관리해야 한다."
+      payload: ["link", "shared target", "cycle policy"]
+      outcomes:
+        - status: warning
+          text: "표현력이 늘수록 탐색과 수명 관리 규칙도 복잡해진다."
+
+paging_translation:
+  eyebrow: "Interactive flow"
+  title: "Paging 주소 변환"
+  summary: "가상 주소를 page number와 offset으로 나누고 페이지 테이블에서 frame을 찾아 물리 주소를 만든다."
+  actors:
+    - id: virtual
+      kind: "가상 주소"
+      name: "Virtual Address"
+      description: "프로세스가 사용하는 논리 주소"
+    - id: page
+      kind: "페이지 번호"
+      name: "Page Number"
+      description: "페이지 테이블을 조회할 인덱스"
+    - id: table
+      kind: "매핑 표"
+      name: "Page Table"
+      description: "페이지와 물리 프레임의 매핑 정보"
+    - id: frame
+      kind: "물리 주소"
+      name: "Frame + Offset"
+      description: "RAM에서 실제 위치를 구성하는 프레임과 offset"
+  steps:
+    - title: "1. 주소 분해"
+      from: "Virtual Address"
+      to: "Page Number"
+      route_label: "가상 주소를 page number와 page offset으로 분리한다."
+      active_actors: [virtual, page]
+      description: "offset은 페이지 안의 위치이고 page number는 매핑 대상을 찾는 값이다."
+      payload: ["virtual address", "page", "offset"]
+      outcomes:
+        - status: info
+          text: "페이지 크기가 주소 분할 기준을 결정한다."
+    - title: "2. 페이지 테이블 조회"
+      from: "Page Number"
+      to: "Page Table"
+      route_label: "페이지 번호로 현재 페이지가 어느 frame에 있는지 조회한다."
+      active_actors: [page, table]
+      description: "매핑이 없거나 유효하지 않으면 page fault 처리가 필요하다."
+      payload: ["PTE", "valid bit", "frame number"]
+      outcomes:
+        - status: allow
+          text: "유효한 매핑이 있으면 주소 변환을 계속한다."
+    - title: "3. 물리 주소 생성"
+      from: "Page Table"
+      to: "Frame + Offset"
+      route_label: "frame 번호와 원래 offset을 합쳐 물리 주소를 만든다."
+      active_actors: [table, frame, virtual]
+      description: "Paging은 프로세스의 연속 가상 공간을 물리 프레임에 나누어 배치한다."
+      payload: ["frame", "offset", "physical address"]
+      outcomes:
+        - status: allow
+          text: "변환된 주소로 RAM 접근을 수행한다."
+
+page_fault:
+  eyebrow: "Interactive flow"
+  title: "Page Fault와 Page Replacement"
+  summary: "요청 페이지가 메모리에 없으면 트랩이 발생하고 운영체제가 페이지를 적재할 프레임을 확보한다."
+  actors:
+    - id: cpu
+      kind: "접근 주체"
+      name: "CPU Memory Access"
+      description: "가상 주소를 읽거나 쓰는 CPU 접근"
+    - id: table
+      kind: "판정"
+      name: "Page Table"
+      description: "페이지가 현재 메모리에 있는지 나타내는 표"
+    - id: disk
+      kind: "보조 저장"
+      name: "Backing Store"
+      description: "메모리에 없는 페이지를 보관하는 디스크 영역"
+    - id: memory
+      kind: "물리 메모리"
+      name: "Frame / Replacement"
+      description: "페이지를 적재할 프레임과 교체 정책"
+  steps:
+    - title: "1. 유효 비트 확인"
+      from: "CPU Memory Access"
+      to: "Page Table"
+      route_label: "CPU가 주소를 접근하고 페이지 테이블의 valid bit를 확인한다."
+      active_actors: [cpu, table]
+      description: "페이지가 메모리에 있으면 바로 변환하지만 없으면 예외 처리가 시작된다."
+      payload: ["page number", "valid bit", "access"]
+      outcomes:
+        - status: warning
+          text: "유효하지 않은 매핑은 단순한 캐시 미스와 다른 운영체제 사건이다."
+    - title: "2. 페이지 폴트 처리"
+      from: "Page Table"
+      to: "Backing Store"
+      route_label: "운영체제가 필요한 페이지를 디스크에서 찾고 적재를 요청한다."
+      active_actors: [table, disk, cpu]
+      description: "현재 프레임이 부족하면 교체할 victim page도 선택해야 한다."
+      payload: ["page fault", "trap", "read page"]
+      outcomes:
+        - status: info
+          text: "폴트 처리 동안 해당 접근은 장치 I/O를 기다릴 수 있다."
+    - title: "3. 프레임 적재와 재개"
+      from: "Backing Store"
+      to: "Frame / Replacement"
+      route_label: "필요 페이지를 프레임에 적재하고 페이지 테이블을 갱신한 뒤 명령을 재실행한다."
+      active_actors: [disk, memory, table, cpu]
+      description: "페이지 교체 정책은 어떤 프레임을 내보낼지 결정한다."
+      payload: ["victim", "load frame", "retry access"]
+      outcomes:
+        - status: allow
+          text: "매핑이 갱신되면 중단된 메모리 접근을 이어갈 수 있다."
+
+replacement_algorithms:
+  eyebrow: "Interactive comparison"
+  title: "FIFO·OPT·LRU 페이지 교체"
+  summary: "프레임이 가득 찼을 때 FIFO는 오래된 페이지, OPT는 미래 최적 페이지, LRU는 가장 오래 안 쓴 페이지를 선택한다."
+  actors:
+    - id: fault
+      kind: "사건"
+      name: "Page Fault"
+      description: "새 페이지를 적재해야 하는 상황"
+    - id: fifo
+      kind: "순서 기준"
+      name: "FIFO"
+      description: "가장 먼저 들어온 페이지를 내보내는 정책"
+    - id: opt
+      kind: "이상 기준"
+      name: "OPT"
+      description: "미래에 가장 늦게 사용될 페이지를 고르는 이론적 정책"
+    - id: lru
+      kind: "사용 이력"
+      name: "LRU"
+      description: "가장 오랫동안 사용되지 않은 페이지를 고르는 정책"
+  steps:
+    - title: "1. 교체 필요"
+      from: "Page Fault"
+      to: "FIFO"
+      route_label: "새 페이지를 넣을 빈 프레임이 없으면 victim 선택이 시작된다."
+      active_actors: [fault, fifo, opt, lru]
+      description: "교체 정책은 같은 참조열에서도 서로 다른 victim을 선택할 수 있다."
+      payload: ["full frames", "victim", "reference string"]
+      outcomes:
+        - status: info
+          text: "페이지 폴트 횟수는 참조열과 프레임 수, 정책에 함께 좌우된다."
+    - title: "2. FIFO 기준"
+      from: "FIFO"
+      to: "Page Fault"
+      route_label: "FIFO는 메모리에 가장 먼저 들어온 페이지를 교체 대상으로 고른다."
+      active_actors: [fifo, fault]
+      description: "최근 사용 여부보다 적재 순서만 기억하는 단순한 정책이다."
+      payload: ["arrival order", "oldest page", "queue"]
+      outcomes:
+        - status: info
+          text: "오래전에 들어왔어도 자주 쓰이는 페이지를 내보낼 수 있다."
+    - title: "3. OPT와 LRU 비교"
+      from: "OPT / LRU"
+      to: "Page Fault"
+      route_label: "OPT는 미래 참조를 알고 선택하고 LRU는 과거 사용 이력으로 근사한다."
+      active_actors: [opt, lru, fault]
+      description: "OPT는 비교 기준이고 실제 시스템은 미래를 알 수 없어 LRU 같은 정책을 사용한다."
+      payload: ["future use", "recent use", "victim choice"]
+      outcomes:
+        - status: allow
+          text: "정책의 가정과 실제 구현 가능성을 함께 비교한다."
