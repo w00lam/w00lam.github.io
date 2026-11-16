@@ -35,7 +35,7 @@ Redis의 장애 범위는 Redis를 어디에 사용했는지에 따라 달라진
 
 이전에 [Spring Cache의 Key 설계와 동기화 책임](/posts/spring-cache-design-sync-redistemplate/)을 정리했다면 이번에는 그 캐시 저장소 자체에 장애가 생겼을 때 어떻게 복구 시간을 줄일지로 질문을 확장해 보았다.
 
-![단일 Redis가 SPOF가 되어 Redis 의존 기능에 장애가 전파되는 구조](/assets/images/2026-07-14-redis-sentinel/single-redis-spof.png)
+{% include interactive/flow-card.html flow='redis_spof' %}
 
 ## 2. 데이터를 복제하는 Primary-Replica
 
@@ -92,7 +92,7 @@ Redis Sentinel의 역할은 크게 네 가지다.
 
 기존 Primary의 IP가 새 Primary로 이동하는 것도 아니다. **노드의 역할과 주소 정보가 바뀌고 클라이언트가 그 변경을 따라가는 구조**다. 사용하는 Lettuce, Jedis 같은 클라이언트가 Sentinel을 지원하고 재연결을 올바르게 처리하도록 구성되어 있어야 한다.
 
-![Spring Boot가 Sentinel에서 현재 Primary 정보를 얻고 Redis에 직접 연결하는 구조](/assets/images/2026-07-14-redis-sentinel/primary-replica-sentinel.png)
+{% include interactive/flow-card.html flow='redis_sentinel_connection' %}
 
 ## 5. Sentinel은 어떻게 장애를 판단할까
 
@@ -131,7 +131,7 @@ Replica 선택에는 연결 상태, Primary와의 연결이 끊긴 시간, 복�
 
 **Sentinel은 무중단을 보장하는 마법이 아니라 수동 복구 절차를 자동화해 MTTR을 줄이는 장치**라고 이해하는 편이 정확하다.
 
-![Primary 장애 감지부터 Replica 승격과 Spring Boot 재접속까지의 Sentinel Failover 흐름](/assets/images/2026-07-14-redis-sentinel/sentinel-failover-flow.png)
+{% include interactive/flow-card.html flow='sentinel_failover' %}
 
 ## 7. 비동기 복제와 데이터 유실 가능성
 
@@ -154,7 +154,7 @@ Sentinel은 가용성을 높이지만 다음을 보장하지 않는다.
 - 강한 데이터 일관성
 - Failover 중 완전한 무중단
 
-![비동기 복제가 완료되기 전 Failover가 발생해 일부 데이터가 유실될 수 있는 흐름](/assets/images/2026-07-14-redis-sentinel/async-replication-data-loss.png)
+{% include interactive/flow-card.html flow='async_replication_loss' %}
 
 ## 8. 캐시와 핵심 원본 데이터는 영향이 다르다
 
@@ -211,7 +211,7 @@ Replica를 여러 대 두는 목적은 두 가지로 나눌 수 있다.
 
 Replica가 존재한다고 모든 읽기를 무조건 Replica로 보내는 것이 정답은 아니다. **읽기마다 필요한 최신성 수준을 먼저 정의한 뒤 라우팅해야 한다.**
 
-![Primary의 최신 데이터 읽기와 Replication Lag이 있는 Replica 읽기 비교](/assets/images/2026-07-14-redis-sentinel/primary-vs-replica-read.png)
+{% include interactive/flow-card.html flow='replica_read_lag' %}
 
 ## 11. Sentinel과 Redis Cluster의 차이
 
@@ -229,7 +229,7 @@ Sentinel과 Redis Cluster는 모두 장애에 대응하지만 해결 범위가 �
 
 반대로 데이터 규모가 작고 당장의 문제는 Primary 장애 후 수동 복구 시간이라면 Cluster가 항상 더 나은 출발점인 것도 아니다. Cluster는 더 많은 노드와 샤딩 제약, 운영 복잡도가 함께 따라오기 때문이다.
 
-![전체 데이터를 복제하는 Redis Sentinel과 해시 슬롯으로 샤딩하는 Redis Cluster 비교](/assets/images/2026-07-14-redis-sentinel/sentinel-vs-cluster.png)
+{% include interactive/flow-card.html flow='sentinel_cluster' %}
 
 ## 12. 현재 프로젝트에 적용한다면
 
@@ -258,7 +258,7 @@ Sentinel과 Redis Cluster는 모두 장애에 대응하지만 해결 범위가 �
 
 > **지금 바로 Redis Cluster를 도입하기보다 단일 Redis의 장애 정책을 먼저 명확히 하고 복구 시간 요구가 실제로 커질 때 서로 다른 장애 영역의 Sentinel 구성이나 관리형 Redis로 확장하는 편이 현실적이다.**
 
-![단일 Redis에서 Sentinel과 Redis Cluster로 확장하는 단계별 운영 전략](/assets/images/2026-07-14-redis-sentinel/redis-operation-roadmap.png)
+{% include interactive/flow-card.html flow='redis_roadmap' %}
 
 ## 13. 핵심 요약
 

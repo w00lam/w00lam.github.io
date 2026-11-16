@@ -77,7 +77,7 @@ CREATE TABLE order_item (
 
 애플리케이션은 사용자가 입력한 값을 빠르게 검사해 “주문 수량은 1개 이상이어야 합니다”처럼 구체적인 오류를 돌려준다. DB는 다른 API, 배치, 관리자 도구, 데이터 마이그레이션처럼 예상하지 못한 경로에서 쓰기가 들어와도 잘못된 행을 거절한다. 전자는 좋은 사용자 경험을 위한 첫 번째 검증이고 후자는 저장 상태를 지키는 최종 방어선이다.
 
-![사용자 요청부터 애플리케이션 검증과 PostgreSQL 제약조건까지 이어지는 이중 방어 구조](/assets/images/2026-07-16-postgresql-data-integrity-jsonb/postgresql-dual-validation.png)
+{% include interactive/flow-card.html flow='postgres_dual_validation' %}
 
 _애플리케이션 검증은 빠르고 친절한 오류를, 데이터베이스 제약조건은 어떤 쓰기 경로에도 적용되는 마지막 방어를 담당한다._
 
@@ -139,7 +139,7 @@ PostgreSQL의 장점은 이 규칙을 제약조건, 트랜잭션, 잠금, 격리
 
 처음에는 PostgreSQL을 선택하면 트래픽 증가와 장애 대응도 자연스럽게 해결될 것이라고 생각했다. 하지만 운영 안정성은 데이터베이스 제품 하나보다 전체 구조에서 나온다.
 
-![Spring Boot, Redis, PostgreSQL Primary, Read Replica, 백업과 모니터링이 함께 만드는 운영 구조](/assets/images/2026-07-16-postgresql-data-integrity-jsonb/postgresql-operational-architecture.png)
+{% include interactive/flow-card.html flow='postgres_operational_architecture' %}
 
 _안정적인 운영은 예방, 감지, 전환, 복구, 검증이 연결된 구조다. 캐시와 복제본도 각각 새로운 실패 조건을 만들기 때문에 운영 정책이 필요하다._
 
@@ -231,7 +231,7 @@ CREATE TABLE product (
 );
 ```
 
-![쇼핑몰 상품의 공통 필드는 일반 컬럼으로, 카테고리별 가변 속성은 JSONB로 분리한 구조](/assets/images/2026-07-16-postgresql-data-integrity-jsonb/postgresql-jsonb-product-attributes.png)
+{% include interactive/flow-card.html flow='postgres_jsonb_attributes' %}
 
 _가격·재고·판매 상태처럼 트랜잭션과 제약조건의 중심이 되는 값은 컬럼으로 유지하고 상품마다 달라지는 설명형 속성만 JSONB로 보완한다._
 
@@ -292,7 +292,7 @@ MySQL을 유지하는 편이 좋은 상황은 오히려 분명하다.
 
 ## 10. 요구사항과 팀 경험이 선택 기준이다
 
-![요구사항, 운영 경험, 도입 비용과 학습 목적을 따라 MySQL 유지와 PostgreSQL 도입을 판단하는 흐름](/assets/images/2026-07-16-postgresql-data-integrity-jsonb/mysql-postgresql-decision-flow.png)
+{% include interactive/flow-card.html flow='mysql_postgres_decision' %}
 
 _플로차트의 개별 답 하나가 결론을 정하는 것은 아니다. 여러 답을 모아 현재 팀과 서비스에 더 작은 위험을 만드는 쪽을 고르는 판단 보조 도구다._
 

@@ -36,7 +36,7 @@ Coffee Order Service의 포인트 결제를 설계하면서 처음 떠올린 해
 
 두 요청은 각각 결제에 성공했다고 판단한다. 실제 사용 금액은 14,000원인데 DB에는 최종 잔액 3,000원이 남는다. 한 트랜잭션의 변경이 다른 트랜잭션의 저장으로 덮였다. 이것이 Lost Update, 갱신 손실이다.
 
-![두 결제 요청이 같은 잔액을 읽고 각각 3,000원을 저장해 갱신 손실이 발생하는 과정](/assets/images/2026-07-15-point-payment-concurrency/point-payment-lost-update.png)
+{% include interactive/flow-card.html flow='payment_lost_update' %}
 
 _두 요청 모두 같은 10,000원을 기준으로 판단했기 때문에 실제 사용 금액과 DB 잔액이 맞지 않게 된다._
 
@@ -84,7 +84,7 @@ WHERE user_id = :userId
 - 수정 행이 `1`이면 차감 성공
 - 수정 행이 `0`이면 잔액 부족 또는 사용자 없음
 
-![조건 검사와 차감을 하나의 DB 연산으로 처리하고 수정 행 수로 결과를 판단하는 흐름](/assets/images/2026-07-15-point-payment-concurrency/point-conditional-update.png)
+{% include interactive/flow-card.html flow='payment_conditional_update' %}
 
 _조건부 UPDATE는 잔액 확인과 차감 사이에 다른 요청이 끼어들 틈을 없앤다._
 
@@ -216,7 +216,7 @@ Redis 락 획득
 
 중요한 경계는 커밋이다. 트랜잭션 메서드의 본문이 끝났다고 커밋까지 끝난 것은 아니다. Spring의 트랜잭션 프록시는 메서드가 반환된 뒤 커밋을 처리한다. 같은 메서드 안에서 락을 먼저 해제하면 아직 커밋되지 않은 상태에서 다른 요청이 들어올 여지가 생긴다.
 
-![Redis 락을 먼저 획득하고 DB 커밋이 끝난 뒤 해제하는 정상 흐름과 조기 해제 흐름 비교](/assets/images/2026-07-15-point-payment-concurrency/point-lock-transaction-flow.png)
+{% include interactive/flow-card.html flow='payment_lock_transaction' %}
 
 _락이 트랜잭션 경계 바깥을 감싸야 DB 커밋이 완료될 때까지 같은 자원의 다음 요청을 기다리게 한다._
 
@@ -335,7 +335,7 @@ Redis 락을 보류한다고 동시성 제어를 포기한 것은 아니다. 문
 
 향후 쿠폰 차감이나 한정 수량 원두 주문처럼 여러 자원을 한 흐름에서 다루게 되거나, DB 밖의 작업까지 같은 사용자 단위로 직렬화할 필요가 생긴다면 `lock:point:{userId}` 형태의 락을 추가로 검토한다. 그때도 조건부 UPDATE, DB 트랜잭션, 멱등성 키는 유지한다.
 
-![Redis 분산 락, DB 조건부 UPDATE, DB 트랜잭션, 멱등성 키가 서로 다른 실패를 막는 구조](/assets/images/2026-07-15-point-payment-concurrency/point-consistency-layers.png)
+{% include interactive/flow-card.html flow='payment_consistency_layers' %}
 
 _하나의 기술이 결제 정합성을 전부 맡는 것이 아니라 각 계층이 서로 다른 실패를 방어한다._
 

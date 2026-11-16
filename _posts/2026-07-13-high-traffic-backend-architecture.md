@@ -69,7 +69,7 @@ ZREVRANGE product:ranking 0 9 WITHSCORES
 
 결제 서비스가 결제 완료 이벤트를 Kafka에 발행하면 후속 작업은 각 Consumer가 자신의 목적에 맞게 처리할 수 있다.
 
-![동기식 처리와 이벤트 기반 처리 비교](/assets/images/2026-07-13-high-traffic-event-architecture/sync-vs-event-driven-architecture.png)
+{% include interactive/flow-card.html flow='kafka_topics' %}
 
 동기식 구조에서는 결제 서비스가 주문, 랭킹, 배송, 알림을 순서대로 직접 호출한다. 결제 서비스는 모든 작업의 성공 여부를 기다려야 하고 하나의 느린 API나 장애가 전체 요청의 응답 시간과 성공 여부에 영향을 준다.
 
@@ -101,7 +101,7 @@ Kafka의 각 구성 요소는 다음처럼 실제 흐름에 연결할 수 있다
 - `Offset`: Consumer Group이 각 파티션에서 어디까지 읽었는지 나타내는 위치
 - `Replication`: 브로커 장애에 대비해 파티션 데이터를 복제하는 구조
 
-![Kafka 핵심 구조](/assets/images/2026-07-13-high-traffic-event-architecture/kafka-cluster-consumer-group.png)
+{% include interactive/flow-card.html flow='kafka_partition' %}
 
 같은 Consumer Group 안에서는 하나의 파티션을 동시에 여러 Consumer가 처리하지 않는다. 파티션이 세 개라면 Consumer도 세 개까지 작업을 나눌 수 있지만 Consumer 수를 무작정 늘린다고 처리량이 계속 증가하지는 않는다. 파티션 수와 브로커 자원, 메시지 처리 시간, 운영 비용을 함께 봐야 한다.
 
@@ -199,7 +199,7 @@ Consumer 실패가 모두 같은 의미인 것은 아니다. 일시적인 DB 연
 4. 운영자가 원본 이벤트와 예외 정보를 확인한다.
 5. 데이터나 코드를 수정한 뒤 재처리한다.
 
-![Kafka 실패 처리와 DLT](/assets/images/2026-07-13-high-traffic-event-architecture/kafka-retry-dlt-flow.png)
+{% include interactive/flow-card.html flow='kafka_dlt' %}
 
 DLT는 실패 메시지를 버리는 장소가 아니다. 실패 이벤트를 정상 흐름에서 격리하고 원인을 분석하고 복구할 수 있게 만드는 운영 영역이다. 이를 위해 원본 Topic, Partition, Offset, Consumer Group, 예외 타입과 메시지, 실패 시간, 재시도 횟수, 원본 이벤트, 재처리 상태를 함께 남겨야 한다.
 
@@ -216,7 +216,7 @@ DLT는 실패 메시지를 버리는 장소가 아니다. 실패 이벤트를 �
 5. Delivery Consumer가 배송 준비 데이터를 생성한다.
 6. Notification Consumer가 결제 완료 알림을 보낸다.
 
-![결제 완료 이벤트 전체 흐름](/assets/images/2026-07-13-high-traffic-event-architecture/payment-completed-event-flow.png)
+{% include interactive/flow-card.html flow='payment_event_flow' %}
 
 각 Consumer는 서로 다른 Consumer Group을 사용한다. 배송 Consumer가 일시적으로 실패해도 랭킹 Consumer가 멈추거나 결제 이력 Consumer의 처리까지 함께 실패하지 않는다. 물론 Kafka와 Consumer의 처리 상태를 모니터링해야 하며 독립성이 곧 무제한 확장성을 의미하는 것은 아니다.
 
@@ -271,7 +271,7 @@ k6 부하 테스트에서는 평균 응답 시간만 보지 않고 다음 지표
 5. 같은 조건으로 다시 측정한다.
 6. 개선 여부와 부작용을 함께 확인한다.
 
-![부하 테스트 기반 성능 개선 사이클](/assets/images/2026-07-13-high-traffic-event-architecture/load-test-performance-cycle.png)
+{% include interactive/flow-card.html flow='load_test_cycle' %}
 
 예를 들어 Consumer Lag이 계속 증가한다면 Consumer 처리 로직의 DB 호출 수, 파티션 수, Consumer 인스턴스 수를 함께 확인해야 한다. DB 조회가 병목이라면 인덱스나 쿼리 구조를 살펴보고 파티션 부족이 원인이라면 병렬성 증가가 실제로 가능한지 검토해야 한다. 개선 전후 수치는 실제 측정 결과가 있을 때만 기록해야 하며 현재 학습 자료에는 특정 성능 개선 수치가 없으므로 임의의 숫자는 제시하지 않는다.
 
