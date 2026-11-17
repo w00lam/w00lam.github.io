@@ -10,6 +10,9 @@
   --sort-compare: #8a5a00;
   --sort-swap: #b42318;
   --sort-pivot: #3659a8;
+  --sort-selected: #6b4f00;
+  --sort-parent: #7a3e00;
+  --sort-candidate: #3659a8;
   --sort-sorted: #147d63;
 
   margin: 2rem 0;
@@ -93,6 +96,145 @@
     min-width: max(100%, calc(var(--sort-count) * 4.25rem));
   }
 
+  &__structure {
+    box-sizing: border-box;
+    height: 8.7rem;
+    min-height: 8.7rem;
+    overflow-y: auto;
+  }
+
+  &__merge-structure {
+    display: grid;
+    gap: 0.55rem;
+    height: 100%;
+    align-content: start;
+  }
+
+  &__structure-label {
+    margin: 0;
+    color: var(--sort-muted);
+    font-size: 0.72rem;
+    font-weight: 700;
+  }
+
+  &__segment-row,
+  &__buffer-row {
+    display: flex;
+    align-items: center;
+    gap: 0.45rem;
+    min-width: max-content;
+  }
+
+  &__segment-list,
+  &__buffer-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.45rem;
+  }
+
+  &__segment,
+  &__buffer-cell {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 2.15rem;
+    padding: 0.35rem 0.55rem;
+    border: 1px solid var(--sort-border);
+    border-radius: 0.45rem;
+    background: var(--sort-surface);
+    color: var(--heading-color);
+    font-size: 0.75rem;
+    line-height: 1.2;
+    white-space: nowrap;
+  }
+
+  &__segment[data-state='active'] {
+    border-color: var(--sort-compare);
+    background: color-mix(in srgb, var(--sort-compare) 10%, var(--sort-surface));
+  }
+
+  &__segment[data-state='merged'] {
+    border-color: var(--sort-sorted);
+    background: color-mix(in srgb, var(--sort-sorted) 10%, var(--sort-surface));
+  }
+
+  &__buffer-cell[data-selected='true'] {
+    border-color: var(--sort-selected);
+    box-shadow: inset 0 0 0 2px color-mix(in srgb, var(--sort-selected) 30%, transparent);
+  }
+
+  &__tree-wrap {
+    height: 100%;
+    overflow: hidden;
+  }
+
+  &__tree {
+    display: block;
+    width: 100%;
+    height: 100%;
+  }
+
+  &__tree-edge {
+    stroke: var(--sort-border);
+    stroke-width: 2;
+  }
+
+  &__tree-node {
+    cursor: pointer;
+
+    circle {
+      fill: var(--sort-surface);
+      stroke: var(--sort-border);
+      stroke-width: 2;
+    }
+
+    text {
+      pointer-events: none;
+      text-anchor: middle;
+    }
+
+    .sort-tree-value {
+      fill: var(--heading-color);
+      font-size: 15px;
+      font-weight: 700;
+    }
+
+    .sort-tree-index {
+      fill: var(--sort-muted);
+      font-size: 10px;
+    }
+
+    &[data-state='compare'] circle {
+      fill: color-mix(in srgb, var(--sort-compare) 16%, var(--sort-surface));
+      stroke: var(--sort-compare);
+    }
+
+    &[data-state='swap'] circle {
+      fill: color-mix(in srgb, var(--sort-swap) 16%, var(--sort-surface));
+      stroke: var(--sort-swap);
+    }
+
+    &[data-state='parent'] circle {
+      fill: color-mix(in srgb, var(--sort-parent) 16%, var(--sort-surface));
+      stroke: var(--sort-parent);
+    }
+
+    &[data-state='candidate'] circle,
+    &[data-selected='true'] circle {
+      fill: color-mix(in srgb, var(--sort-candidate) 16%, var(--sort-surface));
+      stroke: var(--sort-candidate);
+    }
+
+    &[data-state='sorted'] circle {
+      fill: color-mix(in srgb, var(--sort-sorted) 14%, var(--sort-surface));
+      stroke: var(--sort-sorted);
+    }
+
+    &:focus-visible circle {
+      stroke-width: 4;
+    }
+  }
+
   &__cell {
     display: grid;
     gap: 0.18rem;
@@ -120,6 +262,22 @@
     &[data-state='key'] {
       border-color: var(--sort-pivot);
       box-shadow: inset 0 0 0 2px color-mix(in srgb, var(--sort-pivot) 32%, transparent);
+    }
+
+    &[data-state='selected'],
+    &[data-state='candidate'] {
+      border-color: var(--sort-selected);
+      box-shadow: inset 0 0 0 2px color-mix(in srgb, var(--sort-selected) 32%, transparent);
+    }
+
+    &[data-state='parent'] {
+      border-color: var(--sort-parent);
+      box-shadow: inset 0 0 0 2px color-mix(in srgb, var(--sort-parent) 32%, transparent);
+    }
+
+    &[data-selected='true'] {
+      outline: 2px solid var(--sort-accent);
+      outline-offset: 2px;
     }
 
     &[data-state='sorted'] {
@@ -164,6 +322,17 @@
     font-weight: 700;
   }
 
+  &__cell[data-state='selected'] &__cell-label,
+  &__cell[data-state='candidate'] &__cell-label {
+    color: var(--sort-selected);
+    font-weight: 700;
+  }
+
+  &__cell[data-state='parent'] &__cell-label {
+    color: var(--sort-parent);
+    font-weight: 700;
+  }
+
   &__cell[data-state='sorted'] &__cell-label {
     color: var(--sort-sorted);
     font-weight: 700;
@@ -203,6 +372,11 @@
       &.is-pivot {
         border-color: var(--sort-pivot);
         background: color-mix(in srgb, var(--sort-pivot) 18%, var(--sort-surface));
+      }
+
+      &.is-selected {
+        border-color: var(--sort-selected);
+        background: color-mix(in srgb, var(--sort-selected) 18%, var(--sort-surface));
       }
 
       &.is-sorted {

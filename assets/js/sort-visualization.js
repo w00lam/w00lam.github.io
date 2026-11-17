@@ -23,6 +23,7 @@
     status: state.status || 'info',
     compare: uniqueIndices(state.compare || []),
     swap: uniqueIndices(state.swap || []),
+    selected: uniqueIndices(state.selected || []),
     sorted: uniqueIndices(state.sorted || []),
     range: state.range ? state.range.slice() : null,
     pivotIndex: state.pivotIndex ?? null,
@@ -30,6 +31,13 @@
     keyValue: state.keyValue ?? null,
     holeIndex: state.holeIndex ?? null,
     insertIndex: state.insertIndex ?? null,
+    parentIndex: state.parentIndex ?? null,
+    leftChildIndex: state.leftChildIndex ?? null,
+    rightChildIndex: state.rightChildIndex ?? null,
+    largestIndex: state.largestIndex ?? null,
+    heapSize: state.heapSize ?? null,
+    buffer: state.buffer ? state.buffer.slice() : null,
+    segments: state.segments ? state.segments.map((segment) => ({ ...segment })) : [],
     details: state.details || [],
     callStack: state.callStack ? state.callStack.slice() : []
   });
@@ -525,12 +533,387 @@
     return steps;
   };
 
+  const createMergeSteps = (input) => {
+    const array = input.slice();
+    const steps = [];
+    const length = array.length;
+
+    const segmentsFor = (left, mid, right, status = 'active') => [
+      { start: left, end: mid, label: `왼쪽 [${left}..${mid}]`, status },
+      { start: mid + 1, end: right, label: `오른쪽 [${mid + 1}..${right}]`, status }
+    ];
+
+    steps.push(
+      makeStep({
+        array,
+        title: '시작',
+        description: '분할 단계에서는 원본 배열의 값을 바꾸지 않고 현재 인덱스 구간만 나눈다.',
+        range: [0, length - 1],
+        segments: [{ start: 0, end: length - 1, label: `전체 [0..${length - 1}]`, status: 'active' }],
+        details: [detail('현재 구간', `[0, ${length - 1}]`), detail('단계', '분할 준비'), detail('buffer', '아직 없음')]
+      })
+    );
+
+    const merge = (left, mid, right) => {
+      let i = left;
+      let j = mid + 1;
+      const buffer = [];
+      const mergeSegments = segmentsFor(left, mid, right);
+
+      steps.push(
+        makeStep({
+          array,
+          title: `병합 준비 · [${left}..${right}]`,
+          description: '두 구간은 각각 정렬되어 있다. 각 구간의 첫 미사용 원소부터 비교한다.',
+          status: 'merge',
+          range: [left, right],
+          compare: [i, j],
+          buffer,
+          segments: mergeSegments,
+          details: [detail('병합 구간', `[${left}, ${right}]`), detail('왼쪽 포인터 i', i), detail('오른쪽 포인터 j', j), detail('buffer', '비어 있음')]
+        })
+      );
+
+      while (i <= mid && j <= right) {
+        const leftValue = array[i];
+        const rightValue = array[j];
+        const takeLeft = leftValue <= rightValue;
+        const selectedIndex = takeLeft ? i : j;
+
+        steps.push(
+          makeStep({
+            array,
+            title: `병합 비교 · i = ${i}, j = ${j}`,
+            description: takeLeft
+              ? `${leftValue} ≤ ${rightValue}이므로 왼쪽 원소를 먼저 buffer에 넣는다.`
+              : `${rightValue} < ${leftValue}이므로 오른쪽 원소를 먼저 buffer에 넣는다.`,
+            status: 'compare',
+            range: [left, right],
+            compare: [i, j],
+            buffer,
+            segments: mergeSegments,
+            details: [detail('i가 가리키는 값', leftValue), detail('j가 가리키는 값', rightValue), detail('선택할 쪽', takeLeft ? '왼쪽' : '오른쪽'), detail('buffer', buffer.length ? buffer.join(' → ') : '비어 있음')]
+          })
+        );
+
+        buffer.push(takeLeft ? array[i] : array[j]);
+        if (takeLeft) {
+          i += 1;
+        } else {
+          j += 1;
+        }
+
+        steps.push(
+          makeStep({
+            array,
+            title: `buffer에 ${buffer[buffer.length - 1]} 추가`,
+            description: '선택한 원소만 포인터를 한 칸 이동하고 buffer의 다음 위치에 기록했다.',
+            status: 'merge',
+            range: [left, right],
+            selected: [selectedIndex],
+            buffer,
+            segments: mergeSegments,
+            details: [detail('다음 i', i), detail('다음 j', j), detail('bidx', buffer.length), detail('buffer', buffer.join(' → '))]
+          })
+        );
+      }
+
+      while (i <= mid) {
+        const leftover = array[i];
+        buffer.push(leftover);
+        i += 1;
+        steps.push(
+          makeStep({
+            array,
+            title: `왼쪽 남은 원소 ${leftover} 복사`,
+            description: '오른쪽 구간이 먼저 소진되어 왼쪽 구간의 남은 원소를 buffer에 복사한다.',
+            status: 'copy',
+            range: [left, right],
+            selected: [i - 1],
+            buffer,
+            segments: mergeSegments,
+            details: [detail('남은 쪽', '왼쪽'), detail('다음 i', i), detail('bidx', buffer.length), detail('buffer', buffer.join(' → '))]
+          })
+        );
+      }
+
+      while (j <= right) {
+        const leftover = array[j];
+        buffer.push(leftover);
+        j += 1;
+        steps.push(
+          makeStep({
+            array,
+            title: `오른쪽 남은 원소 ${leftover} 복사`,
+            description: '왼쪽 구간이 먼저 소진되어 오른쪽 구간의 남은 원소를 buffer에 복사한다.',
+            status: 'copy',
+            range: [left, right],
+            selected: [j - 1],
+            buffer,
+            segments: mergeSegments,
+            details: [detail('남은 쪽', '오른쪽'), detail('다음 j', j), detail('bidx', buffer.length), detail('buffer', buffer.join(' → '))]
+          })
+        );
+      }
+
+      for (let offset = 0; offset < buffer.length; offset += 1) {
+        array[left + offset] = buffer[offset];
+      }
+
+      steps.push(
+        makeStep({
+          array,
+          title: `원본 반영 · [${left}..${right}]`,
+          description: 'buffer가 완성된 뒤에만 병합 결과를 원본 배열의 현재 구간에 복사한다.',
+          status: 'sorted',
+          range: [left, right],
+          buffer,
+          segments: [{ start: left, end: right, label: `병합 완료 [${left}..${right}]`, status: 'merged' }],
+          sorted: allIndices(length).filter((index) => index >= left && index <= right),
+          details: [detail('복사 대상', `arr[${left}..${right}]`), detail('복사 원본', 'buffer'), detail('결과', array.slice(left, right + 1).join(' → ')), detail('원본 변경 시점', 'buffer 복사 완료 후')]
+        })
+      );
+    };
+
+    const mergeSort = (left, right) => {
+      if (left >= right) {
+        steps.push(
+          makeStep({
+            array,
+            title: `단일 원소 구간 · ${left}`,
+            description: '원소가 하나만 남은 구간은 이미 정렬된 것으로 보고 재귀를 종료한다.',
+            status: 'done',
+            range: [left, right],
+            segments: [{ start: left, end: right, label: `[${left}..${right}] · 정렬 완료`, status: 'merged' }],
+            sorted: [left],
+            details: [detail('현재 구간', `[${left}, ${right}]`), detail('종료 조건', 'left >= right'), detail('값', array[left])]
+          })
+        );
+        return;
+      }
+
+      const mid = Math.floor((left + right) / 2);
+      steps.push(
+        makeStep({
+          array,
+          title: `분할 · [${left}..${right}]`,
+          description: `mid = ${mid}를 기준으로 왼쪽 [${left}..${mid}]와 오른쪽 [${mid + 1}..${right}]로 나눈다.`,
+          status: 'split',
+          range: [left, right],
+          segments: segmentsFor(left, mid, right, 'active'),
+          details: [detail('left', left), detail('mid', mid), detail('right', right), detail('다음 구간', `[${left}..${mid}], [${mid + 1}..${right}]`)]
+        })
+      );
+
+      mergeSort(left, mid);
+      mergeSort(mid + 1, right);
+      merge(left, mid, right);
+    };
+
+    mergeSort(0, length - 1);
+    steps.push(
+      makeStep({
+        array,
+        title: '정렬 완료',
+        description: '모든 분할 구간의 병합과 원본 반영이 끝나 배열이 오름차순으로 정렬되었다.',
+        status: 'done',
+        sorted: allIndices(length),
+        segments: [{ start: 0, end: length - 1, label: '전체 병합 완료', status: 'merged' }],
+        buffer: array,
+        details: [detail('결과', array.join(' → ')), detail('시간 복잡도', 'O(n log n)'), detail('추가 공간', 'O(n)')]
+      })
+    );
+    return steps;
+  };
+
+  const createHeapSteps = (input) => {
+    const array = input.slice();
+    const steps = [];
+    const length = array.length;
+
+    const heapDetails = (heapSize) => [
+      detail('현재 힙 영역', heapSize > 0 ? `0 ~ ${heapSize - 1}` : '없음'),
+      detail('정렬 완료 영역', heapSize < length ? `${heapSize} ~ ${length - 1}` : '없음')
+    ];
+
+    steps.push(
+      makeStep({
+        array,
+        title: '시작',
+        description: '배열을 완전 이진 트리로 함께 보고, 아직 힙 조건을 적용하지 않은 상태에서 시작한다.',
+        heapSize: length,
+        details: [detail('배열 인덱스', '0 기반'), detail('루트', 'index 0'), ...heapDetails(length)]
+      })
+    );
+
+    const lastParent = Math.floor(length / 2) - 1;
+    steps.push(
+      makeStep({
+        array,
+        title: `마지막 부모 · index ${lastParent}`,
+        description: `마지막 부모부터 index ${lastParent} → 0 순서로 heapify한다. 리프 노드는 자식이 없어 건너뛴다.`,
+        status: 'info',
+        parentIndex: lastParent,
+        heapSize: length,
+        details: [detail('원소 수 n', length), detail('마지막 부모', 'n / 2 - 1'), detail('계산 결과', lastParent), ...heapDetails(length)]
+      })
+    );
+
+    const heapify = (heapSize, rootIndex, phase) => {
+      const leftChildIndex = rootIndex * 2 + 1;
+      const rightChildIndex = rootIndex * 2 + 2;
+      let largestIndex = rootIndex;
+      const sorted = allIndices(length).filter((index) => index >= heapSize);
+
+      steps.push(
+        makeStep({
+          array,
+          title: `${phase} · heapify(${heapSize}, ${rootIndex})`,
+          description: '현재 노드를 최댓값 후보로 두고 범위 안의 왼쪽·오른쪽 자식과 비교한다.',
+          status: 'compare',
+          range: [0, heapSize - 1],
+          parentIndex: rootIndex,
+          leftChildIndex: leftChildIndex < heapSize ? leftChildIndex : null,
+          rightChildIndex: rightChildIndex < heapSize ? rightChildIndex : null,
+          largestIndex,
+          heapSize,
+          sorted,
+          compare: [rootIndex, leftChildIndex < heapSize ? leftChildIndex : null, rightChildIndex < heapSize ? rightChildIndex : null],
+          details: [detail('rootIndex', rootIndex), detail('왼쪽 자식', leftChildIndex < heapSize ? leftChildIndex : '범위 밖'), detail('오른쪽 자식', rightChildIndex < heapSize ? rightChildIndex : '범위 밖'), ...heapDetails(heapSize)]
+        })
+      );
+
+      if (leftChildIndex < heapSize && array[leftChildIndex] > array[largestIndex]) {
+        largestIndex = leftChildIndex;
+      }
+
+      if (rightChildIndex < heapSize && array[rightChildIndex] > array[largestIndex]) {
+        largestIndex = rightChildIndex;
+      }
+
+      steps.push(
+        makeStep({
+          array,
+          title: `최댓값 후보 · index ${largestIndex}`,
+          description: '오른쪽 자식도 원래 부모가 아니라 현재까지 선택된 최댓값 후보와 비교한다.',
+          status: 'selected',
+          range: [0, heapSize - 1],
+          parentIndex: rootIndex,
+          leftChildIndex: leftChildIndex < heapSize ? leftChildIndex : null,
+          rightChildIndex: rightChildIndex < heapSize ? rightChildIndex : null,
+          largestIndex,
+          heapSize,
+          sorted,
+          selected: [largestIndex],
+          compare: [rootIndex, leftChildIndex < heapSize ? leftChildIndex : null, rightChildIndex < heapSize ? rightChildIndex : null],
+          details: [detail('부모 값', array[rootIndex]), detail('최댓값 후보', `index ${largestIndex} · ${array[largestIndex]}`), detail('교환 여부', largestIndex === rootIndex ? '없음' : '필요'), ...heapDetails(heapSize)]
+        })
+      );
+
+      if (largestIndex === rootIndex) {
+        steps.push(
+          makeStep({
+            array,
+            title: `heapify 종료 · index ${rootIndex}`,
+            description: '부모가 현재 자식보다 크거나 같으므로 교환하지 않고 heapify를 끝낸다.',
+            status: 'done',
+            range: [0, heapSize - 1],
+            parentIndex: rootIndex,
+            leftChildIndex: leftChildIndex < heapSize ? leftChildIndex : null,
+            rightChildIndex: rightChildIndex < heapSize ? rightChildIndex : null,
+            largestIndex,
+            heapSize,
+            sorted,
+            details: [detail('교환', '생략'), detail('재귀 호출', '없음'), ...heapDetails(heapSize)]
+          })
+        );
+        return;
+      }
+
+      [array[rootIndex], array[largestIndex]] = [array[largestIndex], array[rootIndex]];
+      steps.push(
+        makeStep({
+          array,
+          title: `교환 · ${rootIndex} ↔ ${largestIndex}`,
+          description: `부모와 최댓값 후보를 교환하고 값이 내려간 index ${largestIndex}에서 heapify를 재귀 호출한다.`,
+          status: 'swap',
+          range: [0, heapSize - 1],
+          parentIndex: rootIndex,
+          leftChildIndex: leftChildIndex < heapSize ? leftChildIndex : null,
+          rightChildIndex: rightChildIndex < heapSize ? rightChildIndex : null,
+          largestIndex,
+          heapSize,
+          sorted,
+          swap: [rootIndex, largestIndex],
+          details: [detail('교환 대상', `arr[${rootIndex}] ↔ arr[${largestIndex}]`), detail('다음 재귀', `heapify(${heapSize}, ${largestIndex})`), ...heapDetails(heapSize)]
+        })
+      );
+      heapify(heapSize, largestIndex, phase);
+    };
+
+    for (let rootIndex = lastParent; rootIndex >= 0; rootIndex -= 1) {
+      heapify(length, rootIndex, '최대 힙 구성');
+    }
+
+    steps.push(
+      makeStep({
+        array,
+        title: '최대 힙 구성 완료',
+        description: '루트 index 0에 최댓값이 있고, 모든 부모가 자식보다 크거나 같은 최대 힙이 되었다.',
+        status: 'done',
+        heapSize: length,
+        sorted: [],
+        details: [detail('최대 힙', array.join(' → ')), detail('루트', array[0]), detail('다음 동작', '루트와 마지막 힙 원소 교환')]
+      })
+    );
+
+    for (let endIndex = length - 1; endIndex > 0; endIndex -= 1) {
+      const extractedValue = array[0];
+      [array[0], array[endIndex]] = [array[endIndex], array[0]];
+      const heapSize = endIndex;
+      const sorted = allIndices(length).filter((index) => index >= heapSize);
+
+      steps.push(
+        makeStep({
+          array,
+          title: `최댓값 ${extractedValue} 추출`,
+          description: `루트와 index ${endIndex}를 교환했다. ${endIndex} 뒤쪽은 정렬 완료 영역이므로 다음 heapify에서 제외한다.`,
+          status: 'swap',
+          range: [0, heapSize - 1],
+          heapSize,
+          sorted,
+          swap: [0, endIndex],
+          details: [detail('추출한 최댓값', extractedValue), detail('새 힙 크기', heapSize), detail('정렬 완료', `${heapSize} ~ ${length - 1}`), detail('다음 호출', `heapify(${heapSize}, 0)`)]
+        })
+      );
+
+      if (heapSize > 1) {
+        heapify(heapSize, 0, '힙 복구');
+      }
+    }
+
+    steps.push(
+      makeStep({
+        array,
+        title: '정렬 완료',
+        description: '최댓값을 뒤쪽 정렬 구간으로 하나씩 보내고 남은 힙을 복구해 오름차순 정렬을 완성했다.',
+        status: 'done',
+        heapSize: 1,
+        sorted: allIndices(length),
+        details: [detail('결과', array.join(' → ')), detail('시간 복잡도', 'O(n log n)'), detail('재귀 heapify 공간', 'O(log n)')]
+      })
+    );
+    return steps;
+  };
+
   const createSteps = (kind, input) => {
     const generators = {
       bubble: createBubbleSteps,
       selection: createSelectionSteps,
       insertion: createInsertionSteps,
-      quick: createQuickSteps
+      quick: createQuickSteps,
+      merge: createMergeSteps,
+      heap: createHeapSteps
     };
 
     if (!generators[kind]) {
@@ -551,7 +934,11 @@
     swap: '교환',
     sorted: '정렬',
     partition: '분할',
+    split: '분할',
+    merge: '병합',
+    copy: '복사',
     call: '호출',
+    selected: '선택',
     done: '완료',
     info: '상태'
   };
@@ -566,6 +953,10 @@
     const steps = createSteps(kind, input);
     const refs = {
       array: root.querySelector('[data-sort-array]'),
+      structure: root.querySelector('[data-sort-structure]'),
+      mergeStructure: root.querySelector('[data-sort-merge-structure]'),
+      treeWrap: root.querySelector('[data-sort-tree-wrap]'),
+      tree: root.querySelector('[data-sort-tree]'),
       details: root.querySelector('[data-sort-details]'),
       title: root.querySelector('[data-sort-step-title]'),
       count: root.querySelector('[data-sort-step-count]'),
@@ -582,6 +973,7 @@
     }
 
     let currentStep = 0;
+    let selectedIndex = null;
 
     const getCellState = (step, index) => {
       if (step.swap.includes(index)) {
@@ -592,6 +984,15 @@
       }
       if (step.keyIndex === index) {
         return 'key';
+      }
+      if (step.parentIndex === index) {
+        return 'parent';
+      }
+      if (step.selected.includes(index)) {
+        return 'selected';
+      }
+      if (step.largestIndex === index && step.largestIndex !== step.parentIndex) {
+        return 'candidate';
       }
       if (step.compare.includes(index)) {
         return 'compare';
@@ -611,6 +1012,15 @@
       }
       if (state === 'key') {
         return 'key';
+      }
+      if (state === 'parent') {
+        return '부모';
+      }
+      if (state === 'selected') {
+        return '선택됨';
+      }
+      if (state === 'candidate') {
+        return '최댓값 후보';
       }
       if (state === 'compare') {
         return '비교';
@@ -635,22 +1045,190 @@
           cell.className = 'sort-visualization__cell';
           cell.dataset.state = state;
           cell.dataset.index = String(index);
+          cell.dataset.selected = selectedIndex === index ? 'true' : 'false';
           if (step.holeIndex === index) {
             cell.dataset.hole = 'true';
           }
           if (step.range) {
             cell.dataset.inRange = index >= step.range[0] && index <= step.range[1] ? 'true' : 'false';
           }
-          cell.setAttribute('role', 'listitem');
-          cell.setAttribute('aria-label', `인덱스 ${index}, 값 ${value}, ${getCellLabel(step, index, state)}`);
+          cell.setAttribute('role', 'button');
+          cell.setAttribute('tabindex', '0');
+          cell.setAttribute('aria-pressed', selectedIndex === index ? 'true' : 'false');
+          cell.setAttribute('aria-label', `인덱스 ${index}, 값 ${value}, ${getCellLabel(step, index, state)}. 선택하려면 Enter를 누르세요.`);
           cell.append(
             createTextElement('span', 'sort-visualization__cell-index', `index ${index}`),
             createTextElement('strong', 'sort-visualization__cell-value', String(value)),
             createTextElement('span', 'sort-visualization__cell-label', getCellLabel(step, index, state))
           );
+          cell.addEventListener('click', () => {
+            selectedIndex = index;
+            render();
+          });
+          cell.addEventListener('keydown', (event) => {
+            if (event.key === 'Enter' || event.key === ' ') {
+              event.preventDefault();
+              selectedIndex = index;
+              render();
+            }
+          });
           return cell;
         })
       );
+    };
+
+    const getTreePosition = (index, length) => {
+      const fixedPositions = [
+        [320, 26],
+        [180, 92],
+        [460, 92],
+        [100, 158],
+        [260, 158],
+        [400, 158],
+        [540, 158]
+      ];
+      if (fixedPositions[index]) {
+        return fixedPositions[index];
+      }
+      const depth = Math.floor(Math.log2(index + 1));
+      const firstAtDepth = 2 ** depth - 1;
+      const offset = index - firstAtDepth;
+      const slots = 2 ** depth;
+      return [640 * ((offset + 1) / (slots + 1)), 26 + depth * 66];
+    };
+
+    const treeNodeState = (step, index) => {
+      if (step.swap.includes(index)) {
+        return 'swap';
+      }
+      if (selectedIndex === index) {
+        return 'selected';
+      }
+      if (step.selected.includes(index)) {
+        return 'candidate';
+      }
+      if (step.parentIndex === index) {
+        return 'parent';
+      }
+      if (step.compare.includes(index)) {
+        return 'compare';
+      }
+      if (step.sorted.includes(index)) {
+        return 'sorted';
+      }
+      return 'idle';
+    };
+
+    const createSvgElement = (tagName, attributes = {}) => {
+      const element = document.createElementNS('http://www.w3.org/2000/svg', tagName);
+      Object.entries(attributes).forEach(([name, value]) => element.setAttribute(name, String(value)));
+      return element;
+    };
+
+    const renderTree = (step) => {
+      if (!refs.tree || kind !== 'heap') {
+        return;
+      }
+
+      refs.tree.setAttribute('viewBox', '0 0 640 190');
+      const elements = [];
+      for (let index = 1; index < step.array.length; index += 1) {
+        const [x, y] = getTreePosition(index, step.array.length);
+        const [parentX, parentY] = getTreePosition(Math.floor((index - 1) / 2), step.array.length);
+        elements.push(
+          createSvgElement('line', {
+            class: 'sort-visualization__tree-edge',
+            x1: parentX,
+            y1: parentY,
+            x2: x,
+            y2: y
+          })
+        );
+      }
+
+      step.array.forEach((value, index) => {
+        const [x, y] = getTreePosition(index, step.array.length);
+        const state = treeNodeState(step, index);
+        const group = createSvgElement('g', {
+          class: 'sort-visualization__tree-node',
+          'data-state': state,
+          'data-index': index,
+          'data-selected': selectedIndex === index ? 'true' : 'false',
+          tabindex: '0',
+          role: 'button',
+          'aria-label': `인덱스 ${index}, 값 ${value}, ${getCellLabel(step, index, state)}`
+        });
+        const circle = createSvgElement('circle', { cx: x, cy: y, r: 22 });
+        const valueText = createSvgElement('text', { class: 'sort-tree-value', x, y: y + 5 });
+        valueText.textContent = String(value);
+        const indexText = createSvgElement('text', { class: 'sort-tree-index', x, y: y + 36 });
+        indexText.textContent = `index ${index}`;
+        group.append(circle, valueText, indexText);
+        group.addEventListener('click', () => {
+          selectedIndex = index;
+          render();
+        });
+        group.addEventListener('keydown', (event) => {
+          if (event.key === 'Enter' || event.key === ' ') {
+            event.preventDefault();
+            selectedIndex = index;
+            render();
+          }
+        });
+        elements.push(group);
+      });
+      refs.tree.replaceChildren(...elements);
+    };
+
+    const renderStructure = (step) => {
+      if (!refs.structure) {
+        return;
+      }
+
+      const isMerge = kind === 'merge';
+      const isHeap = kind === 'heap';
+      refs.structure.hidden = !isMerge && !isHeap;
+      if (refs.mergeStructure) {
+        refs.mergeStructure.hidden = !isMerge;
+      }
+      if (refs.treeWrap) {
+        refs.treeWrap.hidden = !isHeap;
+      }
+
+      if (isMerge && refs.mergeStructure) {
+        const heading = createTextElement('p', 'sort-visualization__structure-label', '분할·병합 구조');
+        const segmentRow = document.createElement('div');
+        segmentRow.className = 'sort-visualization__segment-row';
+        segmentRow.append(createTextElement('span', 'sort-visualization__structure-label', '구간'));
+        const segmentList = document.createElement('div');
+        segmentList.className = 'sort-visualization__segment-list';
+        step.segments.forEach((segment) => {
+          const item = createTextElement('span', 'sort-visualization__segment', segment.label);
+          item.dataset.state = segment.status || 'active';
+          segmentList.append(item);
+        });
+        segmentRow.append(segmentList);
+
+        const bufferRow = document.createElement('div');
+        bufferRow.className = 'sort-visualization__buffer-row';
+        bufferRow.append(createTextElement('span', 'sort-visualization__structure-label', 'buffer'));
+        const bufferList = document.createElement('div');
+        bufferList.className = 'sort-visualization__buffer-list';
+        if (step.buffer === null) {
+          bufferList.append(createTextElement('span', 'sort-visualization__buffer-cell', '병합 전'));
+        } else if (step.buffer.length === 0) {
+          bufferList.append(createTextElement('span', 'sort-visualization__buffer-cell', '비어 있음'));
+        } else {
+          step.buffer.forEach((value, index) => {
+            const item = createTextElement('span', 'sort-visualization__buffer-cell', String(value));
+            bufferList.append(item);
+          });
+        }
+        bufferRow.append(bufferList);
+        refs.mergeStructure.replaceChildren(heading, segmentRow, bufferRow);
+      }
+
+      renderTree(step);
     };
 
     const renderDetails = (step) => {
@@ -660,6 +1238,19 @@
       }
       if (step.callStack.length > 0) {
         details.push(detail('재귀 호출 경로', step.callStack.join(' → ')));
+      }
+      if (selectedIndex !== null && step.array[selectedIndex] !== undefined) {
+        const parentIndex = selectedIndex === 0 ? null : Math.floor((selectedIndex - 1) / 2);
+        const leftChildIndex = selectedIndex * 2 + 1;
+        const rightChildIndex = selectedIndex * 2 + 2;
+        details.push(detail('선택한 원소', `index ${selectedIndex} · ${step.array[selectedIndex]}`));
+        if (kind === 'heap') {
+          details.push(
+            detail('부모 인덱스', parentIndex === null ? '없음' : parentIndex),
+            detail('자식 인덱스', `${leftChildIndex < step.array.length ? leftChildIndex : '없음'} / ${rightChildIndex < step.array.length ? rightChildIndex : '없음'}`),
+            detail('현재 힙 포함', step.heapSize === null ? '정보 없음' : selectedIndex < step.heapSize ? '예' : '아니오')
+          );
+        }
       }
       refs.details.replaceChildren(
         ...details.map((item) => {
@@ -683,6 +1274,7 @@
       refs.next.disabled = stepIndex === steps.length - 1;
       refs.stepData.hidden = true;
       renderArray(step);
+      renderStructure(step);
       renderDetails(step);
     };
 
