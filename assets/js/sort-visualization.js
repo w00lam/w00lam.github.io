@@ -955,6 +955,7 @@
           array: valuesOf(items),
           items,
           title: `${placeName} 기준 정렬 시작`,
+          description: `${placeName}의 숫자를 확인하고, 같은 자릿수끼리는 현재 순서를 유지하면서 안정적으로 묶는다.`,
           status: 'compare',
           digit: exp,
           digitPlace: placeName,
@@ -973,6 +974,7 @@
           array: valuesOf(items),
           items,
           title: `${placeName} 정렬 결과`,
+          description: `${placeName} 기준으로 원소를 정렬했다. 다음 자릿수에서도 이 순서를 그대로 이어 받아 안정성을 유지한다.`,
           status: pass === exponents.length - 1 ? 'done' : 'sorted',
           digit: exp,
           digitPlace: placeName,
@@ -992,6 +994,7 @@
         array: valuesOf(items),
         items,
         title: '정렬 완료',
+        description: '일의 자리부터 높은 자리까지 모든 자릿수를 처리해 배열을 오름차순으로 정렬했다.',
         status: 'done',
         sorted: allIndices(input.length),
         details: [
