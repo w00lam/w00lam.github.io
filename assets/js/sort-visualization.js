@@ -922,7 +922,7 @@
     for (let exp = 1; max > 0 && exp <= max; exp *= 10) {
       exponents.push(exp);
     }
-    let items = input.map((value, index) => ({ value, id: `원본 index ${index}` }));
+    let items = input.map((value, index) => ({ value, id: `원본 ${index}` }));
 
     const digitAt = (value, exp) => Math.floor(value / exp) % 10;
     const valuesOf = (list) => list.map((item) => item.value);
@@ -937,7 +937,7 @@
         details: [
           detail('현재 자릿수', '준비'),
           detail('원본 배열', valuesOf(items).join(' → ')),
-          detail('원래 위치', items.map((item) => item.id.replace('원본 ', '')).join(' · ')),
+          detail('원래 위치', items.map((item) => item.id).join(' · ')),
           detail('정렬 방향', 'LSD · 낮은 자리 → 높은 자리')
         ]
       })
@@ -980,7 +980,7 @@
           details: [
             detail('현재 자릿수', `${placeName} · exp = ${exp}`),
             detail('정렬된 배열', valuesOf(items).join(' → ')),
-            detail('원래 위치', items.map((item) => item.id.replace('원본 ', '')).join(' · ')),
+            detail('원래 위치', items.map((item) => item.id).join(' · ')),
             detail('유지된 순서', pass === 0 ? '일의 자리 같은 원소의 원래 순서' : '십의 자리 같은 원소의 이전 결과')
           ]
         })

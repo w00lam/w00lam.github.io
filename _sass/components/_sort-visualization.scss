@@ -109,6 +109,16 @@
     min-height: 12rem;
   }
 
+  &[data-sort-kind='counting'] &__stage {
+    height: 35rem;
+    min-height: 35rem;
+  }
+
+  &[data-sort-kind='radix'] &__cell {
+    height: 6rem;
+    min-height: 6rem;
+  }
+
   &__merge-structure {
     display: grid;
     gap: 0.55rem;
@@ -374,12 +384,11 @@
   }
 
   &__cell-meta {
-    overflow: hidden;
     color: var(--sort-muted);
     font-size: 0.68rem;
     line-height: 1.2;
-    text-overflow: ellipsis;
-    white-space: nowrap;
+    overflow-wrap: anywhere;
+    white-space: normal;
   }
 
   &__cell[data-state='compare'] &__cell-label {
@@ -588,6 +597,11 @@
       min-height: 14rem;
     }
 
+    &[data-sort-kind='counting'] &__stage {
+      height: 41rem;
+      min-height: 41rem;
+    }
+
     &__details {
       grid-template-columns: repeat(2, minmax(0, 1fr));
       height: 15rem;
@@ -615,6 +629,11 @@
     &[data-sort-kind='counting'] &__structure {
       height: 17rem;
       min-height: 17rem;
+    }
+
+    &[data-sort-kind='counting'] &__stage {
+      height: 56rem;
+      min-height: 56rem;
     }
 
     &__count-cells {
