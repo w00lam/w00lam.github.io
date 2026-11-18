@@ -919,7 +919,7 @@
     const steps = [];
     const max = Math.max(...input);
     const exponents = max === 0 ? [1] : [];
-    for (let exp = 1; max > 0 && max / exp > 0; exp *= 10) {
+    for (let exp = 1; max > 0 && exp <= max; exp *= 10) {
       exponents.push(exp);
     }
     let items = input.map((value, index) => ({ value, id: `원본 index ${index}` }));
@@ -986,6 +986,22 @@
         })
       );
     });
+
+    steps.push(
+      makeStep({
+        array: valuesOf(items),
+        items,
+        title: '정렬 완료',
+        status: 'done',
+        sorted: allIndices(input.length),
+        details: [
+          detail('처리한 자릿수', exponents.map((exp) => `exp = ${exp}`).join(' → ')),
+          detail('최종 배열', valuesOf(items).join(' → ')),
+          detail('안정성', '같은 자릿수의 상대 순서 유지'),
+          detail('단계 수', '6단계')
+        ]
+      })
+    );
 
     return steps;
   };
