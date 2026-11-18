@@ -13,6 +13,7 @@
   --sort-selected: #6b4f00;
   --sort-parent: #7a3e00;
   --sort-candidate: #3659a8;
+  --sort-current: #7a3e00;
   --sort-sorted: #147d63;
 
   margin: 2rem 0;
@@ -103,6 +104,11 @@
     overflow-y: auto;
   }
 
+  &[data-sort-kind='counting'] &__structure {
+    height: 12rem;
+    min-height: 12rem;
+  }
+
   &__merge-structure {
     display: grid;
     gap: 0.55rem;
@@ -161,6 +167,62 @@
   &__buffer-cell[data-selected='true'] {
     border-color: var(--sort-selected);
     box-shadow: inset 0 0 0 2px color-mix(in srgb, var(--sort-selected) 30%, transparent);
+  }
+
+  &__counting-structure {
+    display: grid;
+    gap: 0.65rem;
+    align-content: start;
+    height: 100%;
+  }
+
+  &__count-row {
+    display: grid;
+    grid-template-columns: 4.3rem minmax(0, 1fr);
+    align-items: center;
+    gap: 0.55rem;
+  }
+
+  &__count-cells {
+    display: grid;
+    grid-template-columns: repeat(6, minmax(2.4rem, 1fr));
+    gap: 0.35rem;
+    min-width: 0;
+  }
+
+  &__count-cell {
+    display: grid;
+    gap: 0.1rem;
+    min-width: 0;
+    min-height: 2.55rem;
+    padding: 0.3rem 0.2rem;
+    border: 1px solid var(--sort-border);
+    border-radius: 0.4rem;
+    background: var(--sort-surface);
+    text-align: center;
+
+    &[data-active='true'] {
+      border-color: var(--sort-current);
+      box-shadow: inset 0 0 0 2px color-mix(in srgb, var(--sort-current) 28%, transparent);
+    }
+  }
+
+  &__count-index,
+  &__count-value {
+    display: block;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  &__count-index {
+    color: var(--sort-muted);
+    font-size: 0.62rem;
+  }
+
+  &__count-value {
+    color: var(--heading-color);
+    font-size: 0.95rem;
   }
 
   &__tree-wrap {
@@ -275,6 +337,11 @@
       box-shadow: inset 0 0 0 2px color-mix(in srgb, var(--sort-parent) 32%, transparent);
     }
 
+    &[data-state='current'] {
+      border-color: var(--sort-current);
+      box-shadow: inset 0 0 0 2px color-mix(in srgb, var(--sort-current) 32%, transparent);
+    }
+
     &[data-selected='true'] {
       outline: 2px solid var(--sort-accent);
       outline-offset: 2px;
@@ -306,6 +373,15 @@
     line-height: 1.15;
   }
 
+  &__cell-meta {
+    overflow: hidden;
+    color: var(--sort-muted);
+    font-size: 0.68rem;
+    line-height: 1.2;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
   &__cell[data-state='compare'] &__cell-label {
     color: var(--sort-compare);
     font-weight: 700;
@@ -330,6 +406,11 @@
 
   &__cell[data-state='parent'] &__cell-label {
     color: var(--sort-parent);
+    font-weight: 700;
+  }
+
+  &__cell[data-state='current'] &__cell-label {
+    color: var(--sort-current);
     font-weight: 700;
   }
 
@@ -377,6 +458,11 @@
       &.is-selected {
         border-color: var(--sort-selected);
         background: color-mix(in srgb, var(--sort-selected) 18%, var(--sort-surface));
+      }
+
+      &.is-current {
+        border-color: var(--sort-current);
+        background: color-mix(in srgb, var(--sort-current) 18%, var(--sort-surface));
       }
 
       &.is-sorted {
@@ -497,9 +583,18 @@
       min-height: 26rem;
     }
 
+    &[data-sort-kind='counting'] &__structure {
+      height: 14rem;
+      min-height: 14rem;
+    }
+
     &__details {
       grid-template-columns: repeat(2, minmax(0, 1fr));
       height: 15rem;
+    }
+
+    &__count-row {
+      grid-template-columns: 3.5rem minmax(0, 1fr);
     }
 
     &__description {
@@ -515,6 +610,15 @@
     &__details {
       grid-template-columns: 1fr;
       height: 25.5rem;
+    }
+
+    &[data-sort-kind='counting'] &__structure {
+      height: 17rem;
+      min-height: 17rem;
+    }
+
+    &__count-cells {
+      gap: 0.2rem;
     }
 
     &__description {

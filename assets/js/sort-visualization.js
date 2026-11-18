@@ -1,4 +1,5 @@
 (function () {
+  /* global InteractiveLayout */
   'use strict';
 
   const roots = document.querySelectorAll('[data-sort-visualization]');
@@ -36,6 +37,14 @@
     rightChildIndex: state.rightChildIndex ?? null,
     largestIndex: state.largestIndex ?? null,
     heapSize: state.heapSize ?? null,
+    currentIndex: state.currentIndex ?? null,
+    digit: state.digit ?? null,
+    digitPlace: state.digitPlace ?? null,
+    count: state.count ? state.count.slice() : null,
+    output: state.output ? state.output.slice() : null,
+    countIndex: state.countIndex ?? null,
+    outputIndex: state.outputIndex ?? null,
+    items: state.items ? state.items.map((item) => ({ ...item })) : null,
     buffer: state.buffer ? state.buffer.slice() : null,
     segments: state.segments ? state.segments.map((segment) => ({ ...segment })) : [],
     details: state.details || [],
@@ -234,7 +243,7 @@
           makeStep({
             array,
             title: `i = ${i} · 교환 생략`,
-            description: `minIndex와 i가 같으므로 자기 자신과의 불필요한 교환을 생략한다.`,
+            description: 'minIndex와 i가 같으므로 자기 자신과의 불필요한 교환을 생략한다.',
             status: 'sorted',
             sorted: [...sortedBefore, i],
             details: [detail('i', i), detail('minIndex', minIndex), detail('교환', '생략'), detail('정렬 완료', `0 ~ ${i}`)]
@@ -439,7 +448,7 @@
               makeStep({
                 array,
                 title: `Partition 교환 · i = ${i}, j = ${j}`,
-                description: `Pivot보다 작은 값을 왼쪽 경계 i로 옮겼다.`,
+                description: 'Pivot보다 작은 값을 왼쪽 경계 i로 옮겼다.',
                 status: 'swap',
                 swap: [i, j],
                 range: [start, end],
@@ -906,6 +915,198 @@
     return steps;
   };
 
+  const createRadixSteps = (input) => {
+    const steps = [];
+    const max = Math.max(...input);
+    const exponents = max === 0 ? [1] : [];
+    for (let exp = 1; max > 0 && max / exp > 0; exp *= 10) {
+      exponents.push(exp);
+    }
+    let items = input.map((value, index) => ({ value, id: `원본 index ${index}` }));
+
+    const digitAt = (value, exp) => Math.floor(value / exp) % 10;
+    const valuesOf = (list) => list.map((item) => item.value);
+    const digitSummary = (list, exp) => list.map((item) => `${item.value} → ${digitAt(item.value, exp)}`).join(', ');
+
+    steps.push(
+      makeStep({
+        array: valuesOf(items),
+        items,
+        title: '시작',
+        description: '각 원소에 원래 위치를 붙여 두고, 일의 자리부터 자릿수별 안정 정렬을 시작한다.',
+        details: [
+          detail('현재 자릿수', '준비'),
+          detail('원본 배열', valuesOf(items).join(' → ')),
+          detail('원래 위치', items.map((item) => item.id.replace('원본 ', '')).join(' · ')),
+          detail('정렬 방향', 'LSD · 낮은 자리 → 높은 자리')
+        ]
+      })
+    );
+
+    exponents.forEach((exp, pass) => {
+      const placeName = exp === 1 ? '일의 자리' : exp === 10 ? '십의 자리' : `${Math.log10(exp) + 1}번째 자리`;
+      const buckets = Array.from({ length: 10 }, () => []);
+      items.forEach((item) => buckets[digitAt(item.value, exp)].push(item));
+      const sortedItems = buckets.flat();
+      const digitValues = digitSummary(items, exp);
+
+      steps.push(
+        makeStep({
+          array: valuesOf(items),
+          items,
+          title: `${placeName} 기준 정렬 시작`,
+          status: 'compare',
+          digit: exp,
+          digitPlace: placeName,
+          details: [
+            detail('현재 자릿수', `${placeName} · exp = ${exp}`),
+            detail('자릿수 값', digitValues),
+            detail('정렬 전', valuesOf(items).join(' → ')),
+            detail('안정성', '같은 자릿수면 이전 순서를 유지')
+          ]
+        })
+      );
+
+      items = sortedItems;
+      steps.push(
+        makeStep({
+          array: valuesOf(items),
+          items,
+          title: `${placeName} 정렬 결과`,
+          status: pass === exponents.length - 1 ? 'done' : 'sorted',
+          digit: exp,
+          digitPlace: placeName,
+          sorted: allIndices(input.length),
+          details: [
+            detail('현재 자릿수', `${placeName} · exp = ${exp}`),
+            detail('정렬된 배열', valuesOf(items).join(' → ')),
+            detail('원래 위치', items.map((item) => item.id.replace('원본 ', '')).join(' · ')),
+            detail('유지된 순서', pass === 0 ? '일의 자리 같은 원소의 원래 순서' : '십의 자리 같은 원소의 이전 결과')
+          ]
+        })
+      );
+    });
+
+    return steps;
+  };
+
+  const createCountingSteps = (input) => {
+    const steps = [];
+    const max = Math.max(...input);
+    const count = Array.from({ length: max + 1 }, () => 0);
+    const output = Array.from({ length: input.length }, () => null);
+    const blankOutput = () => output.map((value) => value);
+
+    const pushStep = (state) => {
+      steps.push(
+        makeStep({
+          array: state.array || input,
+          count,
+          output,
+          currentIndex: state.currentIndex,
+          countIndex: state.countIndex,
+          outputIndex: state.outputIndex,
+          title: state.title,
+          description: state.description,
+          status: state.status,
+          details: state.details
+        })
+      );
+    };
+
+    pushStep({
+      title: '시작',
+      description: '입력 배열은 그대로 두고 빈도 배열과 출력 배열을 준비한다.',
+      details: [detail('입력 배열', input.join(' → ')), detail('count', '[0, 0, 0, 0]'), detail('output', '아직 배치된 원소 없음')]
+    });
+
+    input.forEach((value, index) => {
+      const before = count[value];
+      count[value] += 1;
+      pushStep({
+        currentIndex: index,
+        countIndex: value,
+        title: `빈도 계산 · arr[${index}] = ${value}`,
+        description: `arr[${index}]의 값 ${value}를 확인하고 count[${value}]를 ${before}에서 ${count[value]}로 늘린다.`,
+        status: 'compare',
+        details: [detail('현재 원소', `arr[${index}] = ${value}`), detail('참조 인덱스', `count[${value}]`), detail('변경', `${before} → ${count[value]}`), detail('count', `[${count.join(', ')}]`)]
+      });
+    });
+
+    pushStep({
+      title: '빈도 배열 완성',
+      description: '각 값이 몇 번 등장했는지 count 배열에 모였다. 아직 출력 위치는 계산하지 않았다.',
+      status: 'sorted',
+      details: [detail('count', `[${count.join(', ')}]`), detail('의미', '각 값의 등장 횟수'), detail('output', '모든 칸이 비어 있음')]
+    });
+
+    for (let index = 1; index < count.length; index += 1) {
+      const previous = count[index - 1];
+      const before = count[index];
+      count[index] += previous;
+      pushStep({
+        countIndex: index,
+        title: `누적합 계산 · count[${index}]`,
+        description: `count[${index}]에 이전 값 count[${index - 1}]을 더해 ${before} + ${previous} = ${count[index]}으로 만든다.`,
+        status: 'compare',
+        details: [detail('현재 인덱스', index), detail('계산', `count[${index}] += count[${index - 1}]`), detail('변경', `${before} → ${count[index]}`), detail('count', `[${count.join(', ')}]`)]
+      });
+    }
+
+    pushStep({
+      title: '누적합 배열 완성',
+      description: 'count[value]가 value 이하 원소의 개수가 되어 출력 배열의 끝 위치를 가리킬 수 있다.',
+      status: 'sorted',
+      details: [detail('count', `[${count.join(', ')}]`), detail('예시', `count[2] = ${count[2]} · 2 이하 원소의 개수`), detail('다음 단계', '입력 배열을 뒤에서부터 배치')]
+    });
+
+    for (let index = input.length - 1; index >= 0; index -= 1) {
+      const value = input[index];
+      const before = count[value];
+      pushStep({
+        currentIndex: index,
+        countIndex: value,
+        title: `배치할 원소 선택 · arr[${index}] = ${value}`,
+        description: `안정성을 위해 입력 배열의 뒤쪽 원소부터 확인한다. ${value}의 기존 상대 순서가 유지될 자리를 찾는다.`,
+        status: 'compare',
+        details: [detail('현재 원소', `arr[${index}] = ${value}`), detail('count[value]', before), detail('순회 방향', `${index} → 0`), detail('output', '아직 배치 전')]
+      });
+
+      count[value] -= 1;
+      const outputIndex = count[value];
+      pushStep({
+        currentIndex: index,
+        countIndex: value,
+        outputIndex,
+        title: `출력 위치 결정 · output[${outputIndex}]`,
+        description: `count[${value}]를 먼저 1 줄여 ${before - 1}로 만들고, 그 값을 0 기반 출력 인덱스로 사용한다.`,
+        status: 'selected',
+        details: [detail('현재 원소', `arr[${index}] = ${value}`), detail('감소', `count[${value}]: ${before} → ${count[value]}`), detail('출력 인덱스', `output[${outputIndex}]`), detail('output', blankOutput().map((item) => item === null ? '_' : item).join(' → '))]
+      });
+
+      output[outputIndex] = value;
+      pushStep({
+        currentIndex: index,
+        countIndex: value,
+        outputIndex,
+        title: `출력 배열에 ${value} 배치`,
+        description: `arr[${index}]의 값 ${value}를 output[${outputIndex}]에 넣었다. 다음에는 그 앞 원소를 처리한다.`,
+        status: 'swap',
+        details: [detail('배치', `output[${outputIndex}] = ${value}`), detail('남은 count[value]', count[value]), detail('다음 입력', index > 0 ? `arr[${index - 1}]` : '없음'), detail('output', output.map((item) => item === null ? '_' : item).join(' → '))]
+      });
+    }
+
+    pushStep({
+      array: output.slice(),
+      title: '원본 배열에 복사',
+      description: '출력 배열에 완성된 정렬 결과를 원본 배열에 복사한다. Java에서는 System.arraycopy를 사용할 수 있다.',
+      status: 'done',
+      details: [detail('output', output.join(' → ')), detail('복사', 'output → arr'), detail('결과', output.join(' → ')), detail('count', `[${count.join(', ')}]`)]
+    });
+
+    return steps;
+  };
+
   const createSteps = (kind, input) => {
     const generators = {
       bubble: createBubbleSteps,
@@ -913,7 +1114,9 @@
       insertion: createInsertionSteps,
       quick: createQuickSteps,
       merge: createMergeSteps,
-      heap: createHeapSteps
+      heap: createHeapSteps,
+      radix: createRadixSteps,
+      counting: createCountingSteps
     };
 
     if (!generators[kind]) {
@@ -939,6 +1142,7 @@
     copy: '복사',
     call: '호출',
     selected: '선택',
+    current: '현재',
     done: '완료',
     info: '상태'
   };
@@ -957,6 +1161,7 @@
       mergeStructure: root.querySelector('[data-sort-merge-structure]'),
       treeWrap: root.querySelector('[data-sort-tree-wrap]'),
       tree: root.querySelector('[data-sort-tree]'),
+      countingStructure: root.querySelector('[data-sort-counting-structure]'),
       details: root.querySelector('[data-sort-details]'),
       title: root.querySelector('[data-sort-step-title]'),
       count: root.querySelector('[data-sort-step-count]'),
@@ -984,6 +1189,9 @@
       }
       if (step.keyIndex === index) {
         return 'key';
+      }
+      if (step.currentIndex === index) {
+        return 'current';
       }
       if (step.parentIndex === index) {
         return 'parent';
@@ -1013,6 +1221,9 @@
       if (state === 'key') {
         return 'key';
       }
+      if (state === 'current') {
+        return '현재 원소';
+      }
       if (state === 'parent') {
         return '부모';
       }
@@ -1041,6 +1252,9 @@
       refs.array.replaceChildren(
         ...step.array.map((value, index) => {
           const state = getCellState(step, index);
+          const item = step.items ? step.items[index] : null;
+          const displayValue = item ? item.value : value;
+          const itemLabel = item ? item.id : null;
           const cell = document.createElement('div');
           cell.className = 'sort-visualization__cell';
           cell.dataset.state = state;
@@ -1055,10 +1269,11 @@
           cell.setAttribute('role', 'button');
           cell.setAttribute('tabindex', '0');
           cell.setAttribute('aria-pressed', selectedIndex === index ? 'true' : 'false');
-          cell.setAttribute('aria-label', `인덱스 ${index}, 값 ${value}, ${getCellLabel(step, index, state)}. 선택하려면 Enter를 누르세요.`);
+          cell.setAttribute('aria-label', `인덱스 ${index}, 값 ${displayValue}${itemLabel ? `, ${itemLabel}` : ''}, ${getCellLabel(step, index, state)}. 선택하려면 Enter를 누르세요.`);
           cell.append(
             createTextElement('span', 'sort-visualization__cell-index', `index ${index}`),
-            createTextElement('strong', 'sort-visualization__cell-value', String(value)),
+            createTextElement('strong', 'sort-visualization__cell-value', String(displayValue)),
+            ...(itemLabel ? [createTextElement('span', 'sort-visualization__cell-meta', itemLabel)] : []),
             createTextElement('span', 'sort-visualization__cell-label', getCellLabel(step, index, state))
           );
           cell.addEventListener('click', () => {
@@ -1077,7 +1292,7 @@
       );
     };
 
-    const getTreePosition = (index, length) => {
+    const getTreePosition = (index) => {
       const fixedPositions = [
         [320, 26],
         [180, 92],
@@ -1187,12 +1402,16 @@
 
       const isMerge = kind === 'merge';
       const isHeap = kind === 'heap';
-      refs.structure.hidden = !isMerge && !isHeap;
+      const isCounting = kind === 'counting';
+      refs.structure.hidden = !isMerge && !isHeap && !isCounting;
       if (refs.mergeStructure) {
         refs.mergeStructure.hidden = !isMerge;
       }
       if (refs.treeWrap) {
         refs.treeWrap.hidden = !isHeap;
+      }
+      if (refs.countingStructure) {
+        refs.countingStructure.hidden = !isCounting;
       }
 
       if (isMerge && refs.mergeStructure) {
@@ -1219,13 +1438,42 @@
         } else if (step.buffer.length === 0) {
           bufferList.append(createTextElement('span', 'sort-visualization__buffer-cell', '비어 있음'));
         } else {
-          step.buffer.forEach((value, index) => {
+          step.buffer.forEach((value) => {
             const item = createTextElement('span', 'sort-visualization__buffer-cell', String(value));
             bufferList.append(item);
           });
         }
         bufferRow.append(bufferList);
         refs.mergeStructure.replaceChildren(heading, segmentRow, bufferRow);
+      }
+
+      if (isCounting && refs.countingStructure) {
+        const heading = createTextElement('p', 'sort-visualization__structure-label', '계수 배열과 출력 배열');
+        const createRow = (label, values, activeIndex, placeholder) => {
+          const row = document.createElement('div');
+          row.className = 'sort-visualization__count-row';
+          row.append(createTextElement('span', 'sort-visualization__structure-label', label));
+          const cells = document.createElement('div');
+          cells.className = 'sort-visualization__count-cells';
+          values.forEach((value, index) => {
+            const cell = document.createElement('span');
+            cell.className = 'sort-visualization__count-cell';
+            cell.dataset.active = activeIndex === index ? 'true' : 'false';
+            cell.append(
+              createTextElement('span', 'sort-visualization__count-index', `index ${index}`),
+              createTextElement('strong', 'sort-visualization__count-value', value === null ? placeholder : String(value))
+            );
+            cells.append(cell);
+          });
+          row.append(cells);
+          return row;
+        };
+
+        refs.countingStructure.replaceChildren(
+          heading,
+          createRow('count', step.count || [], step.countIndex, '—'),
+          createRow('output', step.output || [], step.outputIndex, '_')
+        );
       }
 
       renderTree(step);

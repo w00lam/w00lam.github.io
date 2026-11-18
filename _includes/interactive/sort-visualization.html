@@ -17,6 +17,12 @@
   {% when 'heap' %}
     {% assign sort_title = 'Heap Sort 최대 힙 단계 보기' %}
     {% assign sort_summary = '완전 이진 트리의 최대 힙을 만들고 루트 최댓값을 정렬 구간으로 이동한다.' %}
+  {% when 'radix' %}
+    {% assign sort_title = 'LSD Radix Sort 자릿수별 단계 보기' %}
+    {% assign sort_summary = '낮은 자릿수부터 안정적으로 정렬하며 이전 자릿수의 상대 순서를 보존한다.' %}
+  {% when 'counting' %}
+    {% assign sort_title = 'Counting Sort 빈도·누적합 단계 보기' %}
+    {% assign sort_summary = '빈도와 누적합으로 출력 위치를 계산하고 뒤에서부터 안정적으로 배치한다.' %}
 {% endcase %}
 
 <figure
@@ -47,6 +53,7 @@
 
     <div class="sort-visualization__structure" data-sort-structure hidden>
       <div class="sort-visualization__merge-structure" data-sort-merge-structure hidden></div>
+      <div class="sort-visualization__counting-structure" data-sort-counting-structure hidden></div>
       <div class="sort-visualization__tree-wrap" data-sort-tree-wrap hidden>
         <svg class="sort-visualization__tree" data-sort-tree role="img" aria-label="배열로 표현한 완전 이진 트리"></svg>
       </div>
@@ -57,6 +64,7 @@
       <span><i class="is-swap" aria-hidden="true"></i>교환·이동</span>
       <span><i class="is-pivot" aria-hidden="true"></i>key·Pivot</span>
       <span><i class="is-selected" aria-hidden="true"></i>선택·후보</span>
+      <span><i class="is-current" aria-hidden="true"></i>현재 원소</span>
       <span><i class="is-sorted" aria-hidden="true"></i>정렬 완료</span>
     </div>
 
@@ -107,6 +115,16 @@
         <li>마지막 부모부터 heapify하여 최대 힙을 만든다.</li>
         <li>루트와 힙의 마지막 원소를 교환하고 힙 크기를 줄인다.</li>
         <li>남은 힙의 루트에서 다시 heapify한다.</li>
+      {% when 'radix' %}
+        <li>초기 배열에서 원소와 원래 위치를 확인한다.</li>
+        <li>일의 자리부터 안정적으로 정렬해 같은 자릿수의 상대 순서를 보존한다.</li>
+        <li>십의 자리로 이동해 이전 단계의 정렬 결과를 유지한다.</li>
+        <li>필요한 마지막 자릿수까지 반복하면 전체 배열이 정렬된다.</li>
+      {% when 'counting' %}
+        <li>입력 배열을 순회해 각 값의 등장 횟수를 계수한다.</li>
+        <li>계수 배열을 누적합으로 바꿔 값별 마지막 출력 위치를 계산한다.</li>
+        <li>입력 배열을 뒤에서부터 읽고 <code>output[--count[value]]</code>에 배치한다.</li>
+        <li>출력 배열을 원본 배열에 복사해 정렬을 마친다.</li>
     {% endcase %}
   </ol>
 
