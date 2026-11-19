@@ -13,7 +13,7 @@ toc: false
       <p class="portfolio-eyebrow">JAVA / SPRING BACKEND DEVELOPER</p>
       <h2 id="portfolio-hero-title">동시성과 트랜잭션을 설계하고 검증 가능한 백엔드를 만듭니다.</h2>
       <p class="portfolio-hero-lead">
-        재요청과 외부 장애에도 상태 정합성을 지키도록 설계하고, 테스트와 부하 검증으로 확인합니다.
+        재요청과 외부 장애에도 상태 정합성을 지키도록 설계하고 테스트와 부하 검증으로 확인합니다.
       </p>
       <div class="portfolio-project-links" aria-label="주요 링크">
         <a class="portfolio-button portfolio-button--light" href="#portfolio-projects-title">프로젝트 보기</a>
@@ -103,7 +103,7 @@ toc: false
   <section class="portfolio-section portfolio-approach" id="portfolio-approach" aria-labelledby="portfolio-approach-title">
     <div class="portfolio-section-heading">
       <p class="portfolio-eyebrow">HOW I WORK</p>
-      <h2 id="portfolio-approach-title">문제를 재현하고, 경계를 나누고, 결과를 검증합니다.</h2>
+      <h2 id="portfolio-approach-title">문제를 재현하고 경계를 나누고 결과를 검증합니다.</h2>
     </div>
 
     <div class="portfolio-approach-grid">
@@ -190,13 +190,13 @@ toc: false
       <article>
         <span class="portfolio-card-kicker">CODE / OOP</span>
         <h3>변경 이유가 드러나는 객체 설계</h3>
-        <p>다형성과 책임을 분리해 조건문을 줄이고, 메서드 이름에 도메인의 의도를 담습니다.</p>
+        <p>다형성과 책임을 분리해 조건문을 줄이고 메서드 이름에 도메인의 의도를 담습니다.</p>
         <a class="portfolio-text-link" href="{{ '/posts/ood-polymorphism/' | relative_url }}">OOP 설계 기록 <i class="fas fa-arrow-right" aria-hidden="true"></i></a>
       </article>
       <article>
         <span class="portfolio-card-kicker">SPRING / LAYER</span>
         <h3>IoC/DI와 계층의 책임 분리</h3>
-        <p>Controller/Service/Repository로 책임을 나누고, 상황에 따라 Facade와 전역 예외 처리의 경계도 설계합니다.</p>
+        <p>Controller/Service/Repository로 책임을 나누고 상황에 따라 Facade와 전역 예외 처리의 경계도 설계합니다.</p>
         <a class="portfolio-text-link" href="{{ '/posts/spring-boot-bean-exception/' | relative_url }}">Spring 구조 기록 <i class="fas fa-arrow-right" aria-hidden="true"></i></a>
       </article>
       <article>
@@ -208,7 +208,7 @@ toc: false
       <article>
         <span class="portfolio-card-kicker">SECURITY / DELIVERY</span>
         <h3>인증부터 배포 후 확인까지</h3>
-        <p>세션과 JWT의 트레이드오프를 비교하고, Security Filter와 Interceptor의 책임 경계를 구분합니다. PR/CI/배포 후 검증까지 하나의 흐름으로 연결합니다.</p>
+        <p>세션과 JWT의 트레이드오프를 비교하고 Security Filter와 Interceptor의 책임 경계를 구분합니다. PR/CI/배포 후 검증까지 하나의 흐름으로 연결합니다.</p>
         <a class="portfolio-text-link" href="{{ '/posts/session-to-jwt-auth/' | relative_url }}">인증 전환 기록 <i class="fas fa-arrow-right" aria-hidden="true"></i></a>
       </article>
     </div>
@@ -222,7 +222,7 @@ toc: false
         <h2 id="matisson-title">맛잇온</h2>
         <p class="portfolio-project-lead">
           유튜버가 방문한 맛집을 지역, 음식 종류, 유튜버 기준으로 탐색하는 서비스입니다.
-          백엔드와 인프라를 담당하고, 일부 프론트엔드 구현과 프로젝트 진행도 맡았습니다.
+          백엔드와 인프라를 담당하고 일부 프론트엔드 구현과 프로젝트 진행도 맡았습니다.
         </p>
         <a class="portfolio-text-link" href="https://masiton.click/restaurants" target="_blank" rel="noopener">서비스 열기 <i class="fas fa-arrow-up-right-from-square" aria-hidden="true"></i></a>
       </div>
@@ -280,7 +280,7 @@ toc: false
         <p class="portfolio-card-kicker">OVERVIEW</p>
         <h3>검증과 저장을 분리했습니다.</h3>
         <p>
-          외부 API 검증은 요청 흐름에서 처리하고, DB 저장이 필요한 구간에만 트랜잭션을 적용했습니다.
+          외부 API 검증은 요청 흐름에서 처리하고 DB 저장이 필요한 구간에만 트랜잭션을 적용했습니다.
           핵심 상태를 확정한 뒤 테스트와 후속 처리를 분리했습니다.
         </p>
         <ul>
@@ -292,7 +292,7 @@ toc: false
       <div class="portfolio-decision-panel">
         <span class="portfolio-card-kicker">DECISION</span>
         <strong>한 건의 실패가 전체 등록을 막지 않도록</strong>
-        <p>검증과 저장을 나누고, 맛집별 등록을 독립된 단위로 확인했습니다.</p>
+        <p>검증과 저장을 나누고 맛집별 등록을 독립된 단위로 확인했습니다.</p>
       </div>
     </div>
 
@@ -357,7 +357,7 @@ toc: false
             맛잇온은 좌석 선점이 핵심인 티켓팅 서비스와 달리, 공개 조회 경로와 AI 자동 등록 Worker를
             서로 다른 기준으로 검증했습니다. 운영 검증 참여자 전용 범위에서 <code>200 VU / 80 RPS</code> 부하 프로필을 실행해
             24,001개 표본에서 5xx 0%, dropped iteration 0건, 백엔드 CPU 약 14.73%를 관찰했습니다.
-            이 수치는 공개 조회 부하의 결과이며, AI Worker의 실제 처리 용량을 의미하지 않습니다.
+            이 수치는 공개 조회 부하의 결과이며 AI Worker의 실제 처리 용량을 의미하지 않습니다.
           </p>
           <a class="portfolio-text-link" href="https://github.com/team-youngkk/masit-on/blob/main/docs/08-planning/issue-190-operational-performance-result.md" target="_blank" rel="noopener">운영 부하 관찰 결과 <i class="fas fa-arrow-up-right-from-square" aria-hidden="true"></i></a>
         </div>
@@ -405,8 +405,8 @@ toc: false
           <p>
             실제 Gemini, Kakao, YouTube quota를 사용하지 않는 격리 환경에서 관리자 AI 작업 200건을 초당 10건씩, 20초 동안 제출했습니다.
             제출 API는 200건 모두 수용했고 p95는 45.36ms, dropped iteration은 0건이었습니다. 이후 WireMock 외부 검증과 DB 저장을 포함한
-            Worker 처리 구간은 p95 10.18ms/p99 11.88ms였지만, 단일 Worker의 5초 polling 정책 때문에 마지막 작업까지 1,007.7초가 걸렸습니다.
-            모든 작업은 실패 없이 종료됐고, 동일 장소에 대한 199건은 <code>DUPLICATE_CONFLICT</code>로 차단되어 맛집, 크리에이터, 영상, 방문 데이터는 각각 한 건만 남았습니다.
+            Worker 처리 구간은 p95 10.18ms/p99 11.88ms였지만 단일 Worker의 5초 polling 정책 때문에 마지막 작업까지 1,007.7초가 걸렸습니다.
+            모든 작업은 실패 없이 종료됐고 동일 장소에 대한 199건은 <code>DUPLICATE_CONFLICT</code>로 차단되어 맛집, 크리에이터, 영상, 방문 데이터는 각각 한 건만 남았습니다.
           </p>
           <div class="portfolio-project-links">
             <a class="portfolio-text-link" href="https://github.com/team-youngkk/masit-on/blob/main/src/main/java/com/masiton/ai/application/AiExtractionWorkerService.java" target="_blank" rel="noopener">Worker 처리 경계 <i class="fas fa-arrow-up-right-from-square" aria-hidden="true"></i></a>
@@ -450,7 +450,7 @@ toc: false
           <p class="portfolio-card-kicker">OPERATIONS / RELEASE</p>
           <h3>배포 실패 시 백엔드와 프론트엔드가 서로 다른 버전으로 남지 않도록 교체 단위를 원자적으로 구성했습니다.</h3>
           <p>
-            배포 루프에서 참조 파일을 먼저 바꾸면 이미지 하나의 pull이 실패했을 때 백엔드와 프론트엔드가 서로 다른 버전으로 서비스될 수 있었습니다. 그래서 두 이미지 참조를 임시 디렉터리에 먼저 staging하고, 모두 pull에 성공한 뒤 install 단계에서 한 번에 교체하도록 배포 경계를 나눴습니다.
+            배포 루프에서 참조 파일을 먼저 바꾸면 이미지 하나의 pull이 실패했을 때 백엔드와 프론트엔드가 서로 다른 버전으로 서비스될 수 있었습니다. 그래서 두 이미지 참조를 임시 디렉터리에 먼저 staging하고 모두 pull에 성공한 뒤 install 단계에서 한 번에 교체하도록 배포 경계를 나눴습니다.
           </p>
           <a class="portfolio-text-link" href="{{ '/posts/cicd-design-not-yaml/' | relative_url }}">배포 전략 기록 보기 <i class="fas fa-arrow-right" aria-hidden="true"></i></a>
         </div>
@@ -490,7 +490,7 @@ toc: false
         <h2 id="ticketing-title">콘서트 티켓팅</h2>
         <p class="portfolio-project-lead">
           대기열 진입부터 좌석 예약과 결제까지 이어지는 콘서트 티켓팅 서비스를 백엔드 중심으로 구현했습니다.
-          동일 좌석에 대한 동시 요청과 결제 재요청을 테스트로 재현하고, 중복과 정합성 문제를 해결했습니다.
+          동일 좌석에 대한 동시 요청과 결제 재요청을 테스트로 재현하고 중복과 정합성 문제를 해결했습니다.
         </p>
       </div>
       <span class="portfolio-project-number" aria-hidden="true">01</span>
@@ -521,7 +521,7 @@ toc: false
         <article>
           <span>API 책임</span>
           <strong>자원 상태와 재요청 분리</strong>
-          <p>좌석 ID를 경쟁 자원으로 정의하고, reservationId로 기존 결제 여부를 먼저 확인합니다.</p>
+          <p>좌석 ID를 경쟁 자원으로 정의하고 reservationId로 기존 결제 여부를 먼저 확인합니다.</p>
         </article>
         <article>
           <span>완료 조건</span>
@@ -549,15 +549,15 @@ toc: false
         <p class="portfolio-card-kicker">DATA MODEL / ERD</p>
         <h3 id="ticketing-data-model-title">좌석 경쟁과 결제 정합성을 관계와 제약으로 분리했습니다.</h3>
         <p>
-          공연, 회차, 좌석을 예약의 기준 자원으로 두고, 예약 상태와 결제 상태를 별도 엔티티로 관리했습니다.
-          포인트는 사용자 잔액과 충전/사용 이력을 나눠 기록하고, 예약/결제/포인트 차감은 하나의 커밋 경계에서 확정합니다.
+          공연, 회차, 좌석을 예약의 기준 자원으로 두고 예약 상태와 결제 상태를 별도 엔티티로 관리했습니다.
+          포인트는 사용자 잔액과 충전/사용 이력을 나눠 기록하고 예약/결제/포인트 차감은 하나의 커밋 경계에서 확정합니다.
         </p>
       </div>
       <div class="portfolio-requirements-grid">
         <article>
           <span>CONCERT → SEAT</span>
           <strong>공연/회차/좌석</strong>
-          <p><code>concert_date_id</code> 아래 좌석을 묶고, 구역/행/번호 조합으로 같은 좌석 생성을 막습니다.</p>
+          <p><code>concert_date_id</code> 아래 좌석을 묶고 구역/행/번호 조합으로 같은 좌석 생성을 막습니다.</p>
         </article>
         <article>
           <span>USER → RESERVATION</span>
@@ -586,7 +586,7 @@ toc: false
         <p class="portfolio-card-kicker">QUEUE DESIGN</p>
         <h3>대기열 순번을 Redis Sorted Set으로 관리했습니다.</h3>
         <p>
-            사용자 토큰은 <code>userId</code>를 member로, 진입 시각은 score로 저장합니다. rank를 조회해 현재 위치를 보여주고, 입장시킬 때는 <code>ZPOPMIN</code>으로 가장 앞의 사용자를 꺼내 대기열에서도 제거합니다.
+            사용자 토큰의 <code>userId</code>는 member로 저장하고 진입 시각은 score로 사용합니다. rank를 조회해 현재 위치를 보여주고 입장시킬 때는 <code>ZPOPMIN</code>으로 가장 앞의 사용자를 꺼내 대기열에서도 제거합니다.
             한 테스트 프로세스의 8개 작업과 독립 JVM 2개의 dequeue worker에서도 같은 입장자가 중복으로 빠져나가지 않도록 Redis 원자 연산을 사용했습니다.
             API 응답 계약은 유지한 채, 두 애플리케이션 인스턴스 대상 HTTP 부하 측정은 k6/Grafana 실행 절차로 분리했습니다.
         </p>
@@ -679,7 +679,7 @@ toc: false
         </div>
         <h3>재요청에도 결제/예약 상태를 한 번만 반영했습니다.</h3>
         <p>
-          좌석 ID를 기준으로 요청 경쟁을 직렬화하고, Redis 락, 소유권 토큰, 만료 시간을 함께 관리했습니다.
+          좌석 ID를 기준으로 요청 경쟁을 직렬화하고 Redis 락, 소유권 토큰, 만료 시간을 함께 관리했습니다.
           DB 트랜잭션과 락 해제 시점을 분리해 커밋 경계를 명확히 했습니다. reservationId로 기존 결제를 먼저 확인한 뒤
           새로운 결제에는 포인트, 예약, 결제를 하나의 트랜잭션으로 묶었습니다.
         </p>
@@ -762,7 +762,7 @@ toc: false
     <div class="portfolio-ai-outcome">
       <span class="portfolio-card-kicker">OUTCOME</span>
       <strong>작업 전에 확인할 항목과 완료 조건을 통일해 팀 산출물의 기준을 맞췄습니다.</strong>
-      <p>요구사항, 코드, 테스트, 리뷰를 한 흐름으로 묶고, AI가 만든 결과도 Repository와 실행 결과로 확인할 수 있게 했습니다.</p>
+      <p>요구사항, 코드, 테스트, 리뷰를 한 흐름으로 묶고 AI가 만든 결과도 Repository와 실행 결과로 확인할 수 있게 했습니다.</p>
     </div>
 
     <div class="portfolio-ai-flow">
