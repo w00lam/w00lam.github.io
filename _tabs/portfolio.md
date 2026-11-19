@@ -11,15 +11,32 @@ toc: false
   <section class="portfolio-hero" id="portfolio-overview" aria-labelledby="portfolio-hero-title">
     <div class="portfolio-hero-copy">
       <p class="portfolio-eyebrow">JAVA / SPRING BACKEND DEVELOPER</p>
-      <h2 id="portfolio-hero-title">동시성과 트랜잭션, 외부 연동의 경계를 설계하고<br /> 검증 가능한 결과로 연결하는<br /> 백엔드 개발자입니다.</h2>
+      <h2 id="portfolio-hero-title">동시성과 트랜잭션의 경계를 설계해 검증 가능한 백엔드를 만듭니다.</h2>
       <p class="portfolio-hero-lead">
-        동시 요청과 재요청, 외부 장애가 발생해도 상태 정합성을 지킬 수 있도록 설계합니다. 이후 테스트와 부하 검증으로 설계가 실제로 지켜지는지 확인합니다.
+        재요청과 외부 장애에도 상태 정합성을 지키도록 설계하고, 테스트와 부하 검증으로 확인합니다.
       </p>
       <div class="portfolio-project-links" aria-label="주요 링크">
-        <a class="portfolio-button portfolio-button--light" href="#portfolio-projects-title">프로젝트 보기 <i class="fas fa-arrow-down" aria-hidden="true"></i></a>
-        <a class="portfolio-text-link" href="https://github.com/w00lam" target="_blank" rel="noopener">GitHub <i class="fas fa-arrow-up-right-from-square" aria-hidden="true"></i></a>
+        <a class="portfolio-button portfolio-button--light" href="#portfolio-projects-title">프로젝트 보기</a>
+        <a class="portfolio-text-link" href="https://github.com/w00lam" target="_blank" rel="noopener">GitHub</a>
       </div>
     </div>
+    <aside class="portfolio-hero-focus" aria-label="설계 포인트">
+      <p class="portfolio-hero-focus-title">설계 포인트</p>
+      <div class="portfolio-hero-focus-list">
+        <div class="portfolio-hero-focus-item">
+          <strong>동시성</strong>
+          <span>경쟁 상태를 제어하는 흐름</span>
+        </div>
+        <div class="portfolio-hero-focus-item">
+          <strong>정합성</strong>
+          <span>트랜잭션과 외부 연동의 경계</span>
+        </div>
+        <div class="portfolio-hero-focus-item">
+          <strong>검증</strong>
+          <span>테스트와 부하로 동작 확인</span>
+        </div>
+      </div>
+    </aside>
   </section>
 
   <nav class="portfolio-nav" aria-label="포트폴리오 섹션">
