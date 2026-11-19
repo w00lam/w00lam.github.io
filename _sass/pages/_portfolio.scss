@@ -42,19 +42,22 @@
   }
 
   @include bp.lg {
-    grid-template-columns: minmax(0, 1.3fr) minmax(15rem, 0.7fr);
-    align-items: end;
-    gap: 4rem;
     padding: 3.5rem;
+  }
+
+  @include bp.xl {
+    grid-template-columns: minmax(0, 1.3fr) minmax(15rem, 0.7fr);
+    align-items: stretch;
+    gap: 4rem;
   }
 
   .portfolio-hero-copy {
     min-width: 0;
-    max-width: 48rem;
+    max-width: 52rem;
   }
 
   h2 {
-    max-width: 44rem;
+    max-width: 48rem;
     margin: 0.65rem 0 1.25rem;
     color: #f5f7f2;
     font-size: clamp(1.85rem, 3vw, 2.75rem);
@@ -76,12 +79,17 @@
 .portfolio-hero-focus {
   display: grid;
   min-width: 0;
-  align-content: end;
+  align-content: start;
   gap: 1rem;
   padding-top: 1.25rem;
   border-top: 1px solid rgb(245 247 242 / 18%);
 
-  @include bp.lg {
+  @include bp.md {
+    padding-top: 1.5rem;
+  }
+
+  @include bp.xl {
+    align-content: center;
     padding-top: 0;
     padding-left: 2rem;
     border-top: 0;
@@ -99,6 +107,16 @@
 
 .portfolio-hero-focus-list {
   border-top: 1px solid rgb(245 247 242 / 18%);
+
+  @include bp.md {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    column-gap: 1.25rem;
+  }
+
+  @include bp.xl {
+    display: block;
+  }
 }
 
 .portfolio-hero-focus-item {
@@ -117,6 +135,13 @@
     color: rgb(245 247 242 / 64%);
     font-size: 0.82rem;
     line-height: 1.5;
+  }
+}
+
+.portfolio-project-links {
+  a {
+    border-bottom: 0;
+    text-decoration: none;
   }
 }
 .portfolio-eyebrow,
