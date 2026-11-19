@@ -11,7 +11,7 @@ toc: false
   <section class="portfolio-hero" id="portfolio-overview" aria-labelledby="portfolio-hero-title">
     <div class="portfolio-hero-copy">
       <p class="portfolio-eyebrow">JAVA / SPRING BACKEND DEVELOPER</p>
-      <h2 id="portfolio-hero-title">동시성/트랜잭션/외부 연동의 경계를 설계하고<br /> 검증 가능한 결과로 연결하는<br /> 백엔드 개발자입니다.</h2>
+      <h2 id="portfolio-hero-title">동시성과 트랜잭션, 외부 연동의 경계를 설계하고<br /> 검증 가능한 결과로 연결하는<br /> 백엔드 개발자입니다.</h2>
       <p class="portfolio-hero-lead">
         동시 요청과 재요청, 외부 장애가 발생해도 상태 정합성을 지킬 수 있도록 설계합니다. 이후 테스트와 부하 검증으로 설계가 실제로 지켜지는지 확인합니다.
       </p>
@@ -101,17 +101,17 @@ toc: false
         <article class="portfolio-signal-card">
           <span class="portfolio-card-kicker">01 / REPRODUCE</span>
           <h3>문제를 재현할 수 있는가?</h3>
-          <p>정상 흐름만 확인하지 않습니다. 동시 요청/재요청/외부 의존성 실패처럼 문제가 드러나는 조건부터 정의합니다.</p>
+          <p>정상 흐름만 확인하지 않습니다. 동시 요청과 재요청, 외부 의존성 실패처럼 문제가 드러나는 조건부터 정의합니다.</p>
         </article>
         <article class="portfolio-signal-card">
           <span class="portfolio-card-kicker">02 / BOUNDARY</span>
           <h3>실패가 번지는 경계는 어디인가?</h3>
-          <p>요청/도메인/트랜잭션/외부 시스템의 책임을 나눕니다. 한 단계의 실패가 전체 작업으로 번지지 않도록 하기 위해서입니다.</p>
+          <p>요청, 도메인, 트랜잭션, 외부 시스템의 책임을 나눕니다. 한 단계의 실패가 전체 작업으로 번지지 않도록 하기 위해서입니다.</p>
         </article>
         <article class="portfolio-signal-card">
           <span class="portfolio-card-kicker">03 / INVARIANT</span>
           <h3>변경 후에도 지켜야 할 조건은 무엇인가?</h3>
-          <p>중복 없음/상태 정합성/재시도 안전성처럼 서비스가 지켜야 할 조건을 테스트로 확인합니다.</p>
+          <p>중복 없음, 상태 정합성, 재시도 안전성처럼 서비스가 지켜야 할 조건을 테스트로 확인합니다.</p>
         </article>
       </div>
     </div>
@@ -204,7 +204,7 @@ toc: false
         <p class="portfolio-eyebrow">PROJECT 02</p>
         <h2 id="matisson-title">맛잇온</h2>
         <p class="portfolio-project-lead">
-          유튜버가 방문한 맛집을 지역/음식 종류/유튜버 기준으로 탐색하는 서비스입니다.
+          유튜버가 방문한 맛집을 지역, 음식 종류, 유튜버 기준으로 탐색하는 서비스입니다.
           백엔드와 인프라를 담당하고, 일부 프론트엔드 구현과 프로젝트 진행도 맡았습니다.
         </p>
         <a class="portfolio-text-link" href="https://masiton.click/restaurants" target="_blank" rel="noopener">서비스 열기 <i class="fas fa-arrow-up-right-from-square" aria-hidden="true"></i></a>
@@ -232,7 +232,7 @@ toc: false
         <article>
           <span>핵심 기능</span>
           <strong>탐색/인증/제보/신고</strong>
-          <p>지도/검색 화면과 사용자 인증, 맛집 제보/신고 기능을 제공합니다.</p>
+          <p>지도와 검색 화면, 사용자 인증, 맛집 제보와 신고 기능을 제공합니다.</p>
         </article>
         <article>
           <span>API 책임</span>
@@ -267,8 +267,8 @@ toc: false
           핵심 상태를 확정한 뒤 테스트와 후속 처리를 분리했습니다.
         </p>
         <ul>
-          <li>Next.js 프론트엔드: 지도/맛집 탐색 화면과 인증 흐름</li>
-          <li>Spring Boot API: 맛집 검색/인증/제보/신고 처리</li>
+          <li>Next.js 프론트엔드: 지도와 맛집 탐색 화면, 인증 흐름</li>
+          <li>Spring Boot API: 맛집 검색, 인증, 제보, 신고 처리</li>
           <li>Docker / Terraform / AWS: 애플리케이션 실행/운영 환경 구성</li>
         </ul>
       </div>
@@ -284,8 +284,8 @@ toc: false
         <p class="portfolio-card-kicker">INFRASTRUCTURE EVIDENCE</p>
         <h3>애플리케이션과 실행 환경을 분리했습니다.</h3>
         <p>
-          AWS 요청 흐름은 VPC 안에서 Public/Private Subnet, ALB, EC2, RDS(PostgreSQL)로 분리했습니다.
-          배포 흐름은 CI/CD/ECR/ASG와 Blue-Green 전환으로 나눠 정리했습니다.
+          AWS 요청 흐름은 VPC 안에서 Public과 Private Subnet, ALB, EC2, RDS(PostgreSQL)로 분리했습니다.
+          배포 흐름은 CI/CD, ECR, ASG와 Blue-Green 전환으로 나눠 정리했습니다.
         </p>
       </div>
       <figure class="portfolio-architecture-figure portfolio-architecture-figure--wide">
@@ -360,7 +360,7 @@ toc: false
           <p class="portfolio-card-kicker">EXTERNAL FAILURE / WIREMOCK</p>
           <h3>실제 API를 호출하지 않고도 외부 장애와 저장 경계를 검증했습니다.</h3>
           <p>
-            Kakao와 YouTube 실 API는 quota/비용/외부 상태 변화 때문에 자동화 테스트에서 직접 호출하지 않았습니다.
+            Kakao와 YouTube 실 API는 quota, 비용, 외부 상태 변화 때문에 자동화 테스트에서 직접 호출하지 않았습니다.
             Testcontainers로 WireMock을 띄워 정상 응답, 빈 결과, 429 rate limit, 잘못된 JSON, 필수 필드 누락, 응답 지연(timeout)을 재현했습니다.
             외부 실패는 <code>EXTERNAL_SERVICE_ERROR</code>로 분류했습니다. 별도 PostgreSQL 통합 테스트에서는 정식 등록 이후 단계에 실패를 주입해 후보/맛집/크리에이터/영상/방문 데이터가 모두 0건으로 롤백되는 것까지 확인했습니다.
           </p>
@@ -386,10 +386,10 @@ toc: false
           <p class="portfolio-card-kicker">SCALE / AI WORKER</p>
           <h3>AI 자동 등록은 요청 지연이 아니라 작업 수용과 backlog 소진을 기준으로 검증했습니다.</h3>
           <p>
-            실제 Gemini/Kakao/YouTube quota를 사용하지 않는 격리 환경에서 관리자 AI 작업 200건을 초당 10건씩, 20초 동안 제출했습니다.
+            실제 Gemini, Kakao, YouTube quota를 사용하지 않는 격리 환경에서 관리자 AI 작업 200건을 초당 10건씩, 20초 동안 제출했습니다.
             제출 API는 200건 모두 수용했고 p95는 45.36ms, dropped iteration은 0건이었습니다. 이후 WireMock 외부 검증과 DB 저장을 포함한
             Worker 처리 구간은 p95 10.18ms/p99 11.88ms였지만, 단일 Worker의 5초 polling 정책 때문에 마지막 작업까지 1,007.7초가 걸렸습니다.
-            모든 작업은 실패 없이 종료됐고, 동일 장소에 대한 199건은 <code>DUPLICATE_CONFLICT</code>로 차단되어 맛집/크리에이터/영상/방문은 각각 한 건만 남았습니다.
+            모든 작업은 실패 없이 종료됐고, 동일 장소에 대한 199건은 <code>DUPLICATE_CONFLICT</code>로 차단되어 맛집, 크리에이터, 영상, 방문 데이터는 각각 한 건만 남았습니다.
           </p>
           <div class="portfolio-project-links">
             <a class="portfolio-text-link" href="https://github.com/team-youngkk/masit-on/blob/main/src/main/java/com/masiton/ai/application/AiExtractionWorkerService.java" target="_blank" rel="noopener">Worker 처리 경계 <i class="fas fa-arrow-up-right-from-square" aria-hidden="true"></i></a>
@@ -456,12 +456,12 @@ toc: false
       <div>
         <p class="portfolio-card-kicker">LEARNED</p>
         <h3>외부 API 호출과 내부 DB 저장은 같은 트랜잭션으로 볼 수 없었습니다.</h3>
-        <p>검증/저장/후속 처리를 나누면서 실패 범위를 작게 만드는 일이 기능 구현만큼 중요하다는 점을 확인했습니다.</p>
+        <p>검증, 저장, 후속 처리를 나누면서 실패 범위를 작게 만드는 일이 기능 구현만큼 중요하다는 점을 확인했습니다.</p>
       </div>
       <div>
         <p class="portfolio-card-kicker">NEXT ITERATION</p>
         <h3>AI Worker는 공개 조회와 다른 기준으로 용량을 확인합니다.</h3>
-        <p>공개 조회는 RPS/응답시간으로, AI 자동 등록은 작업 수용률/terminal 실패율/backlog 소진 시간/중복 리소스 수로 판정합니다. 실제 Gemini quota를 사용하기 전에는 이 격리 결과를 기준선으로 삼아 Worker 동시성/재기동 복구/quota hard stop을 별도 게이트로 확인합니다.</p>
+        <p>공개 조회는 RPS와 응답 시간으로, AI 자동 등록은 작업 수용률, terminal 실패율, backlog 소진 시간, 중복 리소스 수로 확인합니다. 실제 Gemini quota를 사용하기 전에는 이 격리 테스트 결과를 기준선으로 삼아 Worker 동시성, 재기동 복구, quota hard stop을 별도 게이트로 확인합니다.</p>
       </div>
     </div>
   </section>
@@ -473,7 +473,7 @@ toc: false
         <h2 id="ticketing-title">콘서트 티켓팅</h2>
         <p class="portfolio-project-lead">
           대기열 진입부터 좌석 예약과 결제까지 이어지는 콘서트 티켓팅 서비스를 백엔드 중심으로 구현했습니다.
-          동일 좌석에 대한 동시 요청과 결제 재요청을 테스트로 재현하고, 중복/정합성 문제를 해결했습니다.
+          동일 좌석에 대한 동시 요청과 결제 재요청을 테스트로 재현하고, 중복과 정합성 문제를 해결했습니다.
         </p>
       </div>
       <span class="portfolio-project-number" aria-hidden="true">01</span>
@@ -532,7 +532,7 @@ toc: false
         <p class="portfolio-card-kicker">DATA MODEL / ERD</p>
         <h3 id="ticketing-data-model-title">좌석 경쟁과 결제 정합성을 관계와 제약으로 분리했습니다.</h3>
         <p>
-          공연/회차/좌석을 예약의 기준 자원으로 두고, 예약 상태와 결제 상태를 별도 엔티티로 관리했습니다.
+          공연, 회차, 좌석을 예약의 기준 자원으로 두고, 예약 상태와 결제 상태를 별도 엔티티로 관리했습니다.
           포인트는 사용자 잔액과 충전/사용 이력을 나눠 기록하고, 예약/결제/포인트 차감은 하나의 커밋 경계에서 확정합니다.
         </p>
       </div>
@@ -637,7 +637,7 @@ toc: false
         <h3>좌석 요청의 경쟁을 제어하고 확정 상태를 분리했습니다.</h3>
         <p>
           중복 예약을 막고 확정된 상태만 남기는 것을 목표로 했습니다. 좌석 ID를 경쟁 자원으로 정의했습니다.
-          예약/결제/포인트는 원자적으로 확정했습니다. 커밋 이후 알림/통계 같은 후속 처리는 Kafka 이벤트로 분리했습니다.
+          예약, 결제, 포인트는 원자적으로 확정했습니다. 커밋 이후 알림과 통계 같은 후속 처리는 Kafka 이벤트로 분리했습니다.
         </p>
         <ul>
           <li>Redis: 대기열/좌석 조회 캐시/분산 락 처리</li>
@@ -662,9 +662,9 @@ toc: false
         </div>
         <h3>재요청에도 결제/예약 상태를 한 번만 반영했습니다.</h3>
         <p>
-          좌석 ID를 기준으로 요청 경쟁을 직렬화하고, Redis 락/소유권 토큰/만료 시간을 함께 관리했습니다.
+          좌석 ID를 기준으로 요청 경쟁을 직렬화하고, Redis 락, 소유권 토큰, 만료 시간을 함께 관리했습니다.
           DB 트랜잭션과 락 해제 시점을 분리해 커밋 경계를 명확히 했습니다. reservationId로 기존 결제를 먼저 확인한 뒤
-          새로운 결제에는 포인트/예약/결제를 하나의 트랜잭션으로 묶었습니다.
+          새로운 결제에는 포인트, 예약, 결제를 하나의 트랜잭션으로 묶었습니다.
         </p>
         <div class="portfolio-metric-grid">
           <div><strong>같은 좌석 요청 100/500회</strong><span>락 적용 시 TEMP_HOLD 1건</span></div>
@@ -719,7 +719,7 @@ toc: false
     <div class="portfolio-ai-intro">
       <div class="portfolio-ai-summary">
         <p>
-          설계/코드 작성/테스트 생성/디버깅/문서화/배포 자동화에 Claude Code와 Codex를 활용했습니다.
+          설계, 코드 작성, 테스트 생성, 디버깅, 문서화, 배포 자동화에 Claude Code와 Codex를 활용했습니다.
           팀 프로젝트에서는 Codex Agent Skill을 직접 설계하고 개발 과정에 적용했습니다.
         </p>
         <div class="portfolio-ai-tools" aria-label="사용한 AI 도구">
@@ -745,7 +745,7 @@ toc: false
     <div class="portfolio-ai-outcome">
       <span class="portfolio-card-kicker">OUTCOME</span>
       <strong>작업 전에 확인할 항목과 완료 조건을 통일해 팀 산출물의 기준을 맞췄습니다.</strong>
-      <p>요구사항/코드/테스트/리뷰를 한 흐름으로 묶고, AI가 만든 결과도 Repository와 실행 결과로 확인할 수 있게 했습니다.</p>
+      <p>요구사항, 코드, 테스트, 리뷰를 한 흐름으로 묶고, AI가 만든 결과도 Repository와 실행 결과로 확인할 수 있게 했습니다.</p>
     </div>
 
     <div class="portfolio-ai-flow">
@@ -782,7 +782,7 @@ toc: false
         <span class="portfolio-card-kicker">GUARDRAILS</span>
         <h3>추측하기보다 확인을 먼저 하도록 했습니다.</h3>
         <p>
-          요구사항이 비어 있으면 질문합니다. Repository/기존 산출물/실행 결과를 확인한 뒤 다음 단계로 넘어갑니다.
+          요구사항이 비어 있으면 질문합니다. Repository, 기존 산출물, 실행 결과를 확인한 뒤 다음 단계로 넘어갑니다.
           검증되지 않은 정보는 사실로 단정하지 않고 열린 질문이나 가정으로 남깁니다.
         </p>
       </article>
