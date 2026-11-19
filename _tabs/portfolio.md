@@ -2,6 +2,8 @@
 icon: fas fa-briefcase
 order: 5
 permalink: /portfolio/
+title: 포트폴리오
+description: Java·Spring 기반 백엔드 개발자의 프로젝트와 검증 기록입니다.
 comments: false
 toc: false
 ---
@@ -9,62 +11,84 @@ toc: false
 <div class="portfolio-page">
   <section class="portfolio-hero" id="portfolio-overview" aria-labelledby="portfolio-hero-title">
     <div class="portfolio-hero-copy">
-      <p class="portfolio-eyebrow">BACKEND DEVELOPER · PORTFOLIO</p>
-      <h2 id="portfolio-hero-title">문제와 경계를 먼저 정의하고<br /> 검증 가능한 결과로 연결하는<br /> 백엔드 개발자입니다.</h2>
+      <p class="portfolio-eyebrow">JAVA · SPRING BACKEND DEVELOPER</p>
+      <h2 id="portfolio-hero-title">동시성·트랜잭션·외부 연동의 경계를 설계하고<br /> 검증 가능한 결과로 연결하는<br /> 백엔드 개발자입니다.</h2>
       <p class="portfolio-hero-lead">
-        Java·Spring Boot를 중심으로 동시성, 트랜잭션, 인증, 배포 경계를 설계하고
-        테스트 결과로 동작을 확인합니다.
+        동시 요청, 재요청, 외부 장애가 발생해도 상태 정합성을 지키도록 설계하고 테스트·부하 검증으로 결과를 확인합니다.
       </p>
+      <div class="portfolio-project-links" aria-label="주요 링크">
+        <a class="portfolio-button portfolio-button--light" href="#portfolio-projects-title">프로젝트 보기 <i class="fas fa-arrow-down" aria-hidden="true"></i></a>
+        <a class="portfolio-button portfolio-button--outline" href="https://github.com/w00lam/resume" target="_blank" rel="noopener">이력서 보기 <i class="fas fa-arrow-up-right-from-square" aria-hidden="true"></i></a>
+        <a class="portfolio-text-link" href="https://github.com/w00lam" target="_blank" rel="noopener">GitHub <i class="fas fa-arrow-up-right-from-square" aria-hidden="true"></i></a>
+      </div>
     </div>
   </section>
 
   <nav class="portfolio-nav" aria-label="포트폴리오 섹션">
-    <a href="#portfolio-approach">Approach</a>
-    <a href="#portfolio-principles">Principles</a>
+    <a href="#portfolio-projects-title">Projects</a>
+    <a href="#portfolio-approach">How I Work</a>
     <a href="#portfolio-stack">Stack</a>
     <a href="#portfolio-capabilities">Capability</a>
-    <a href="#concert-ticketing">Project 01</a>
-    <a href="#matisson">Project 02</a>
-    <a href="#portfolio-ai">AI Native</a>
+    <a href="#portfolio-ai">AI Workflow</a>
     <a href="#portfolio-contact">Contact</a>
   </nav>
 
-  <section class="portfolio-section portfolio-evidence" id="portfolio-principles" aria-labelledby="portfolio-evidence-title">
+  <section class="portfolio-section portfolio-project-index" aria-labelledby="portfolio-projects-title">
     <div class="portfolio-section-heading">
       <div>
-        <p class="portfolio-eyebrow">WORKING PRINCIPLES</p>
-        <h2 id="portfolio-evidence-title">어떤 프로젝트에서도 같은 질문으로 문제를 좁힙니다.</h2>
+        <p class="portfolio-eyebrow">SELECTED PROJECTS</p>
+        <h2 id="portfolio-projects-title">문제를 해결한 두 가지 기록</h2>
       </div>
     </div>
 
-    <div class="portfolio-evidence-grid">
-      <article>
-        <span class="portfolio-card-kicker">01 · PROBLEM</span>
-        <h3>재현 가능한 문제 정의</h3>
-        <p>사용자·비즈니스 맥락과 실패 조건을 먼저 정리해 해결할 문제의 범위를 좁힙니다.</p>
+    <div class="portfolio-project-grid">
+      <article class="portfolio-project-card portfolio-project-card--matisson">
+        <div class="portfolio-project-card-media" aria-hidden="true">
+          <div class="portfolio-project-card-brand">
+            <span class="portfolio-project-symbol">02</span>
+            <span class="portfolio-project-type">AI PLACE DISCOVERY</span>
+          </div>
+          <div class="portfolio-project-card-rail">
+            <span>검증</span><i class="fas fa-arrow-right"></i><span>저장</span><i class="fas fa-arrow-right"></i><span>운영</span>
+          </div>
+        </div>
+        <div class="portfolio-project-card-body">
+          <div class="portfolio-project-card-meta">
+            <span class="portfolio-card-kicker">TEAM PROJECT · 2026.07 - 현재</span>
+            <span class="portfolio-project-status"><i class="fas fa-circle" aria-hidden="true"></i> 진행중</span>
+          </div>
+          <h3>맛잇온</h3>
+          <p>AI 맛집 자동 등록에서 생기는 중복과 부분 저장을 경계 설계로 막은 서비스입니다.</p>
+          <a class="portfolio-card-link" href="#matisson">케이스 스터디 보기 <i class="fas fa-arrow-right" aria-hidden="true"></i></a>
+        </div>
       </article>
-      <article>
-        <span class="portfolio-card-kicker">02 · DECISION</span>
-        <h3>책임에 맞는 기술 선택</h3>
-        <p>도메인 경계와 데이터 흐름을 보고 저장·캐시·메시징·인증의 역할을 나눕니다. 선택한 이유도 기록합니다.</p>
-      </article>
-      <article>
-        <span class="portfolio-card-kicker">03 · VERIFICATION</span>
-        <h3>완료 조건을 명시</h3>
-        <p>테스트·수동 검증·부하 테스트 중 상황에 맞는 방법을 골라 성공 조건과 결과를 기록합니다.</p>
-      </article>
-      <article>
-        <span class="portfolio-card-kicker">04 · OPERATION</span>
-        <h3>운영까지 연결</h3>
-        <p>배포·로그·모니터링·장애 대응도 구현 뒤에 붙는 일이 아니라 설계의 일부로 봅니다.</p>
+
+      <article class="portfolio-project-card portfolio-project-card--ticketing">
+        <div class="portfolio-project-card-media" aria-hidden="true">
+          <div class="portfolio-project-card-brand">
+            <span class="portfolio-project-symbol">01</span>
+            <span class="portfolio-project-type">CONCURRENT BOOKING</span>
+          </div>
+          <div class="portfolio-project-card-rail">
+            <span>대기열</span><i class="fas fa-arrow-right"></i><span>좌석</span><i class="fas fa-arrow-right"></i><span>결제</span>
+          </div>
+        </div>
+        <div class="portfolio-project-card-body">
+          <span class="portfolio-card-kicker">PERSONAL PROJECT · 2025.11 - 2026.05</span>
+          <h3>콘서트 티켓팅</h3>
+          <p>좌석 경쟁과 결제 재요청을 Redis 분산락과 멱등성으로 제어한 백엔드 프로젝트입니다.</p>
+          <a class="portfolio-card-link" href="#concert-ticketing">케이스 스터디 보기 <i class="fas fa-arrow-right" aria-hidden="true"></i></a>
+        </div>
       </article>
     </div>
   </section>
 
+
+
   <section class="portfolio-section portfolio-approach" id="portfolio-approach" aria-labelledby="portfolio-approach-title">
     <div class="portfolio-section-heading">
-      <p class="portfolio-eyebrow">APPROACH</p>
-      <h2 id="portfolio-approach-title">동작보다 먼저 설계의 근거를 남깁니다.</h2>
+      <p class="portfolio-eyebrow">HOW I WORK</p>
+      <h2 id="portfolio-approach-title">문제를 재현하고, 경계를 나누고, 결과를 검증합니다.</h2>
     </div>
 
     <div class="portfolio-approach-grid">
@@ -171,56 +195,6 @@ toc: false
         <h3>인증부터 배포 후 확인까지</h3>
         <p>세션과 JWT의 트레이드오프를 비교합니다. Security Filter와 Interceptor의 위치도 구분합니다. PR·CI·배포 후 검증까지 하나의 흐름으로 살핍니다.</p>
         <a class="portfolio-text-link" href="{{ '/posts/session-to-jwt-auth/' | relative_url }}">인증 전환 기록 <i class="fas fa-arrow-right" aria-hidden="true"></i></a>
-      </article>
-    </div>
-  </section>
-
-  <section class="portfolio-section portfolio-project-index" aria-labelledby="portfolio-projects-title">
-    <div class="portfolio-section-heading">
-      <div>
-        <p class="portfolio-eyebrow">SELECTED PROJECTS</p>
-        <h2 id="portfolio-projects-title">문제를 해결한 두 가지 기록</h2>
-      </div>
-    </div>
-
-    <div class="portfolio-project-grid">
-      <article class="portfolio-project-card portfolio-project-card--matisson">
-        <div class="portfolio-project-card-media" aria-hidden="true">
-          <div class="portfolio-project-card-brand">
-            <span class="portfolio-project-symbol">02</span>
-            <span class="portfolio-project-type">AI PLACE DISCOVERY</span>
-          </div>
-          <div class="portfolio-project-card-rail">
-            <span>검증</span><i class="fas fa-arrow-right"></i><span>저장</span><i class="fas fa-arrow-right"></i><span>운영</span>
-          </div>
-        </div>
-        <div class="portfolio-project-card-body">
-          <div class="portfolio-project-card-meta">
-            <span class="portfolio-card-kicker">PROJECT 02 · 2026.07 - 현재</span>
-            <span class="portfolio-project-status"><i class="fas fa-circle" aria-hidden="true"></i> 진행중</span>
-          </div>
-          <h3>맛잇온</h3>
-          <p>AI 맛집 자동 등록에서 생기는 중복과 부분 저장을 경계 설계로 막은 서비스입니다.</p>
-          <a class="portfolio-card-link" href="#matisson">케이스 스터디 보기 <i class="fas fa-arrow-right" aria-hidden="true"></i></a>
-        </div>
-      </article>
-
-      <article class="portfolio-project-card portfolio-project-card--ticketing">
-        <div class="portfolio-project-card-media" aria-hidden="true">
-          <div class="portfolio-project-card-brand">
-            <span class="portfolio-project-symbol">01</span>
-            <span class="portfolio-project-type">CONCURRENT BOOKING</span>
-          </div>
-          <div class="portfolio-project-card-rail">
-            <span>대기열</span><i class="fas fa-arrow-right"></i><span>좌석</span><i class="fas fa-arrow-right"></i><span>결제</span>
-          </div>
-        </div>
-        <div class="portfolio-project-card-body">
-          <span class="portfolio-card-kicker">PROJECT 01 · 2025.11 - 2026.05</span>
-          <h3>콘서트 티켓팅</h3>
-          <p>좌석 경쟁과 결제 재요청을 Redis 분산락과 멱등성으로 제어한 백엔드 프로젝트입니다.</p>
-          <a class="portfolio-card-link" href="#concert-ticketing">케이스 스터디 보기 <i class="fas fa-arrow-right" aria-hidden="true"></i></a>
-        </div>
       </article>
     </div>
   </section>
@@ -432,7 +406,7 @@ toc: false
           <code>submit_p95 = 45.36ms</code>
           <code>worker_attempt_p95 = 10.18ms</code>
           <code>worker_attempt_p99 = 11.88ms</code>
-          <code>queue_drain = 1,007.7s</code>
+          <code>queue_drain_single_worker_5s_polling = 1,007.7s</code>
           <code>terminal = SUCCEEDED 200 / FAILED 0</code>
           <code>core_resources = 1 / 1 / 1 / 1</code>
           <span class="portfolio-proof-status"><i class="fas fa-check" aria-hidden="true"></i> async capacity boundary observed</span>
@@ -655,7 +629,6 @@ toc: false
             </div>
             <div class="portfolio-queue-proof-support">
               <code>http_dequeue_requests = 1,000</code>
-              <code>dequeue_throughput_per_second = 4,382.99</code>
               <code>http_dequeue_throughput_per_second = 3,378.38</code>
               <code>http_dequeue_p99_ms = 4.88</code>
               <code>http_dequeue_failure_rate = 0%</code>
@@ -843,6 +816,7 @@ toc: false
     <h2 id="portfolio-contact-title">정의한 문제를 직접 풀어보고 검증하며<br /> 그 결과를 다음 개선으로 이어갑니다.</h2>
     <p>더 자세한 기술 기록은 블로그와 GitHub에서 확인할 수 있습니다.</p>
     <div class="portfolio-project-links">
+      <a class="portfolio-button portfolio-button--light" href="https://github.com/w00lam/resume" target="_blank" rel="noopener">이력서 보기 <i class="fas fa-arrow-up-right-from-square" aria-hidden="true"></i></a>
       <a class="portfolio-button portfolio-button--light" href="https://github.com/w00lam" target="_blank" rel="noopener">GitHub 방문 <i class="fas fa-arrow-up-right-from-square" aria-hidden="true"></i></a>
       <a class="portfolio-button portfolio-button--outline" href="mailto:woolam.dev@gmail.com">이메일 보내기 <i class="fas fa-envelope" aria-hidden="true"></i></a>
     </div>
