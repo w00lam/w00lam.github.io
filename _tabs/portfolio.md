@@ -11,7 +11,7 @@ toc: false
   <section class="portfolio-hero" id="portfolio-overview" aria-labelledby="portfolio-hero-title">
     <div class="portfolio-hero-copy">
       <p class="portfolio-eyebrow">JAVA / SPRING BACKEND DEVELOPER</p>
-      <h2 id="portfolio-hero-title">동시성과 트랜잭션의 경계를 설계해 검증 가능한 백엔드를 만듭니다.</h2>
+      <h2 id="portfolio-hero-title">동시성과 트랜잭션을 설계하고, 검증 가능한 백엔드를 만듭니다.</h2>
       <p class="portfolio-hero-lead">
         재요청과 외부 장애에도 상태 정합성을 지키도록 설계하고, 테스트와 부하 검증으로 확인합니다.
       </p>
