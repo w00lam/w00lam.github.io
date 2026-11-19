@@ -1,0 +1,86 @@
+{% case include.kind %}
+  {% when 'binary' %}
+    {% assign algorithm_title = 'Binary Search 탐색 범위 단계 보기' %}
+    {% assign algorithm_summary = '정렬된 배열에서 left, right, mid를 갱신하며 후보 범위를 절반씩 줄인다.' %}
+  {% when 'hash' %}
+    {% assign algorithm_title = 'Hash Table 충돌·갱신 단계 보기' %}
+    {% assign algorithm_summary = '해시값으로 버킷을 찾은 뒤 원본 키를 비교해 충돌과 갱신을 구분한다.' %}
+{% endcase %}
+
+<figure
+  class="algorithm-visualization"
+  data-algorithm-visualization
+  data-algorithm-kind="{{ include.kind }}"
+  data-algorithm-values="{{ include.values }}"
+  tabindex="0"
+  role="group"
+  aria-labelledby="algorithm-visualization-{{ include.kind }}-title"
+>
+  <div class="algorithm-visualization__header">
+    <p class="algorithm-visualization__eyebrow">Interactive algorithm</p>
+    <h3 id="algorithm-visualization-{{ include.kind }}-title">{{ algorithm_title }}</h3>
+    <p>{{ algorithm_summary }}</p>
+  </div>
+
+  <div class="algorithm-visualization__progress" aria-live="polite">
+    <strong data-algorithm-step-title>시작</strong>
+    <span data-algorithm-step-count>1 / 준비 중</span>
+  </div>
+
+  <div class="algorithm-visualization__stage" aria-live="polite">
+    <div class="algorithm-visualization__array-wrap" data-algorithm-array-wrap>
+      <div class="algorithm-visualization__array" data-algorithm-array role="list" aria-label="배열 원소"></div>
+    </div>
+
+    <div class="algorithm-visualization__buckets-wrap" data-algorithm-buckets-wrap hidden>
+      <div class="algorithm-visualization__buckets" data-algorithm-buckets role="list" aria-label="해시 테이블 버킷"></div>
+    </div>
+
+    <div class="algorithm-visualization__legend" aria-label="시각화 상태 범례">
+      <span><i class="is-compare" aria-hidden="true"></i>비교</span>
+      <span><i class="is-excluded" aria-hidden="true"></i>제외</span>
+      <span><i class="is-current" aria-hidden="true"></i>현재 상태</span>
+      <span><i class="is-result" aria-hidden="true"></i>결과</span>
+    </div>
+
+    <div class="algorithm-visualization__details" data-algorithm-details></div>
+  </div>
+
+  <p class="algorithm-visualization__description" data-algorithm-description>
+    JavaScript가 준비되면 단계별 상태를 표시한다.
+  </p>
+
+  <div class="algorithm-visualization__controls" aria-label="알고리즘 시각화 단계 제어">
+    <button type="button" class="btn btn-outline-secondary btn-sm" data-algorithm-action="previous" disabled>이전</button>
+    <button type="button" class="btn btn-outline-secondary btn-sm" data-algorithm-action="reset" disabled>초기화</button>
+    <button type="button" class="btn btn-outline-secondary btn-sm" data-algorithm-action="next" disabled>다음</button>
+  </div>
+
+  <p class="algorithm-visualization__error" data-algorithm-error role="alert" hidden>
+    인터랙티브 단계 초기화에 실패했다. 아래 정적 안내와 본문의 코드 예제에서 핵심 동작을 확인할 수 있다.
+  </p>
+
+  <ol class="algorithm-visualization__step-data" data-algorithm-step-data>
+    {% case include.kind %}
+      {% when 'binary' %}
+        <li>left = 0, right = 6에서 target 10을 찾기 시작한다.</li>
+        <li>mid = 3에서 8과 10을 비교하고 [4, 6]만 남긴다.</li>
+        <li>mid = 5에서 12와 10을 비교하고 [4, 4]만 남긴다.</li>
+        <li>mid = 4에서 10을 찾아 인덱스 4를 반환한다.</li>
+      {% when 'hash' %}
+        <li>apple을 0번 버킷에 새 엔트리로 저장한다.</li>
+        <li>elppa를 같은 0번 버킷에 별도 엔트리로 연결한다.</li>
+        <li>apple의 기존 엔트리를 찾아 값 100을 300으로 갱신한다.</li>
+        <li>apple과 elppa를 각각 키 비교 후 조회한다.</li>
+    {% endcase %}
+  </ol>
+
+  <noscript>
+    <p class="algorithm-visualization__noscript">
+      JavaScript가 꺼져 있어 단계 제어를 사용할 수 없다. 위 정적 단계 목록과 본문의 설명에서 {{ algorithm_title }}의 핵심 흐름을 확인할 수 있다.
+    </p>
+  </noscript>
+</figure>
+
+<script defer src="{{ '/assets/js/interactive-layout.js' | relative_url }}"></script>
+<script defer src="{{ '/assets/js/algorithm-visualization.js' | relative_url }}"></script>
