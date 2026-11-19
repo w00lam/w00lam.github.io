@@ -48,6 +48,7 @@
   }
 
   .portfolio-hero-copy {
+    min-width: 0;
     max-width: 62rem;
   }
 
@@ -62,15 +63,17 @@
 }
 
 .portfolio-hero-lead {
+  min-width: 0;
   max-width: 48rem;
+  overflow-wrap: anywhere;
   margin: 0;
   color: rgb(245 247 242 / 76%);
   font-size: 0.95rem;
   line-height: 1.75;
 
   @include bp.xl {
-    max-width: none;
-    white-space: nowrap;
+    max-width: 48rem;
+    white-space: normal;
   }
 }
 
