@@ -2,7 +2,6 @@
 icon: fas fa-briefcase
 order: 5
 permalink: /portfolio/
-title: 포트폴리오
 description: Java·Spring 기반 백엔드 개발자의 프로젝트와 검증 기록입니다.
 comments: false
 toc: false
