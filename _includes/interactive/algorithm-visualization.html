@@ -5,6 +5,12 @@
   {% when 'hash' %}
     {% assign algorithm_title = 'Hash Table 충돌·갱신 단계 보기' %}
     {% assign algorithm_summary = '해시값으로 버킷을 찾은 뒤 원본 키를 비교해 충돌과 갱신을 구분한다.' %}
+  {% when 'graph' %}
+    {% assign algorithm_title = 'DFS / BFS 탐색 순서 단계 보기' %}
+    {% assign algorithm_summary = '같은 그래프를 DFS의 재귀 호출 Stack과 BFS의 Queue 상태로 번갈아 확인한다.' %}
+  {% when 'lis' %}
+    {% assign algorithm_title = 'LIS DP / Binary Search 단계 보기' %}
+    {% assign algorithm_summary = '같은 배열에서 DP의 dp 갱신과 Binary Search의 tails 교체·추가를 비교한다.' %}
 {% endcase %}
 
 <figure
@@ -22,6 +28,16 @@
     <p>{{ algorithm_summary }}</p>
   </div>
 
+  <div class="algorithm-visualization__modes" data-algorithm-modes hidden role="tablist" aria-label="알고리즘 방식 선택">
+    {% if include.kind == 'graph' %}
+      <button type="button" class="btn btn-outline-secondary btn-sm is-active" data-algorithm-mode="dfs" role="tab" aria-selected="true">DFS</button>
+      <button type="button" class="btn btn-outline-secondary btn-sm" data-algorithm-mode="bfs" role="tab" aria-selected="false">BFS</button>
+    {% elsif include.kind == 'lis' %}
+      <button type="button" class="btn btn-outline-secondary btn-sm is-active" data-algorithm-mode="dp" role="tab" aria-selected="true">DP</button>
+      <button type="button" class="btn btn-outline-secondary btn-sm" data-algorithm-mode="binary" role="tab" aria-selected="false">Binary Search</button>
+    {% endif %}
+  </div>
+
   <div class="algorithm-visualization__progress" aria-live="polite">
     <strong data-algorithm-step-title>시작</strong>
     <span data-algorithm-step-count>1 / 준비 중</span>
@@ -34,6 +50,27 @@
 
     <div class="algorithm-visualization__buckets-wrap" data-algorithm-buckets-wrap hidden>
       <div class="algorithm-visualization__buckets" data-algorithm-buckets role="list" aria-label="해시 테이블 버킷"></div>
+    </div>
+
+    <div class="algorithm-visualization__graph-wrap" data-algorithm-graph-wrap hidden>
+      <svg class="algorithm-visualization__graph" data-algorithm-graph role="img" aria-label="정점 1부터 5까지의 그래프"></svg>
+      <div class="algorithm-visualization__graph-state" data-algorithm-graph-state></div>
+    </div>
+
+    <div class="algorithm-visualization__lis-wrap" data-algorithm-lis-wrap hidden>
+      <div class="algorithm-visualization__lis-row">
+        <span class="algorithm-visualization__structure-label">arr</span>
+        <div class="algorithm-visualization__lis-cells" data-algorithm-lis-array role="list" aria-label="LIS 입력 배열"></div>
+      </div>
+      <div class="algorithm-visualization__lis-row" data-algorithm-lis-dp-wrap>
+        <span class="algorithm-visualization__structure-label">dp</span>
+        <div class="algorithm-visualization__lis-cells" data-algorithm-lis-dp role="list" aria-label="LIS DP 배열"></div>
+      </div>
+      <div class="algorithm-visualization__lis-row" data-algorithm-lis-tails-wrap hidden>
+        <span class="algorithm-visualization__structure-label">tails</span>
+        <div class="algorithm-visualization__lis-cells" data-algorithm-lis-tails role="list" aria-label="LIS tails 배열"></div>
+      </div>
+      <p class="algorithm-visualization__lis-note" data-algorithm-lis-note></p>
     </div>
 
     <div class="algorithm-visualization__legend" aria-label="시각화 상태 범례">
@@ -72,6 +109,16 @@
         <li>elppa를 같은 0번 버킷에 별도 엔트리로 연결한다.</li>
         <li>apple의 기존 엔트리를 찾아 값 100을 300으로 갱신한다.</li>
         <li>apple과 elppa를 각각 키 비교 후 조회한다.</li>
+      {% when 'graph' %}
+        <li>DFS는 1에서 시작해 1→2→4로 깊게 들어간다.</li>
+        <li>DFS는 4에서 2로 복귀한 뒤 5와 3을 방문해 1→2→4→5→3을 만든다.</li>
+        <li>BFS는 Queue [1]에서 시작해 1을 제거하고 2, 3을 방문 표시하며 추가한다.</li>
+        <li>BFS는 Queue [3, 4, 5]에서 3, 4, 5를 차례로 제거한다.</li>
+      {% when 'lis' %}
+        <li>DP는 dp를 모두 1로 초기화한다.</li>
+        <li>DP는 arr[j] &lt; arr[i]일 때 dp[i]를 dp[j] + 1과 비교한다.</li>
+        <li>Binary Search는 7→2→3→8→4→5 순서로 tails의 Lower Bound를 찾는다.</li>
+        <li>마지막 tails 길이와 DP 배열의 최댓값은 모두 4다.</li>
     {% endcase %}
   </ol>
 

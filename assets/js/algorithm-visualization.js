@@ -27,6 +27,22 @@
     comparedKeys: state.comparedKeys ? state.comparedKeys.slice() : [],
     matchKey: state.matchKey ?? null,
     result: state.result ?? null,
+    graphMode: state.graphMode ?? null,
+    graphVisited: state.graphVisited ? state.graphVisited.slice() : [],
+    graphCurrent: state.graphCurrent ?? null,
+    graphEdges: state.graphEdges ? state.graphEdges.slice() : [],
+    graphStack: state.graphStack ? state.graphStack.slice() : [],
+    graphQueue: state.graphQueue ? state.graphQueue.slice() : [],
+    graphNew: state.graphNew ? state.graphNew.slice() : [],
+    lisArray: state.lisArray ? state.lisArray.slice() : [],
+    lisDp: state.lisDp ? state.lisDp.slice() : [],
+    lisTails: state.lisTails ? state.lisTails.slice() : [],
+    lisI: state.lisI ?? null,
+    lisJ: state.lisJ ?? null,
+    lisCondition: state.lisCondition ?? null,
+    lisLowerBound: state.lisLowerBound ?? null,
+    lisSearch: state.lisSearch ? state.lisSearch.slice() : [],
+    lisMax: state.lisMax ?? null,
     details: state.details || []
   });
 
@@ -206,12 +222,319 @@
     return steps;
   };
 
-  const createSteps = (kind, values) => {
+  const createGraphSteps = (mode) => {
+    const nodes = [1, 2, 3, 4, 5];
+    const steps = [];
+    const push = (state) => steps.push(makeStep({
+      array: nodes,
+      graphMode: mode,
+      graphVisited: [],
+      graphEdges: [],
+      graphStack: [],
+      graphQueue: [],
+      graphNew: [],
+      ...state
+    }));
+
+    if (mode === 'dfs') {
+      push({
+        title: '초기 상태',
+        description: '1에서 DFS를 시작하기 전 상태다. 아직 방문한 정점은 없고 재귀 호출 Stack에는 시작 정점 1을 준비한다.',
+        graphStack: [1],
+        details: [detail('현재 정점', '—'), detail('방문 순서', '없음'), detail('재귀 Stack', '[1]'), detail('다음 동작', '1 방문')]
+      });
+      push({
+        status: 'current',
+        title: '정점 1 방문',
+        description: '시작 정점 1을 방문 처리한다. 인접 정점은 작은 번호부터 확인한다.',
+        graphVisited: [1],
+        graphCurrent: 1,
+        graphStack: [1],
+        details: [detail('현재 정점', 1), detail('방문 순서', '1'), detail('재귀 Stack', '[1]'), detail('다음 간선', '1 → 2')]
+      });
+      push({
+        status: 'compare',
+        title: '정점 2로 깊게 이동',
+        description: '1의 인접 정점 2를 방문하고 재귀 호출한다. DFS는 가능한 한 깊게 내려간다.',
+        graphVisited: [1, 2],
+        graphCurrent: 2,
+        graphEdges: ['1-2'],
+        graphStack: [1, 2],
+        details: [detail('현재 정점', 2), detail('방문 순서', '1 → 2'), detail('재귀 Stack', '[1, 2]'), detail('탐색 중인 간선', '1 → 2')]
+      });
+      push({
+        status: 'compare',
+        title: '정점 4로 더 깊게 이동',
+        description: '2의 첫 번째 미방문 인접 정점 4를 방문한다. 4에서는 더 내려갈 정점이 없다.',
+        graphVisited: [1, 2, 4],
+        graphCurrent: 4,
+        graphEdges: ['2-4'],
+        graphStack: [1, 2, 4],
+        details: [detail('현재 정점', 4), detail('방문 순서', '1 → 2 → 4'), detail('재귀 Stack', '[1, 2, 4]'), detail('탐색 중인 간선', '2 → 4')]
+      });
+      push({
+        title: '2로 복귀',
+        description: '정점 4의 인접 정점을 모두 확인했으므로 dfs(4)가 종료된다. 호출이 끝나면 이전 dfs(2)의 반복문으로 돌아간다.',
+        graphVisited: [1, 2, 4],
+        graphCurrent: 2,
+        graphStack: [1, 2],
+        details: [detail('현재 정점', 2), detail('방문 순서', '1 → 2 → 4'), detail('재귀 Stack', '[1, 2]'), detail('복귀 이유', '4 탐색 종료')]
+      });
+      push({
+        status: 'compare',
+        title: '정점 5 방문',
+        description: '2의 다음 인접 정점 5를 방문한다. 5까지 처리한 뒤 다시 1의 반복문으로 복귀한다.',
+        graphVisited: [1, 2, 4, 5],
+        graphCurrent: 5,
+        graphEdges: ['2-5'],
+        graphStack: [1, 2, 5],
+        details: [detail('현재 정점', 5), detail('방문 순서', '1 → 2 → 4 → 5'), detail('재귀 Stack', '[1, 2, 5]'), detail('탐색 중인 간선', '2 → 5')]
+      });
+      push({
+        title: '1로 복귀',
+        description: '정점 5의 탐색이 끝나면 dfs(2)도 종료된다. 호출 Stack에서 2를 빼고 dfs(1)의 다음 정점 3을 확인한다.',
+        graphVisited: [1, 2, 4, 5],
+        graphCurrent: 1,
+        graphStack: [1],
+        details: [detail('현재 정점', 1), detail('방문 순서', '1 → 2 → 4 → 5'), detail('재귀 Stack', '[1]'), detail('다음 간선', '1 → 3')]
+      });
+      push({
+        status: 'result',
+        title: '정점 3 방문',
+        description: '1의 다음 미방문 인접 정점 3을 방문한다. DFS 방문 순서는 1 → 2 → 4 → 5 → 3이다.',
+        graphVisited: [1, 2, 4, 5, 3],
+        graphCurrent: 3,
+        graphEdges: ['1-3'],
+        graphStack: [1, 3],
+        result: 'DFS 순서 · 1 → 2 → 4 → 5 → 3',
+        details: [detail('현재 정점', 3), detail('방문 순서', '1 → 2 → 4 → 5 → 3'), detail('재귀 Stack', '[1, 3]'), detail('탐색 중인 간선', '1 → 3')]
+      });
+      push({
+        status: 'result',
+        title: '탐색 종료',
+        description: '정점 3까지 처리한 뒤 모든 인접 정점을 확인했다. 모든 재귀 호출이 종료되고 Stack이 비워진다.',
+        graphVisited: [1, 2, 4, 5, 3],
+        result: 'DFS 방문 완료',
+        details: [detail('현재 정점', '없음'), detail('방문 순서', '1 → 2 → 4 → 5 → 3'), detail('재귀 Stack', '[]'), detail('상태', '탐색 종료')]
+      });
+      return steps;
+    }
+
+    push({
+      status: 'current',
+      title: '초기 Queue',
+      description: 'BFS는 시작 정점 1을 먼저 방문 표시하고 Queue에 넣는다. 방문 표시는 Queue에 추가하는 시점에 한다.',
+      graphVisited: [1],
+      graphQueue: [1],
+      details: [detail('현재 정점', '—'), detail('방문 순서', '1'), detail('Queue', '[1]'), detail('다음 동작', '1 poll')]
+    });
+    push({
+      status: 'compare',
+      title: '1 poll · 2, 3 offer',
+      description: '1을 poll하면 Queue에서 제거된다. 인접한 2와 3을 방문 표시한 뒤 Queue에 offer한다.',
+      graphVisited: [1, 2, 3],
+      graphCurrent: 1,
+      graphEdges: ['1-2', '1-3'],
+      graphQueue: [2, 3],
+      graphNew: [2, 3],
+      details: [detail('현재 정점', 1), detail('방문 순서', '1 → 2 → 3'), detail('Queue', '[2, 3]'), detail('새로 발견', '2, 3')]
+    });
+    push({
+      status: 'compare',
+      title: '2 poll · 4, 5 offer',
+      description: '2를 poll한 뒤 Queue에는 3이 남는다. 4와 5를 방문 표시하고 Queue 뒤에 offer한다.',
+      graphVisited: [1, 2, 3, 4, 5],
+      graphCurrent: 2,
+      graphEdges: ['2-4', '2-5'],
+      graphQueue: [3, 4, 5],
+      graphNew: [4, 5],
+      details: [detail('현재 정점', 2), detail('방문 순서', '1 → 2 → 3 → 4 → 5'), detail('Queue', '[3, 4, 5]'), detail('새로 발견', '4, 5')]
+    });
+    push({
+      title: '3 poll',
+      description: '3을 poll한다. 새로 발견할 정점이 없으므로 Queue에는 4와 5가 남는다.',
+      graphVisited: [1, 2, 3, 4, 5],
+      graphCurrent: 3,
+      graphQueue: [4, 5],
+      details: [detail('현재 정점', 3), detail('방문 순서', '1 → 2 → 3 → 4 → 5'), detail('Queue', '[4, 5]'), detail('새로 발견', '없음')]
+    });
+    push({
+      title: '4 poll',
+      description: '4를 poll한다. 이미 모든 정점을 방문 표시했으므로 Queue에는 5만 남는다.',
+      graphVisited: [1, 2, 3, 4, 5],
+      graphCurrent: 4,
+      graphQueue: [5],
+      details: [detail('현재 정점', 4), detail('방문 순서', '1 → 2 → 3 → 4 → 5'), detail('Queue', '[5]'), detail('새로 발견', '없음')]
+    });
+    push({
+      status: 'result',
+      title: '5 poll',
+      description: '마지막 정점 5를 poll하면 Queue가 빈다. BFS 방문 순서는 1 → 2 → 3 → 4 → 5다.',
+      graphVisited: [1, 2, 3, 4, 5],
+      graphCurrent: 5,
+      graphQueue: [],
+      result: 'BFS 순서 · 1 → 2 → 3 → 4 → 5',
+      details: [detail('현재 정점', 5), detail('방문 순서', '1 → 2 → 3 → 4 → 5'), detail('Queue', '[]'), detail('새로 발견', '없음')]
+    });
+    push({
+      status: 'result',
+      title: '탐색 종료',
+      description: 'Queue가 비었으므로 BFS 탐색을 종료한다. poll된 정점은 Queue에 남아 있지 않다.',
+      graphVisited: [1, 2, 3, 4, 5],
+      result: 'BFS 방문 완료',
+      details: [detail('현재 정점', '없음'), detail('방문 순서', '1 → 2 → 3 → 4 → 5'), detail('Queue', '[]'), detail('상태', '탐색 종료')]
+    });
+    return steps;
+  };
+
+  const createLisDpSteps = () => {
+    const array = [7, 2, 3, 8, 4, 5];
+    const dp = array.map(() => 1);
+    const steps = [];
+    const push = (state) => steps.push(makeStep({
+      lisArray: array,
+      lisDp: dp,
+      lisMax: Math.max(...dp),
+      ...state
+    }));
+
+    push({
+      title: '초기화',
+      description: '모든 원소는 자기 자신만으로 길이 1의 증가 부분 수열이 된다. dp를 모두 1로 채운다.',
+      details: [detail('dp 의미', 'arr[i]에서 끝나는 LIS 길이'), detail('초기 dp', '[1, 1, 1, 1, 1, 1]'), detail('현재 i', '—'), detail('현재 LIS 길이', 1)]
+    });
+
+    for (let i = 0; i < array.length; i += 1) {
+      if (i === 0) {
+        push({
+          status: 'current',
+          lisI: i,
+          title: 'i = 0 확정',
+          description: '첫 원소 7은 앞에서 비교할 원소가 없다. 자기 자신으로 끝나는 LIS 길이 1을 유지한다.',
+          details: [detail('현재 i', 0), detail('현재 값', 'arr[0] = 7'), detail('비교 중인 j', '없음'), detail('dp[0]', 1)]
+        });
+        continue;
+      }
+
+      for (let j = 0; j < i; j += 1) {
+        const condition = array[j] < array[i];
+        const previous = dp[i];
+        if (condition) {
+          dp[i] = Math.max(dp[i], dp[j] + 1);
+        }
+        push({
+          status: condition ? 'result' : 'compare',
+          lisI: i,
+          lisJ: j,
+          lisCondition: condition,
+          title: `i = ${i}, j = ${j}`,
+          description: condition
+            ? `arr[${j}] = ${array[j]} < arr[${i}] = ${array[i]}다. dp[${i}]를 ${previous}에서 dp[${j}] + 1 = ${dp[j] + 1}과 비교해 ${dp[i]}로 갱신한다.`
+            : `arr[${j}] = ${array[j]} < arr[${i}] = ${array[i]}가 아니다. 이 j에서는 dp[${i}]를 갱신하지 않는다.`,
+          details: [
+            detail('현재 i / 값', `${i} / ${array[i]}`),
+            detail('비교 j / 값', `${j} / ${array[j]}`),
+            detail('조건', condition ? 'arr[j] < arr[i] · 참' : 'arr[j] < arr[i] · 거짓'),
+            detail(`dp[${i}]`, condition ? `${previous} → ${dp[i]}` : dp[i])
+          ]
+        });
+      }
+    }
+
+    push({
+      status: 'result',
+      lisMax: Math.max(...dp),
+      title: 'DP 완료',
+      description: '모든 비교가 끝났다. dp[i]는 각 위치에서 끝나는 LIS 길이이고, 전체 LIS 길이는 dp의 최댓값 4다.',
+      result: 'LIS 길이 · 4',
+      details: [detail('최종 dp', '[1, 1, 2, 3, 3, 4]'), detail('dp 최댓값', 4), detail('LIS', '2 → 3 → 4 → 5'), detail('비교 조건', 'arr[j] < arr[i]')]
+    });
+    return steps;
+  };
+
+  const lowerBound = (tails, target) => {
+    let left = 0;
+    let right = tails.length;
+    const trace = [];
+    while (left < right) {
+      const mid = Math.floor((left + right) / 2);
+      trace.push(`left=${left}, mid=${mid}, right=${right}`);
+      if (tails[mid] < target) {
+        left = mid + 1;
+      } else {
+        right = mid;
+      }
+    }
+    return { index: left, trace };
+  };
+
+  const createLisBinarySteps = () => {
+    const array = [7, 2, 3, 8, 4, 5];
+    const tails = [];
+    const steps = [];
+    const push = (state) => steps.push(makeStep({
+      lisArray: array,
+      lisTails: tails,
+      lisMax: tails.length,
+      ...state
+    }));
+
+    push({
+      title: '초기화',
+      description: '입력 배열을 왼쪽부터 처리한다. tails[k]는 길이가 k + 1인 증가 부분 수열의 가능한 최소 끝값이다.',
+      details: [detail('처리 순서', '7 → 2 → 3 → 8 → 4 → 5'), detail('현재 원소', '—'), detail('tails', '[]'), detail('현재 LIS 길이', 0)]
+    });
+
+    array.forEach((value) => {
+      const search = lowerBound(tails, value);
+      const position = search.index;
+      const before = tails.slice();
+      const append = position === tails.length;
+      tails[position] = value;
+      push({
+        status: append ? 'result' : 'compare',
+        lisI: array.indexOf(value),
+        lisLowerBound: position,
+        lisSearch: search.trace,
+        title: `${value} 처리`,
+        description: append
+          ? `target ${value}는 현재 tails의 모든 끝값보다 크다. Lower Bound가 ${position}이므로 끝에 추가하고 길이가 1 증가한다.`
+          : `target ${value} 이상인 첫 위치가 ${position}이다. tails[${position}]의 ${before[position]}을 ${value}로 교체해 같은 길이에서 끝값을 낮춘다.`,
+        result: append ? `끝 추가 · 길이 ${tails.length}` : `값 교체 · 길이 ${tails.length}`,
+        details: [
+          detail('현재 원소', value),
+          detail('Lower Bound', `index ${position}`),
+          detail('처리 전 tails', before.length ? `[${before.join(', ')}]` : '[]'),
+          detail('처리 후 tails', `[${tails.join(', ')}]`),
+          detail('길이 변화', append ? `${tails.length - 1} → ${tails.length}` : '변화 없음')
+        ]
+      });
+    });
+
+    push({
+      status: 'result',
+      lisI: null,
+      lisLowerBound: null,
+      result: 'LIS 길이 · 4',
+      title: 'Binary Search 완료',
+      description: '최종 tails의 길이는 4다. tails 배열은 길이별 최소 끝값을 저장하므로 항상 실제 LIS 수열을 뜻하지는 않는다.',
+      details: [detail('최종 tails', '[2, 3, 4, 5]'), detail('현재 LIS 길이', 4), detail('배열의 의미', '길이별 최소 끝값'), detail('수열 복원', '이번 학습 범위에 없음')]
+    });
+    return steps;
+  };
+
+  const createSteps = (kind, values, mode) => {
     if (kind === 'binary') {
       return createBinarySteps();
     }
     if (kind === 'hash') {
       return createHashSteps(values);
+    }
+    if (kind === 'graph') {
+      return createGraphSteps(mode);
+    }
+    if (kind === 'lis') {
+      return mode === 'binary' ? createLisBinarySteps() : createLisDpSteps();
     }
     throw new Error(`Unknown algorithm visualization: ${kind}`);
   };
@@ -238,12 +561,25 @@
       throw new Error('Binary Search visualization values are invalid.');
     }
 
-    const steps = createSteps(kind, values);
+    let activeMode = kind === 'graph' ? 'dfs' : 'dp';
+    let steps = createSteps(kind, values, activeMode);
     const refs = {
+      modes: root.querySelector('[data-algorithm-modes]'),
+      modeButtons: Array.from(root.querySelectorAll('[data-algorithm-mode]')),
       arrayWrap: root.querySelector('[data-algorithm-array-wrap]'),
       array: root.querySelector('[data-algorithm-array]'),
       bucketsWrap: root.querySelector('[data-algorithm-buckets-wrap]'),
       buckets: root.querySelector('[data-algorithm-buckets]'),
+      graphWrap: root.querySelector('[data-algorithm-graph-wrap]'),
+      graph: root.querySelector('[data-algorithm-graph]'),
+      graphState: root.querySelector('[data-algorithm-graph-state]'),
+      lisWrap: root.querySelector('[data-algorithm-lis-wrap]'),
+      lisArray: root.querySelector('[data-algorithm-lis-array]'),
+      lisDpWrap: root.querySelector('[data-algorithm-lis-dp-wrap]'),
+      lisDp: root.querySelector('[data-algorithm-lis-dp]'),
+      lisTailsWrap: root.querySelector('[data-algorithm-lis-tails-wrap]'),
+      lisTails: root.querySelector('[data-algorithm-lis-tails]'),
+      lisNote: root.querySelector('[data-algorithm-lis-note]'),
       details: root.querySelector('[data-algorithm-details]'),
       title: root.querySelector('[data-algorithm-step-title]'),
       count: root.querySelector('[data-algorithm-step-count]'),
@@ -256,7 +592,8 @@
     };
     let currentStep = 0;
 
-    root.style.setProperty('--algorithm-count', kind === 'binary' ? String(values.length) : '5');
+    root.dataset.algorithmMode = activeMode;
+    root.style.setProperty('--algorithm-count', kind === 'binary' ? String(values.length) : kind === 'lis' ? '6' : '5');
 
     const renderArray = (step) => {
       refs.array.replaceChildren(
@@ -321,6 +658,102 @@
       );
     };
 
+    const createSvgElement = (tagName, attributes = {}) => {
+      const element = document.createElementNS('http://www.w3.org/2000/svg', tagName);
+      Object.entries(attributes).forEach(([name, value]) => element.setAttribute(name, value));
+      return element;
+    };
+
+    const renderGraph = (step) => {
+      const positions = {
+        1: [160, 36],
+        2: [85, 126],
+        3: [235, 126],
+        4: [45, 216],
+        5: [125, 216]
+      };
+      const edges = [[1, 2], [1, 3], [2, 4], [2, 5]];
+      refs.graph.setAttribute('viewBox', '0 0 320 250');
+      refs.graph.replaceChildren();
+      edges.forEach(([from, to]) => {
+        const [x1, y1] = positions[from];
+        const [x2, y2] = positions[to];
+        const line = createSvgElement('line', {
+          x1,
+          y1,
+          x2,
+          y2,
+          class: `algorithm-visualization__graph-edge${step.graphEdges.includes(`${from}-${to}`) ? ' is-active' : ''}`
+        });
+        refs.graph.append(line);
+      });
+      Object.entries(positions).forEach(([rawNode, [cx, cy]]) => {
+        const node = Number(rawNode);
+        const group = createSvgElement('g', { class: 'algorithm-visualization__graph-node' });
+        const state = step.graphCurrent === node ? 'current' : step.graphVisited.includes(node) ? 'visited' : 'idle';
+        group.dataset.state = state;
+        const circle = createSvgElement('circle', { cx, cy, r: 25 });
+        const label = createSvgElement('text', { x: cx, y: cy + 6, 'text-anchor': 'middle' });
+        label.textContent = String(node);
+        group.append(circle, label);
+        refs.graph.append(group);
+      });
+
+      const stateItems = [
+        ['현재 정점', step.graphCurrent ?? '없음'],
+        ['방문', step.graphVisited.length ? step.graphVisited.join(' → ') : '없음'],
+        [step.graphMode === 'dfs' ? '재귀 Stack' : 'Queue', step.graphMode === 'dfs' ? `[${step.graphStack.join(', ')}]` : `[${step.graphQueue.join(', ')}]`],
+        ['새로 발견', step.graphNew.length ? step.graphNew.join(', ') : '없음']
+      ];
+      refs.graphState.replaceChildren(
+        ...stateItems.map(([label, value]) => {
+          const item = document.createElement('span');
+          item.className = 'algorithm-visualization__graph-chip';
+          item.append(createTextElement('small', '', label), createTextElement('strong', '', value));
+          return item;
+        })
+      );
+    };
+
+    const renderLisCells = (container, valuesToRender, step, type) => {
+      container.replaceChildren(
+        ...valuesToRender.map((value, index) => {
+          const cell = document.createElement('div');
+          cell.className = 'algorithm-visualization__lis-cell';
+          let state = 'idle';
+          if (type === 'array') {
+            state = step.lisI === index ? 'current' : step.lisJ === index ? 'compare' : 'idle';
+          } else if (type === 'dp') {
+            state = step.lisI === index ? 'current' : step.lisJ === index ? 'compare' : 'idle';
+          } else if (type === 'tails' && step.lisLowerBound === index) {
+            state = 'result';
+          }
+          cell.dataset.state = state;
+          cell.setAttribute('role', 'listitem');
+          cell.setAttribute('aria-label', `${type} index ${index}, 값 ${value}`);
+          cell.append(
+            createTextElement('span', 'algorithm-visualization__lis-index', `[${index}]`),
+            createTextElement('strong', 'algorithm-visualization__lis-value', String(value))
+          );
+          return cell;
+        })
+      );
+    };
+
+    const renderLis = (step) => {
+      renderLisCells(refs.lisArray, step.lisArray, step, 'array');
+      const isDp = activeMode === 'dp';
+      refs.lisDpWrap.hidden = !isDp;
+      refs.lisTailsWrap.hidden = isDp;
+      if (isDp) {
+        renderLisCells(refs.lisDp, step.lisDp, step, 'dp');
+        refs.lisNote.textContent = 'dp[i]는 arr[i]에서 끝나는 LIS 길이다. 전체 길이는 dp의 최댓값이다.';
+      } else {
+        renderLisCells(refs.lisTails, step.lisTails, step, 'tails');
+        refs.lisNote.textContent = 'tails는 길이별 최소 끝값을 저장하며, 항상 실제 LIS 수열을 뜻하지는 않는다.';
+      }
+    };
+
     const renderDetails = (step) => {
       const details = step.details.slice();
       if (step.result) {
@@ -350,12 +783,22 @@
       refs.next.disabled = stepIndex === steps.length - 1;
       refs.stepData.hidden = true;
       const isBinary = kind === 'binary';
+      const isHash = kind === 'hash';
+      const isGraph = kind === 'graph';
+      const isLis = kind === 'lis';
       refs.arrayWrap.hidden = !isBinary;
-      refs.bucketsWrap.hidden = isBinary;
+      refs.bucketsWrap.hidden = !isHash;
+      refs.graphWrap.hidden = !isGraph;
+      refs.lisWrap.hidden = !isLis;
+      refs.modes.hidden = !isGraph && !isLis;
       if (isBinary) {
         renderArray(step);
-      } else {
+      } else if (isHash) {
         renderBuckets(step);
+      } else if (isGraph) {
+        renderGraph(step);
+      } else if (isLis) {
+        renderLis(step);
       }
       renderDetails(step);
     };
@@ -368,6 +811,14 @@
     refs.previous.addEventListener('click', () => moveTo(currentStep - 1));
     refs.reset.addEventListener('click', () => moveTo(0));
     refs.next.addEventListener('click', () => moveTo(currentStep + 1));
+
+    const updateModeButtons = () => {
+      refs.modeButtons.forEach((button) => {
+        const isActive = button.dataset.algorithmMode === activeMode;
+        button.classList.toggle('is-active', isActive);
+        button.setAttribute('aria-selected', String(isActive));
+      });
+    };
 
     root.addEventListener('keydown', (event) => {
       if (event.key === 'ArrowLeft') {
@@ -413,7 +864,23 @@
       });
     };
 
+    refs.modeButtons.forEach((button) => {
+      button.addEventListener('click', () => {
+        const nextMode = button.dataset.algorithmMode;
+        if (nextMode === activeMode) {
+          return;
+        }
+        activeMode = nextMode;
+        root.dataset.algorithmMode = activeMode;
+        steps = createSteps(kind, values, activeMode);
+        currentStep = 0;
+        updateModeButtons();
+        lockLayout();
+      });
+    });
+
     root.dataset.algorithmInitialized = 'true';
+    updateModeButtons();
     lockLayout();
     root.classList.add('is-ready');
     InteractiveLayout.watchResize(lockLayout);
