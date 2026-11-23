@@ -43,6 +43,21 @@
     lisLowerBound: state.lisLowerBound ?? null,
     lisSearch: state.lisSearch ? state.lisSearch.slice() : [],
     lisMax: state.lisMax ?? null,
+    dijkstraNodes: state.dijkstraNodes ? state.dijkstraNodes.slice() : [],
+    dijkstraEdges: state.dijkstraEdges ? state.dijkstraEdges.slice() : [],
+    dijkstraCurrent: state.dijkstraCurrent ?? null,
+    dijkstraProcessed: state.dijkstraProcessed ? state.dijkstraProcessed.slice() : [],
+    dijkstraEdge: state.dijkstraEdge ?? null,
+    dijkstraDist: state.dijkstraDist ? state.dijkstraDist.slice() : [],
+    dijkstraQueue: state.dijkstraQueue ? state.dijkstraQueue.slice() : [],
+    bitmask: state.bitmask ?? 5,
+    bitmaskBefore: state.bitmaskBefore ?? null,
+    bitmaskIndex: state.bitmaskIndex ?? null,
+    bitmaskOperation: state.bitmaskOperation ?? null,
+    bitmaskExpression: state.bitmaskExpression ?? '',
+    bitmaskReason: state.bitmaskReason ?? '',
+    bitmaskChanged: state.bitmaskChanged ? state.bitmaskChanged.slice() : [],
+    bitmaskCheck: state.bitmaskCheck ?? null,
     details: state.details || []
   });
 
@@ -523,6 +538,174 @@
     return steps;
   };
 
+  const createDijkstraSteps = () => {
+    const nodes = [0, 1, 2, 3];
+    const edges = [[0, 1, 2], [0, 2, 5], [1, 3, 1], [2, 3, 2]];
+    const initialDist = ['0', 'INF', 'INF', 'INF'];
+    const steps = [];
+    const push = (state) => steps.push(makeStep({
+      dijkstraNodes: nodes,
+      dijkstraEdges: edges,
+      dijkstraDist: initialDist,
+      dijkstraQueue: [],
+      dijkstraProcessed: [],
+      ...state
+    }));
+
+    push({
+      title: '초기 상태',
+      description: '시작 정점 0의 거리는 0으로 두고, 아직 발견하지 못한 정점은 INF로 표시한다. 우선순위 큐에는 (정점, 거리)인 (0, 0)을 넣는다.',
+      dijkstraQueue: [[0, 0]],
+      details: [detail('dist', '[0, INF, INF, INF]'), detail('PQ', '[(0, 0)]'), detail('시작 정점', 0), detail('정렬 기준', '거리')]
+    });
+    push({
+      status: 'current',
+      title: '정점 0 선택',
+      description: 'PQ에서 현재 거리가 가장 짧은 (0, 0)을 꺼낸다. 시작 정점의 거리가 0임을 확인하고 인접 간선을 살핀다.',
+      dijkstraCurrent: 0,
+      dijkstraQueue: [],
+      details: [detail('현재 정점', 0), detail('현재 거리', 0), detail('dist', '[0, INF, INF, INF]'), detail('다음 확인', '0 → 1')]
+    });
+    push({
+      status: 'result',
+      title: '0 → 1 완화',
+      description: '0에서 1로 가는 새 비용은 0 + 2 = 2다. 기존 dist[1]이 INF보다 작으므로 dist[1]을 2로 갱신하고 PQ에 (1, 2)를 추가한다.',
+      dijkstraCurrent: 0,
+      dijkstraEdge: '0-1',
+      dijkstraDist: ['0', '2', 'INF', 'INF'],
+      dijkstraQueue: [[1, 2]],
+      details: [detail('완화', '0 → 1 (2)'), detail('새 비용', '0 + 2 = 2'), detail('dist', '[0, 2, INF, INF]'), detail('PQ', '[(1, 2)]')]
+    });
+    push({
+      status: 'result',
+      title: '0 → 2 완화',
+      description: '0에서 2로 가는 새 비용은 0 + 5 = 5다. INF보다 작으므로 dist[2]를 5로 갱신한다. PQ는 거리 2인 항목을 먼저 둔다.',
+      dijkstraCurrent: 0,
+      dijkstraEdge: '0-2',
+      dijkstraDist: ['0', '2', '5', 'INF'],
+      dijkstraQueue: [[1, 2], [2, 5]],
+      details: [detail('완화', '0 → 2 (5)'), detail('새 비용', '0 + 5 = 5'), detail('dist', '[0, 2, 5, INF]'), detail('PQ', '[(1, 2), (2, 5)]')]
+    });
+    push({
+      status: 'current',
+      title: '정점 1 선택',
+      description: 'PQ의 두 항목 중 거리가 2인 정점 1을 먼저 꺼낸다. 정점 1에서 3으로 가는 간선을 확인한다.',
+      dijkstraCurrent: 1,
+      dijkstraProcessed: [0],
+      dijkstraQueue: [[2, 5]],
+      details: [detail('현재 정점', 1), detail('현재 거리', 2), detail('PQ', '[(2, 5)]'), detail('다음 확인', '1 → 3')]
+    });
+    push({
+      status: 'result',
+      title: '1 → 3 완화',
+      description: '0에서 1을 거쳐 3으로 가는 새 비용은 dist[1] + 1 = 3이다. 기존 dist[3]인 INF보다 작으므로 3으로 갱신한다.',
+      dijkstraCurrent: 1,
+      dijkstraProcessed: [0, 1],
+      dijkstraEdge: '1-3',
+      dijkstraDist: ['0', '2', '5', '3'],
+      dijkstraQueue: [[3, 3], [2, 5]],
+      details: [detail('완화', '1 → 3 (1)'), detail('새 비용', '2 + 1 = 3'), detail('dist', '[0, 2, 5, 3]'), detail('PQ', '[(3, 3), (2, 5)]')]
+    });
+    push({
+      status: 'current',
+      title: '정점 3 선택',
+      description: 'PQ에서 현재 거리가 3인 정점 3을 꺼낸다. 정점 3에서 갱신할 간선이 없으므로 현재 최단 거리 후보를 유지한다.',
+      dijkstraCurrent: 3,
+      dijkstraProcessed: [0, 1],
+      dijkstraQueue: [[2, 5]],
+      details: [detail('현재 정점', 3), detail('현재 거리', 3), detail('PQ', '[(2, 5)]'), detail('갱신할 간선', '없음')]
+    });
+    push({
+      status: 'current',
+      title: '정점 2 선택',
+      description: '남은 PQ 항목은 (2, 5)다. 정점 2를 꺼내 2에서 3으로 가는 간선을 확인한다.',
+      dijkstraCurrent: 2,
+      dijkstraProcessed: [0, 1, 3],
+      dijkstraQueue: [],
+      details: [detail('현재 정점', 2), detail('현재 거리', 5), detail('PQ', '[]'), detail('다음 확인', '2 → 3')]
+    });
+    push({
+      status: 'compare',
+      title: '2 → 3 확인',
+      description: '2에서 3으로 가는 새 비용은 5 + 2 = 7이다. 기존 dist[3]이 3으로 더 작으므로 갱신하지 않는다.',
+      dijkstraCurrent: 2,
+      dijkstraProcessed: [0, 1, 3, 2],
+      dijkstraEdge: '2-3',
+      dijkstraDist: ['0', '2', '5', '3'],
+      dijkstraQueue: [],
+      details: [detail('확인', '2 → 3 (2)'), detail('새 비용', '5 + 2 = 7'), detail('기존 거리', 'dist[3] = 3'), detail('결과', '갱신하지 않음')]
+    });
+    push({
+      status: 'result',
+      title: '탐색 종료',
+      description: 'PQ가 비었고 모든 후보를 확인했다. 시작 정점 0에서 각 정점까지의 최종 거리는 [0, 2, 5, 3]이다.',
+      dijkstraProcessed: [0, 1, 3, 2],
+      dijkstraDist: ['0', '2', '5', '3'],
+      dijkstraQueue: [],
+      result: '최종 거리 · [0, 2, 5, 3]',
+      details: [detail('dist', '[0, 2, 5, 3]'), detail('PQ', '[]'), detail('시작 정점', 0), detail('상태', '탐색 종료')]
+    });
+    return steps;
+  };
+
+  const bitmaskOperationInfo = (mask, index, operation) => {
+    const flag = 1 << index;
+    const before = mask;
+    let after = mask;
+    let check = null;
+    let expression = '';
+    let reason = '';
+
+    if (operation === 'add') {
+      after = mask | flag;
+      expression = 'mask |= (1 << i);';
+      reason = (mask & flag) !== 0 ? `인덱스 ${index}는 이미 1이라 상태를 유지한다.` : `인덱스 ${index}의 비트를 1로 켠다.`;
+    } else if (operation === 'remove') {
+      after = mask & ~flag;
+      expression = 'mask &= ~(1 << i);';
+      reason = (mask & flag) === 0 ? `인덱스 ${index}는 이미 0이라 상태를 유지한다.` : `NOT으로 선택 비트만 0인 마스크를 만들어 인덱스 ${index}를 끈다.`;
+    } else if (operation === 'check') {
+      after = mask;
+      check = (mask & flag) !== 0;
+      expression = 'boolean exists = (mask & (1 << i)) != 0;';
+      reason = `AND 결과가 0이 아니므로 인덱스 ${index}의 포함 여부를 확인한다.`;
+    } else if (operation === 'toggle') {
+      after = mask ^ flag;
+      expression = 'mask ^= (1 << i);';
+      reason = `XOR로 인덱스 ${index}의 비트를 ${(mask & flag) !== 0 ? '0' : '1'}로 반전한다.`;
+    } else if (operation === 'clear') {
+      after = 0;
+      expression = 'mask = 0;';
+      reason = '모든 비트를 0으로 만들어 상태를 초기화한다.';
+    }
+
+    return {
+      before,
+      after,
+      check,
+      expression,
+      reason,
+      changed: Array.from({ length: 4 }, (_, bit) => bit).filter((bit) => ((before >> bit) & 1) !== ((after >> bit) & 1))
+    };
+  };
+
+  const createBitmaskStep = (state = {}) => makeStep({
+    bitmask: 5,
+    bitmaskBefore: null,
+    bitmaskIndex: null,
+    bitmaskOperation: null,
+    bitmaskExpression: '',
+    bitmaskReason: '',
+    bitmaskChanged: [],
+    bitmaskCheck: null,
+    title: '초기 상태',
+    description: '4비트 mask = 0101에서 시작한다. 오른쪽부터 인덱스 0, 1, 2, 3을 센다.',
+    details: [detail('mask', '0101 (5)'), detail('인덱스', '3 2 1 0'), detail('켜진 비트', '인덱스 2, 0'), detail('다음 동작', '비트 인덱스 선택')],
+    ...state
+  });
+
+  const createBitmaskSteps = () => [createBitmaskStep()];
+
   const createSteps = (kind, values, mode) => {
     if (kind === 'binary') {
       return createBinarySteps();
@@ -535,6 +718,12 @@
     }
     if (kind === 'lis') {
       return mode === 'binary' ? createLisBinarySteps() : createLisDpSteps();
+    }
+    if (kind === 'dijkstra') {
+      return createDijkstraSteps();
+    }
+    if (kind === 'bitmask') {
+      return createBitmaskSteps();
     }
     throw new Error(`Unknown algorithm visualization: ${kind}`);
   };
@@ -580,6 +769,19 @@
       lisTailsWrap: root.querySelector('[data-algorithm-lis-tails-wrap]'),
       lisTails: root.querySelector('[data-algorithm-lis-tails]'),
       lisNote: root.querySelector('[data-algorithm-lis-note]'),
+      dijkstraWrap: root.querySelector('[data-algorithm-dijkstra-wrap]'),
+      dijkstraGraph: root.querySelector('[data-algorithm-dijkstra-graph]'),
+      dijkstraDist: root.querySelector('[data-algorithm-dijkstra-dist]'),
+      dijkstraQueue: root.querySelector('[data-algorithm-dijkstra-queue]'),
+      bitmaskWrap: root.querySelector('[data-algorithm-bitmask-wrap]'),
+      bitmaskCells: root.querySelector('[data-algorithm-bitmask-cells]'),
+      bitmaskIndex: root.querySelector('[data-algorithm-bitmask-index]'),
+      bitmaskOperations: Array.from(root.querySelectorAll('[data-bitmask-operation]')),
+      bitmaskBefore: root.querySelector('[data-algorithm-bitmask-before]'),
+      bitmaskAfter: root.querySelector('[data-algorithm-bitmask-after]'),
+      bitmaskSelected: root.querySelector('[data-algorithm-bitmask-selected]'),
+      bitmaskCheck: root.querySelector('[data-algorithm-bitmask-check]'),
+      bitmaskExpression: root.querySelector('[data-algorithm-bitmask-expression]'),
       details: root.querySelector('[data-algorithm-details]'),
       title: root.querySelector('[data-algorithm-step-title]'),
       count: root.querySelector('[data-algorithm-step-count]'),
@@ -754,6 +956,116 @@
       }
     };
 
+    const formatBitmask = (mask) => (mask >>> 0).toString(2).padStart(4, '0').slice(-4);
+
+    const renderDijkstra = (step) => {
+      const positions = {
+        0: [48, 116],
+        1: [152, 48],
+        2: [152, 184],
+        3: [256, 116]
+      };
+      refs.dijkstraGraph.setAttribute('viewBox', '0 0 304 232');
+      refs.dijkstraGraph.replaceChildren();
+      const defs = createSvgElement('defs');
+      const marker = createSvgElement('marker', {
+        id: `dijkstra-arrow-${root.dataset.algorithmKind}`,
+        markerWidth: 8,
+        markerHeight: 8,
+        refX: 7,
+        refY: 4,
+        orient: 'auto',
+        markerUnits: 'strokeWidth'
+      });
+      marker.append(createSvgElement('path', { d: 'M 0 0 L 8 4 L 0 8 z', class: 'algorithm-visualization__dijkstra-arrow' }));
+      defs.append(marker);
+      refs.dijkstraGraph.append(defs);
+
+      step.dijkstraEdges.forEach(([from, to, weight]) => {
+        const [x1, y1] = positions[from];
+        const [x2, y2] = positions[to];
+        const active = step.dijkstraEdge === `${from}-${to}`;
+        const line = createSvgElement('line', {
+          x1,
+          y1,
+          x2,
+          y2,
+          class: `algorithm-visualization__dijkstra-edge${active ? ' is-active' : ''}`,
+          'marker-end': `url(#dijkstra-arrow-${root.dataset.algorithmKind})`
+        });
+        const label = createSvgElement('text', {
+          x: (x1 + x2) / 2,
+          y: (y1 + y2) / 2 - 8,
+          class: 'algorithm-visualization__dijkstra-weight',
+          'text-anchor': 'middle'
+        });
+        label.textContent = String(weight);
+        refs.dijkstraGraph.append(line, label);
+      });
+
+      Object.entries(positions).forEach(([rawNode, [cx, cy]]) => {
+        const node = Number(rawNode);
+        const group = createSvgElement('g', { class: 'algorithm-visualization__dijkstra-node' });
+        const state = step.dijkstraCurrent === node ? 'current' : step.dijkstraProcessed.includes(node) ? 'processed' : 'idle';
+        group.dataset.state = state;
+        const circle = createSvgElement('circle', { cx, cy, r: 25 });
+        const label = createSvgElement('text', { x: cx, y: cy + 6, 'text-anchor': 'middle' });
+        label.textContent = String(node);
+        const distance = createSvgElement('text', { x: cx, y: cy + 43, class: 'algorithm-visualization__dijkstra-distance', 'text-anchor': 'middle' });
+        distance.textContent = `d=${step.dijkstraDist[node]}`;
+        group.append(circle, label, distance);
+        refs.dijkstraGraph.append(group);
+      });
+
+      refs.dijkstraDist.replaceChildren(
+        ...step.dijkstraDist.map((value, index) => {
+          const item = document.createElement('span');
+          item.className = 'algorithm-visualization__dijkstra-value';
+          item.dataset.state = step.dijkstraCurrent === index ? 'current' : 'idle';
+          item.append(createTextElement('small', '', `[${index}]`), createTextElement('strong', '', value));
+          return item;
+        })
+      );
+      refs.dijkstraQueue.replaceChildren(
+        ...(step.dijkstraQueue.length
+          ? step.dijkstraQueue.map(([node, distance]) => {
+            const item = document.createElement('span');
+            item.className = 'algorithm-visualization__dijkstra-queue-item';
+            item.append(createTextElement('small', '', '정점 · 거리'), createTextElement('strong', '', `(${node}, ${distance})`));
+            return item;
+          })
+          : [createTextElement('span', 'algorithm-visualization__dijkstra-empty', '비어 있음')])
+      );
+    };
+
+    const renderBitmask = (step) => {
+      const bits = [3, 2, 1, 0];
+      const selectedIndex = Number(refs.bitmaskIndex.value);
+      refs.bitmaskCells.replaceChildren(
+        ...bits.map((index) => {
+          const value = (step.bitmask >> index) & 1;
+          const cell = document.createElement('div');
+          const isSelected = selectedIndex === index;
+          const isChanged = step.bitmaskChanged.includes(index);
+          cell.className = 'algorithm-visualization__bitmask-cell';
+          cell.dataset.state = isChanged ? 'changed' : isSelected ? 'selected' : 'idle';
+          cell.setAttribute('role', 'listitem');
+          cell.setAttribute('aria-label', `인덱스 ${index}, 값 ${value}${isChanged ? ', 변경됨' : ''}`);
+          cell.append(
+            createTextElement('span', 'algorithm-visualization__bitmask-index', `index ${index}`),
+            createTextElement('strong', 'algorithm-visualization__bitmask-value', String(value)),
+            createTextElement('span', 'algorithm-visualization__bitmask-label', isChanged ? '변경' : isSelected ? '선택' : '유지')
+          );
+          return cell;
+        })
+      );
+      refs.bitmaskBefore.textContent = step.bitmaskBefore === null ? '—' : formatBitmask(step.bitmaskBefore);
+      refs.bitmaskAfter.textContent = formatBitmask(step.bitmask);
+      refs.bitmaskSelected.textContent = String(selectedIndex);
+      refs.bitmaskCheck.textContent = step.bitmaskCheck === null ? '—' : String(step.bitmaskCheck);
+      refs.bitmaskExpression.textContent = step.bitmaskExpression || '아직 연산하지 않았다.';
+    };
+
     const renderDetails = (step) => {
       const details = step.details.slice();
       if (step.result) {
@@ -786,10 +1098,14 @@
       const isHash = kind === 'hash';
       const isGraph = kind === 'graph';
       const isLis = kind === 'lis';
+      const isDijkstra = kind === 'dijkstra';
+      const isBitmask = kind === 'bitmask';
       refs.arrayWrap.hidden = !isBinary;
       refs.bucketsWrap.hidden = !isHash;
       refs.graphWrap.hidden = !isGraph;
       refs.lisWrap.hidden = !isLis;
+      refs.dijkstraWrap.hidden = !isDijkstra;
+      refs.bitmaskWrap.hidden = !isBitmask;
       refs.modes.hidden = !isGraph && !isLis;
       if (isBinary) {
         renderArray(step);
@@ -799,6 +1115,10 @@
         renderGraph(step);
       } else if (isLis) {
         renderLis(step);
+      } else if (isDijkstra) {
+        renderDijkstra(step);
+      } else if (isBitmask) {
+        renderBitmask(step);
       }
       renderDetails(step);
     };
@@ -809,7 +1129,15 @@
     };
 
     refs.previous.addEventListener('click', () => moveTo(currentStep - 1));
-    refs.reset.addEventListener('click', () => moveTo(0));
+    refs.reset.addEventListener('click', () => {
+      if (kind === 'bitmask') {
+        steps = createBitmaskSteps();
+        currentStep = 0;
+        lockLayout();
+        return;
+      }
+      moveTo(0);
+    });
     refs.next.addEventListener('click', () => moveTo(currentStep + 1));
 
     const updateModeButtons = () => {
@@ -863,6 +1191,50 @@
         slots: layoutSlots
       });
     };
+
+    const appendBitmaskOperation = (operation) => {
+      const index = Number(refs.bitmaskIndex.value);
+      const currentMask = steps[currentStep].bitmask;
+      const result = bitmaskOperationInfo(currentMask, index, operation);
+      const operationLabels = {
+        add: '비트 추가',
+        remove: '비트 삭제',
+        check: '비트 확인',
+        toggle: '비트 반전',
+        clear: '전체 상태 초기화'
+      };
+      const nextStep = createBitmaskStep({
+        status: operation === 'check' ? 'compare' : 'result',
+        title: operationLabels[operation],
+        description: `${result.reason} ${formatBitmask(currentMask)}에서 ${formatBitmask(result.after)}로 표시된다.`,
+        bitmask: result.after,
+        bitmaskBefore: result.before,
+        bitmaskIndex: index,
+        bitmaskOperation: operation,
+        bitmaskExpression: result.expression,
+        bitmaskReason: result.reason,
+        bitmaskChanged: result.changed,
+        bitmaskCheck: result.check,
+        result: operation === 'check' ? `포함 여부 · ${result.check}` : `mask · ${formatBitmask(result.after)}`,
+        details: [
+          detail('선택 인덱스', index),
+          detail('연산 전', `${formatBitmask(result.before)} (${result.before})`),
+          detail('연산 후', `${formatBitmask(result.after)} (${result.after})`),
+          detail('처리 이유', result.reason)
+        ]
+      });
+      steps = steps.slice(0, currentStep + 1);
+      steps.push(nextStep);
+      currentStep = steps.length - 1;
+      lockLayout();
+    };
+
+    refs.bitmaskOperations.forEach((button) => {
+      button.addEventListener('click', () => appendBitmaskOperation(button.dataset.bitmaskOperation));
+    });
+    if (refs.bitmaskIndex) {
+      refs.bitmaskIndex.addEventListener('change', () => render());
+    }
 
     refs.modeButtons.forEach((button) => {
       button.addEventListener('click', () => {
