@@ -1,0 +1,128 @@
+{% assign example = site.data.lca_dp_visualizations[include.kind] %}
+<figure
+  class="algorithm-visualization algorithm-visualization--worked-example"
+  data-algorithm-visualization
+  data-algorithm-kind="{{ include.kind }}"
+  tabindex="0"
+  role="group"
+  aria-labelledby="algorithm-example-{{ include.kind }}-title"
+>
+  <div class="algorithm-visualization__header">
+    <h3 id="algorithm-example-{{ include.kind }}-title">{{ example.title }}</h3>
+    <p>{{ example.summary }}</p>
+  </div>
+
+  <div class="algorithm-visualization__progress" role="status" aria-atomic="true">
+    <strong data-algorithm-step-title>{{ example.steps.first.title }}</strong>
+    <span data-algorithm-step-count>1 / {{ example.steps.size }}</span>
+  </div>
+
+  <div class="algorithm-visualization__stage" tabindex="0" role="region" aria-label="{{ example.title }} 현재 상태">
+    {% for step in example.steps %}
+      <div data-algorithm-example-step data-title="{{ step.title | escape }}" data-description="{{ step.description | escape }}"{% unless forloop.first %} hidden{% endunless %}>
+        {% if include.kind == 'lca' %}
+          <div class="algorithm-visualization__example-tree" role="group" aria-label="트리. 1의 자식은 2와 3, 2의 자식은 4와 5, 3의 자식은 6과 7">
+            {% assign levels = '1;2,3;4,5,6,7' | split: ';' %}
+            {% for level in levels %}
+              {% assign nodes = level | split: ',' %}
+              {% unless forloop.first %}
+                <div class="algorithm-visualization__tree-level" aria-hidden="true">
+                  <div class="algorithm-visualization__tree-branch"></div>
+                  {% if nodes.size == 4 %}<div class="algorithm-visualization__tree-branch"></div>{% endif %}
+                </div>
+              {% endunless %}
+              <div class="algorithm-visualization__tree-level">
+                {% for node_text in nodes %}
+                  {% assign node = node_text | plus: 0 %}
+                  {% assign state = 'idle' %}
+                  {% assign label = '' %}
+                  {% if step.result == node %}
+                    {% assign state = 'result' %}
+                    {% assign label = 'LCA' %}
+                  {% elsif step.selected contains node %}
+                    {% assign state = 'current' %}
+                    {% assign label = '선택' %}
+                  {% elsif step.compared contains node %}
+                    {% assign state = 'compare' %}
+                    {% assign label = '조상' %}
+                  {% endif %}
+                  <div class="algorithm-visualization__tree-node">
+                    <strong class="algorithm-visualization__lis-cell" data-state="{{ state }}">{{ node }}</strong>
+                    <small>{{ label }}</small>
+                  </div>
+                {% endfor %}
+              </div>
+            {% endfor %}
+          </div>
+          <p class="algorithm-visualization__lis-note"><strong>점프 거리</strong> {{ step.distance }}</p>
+          {% if step.show_ancestors %}
+            <div class="algorithm-visualization__example-columns">
+              <div class="algorithm-visualization__detail">
+                <span class="algorithm-visualization__detail-label">1칸{% if step.k == 0 %} · 비교{% endif %}</span>
+                <code>parent[0][5] = 2</code><br>
+                <code>parent[0][6] = 3</code>
+              </div>
+              <div class="algorithm-visualization__detail">
+                <span class="algorithm-visualization__detail-label">2칸{% if step.k == 1 %} · 비교{% endif %}</span>
+                <code>parent[1][5] = 1</code><br>
+                <code>parent[1][6] = 1</code>
+              </div>
+            </div>
+          {% endif %}
+        {% elsif step.values %}
+          <div class="algorithm-visualization__stair-row" role="list" aria-label="계단 오르기 dp 배열">
+            {% for value in step.values %}
+              {% assign index = forloop.index0 %}
+              {% assign state = 'idle' %}
+              {% assign label = '' %}
+              {% if step.current == index %}
+                {% assign state = 'result' %}
+                {% assign label = '새 값' %}
+              {% elsif step.used contains index %}
+                {% assign state = 'compare' %}
+                {% assign label = '사용' %}
+              {% elsif step.current == nil and index < 2 %}
+                {% assign state = 'current' %}
+                {% assign label = '초기값' %}
+              {% endif %}
+              <div class="algorithm-visualization__lis-cell" data-state="{{ state }}" role="listitem">
+                <span class="algorithm-visualization__lis-index">[{{ index }}]</span>
+                <strong class="algorithm-visualization__lis-value">{{ value }}</strong>
+                <small>{{ label }}</small>
+              </div>
+            {% endfor %}
+          </div>
+          <p class="algorithm-visualization__lis-note"><code>{{ step.equation }}</code></p>
+        {% else %}
+          <div class="algorithm-visualization__example-columns algorithm-visualization__fib-rows">
+            <div class="algorithm-visualization__detail">
+              <span class="algorithm-visualization__detail-label">F(5)의 두 항</span>
+              <code>F(5) = F(4) + {% if step.expand %}<mark>F(3)</mark>{% else %}F(3){% endif %}</code>
+              {% if step.memo == 'reused' %}<small>저장값 사용</small>{% endif %}
+            </div>
+            {% if step.expand %}
+              <div class="algorithm-visualization__detail">
+                <span class="algorithm-visualization__detail-label">F(4)의 두 항</span>
+                <code>F(4) = <mark>F(3)</mark> + F(2)</code>
+                {% if step.memo == 'stored' %}<small>첫 계산</small>{% endif %}
+              </div>
+            {% endif %}
+          </div>
+          <p class="algorithm-visualization__lis-note"><strong>메모</strong> {{ step.cache }}</p>
+        {% endif %}
+      </div>
+    {% endfor %}
+  </div>
+
+  <p class="algorithm-visualization__description" data-algorithm-description tabindex="0">{{ example.steps.first.description }}</p>
+
+  <div class="algorithm-visualization__controls" role="group" aria-label="시각화 단계 제어">
+    <button type="button" class="btn btn-outline-secondary btn-sm" data-algorithm-action="previous" disabled>이전</button>
+    <button type="button" class="btn btn-outline-secondary btn-sm" data-algorithm-action="reset" disabled>초기화</button>
+    <button type="button" class="btn btn-outline-secondary btn-sm" data-algorithm-action="next" disabled>다음</button>
+  </div>
+
+  <p class="algorithm-visualization__availability" role="status" data-algorithm-error>
+    버튼을 사용할 수 없으면 본문에서 계산과 이동 순서를 확인할 수 있다.
+  </p>
+</figure>

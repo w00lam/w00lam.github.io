@@ -1,0 +1,83 @@
+lca:
+  title: LCA 질의 단계 보기
+  summary: "같은 트리에서 (5, 6)의 공통 조상을 두 방식으로 찾는다."
+  steps:
+    - title: "부모 이동 · 깊이 확인"
+      description: "5와 6의 깊이는 모두 2다. 깊이를 맞추기 위한 이동은 필요 없다."
+      selected: [5, 6]
+      distance: "0칸"
+    - title: "부모 이동 · 한 칸 올라가기"
+      description: "5 → 2, 6 → 3으로 이동한다. 2와 3이 서로 다르므로 한 번 더 올라간다."
+      selected: [2, 3]
+      distance: "각 1칸"
+    - title: "부모 이동 · 노드 1에서 만나기"
+      description: "2 → 1, 3 → 1로 이동한다. 처음 만난 1이 LCA다."
+      result: 1
+      distance: "각 1칸"
+    - title: "Binary Lifting · 조상 표 확인"
+      description: "두 노드를 다시 5와 6에 둔다. 깊이가 같으므로 표에서 비교할 점프를 고른다."
+      selected: [5, 6]
+      show_ancestors: true
+      distance: "0칸"
+    - title: "Binary Lifting · k = 1 비교"
+      description: "두 칸 위의 조상이 모두 1이다. 공통 조상에 닿는 점프는 건너뛴다."
+      selected: [5, 6]
+      compared: [1]
+      show_ancestors: true
+      k: 1
+      distance: "2칸 비교 · 0칸 이동"
+    - title: "Binary Lifting · k = 0 비교"
+      description: "한 칸 위의 조상이 2와 3으로 다르다. 두 노드를 그 위치로 올린다."
+      selected: [2, 3]
+      show_ancestors: true
+      k: 0
+      distance: "각 1칸 이동"
+    - title: "Binary Lifting · 직접 부모 반환"
+      description: "2와 3의 직접 부모가 같다. parent[0][2] = 1을 반환한다."
+      result: 1
+      show_ancestors: true
+      distance: "1칸 위의 부모 반환"
+
+dp:
+  title: 동적 계획법 단계 보기
+  summary: "피보나치에서 반복되는 호출을 찾고 계단 오르기 표를 작은 값부터 채운다."
+  steps:
+    - title: "피보나치 · F(5) 펼치기"
+      description: "F(5)를 계산하려면 F(4)와 F(3)이 필요하다."
+      cache: "비어 있음"
+    - title: "피보나치 · 반복되는 F(3) 찾기"
+      description: "F(5)의 오른쪽 항과 F(4)의 왼쪽 항에서 같은 F(3)을 요청한다."
+      expand: true
+      cache: "비어 있음"
+    - title: "메모이제이션 · 첫 결과 저장"
+      description: "왼쪽 항 F(4)를 먼저 따라간다. 처음 만난 F(3)을 F(2) + F(1) = 2로 계산해 저장한다."
+      expand: true
+      cache: "F(3) = 2 저장"
+      memo: "stored"
+    - title: "메모이제이션 · 다음 요청에 재사용"
+      description: "F(5)의 오른쪽 항에서 F(3)을 요청하면 저장된 2를 읽는다."
+      expand: true
+      cache: "F(3) = 2 재사용"
+      memo: "reused"
+    - title: "계단 오르기 · 초기값 채우기"
+      description: "시작점에 머무는 방법과 첫 계단까지 한 칸 오르는 방법을 각각 한 가지로 센다."
+      values: [1, 1, "–", "–", "–"]
+      equation: "dp[0] = 1, dp[1] = 1"
+    - title: "계단 오르기 · i = 2"
+      description: "한 칸 전에 있던 방법 수와 두 칸 전에 있던 방법 수를 더해 두 번째 칸의 값을 채운다."
+      values: [1, 1, 2, "–", "–"]
+      current: 2
+      used: [0, 1]
+      equation: "dp[2] = dp[1] + dp[0] = 1 + 1 = 2"
+    - title: "계단 오르기 · i = 3"
+      description: "두 번째 칸과 첫 번째 칸에 저장한 결과를 읽어 세 번째 칸을 채운다."
+      values: [1, 1, 2, 3, "–"]
+      current: 3
+      used: [1, 2]
+      equation: "dp[3] = dp[2] + dp[1] = 2 + 1 = 3"
+    - title: "계단 오르기 · i = 4"
+      description: "세 번째 칸과 두 번째 칸을 더한다. 네 번째 계단에 도착하는 방법은 5가지다."
+      values: [1, 1, 2, 3, 5]
+      current: 4
+      used: [2, 3]
+      equation: "dp[4] = dp[3] + dp[2] = 3 + 2 = 5"

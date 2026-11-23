@@ -742,6 +742,76 @@
     info: '상태'
   };
 
+  const stepControls = (root) => ({
+    previous: root.querySelector('[data-algorithm-action="previous"]'),
+    reset: root.querySelector('[data-algorithm-action="reset"]'),
+    next: root.querySelector('[data-algorithm-action="next"]')
+  });
+
+  const bindStepControls = (root, controls, moveTo, getIndex, getLength, reset = () => moveTo(0)) => {
+    const move = (index) => {
+      const focused = document.activeElement;
+      moveTo(index);
+      if (Object.values(controls).includes(focused) && focused.disabled) {
+        (focused === controls.next ? controls.previous : controls.next).focus({ preventScroll: true });
+      }
+    };
+
+    controls.previous.addEventListener('click', () => move(getIndex() - 1));
+    controls.reset.addEventListener('click', reset);
+    controls.next.addEventListener('click', () => move(getIndex() + 1));
+
+    root.addEventListener('keydown', (event) => {
+      if (event.altKey || event.ctrlKey || event.metaKey || event.shiftKey ||
+          event.target.closest('[data-algorithm-example-step], [data-algorithm-description], [role="region"]')) {
+        return;
+      }
+      const destinations = {
+        ArrowLeft: getIndex() - 1,
+        ArrowRight: getIndex() + 1,
+        Home: 0,
+        End: getLength() - 1
+      };
+      if (Object.hasOwn(destinations, event.key)) {
+        event.preventDefault();
+        move(destinations[event.key]);
+      }
+    });
+  };
+
+  const renderExample = (root) => {
+    const panels = Array.from(root.querySelectorAll('[data-algorithm-example-step]'));
+    if (panels.length < 2) {
+      throw new Error('Worked example needs at least two steps.');
+    }
+    const title = root.querySelector('[data-algorithm-step-title]');
+    const count = root.querySelector('[data-algorithm-step-count]');
+    const description = root.querySelector('[data-algorithm-description]');
+    const controls = stepControls(root);
+    let currentStep = 0;
+
+    const moveTo = (index) => {
+      currentStep = Math.min(Math.max(index, 0), panels.length - 1);
+      const panel = panels[currentStep];
+      panels.forEach((item) => {
+        item.hidden = item !== panel;
+      });
+      title.textContent = panel.dataset.title;
+      count.textContent = `${currentStep + 1} / ${panels.length}`;
+      description.textContent = panel.dataset.description;
+      description.scrollTop = 0;
+      panel.parentElement.scrollTop = 0;
+      controls.previous.disabled = currentStep === 0;
+      controls.reset.disabled = currentStep === 0;
+      controls.next.disabled = currentStep === panels.length - 1;
+    };
+
+    moveTo(0);
+    bindStepControls(root, controls, moveTo, () => currentStep, () => panels.length);
+    root.classList.add('is-ready');
+    root.dataset.algorithmInitialized = 'true';
+  };
+
   const renderRoot = (root) => {
     const kind = root.dataset.algorithmKind;
     const rawValues = root.dataset.algorithmValues || '';
@@ -752,6 +822,7 @@
 
     let activeMode = kind === 'graph' ? 'dfs' : 'dp';
     let steps = createSteps(kind, values, activeMode);
+    const controls = stepControls(root);
     const refs = {
       modes: root.querySelector('[data-algorithm-modes]'),
       modeButtons: Array.from(root.querySelectorAll('[data-algorithm-mode]')),
@@ -786,9 +857,7 @@
       title: root.querySelector('[data-algorithm-step-title]'),
       count: root.querySelector('[data-algorithm-step-count]'),
       description: root.querySelector('[data-algorithm-description]'),
-      previous: root.querySelector('[data-algorithm-action="previous"]'),
-      reset: root.querySelector('[data-algorithm-action="reset"]'),
-      next: root.querySelector('[data-algorithm-action="next"]'),
+      ...controls,
       error: root.querySelector('[data-algorithm-error]'),
       stepData: root.querySelector('[data-algorithm-step-data]')
     };
@@ -1128,8 +1197,7 @@
       render();
     };
 
-    refs.previous.addEventListener('click', () => moveTo(currentStep - 1));
-    refs.reset.addEventListener('click', () => {
+    const reset = () => {
       if (kind === 'bitmask') {
         steps = createBitmaskSteps();
         currentStep = 0;
@@ -1137,8 +1205,8 @@
         return;
       }
       moveTo(0);
-    });
-    refs.next.addEventListener('click', () => moveTo(currentStep + 1));
+    };
+    bindStepControls(root, controls, moveTo, () => currentStep, () => steps.length, reset);
 
     const updateModeButtons = () => {
       refs.modeButtons.forEach((button) => {
@@ -1147,25 +1215,6 @@
         button.setAttribute('aria-selected', String(isActive));
       });
     };
-
-    root.addEventListener('keydown', (event) => {
-      if (event.key === 'ArrowLeft') {
-        event.preventDefault();
-        moveTo(currentStep - 1);
-      }
-      if (event.key === 'ArrowRight') {
-        event.preventDefault();
-        moveTo(currentStep + 1);
-      }
-      if (event.key === 'Home') {
-        event.preventDefault();
-        moveTo(0);
-      }
-      if (event.key === 'End') {
-        event.preventDefault();
-        moveTo(steps.length - 1);
-      }
-    });
 
     const layoutSlots = {
       progress: {
@@ -1264,7 +1313,11 @@
     }
 
     try {
-      renderRoot(root);
+      if (root.classList.contains('algorithm-visualization--worked-example')) {
+        renderExample(root);
+      } else {
+        renderRoot(root);
+      }
     } catch (error) {
       root.classList.add('is-failed');
       root.querySelectorAll('[data-algorithm-action]').forEach((button) => {
