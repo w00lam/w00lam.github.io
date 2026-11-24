@@ -1,0 +1,139 @@
+{% assign visualization_id = 'design-pattern-' | append: include.kind %}
+
+<div
+  id="{{ visualization_id }}"
+  class="design-pattern-visualization design-pattern-visualization--{{ include.kind }}"
+  data-design-pattern-visualization
+  data-design-pattern-kind="{{ include.kind }}"
+  tabindex="0"
+  role="group"
+  aria-labelledby="{{ visualization_id }}-title"
+>
+  {% case include.kind %}
+    {% when 'overview' %}
+      <div class="design-pattern-visualization__header">
+        <p class="design-pattern-visualization__eyebrow">Interactive overview</p>
+        <h3 id="{{ visualization_id }}-title">디자인 패턴의 세 가지 분류</h3>
+        <p>패턴이 객체 생성, 객체 연결, 객체 상호작용 중 어느 문제를 다루는지 비교한다.</p>
+      </div>
+      <div class="design-pattern-visualization__overview-grid">
+        <article class="design-pattern-visualization__overview-card is-creational">
+          <span>Creational</span>
+          <h4>생성 패턴</h4>
+          <p>객체를 언제 만들고, 누가 생성과 관리를 맡을지 결정한다.</p>
+          <strong>오늘의 예 · Singleton</strong>
+        </article>
+        <article class="design-pattern-visualization__overview-card is-structural">
+          <span>Structural</span>
+          <h4>구조 패턴</h4>
+          <p>객체와 클래스의 관계를 조합하고 서로 다른 인터페이스를 연결한다.</p>
+          <strong>오늘의 예 · Adapter</strong>
+        </article>
+        <article class="design-pattern-visualization__overview-card is-behavioral">
+          <span>Behavioral</span>
+          <h4>행위 패턴</h4>
+          <p>객체의 책임과 메시지 흐름을 구성한다.</p>
+          <strong>오늘은 분류만 확인</strong>
+        </article>
+      </div>
+      <p class="design-pattern-visualization__note">분류는 패턴의 목적을 파악하는 기준이다. 동일한 패턴의 구현은 언어와 요구사항에 따라 달라질 수 있다.</p>
+
+    {% when 'adapter' %}
+      <div class="design-pattern-visualization__header">
+        <p class="design-pattern-visualization__eyebrow">Interactive adapter flow</p>
+        <h3 id="{{ visualization_id }}-title">Payment 요청과 응답 변환</h3>
+        <p>Client는 `Payment`만 알고, Adapter가 외부 SDK의 요청·응답 형식을 사이에서 바꾼다.</p>
+      </div>
+      <div class="design-pattern-visualization__progress" aria-live="polite">
+        <strong data-dpv-step-title>시작 · Target 계약 확인</strong>
+        <span data-dpv-step-count>1 / 7</span>
+      </div>
+      <div class="design-pattern-visualization__adapter-stage">
+        <div class="design-pattern-visualization__actors" role="list" aria-label="Adapter 구성 요소">
+          <article class="design-pattern-visualization__actor" data-dpv-actor="client" role="listitem"><span>Client</span><h4>Payment Client</h4><p>내부 결제 계약을 호출한다.</p><b data-dpv-actor-state>대기</b></article>
+          <article class="design-pattern-visualization__actor" data-dpv-actor="target" role="listitem"><span>Target</span><h4>Payment</h4><p>Client가 기대하는 인터페이스다.</p><b data-dpv-actor-state>대기</b></article>
+          <article class="design-pattern-visualization__actor" data-dpv-actor="adapter" role="listitem"><span>Adapter</span><h4>PaymentAdapter</h4><p>요청과 응답을 변환하고 위임한다.</p><b data-dpv-actor-state>대기</b></article>
+          <article class="design-pattern-visualization__actor" data-dpv-actor="adaptee" role="listitem"><span>Adaptee</span><h4>External SDK</h4><p>외부 형식의 결제 기능을 제공한다.</p><b data-dpv-actor-state>대기</b></article>
+        </div>
+        <div class="design-pattern-visualization__route" aria-live="polite">
+          <div><strong data-dpv-from>Client</strong><span aria-hidden="true">→</span><strong data-dpv-to>Payment</strong></div>
+          <p data-dpv-route>Client는 Target 계약에만 의존한다.</p>
+          <div class="design-pattern-visualization__chips" data-dpv-payload><span>Payment.pay(request)</span></div>
+        </div>
+        <div class="design-pattern-visualization__adapter-detail">
+          <div><span>현재 책임</span><strong data-dpv-responsibility>계약 확인</strong></div>
+          <div><span>데이터</span><strong data-dpv-data>PaymentRequest</strong></div>
+          <div><span>변환</span><strong data-dpv-transform>없음</strong></div>
+        </div>
+      </div>
+      <p class="design-pattern-visualization__description" data-dpv-description>Client는 외부 SDK가 아니라 Payment라는 Target 계약을 바라본다.</p>
+      <div class="design-pattern-visualization__controls" aria-label="Adapter 시각화 단계 제어">
+        <button type="button" class="btn btn-outline-secondary btn-sm" data-dpv-action="previous" disabled>이전</button>
+        <button type="button" class="btn btn-outline-secondary btn-sm" data-dpv-action="reset" disabled>초기화</button>
+        <button type="button" class="btn btn-outline-secondary btn-sm" data-dpv-action="next">다음</button>
+      </div>
+      <ol class="design-pattern-visualization-fallback" data-dpv-step-data hidden></ol>
+
+    {% when 'singleton' %}
+      <div class="design-pattern-visualization__header">
+        <p class="design-pattern-visualization__eyebrow">Interactive concurrency comparison</p>
+        <h3 id="{{ visualization_id }}-title">Singleton 생성과 공유 상태</h3>
+        <p>생성 방식에 따라 가능한 실행 순서가 어떻게 달라지는지 비교한다.</p>
+      </div>
+      <div class="design-pattern-visualization__mode-tabs" role="tablist" aria-label="Singleton 구현 방식 선택">
+        <button type="button" class="btn btn-outline-secondary btn-sm is-active" data-dpv-mode="unsafe" role="tab" aria-selected="true">동기화 없음</button>
+        <button type="button" class="btn btn-outline-secondary btn-sm" data-dpv-mode="synchronized" role="tab" aria-selected="false">synchronized</button>
+        <button type="button" class="btn btn-outline-secondary btn-sm" data-dpv-mode="dcl" role="tab" aria-selected="false">Double-Checked Locking</button>
+      </div>
+      <div class="design-pattern-visualization__progress" aria-live="polite">
+        <strong data-dpv-step-title>0단계 · instance = null</strong>
+        <span data-dpv-step-count>1 / 7</span>
+      </div>
+      <div class="design-pattern-visualization__singleton-stage">
+        <div class="design-pattern-visualization__thread-lane" data-dpv-thread="a"><span>Thread A</span><strong data-dpv-thread-state>A 대기</strong></div>
+        <div class="design-pattern-visualization__thread-lane" data-dpv-thread="b"><span>Thread B</span><strong data-dpv-thread-state>B 대기</strong></div>
+        <div class="design-pattern-visualization__monitor" data-dpv-monitor><span>공유 instance</span><strong data-dpv-instance>참조 없음</strong><small data-dpv-monitor-state>모니터 사용 안 함</small></div>
+        <div class="design-pattern-visualization__created" data-dpv-created><span>생성된 객체</span><div><i data-dpv-object="1">#1 · 없음</i><i data-dpv-object="2">#2 · 없음</i></div></div>
+      </div>
+      <div class="design-pattern-visualization__state-summary">
+        <div><span>실행 흐름</span><strong data-dpv-flow-summary>두 Thread가 null을 확인할 수 있다.</strong></div>
+        <div><span>가능한 결과</span><strong data-dpv-result-summary>서로 다른 객체가 만들어질 수 있다.</strong></div>
+      </div>
+      <p class="design-pattern-visualization__description" data-dpv-description>이 시각화는 가능한 실행 순서 중 하나를 보여 준다. 모든 실행에서 중복 생성된다는 뜻은 아니다.</p>
+      <div class="design-pattern-visualization__controls" aria-label="Singleton 시각화 단계 제어">
+        <button type="button" class="btn btn-outline-secondary btn-sm" data-dpv-action="previous" disabled>이전</button>
+        <button type="button" class="btn btn-outline-secondary btn-sm" data-dpv-action="reset" disabled>초기화</button>
+        <button type="button" class="btn btn-outline-secondary btn-sm" data-dpv-action="next">다음</button>
+      </div>
+      <div class="design-pattern-visualization__counter-note"><span>공유 상태 예시</span><strong>A가 0을 읽음 → B가 0을 읽음 → 최종 count = 1</strong><small>인스턴스 생성 보장과 `count++`의 원자성은 별개의 문제다.</small></div>
+
+    {% when 'spring' %}
+      <div class="design-pattern-visualization__header">
+        <p class="design-pattern-visualization__eyebrow">Interactive scope comparison</p>
+        <h3 id="{{ visualization_id }}-title">Spring Singleton Bean의 관리 범위</h3>
+        <p>같은 클래스라도 Container와 Bean 정의가 달라지면 인스턴스의 수와 범위가 달라질 수 있다.</p>
+      </div>
+      <div class="design-pattern-visualization__scope-tabs" role="tablist" aria-label="Spring Singleton 범위 선택">
+        <button type="button" class="btn btn-outline-secondary btn-sm is-active" data-dpv-scope="same" role="tab" aria-selected="true">1. 같은 Context + 같은 정의</button>
+        <button type="button" class="btn btn-outline-secondary btn-sm" data-dpv-scope="definitions" role="tab" aria-selected="false">2. 같은 Context + 다른 정의</button>
+        <button type="button" class="btn btn-outline-secondary btn-sm" data-dpv-scope="contexts" role="tab" aria-selected="false">3. 다른 ApplicationContext</button>
+        <button type="button" class="btn btn-outline-secondary btn-sm" data-dpv-scope="jvms" role="tab" aria-selected="false">4. 다른 JVM·서버</button>
+      </div>
+      <div class="design-pattern-visualization__spring-stage" data-dpv-spring-stage></div>
+      <div class="design-pattern-visualization__state-summary">
+        <div><span>관리 기준</span><strong data-dpv-spring-scope>Container A · paymentService 정의</strong></div>
+        <div><span>실제 인스턴스 수</span><strong data-dpv-spring-count>1개</strong></div>
+      </div>
+      <p class="design-pattern-visualization__description" data-dpv-spring-description>같은 Context에서 같은 Bean 정의를 조회하면 Container가 캐시한 동일 인스턴스를 반환한다.</p>
+      <p class="design-pattern-visualization__note">Bean 이름의 별칭은 같은 Bean 정의를 가리킨다. 별도의 Bean 정의를 만들었을 때와 구분해야 한다.</p>
+  {% endcase %}
+
+  <noscript>
+    <p class="design-pattern-visualization-fallback">JavaScript가 꺼져 있어 단계 제어를 사용할 수 없다. 본문 설명과 코드에서 핵심 흐름을 확인할 수 있다.</p>
+  </noscript>
+</div>
+
+{% unless include.kind == 'overview' %}
+  <script defer src="{{ '/assets/js/interactive-layout.js' | relative_url }}"></script>
+  <script defer src="{{ '/assets/js/design-pattern-visualization.js' | relative_url }}"></script>
+{% endunless %}
