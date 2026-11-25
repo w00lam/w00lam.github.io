@@ -352,6 +352,235 @@
     strong { color: var(--heading-color); font-size: 0.84rem; }
   }
 
+  &__pattern-stage {
+    display: grid;
+    gap: 0.8rem;
+    box-sizing: border-box;
+    height: var(--dpv-stage-height, 24rem);
+    min-height: var(--dpv-stage-height, 24rem);
+    overflow: hidden;
+  }
+
+  &__template-stage {
+    grid-template-rows: auto auto auto;
+  }
+
+  &__factory-stage {
+    grid-template-columns: minmax(0, 1.25fr) minmax(12rem, 0.75fr);
+    align-items: stretch;
+  }
+
+  &__factory-layers {
+    display: grid;
+    gap: 0.6rem;
+    min-width: 0;
+  }
+
+  &__factory-layer {
+    display: grid;
+    gap: 0.45rem;
+    min-width: 0;
+    padding: 0.7rem;
+    border: 1px solid var(--dpv-border);
+    border-radius: calc(v.$radius-lg - 0.15rem);
+    background: var(--dpv-surface);
+
+    > span {
+      color: var(--dpv-muted);
+      font-size: 0.72rem;
+    }
+  }
+
+  &__factory-nodes {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 0.45rem;
+
+    strong {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-width: 0;
+      min-height: 3.2rem;
+      padding: 0.45rem;
+      border: 1px solid var(--dpv-border);
+      border-radius: 0.45rem;
+      color: var(--heading-color);
+      font-size: 0.76rem;
+      line-height: 1.3;
+      text-align: center;
+      overflow-wrap: anywhere;
+
+      &[data-state='active'] {
+        border-color: var(--dpv-accent);
+        box-shadow: inset 0 0 0 2px var(--dpv-accent);
+      }
+
+      &[data-state='idle'] { opacity: 0.58; }
+    }
+  }
+
+  &__factory-instance {
+    display: grid;
+    align-content: center;
+    gap: 0.45rem;
+    min-width: 0;
+    padding: 0.8rem;
+    border: 1px dashed var(--dpv-border);
+    border-radius: calc(v.$radius-lg - 0.15rem);
+    background: color-mix(in srgb, var(--dpv-accent) 5%, var(--dpv-surface));
+
+    span,
+    small { color: var(--dpv-muted); font-size: 0.74rem; }
+
+    strong { color: var(--heading-color); overflow-wrap: anywhere; }
+  }
+
+  &__observer-stage {
+    grid-template-columns: minmax(0, 1.1fr) minmax(0, 0.9fr);
+    grid-template-rows: auto minmax(0, 1fr);
+  }
+
+  &__observer-actors {
+    display: grid;
+    grid-column: 1 / -1;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 0.6rem;
+  }
+
+  &__observer-actor,
+  &__observer-subject,
+  &__observer-state,
+  &__observer-log {
+    min-width: 0;
+    padding: 0.75rem;
+    border: 1px solid var(--dpv-border);
+    border-radius: calc(v.$radius-lg - 0.15rem);
+    background: var(--dpv-surface);
+  }
+
+  &__observer-actor,
+  &__observer-subject {
+    display: grid;
+    gap: 0.3rem;
+    text-align: left;
+
+    span,
+    b,
+    small { color: var(--dpv-muted); font-size: 0.72rem; }
+
+    strong { color: var(--heading-color); font-size: 0.86rem; overflow-wrap: anywhere; }
+
+    b { color: var(--dpv-accent); }
+  }
+
+  &__observer-actor {
+    cursor: pointer;
+
+    &:hover,
+    &:focus-visible,
+    &.is-selected { border-color: var(--dpv-accent); }
+
+    &[data-state='active'] { box-shadow: inset 0 0 0 2px var(--dpv-accent); }
+
+    &[data-state='idle'] { opacity: 0.68; }
+  }
+
+  &__observer-state {
+    display: grid;
+    align-content: start;
+    gap: 0.7rem;
+
+    > div {
+      display: grid;
+      gap: 0.25rem;
+      min-height: 3.4rem;
+      align-content: center;
+      padding-bottom: 0.5rem;
+      border-bottom: 1px solid var(--dpv-border);
+    }
+
+    span { color: var(--dpv-muted); font-size: 0.72rem; }
+
+    strong { color: var(--heading-color); overflow-wrap: anywhere; }
+
+    p {
+      min-height: 2.8em;
+      margin: 0;
+      color: var(--dpv-muted);
+      font-size: 0.78rem;
+      line-height: 1.45;
+    }
+  }
+
+  &__observer-log {
+    overflow: hidden;
+
+    > span { color: var(--dpv-muted); font-size: 0.72rem; }
+
+    ol {
+      height: 9rem;
+      margin: 0.55rem 0 0;
+      padding: 0 0.3rem 0 1.4rem;
+      overflow-y: auto;
+      color: var(--heading-color);
+      font-size: 0.8rem;
+      line-height: 1.55;
+    }
+  }
+
+  &__comparison-grid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 0.7rem;
+  }
+
+  &__comparison-card {
+    display: grid;
+    gap: 0.5rem;
+    min-width: 0;
+    min-height: 15rem;
+    padding: 0.9rem;
+    border: 1px solid var(--dpv-border);
+    border-top: 0.25rem solid var(--dpv-accent);
+    border-radius: calc(v.$radius-lg - 0.15rem);
+    background: var(--dpv-surface);
+
+    > span,
+    small { color: var(--dpv-muted); font-size: 0.74rem; }
+
+    h4 { margin: 0; color: var(--heading-color); }
+
+    > div {
+      display: grid;
+      gap: 0.25rem;
+      align-content: center;
+      min-height: 5.3rem;
+      padding: 0.6rem;
+      border: 1px dashed var(--dpv-border);
+      border-radius: 0.45rem;
+      text-align: center;
+
+      strong { color: var(--heading-color); font-size: 0.8rem; overflow-wrap: anywhere; }
+
+      span { color: var(--dpv-accent); font-size: 0.9rem; }
+    }
+
+    p {
+      min-height: 3em;
+      margin: 0;
+      color: var(--text-color);
+      font-size: 0.8rem;
+      line-height: 1.45;
+    }
+
+    &.is-template { border-top-color: #3659a8; }
+
+    &.is-factory { border-top-color: #147d63; }
+
+    &.is-observer { border-top-color: #8a5a00; }
+  }
+
   &__spring-stage {
     display: grid;
     grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -394,6 +623,7 @@
   &.is-measuring &__progress,
   &.is-measuring &__adapter-stage,
   &.is-measuring &__singleton-stage,
+  &.is-measuring &__pattern-stage,
   &.is-measuring &__description {
     height: auto;
     min-height: 0;
@@ -414,7 +644,20 @@
     &__actors,
     &__spring-stage,
     &__state-summary,
-    &__adapter-detail { grid-template-columns: 1fr; }
+    &__adapter-detail,
+    &__comparison-grid,
+    &__observer-actors { grid-template-columns: 1fr; }
+
+    &__factory-stage,
+    &__observer-stage { grid-template-columns: 1fr; }
+
+    &__pattern-stage { height: var(--dpv-stage-height, 32rem); min-height: var(--dpv-stage-height, 32rem); }
+
+    &__factory-nodes { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+
+    &__observer-stage { grid-template-rows: auto auto auto; }
+
+    &__observer-log ol { height: 7rem; }
 
     &__overview-card { min-height: 0; }
 
@@ -428,6 +671,8 @@
     }
 
     &__singleton-stage { min-height: 21rem; }
+
+    &__comparison-card { min-height: 0; }
 
     &__description { height: var(--dpv-description-height, 7rem); min-height: var(--dpv-description-height, 7rem); }
 

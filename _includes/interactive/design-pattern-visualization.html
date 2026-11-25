@@ -74,6 +74,158 @@
       </div>
       <ol class="design-pattern-visualization-fallback" data-dpv-step-data hidden></ol>
 
+    {% when 'template' %}
+      <div class="design-pattern-visualization__header">
+        <p class="design-pattern-visualization__eyebrow">Interactive template method flow</p>
+        <h3 id="{{ visualization_id }}-title">Template Method 실행 흐름</h3>
+        <p>상위 클래스가 순서를 고정하고, 선택한 하위 클래스가 변경되는 세부 동작을 제공한다.</p>
+      </div>
+      <div class="design-pattern-visualization__mode-tabs" role="tablist" aria-label="Template Method 하위 클래스 선택">
+        <button type="button" class="btn btn-outline-secondary btn-sm is-active" data-dpv-template-mode="file" role="tab" aria-selected="true">FileProcessor</button>
+        <button type="button" class="btn btn-outline-secondary btn-sm" data-dpv-template-mode="api" role="tab" aria-selected="false">ApiProcessor</button>
+      </div>
+      <div class="design-pattern-visualization__progress" aria-live="polite">
+        <strong data-dpv-step-title>1단계 · Client가 process() 호출</strong>
+        <span data-dpv-step-count>1 / 6</span>
+      </div>
+      <div class="design-pattern-visualization__pattern-stage design-pattern-visualization__template-stage">
+        <div class="design-pattern-visualization__actors" role="list" aria-label="Template Method 구성 요소">
+          <article class="design-pattern-visualization__actor" data-dpv-template-actor="client" role="listitem"><span>Client</span><h4>Client</h4><p>선택한 Processor의 공통 메서드를 호출한다.</p><b data-dpv-actor-state>대기</b></article>
+          <article class="design-pattern-visualization__actor" data-dpv-template-actor="abstract" role="listitem"><span>AbstractClass</span><h4>AbstractProcessor</h4><p>final process()와 공통 단계를 정의한다.</p><b data-dpv-actor-state>대기</b></article>
+          <article class="design-pattern-visualization__actor" data-dpv-template-actor="file" role="listitem"><span>ConcreteClass</span><h4>FileProcessor</h4><p>파일 처리의 세부 동작을 구현한다.</p><b data-dpv-actor-state>대기</b></article>
+          <article class="design-pattern-visualization__actor" data-dpv-template-actor="api" role="listitem"><span>ConcreteClass</span><h4>ApiProcessor</h4><p>API 처리의 세부 동작을 구현한다.</p><b data-dpv-actor-state>대기</b></article>
+        </div>
+        <div class="design-pattern-visualization__route" aria-live="polite">
+          <div><strong data-dpv-template-from>Client</strong><span aria-hidden="true">→</span><strong data-dpv-template-to>FileProcessor</strong></div>
+          <p data-dpv-template-route>선택한 객체의 process() 호출이 상위 클래스의 final 메서드로 들어간다.</p>
+          <div class="design-pattern-visualization__chips" data-dpv-template-payload><span>process()</span></div>
+        </div>
+        <div class="design-pattern-visualization__state-summary">
+          <div><span>현재 호출</span><strong data-dpv-template-call>FileProcessor.process()</strong></div>
+          <div><span>메서드 정의</span><strong data-dpv-template-owner>AbstractProcessor</strong></div>
+          <div><span>실행 결과</span><strong data-dpv-template-result>처리 시작 전</strong></div>
+        </div>
+      </div>
+      <p class="design-pattern-visualization__description" data-dpv-template-description>Client가 선택한 객체를 통해 process()를 호출한다. 실제 Template Method는 AbstractProcessor에 정의되어 있다.</p>
+      <div class="design-pattern-visualization__controls" aria-label="Template Method 시각화 단계 제어">
+        <button type="button" class="btn btn-outline-secondary btn-sm" data-dpv-action="previous" disabled>이전</button>
+        <button type="button" class="btn btn-outline-secondary btn-sm" data-dpv-action="reset" disabled>초기화</button>
+        <button type="button" class="btn btn-outline-secondary btn-sm" data-dpv-action="next">다음</button>
+      </div>
+
+    {% when 'factory' %}
+      <div class="design-pattern-visualization__header">
+        <p class="design-pattern-visualization__eyebrow">Interactive factory method flow</p>
+        <h3 id="{{ visualization_id }}-title">Factory Method 객체 생성 흐름</h3>
+        <p>Creator의 공통 사용 흐름과 ConcreteProduct를 선택해 생성하는 책임을 분리한다.</p>
+      </div>
+      <div class="design-pattern-visualization__mode-tabs" role="tablist" aria-label="Factory Method ConcreteCreator 선택">
+        <button type="button" class="btn btn-outline-secondary btn-sm is-active" data-dpv-factory-mode="email" role="tab" aria-selected="true">EmailCreator</button>
+        <button type="button" class="btn btn-outline-secondary btn-sm" data-dpv-factory-mode="sms" role="tab" aria-selected="false">SmsCreator</button>
+      </div>
+      <div class="design-pattern-visualization__progress" aria-live="polite">
+        <strong data-dpv-step-title>1단계 · ConcreteCreator 선택</strong>
+        <span data-dpv-step-count>1 / 8</span>
+      </div>
+      <div class="design-pattern-visualization__pattern-stage design-pattern-visualization__factory-stage">
+        <div class="design-pattern-visualization__factory-layers">
+          <section class="design-pattern-visualization__factory-layer">
+            <span>Creator 계층</span>
+            <div class="design-pattern-visualization__factory-nodes">
+              <strong data-dpv-factory-actor="creator">NotificationCreator</strong>
+              <strong data-dpv-factory-actor="emailCreator">EmailCreator</strong>
+              <strong data-dpv-factory-actor="smsCreator">SmsCreator</strong>
+            </div>
+          </section>
+          <section class="design-pattern-visualization__factory-layer">
+            <span>Product 계층</span>
+            <div class="design-pattern-visualization__factory-nodes">
+              <strong data-dpv-factory-actor="product">Notification</strong>
+              <strong data-dpv-factory-actor="emailProduct">EmailNotification</strong>
+              <strong data-dpv-factory-actor="smsProduct">SmsNotification</strong>
+            </div>
+          </section>
+        </div>
+        <div class="design-pattern-visualization__factory-instance" aria-live="polite">
+          <span>실제 객체 영역</span>
+          <strong data-dpv-factory-instance>아직 생성되지 않음</strong>
+          <small data-dpv-factory-result>Product 인터페이스 정의만 표시</small>
+        </div>
+        <div class="design-pattern-visualization__route">
+          <div><strong data-dpv-factory-from>Client</strong><span aria-hidden="true">→</span><strong data-dpv-factory-to>EmailCreator</strong></div>
+          <p data-dpv-factory-route>클라이언트가 사용할 ConcreteCreator를 선택한다.</p>
+          <div class="design-pattern-visualization__chips" data-dpv-factory-payload><span>new EmailCreator()</span></div>
+        </div>
+      </div>
+      <p class="design-pattern-visualization__description" data-dpv-factory-description>ConcreteCreator를 선택하는 책임까지 사라지는 것은 아니다. 선택된 Creator가 이후 공통 처리와 객체 생성 흐름을 제공한다.</p>
+      <div class="design-pattern-visualization__controls" aria-label="Factory Method 시각화 단계 제어">
+        <button type="button" class="btn btn-outline-secondary btn-sm" data-dpv-action="previous" disabled>이전</button>
+        <button type="button" class="btn btn-outline-secondary btn-sm" data-dpv-action="reset" disabled>초기화</button>
+        <button type="button" class="btn btn-outline-secondary btn-sm" data-dpv-action="next">다음</button>
+      </div>
+
+    {% when 'observer' %}
+      <div class="design-pattern-visualization__header">
+        <p class="design-pattern-visualization__eyebrow">Interactive observer flow</p>
+        <h3 id="{{ visualization_id }}-title">Observer 등록·해제·알림</h3>
+        <p>OrderSubject의 관찰자 목록이 상태 변경 이후 알림을 받을 대상을 결정한다.</p>
+      </div>
+      <div class="design-pattern-visualization__progress" aria-live="polite">
+        <strong data-dpv-step-title>1단계 · CREATED 상태의 Subject</strong>
+        <span data-dpv-step-count>1 / 10</span>
+      </div>
+      <div class="design-pattern-visualization__pattern-stage design-pattern-visualization__observer-stage">
+        <div class="design-pattern-visualization__observer-actors" role="list" aria-label="Observer 구성 요소">
+          <button type="button" class="design-pattern-visualization__observer-actor" data-dpv-observer-select="email" data-dpv-observer-actor="email" role="listitem"><span>ConcreteObserver</span><strong>EmailObserver</strong><b data-dpv-observer-state>미등록</b></button>
+          <button type="button" class="design-pattern-visualization__observer-actor" data-dpv-observer-select="sms" data-dpv-observer-actor="sms" role="listitem"><span>ConcreteObserver</span><strong>SmsObserver</strong><b data-dpv-observer-state>미등록</b></button>
+          <div class="design-pattern-visualization__observer-subject" data-dpv-observer-actor="subject"><span>ConcreteSubject</span><strong>OrderSubject</strong><small>상태와 List&lt;Observer&gt;를 관리한다.</small></div>
+        </div>
+        <div class="design-pattern-visualization__observer-state">
+          <div><span>현재 주문 상태</span><strong data-dpv-observer-status>CREATED</strong></div>
+          <div><span>등록된 관찰자</span><strong data-dpv-observer-list>없음</strong></div>
+          <p data-dpv-observer-selection>관찰자 카드를 선택하면 역할과 현재 등록 상태를 확인할 수 있다.</p>
+        </div>
+        <div class="design-pattern-visualization__observer-log">
+          <span>알림 실행 로그</span>
+          <ol data-dpv-observer-log><li>아직 알림이 실행되지 않음</li></ol>
+        </div>
+      </div>
+      <p class="design-pattern-visualization__description" data-dpv-observer-description>OrderSubject가 CREATED 상태로 존재한다. 아직 관찰자 목록은 비어 있다.</p>
+      <div class="design-pattern-visualization__controls" aria-label="Observer 시각화 단계 제어">
+        <button type="button" class="btn btn-outline-secondary btn-sm" data-dpv-action="previous" disabled>이전</button>
+        <button type="button" class="btn btn-outline-secondary btn-sm" data-dpv-action="reset" disabled>초기화</button>
+        <button type="button" class="btn btn-outline-secondary btn-sm" data-dpv-action="next">다음</button>
+      </div>
+      <p class="design-pattern-visualization__note">등록 해제된 SmsObserver 객체가 사라지는 것은 아니다. List에서 참조가 제거되어 이후 알림 대상에서 제외된다.</p>
+
+    {% when 'comparison' %}
+      <div class="design-pattern-visualization__header">
+        <p class="design-pattern-visualization__eyebrow">Responsibility comparison</p>
+        <h3 id="{{ visualization_id }}-title">세 패턴이 분리하는 책임</h3>
+        <p>세 패턴 모두 변경을 다루지만, 분리하는 책임과 추가되는 복잡도는 서로 다르다.</p>
+      </div>
+      <div class="design-pattern-visualization__comparison-grid">
+        <article class="design-pattern-visualization__comparison-card is-template">
+          <span>행위 패턴</span><h4>Template Method</h4>
+          <div><strong>공통 실행 흐름</strong><span>↕</span><strong>변경되는 세부 동작</strong></div>
+          <p>상위 클래스가 순서를 고정하고 하위 클래스가 일부 단계를 구현한다.</p>
+          <small>상속 관계가 깊어지고 결합도가 높아질 수 있다.</small>
+        </article>
+        <article class="design-pattern-visualization__comparison-card is-factory">
+          <span>생성 패턴</span><h4>Factory Method</h4>
+          <div><strong>객체 생성</strong><span>→</span><strong>생성된 객체의 사용</strong></div>
+          <p>Creator의 공통 흐름과 ConcreteProduct 생성 책임을 나눈다.</p>
+          <small>유형이 늘면 Creator와 Product 클래스도 늘어날 수 있다.</small>
+        </article>
+        <article class="design-pattern-visualization__comparison-card is-observer">
+          <span>행위 패턴</span><h4>Observer</h4>
+          <div><strong>상태 변경</strong><span>→</span><strong>후속 작업</strong></div>
+          <p>Subject가 구체 구현체 대신 Observer 계약으로 여러 객체에 알린다.</p>
+          <small>관찰자 목록과 알림 흐름을 추적하는 비용이 생긴다.</small>
+        </article>
+      </div>
+      <p class="design-pattern-visualization__note">패턴을 적용했다는 사실만으로 좋은 설계가 되지는 않는다. 변경 가능성, 결합도, 추적 비용, 유지보수성을 함께 비교해야 한다.</p>
+
     {% when 'singleton' %}
       <div class="design-pattern-visualization__header">
         <p class="design-pattern-visualization__eyebrow">Interactive concurrency comparison</p>
