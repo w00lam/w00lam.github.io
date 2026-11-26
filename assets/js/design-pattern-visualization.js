@@ -69,6 +69,55 @@
     { title: '10단계 · 알림 완료', status: 'CANCELLED', list: ['EmailObserver'], logs: ['Email: PAID', 'SMS: PAID', 'Email: CANCELLED'], active: ['email'], registered: ['email'], description: 'SmsObserver는 객체로 남아 있지만 등록 해제되었으므로 CANCELLED 알림을 받지 않는다.' }
   ];
 
+  const strategyModes = {
+    none: [
+      { title: '1단계 · Client가 전략 선택', from: 'Client', to: 'NoDiscountPolicy', route: 'Client가 사용할 구체 전략을 선택한다.', payload: ['new NoDiscountPolicy()'], price: '10,000원', policy: 'NoDiscountPolicy', call: '아직 호출 전', result: '아직 없음', returnValue: '아직 없음', active: ['client', 'none'], description: '전략 선택은 Client의 책임이다. PriceCalculator가 정책 종류를 직접 판단하지 않는다.' },
+      { title: '2단계 · 새로운 Context에 전략 전달', from: 'Client', to: 'PriceCalculator', route: '선택한 전략을 생성자에 전달해 새로운 Context를 조립한다.', payload: ['new PriceCalculator(new NoDiscountPolicy())'], price: '10,000원', policy: 'NoDiscountPolicy', call: '생성자 주입', result: '전략 참조 저장', returnValue: '아직 없음', active: ['client', 'calculator', 'none'], description: 'final 필드를 바꾸는 것이 아니다. 선택된 전략을 전달받은 새로운 PriceCalculator가 만들어진다.' },
+      { title: '3단계 · Client가 계산 요청', from: 'Client', to: 'PriceCalculator', route: 'Client가 Context의 calculate(10000)을 호출한다.', payload: ['calculator.calculate(10000)'], price: '10,000원', policy: 'NoDiscountPolicy', call: 'calculate(10000)', result: '계산 시작', returnValue: '아직 없음', active: ['client', 'calculator'], description: 'Client는 할인 계산의 구체적인 방법을 알지 못하고 PriceCalculator의 공통 메서드만 호출한다.' },
+      { title: '4단계 · Context가 전략에 위임', from: 'PriceCalculator', to: 'DiscountPolicy', route: 'PriceCalculator가 DiscountPolicy 타입으로 discount(10000)을 호출한다.', payload: ['discountPolicy.discount(10000)'], price: '10,000원', policy: 'NoDiscountPolicy', call: 'discount(10000)', result: '전략 호출 중', returnValue: '아직 없음', active: ['calculator', 'policy', 'none'], description: '인터페이스 타입으로 호출하지만 실제 실행 대상은 생성자에 전달된 구현체다.' },
+      { title: '5단계 · 구체 전략이 계산', from: 'DiscountPolicy', to: 'NoDiscountPolicy', route: '동적 바인딩으로 NoDiscountPolicy.discount()가 실행된다.', payload: ['return 10_000'], price: '10,000원', policy: 'NoDiscountPolicy', call: 'discount(10000)', result: '10,000원', returnValue: '10,000원', active: ['policy', 'none'], description: 'NoDiscountPolicy는 할인 금액이 아니라 최종 결제 금액을 반환하도록 계약을 해석한다.' },
+      { title: '6단계 · Context와 Client에 결과 반환', from: 'PriceCalculator', to: 'Client', route: '전략의 반환값이 PriceCalculator를 거쳐 Client로 돌아온다.', payload: ['return 10_000'], price: '10,000원', policy: 'NoDiscountPolicy', call: 'discount(10000)', result: '10,000원', returnValue: '10,000원', active: ['calculator', 'client', 'none'], description: '정책을 바꿀 때는 새 전략을 전달받은 Context에서 다시 실행한다. 기존 Context의 final 참조를 직접 바꾸지 않는다.' }
+    ],
+    percentage: [
+      { title: '1단계 · Client가 전략 선택', from: 'Client', to: 'PercentageDiscountPolicy', route: 'Client가 사용할 구체 전략을 선택한다.', payload: ['new PercentageDiscountPolicy()'], price: '10,000원', policy: 'PercentageDiscountPolicy', call: '아직 호출 전', result: '아직 없음', returnValue: '아직 없음', active: ['client', 'percentage'], description: '20% 할인 정책을 선택한다. 정책을 선택하는 책임과 정책을 실행하는 책임은 분리되어 있다.' },
+      { title: '2단계 · 새로운 Context에 전략 전달', from: 'Client', to: 'PriceCalculator', route: '선택한 전략을 생성자에 전달해 새로운 Context를 조립한다.', payload: ['new PriceCalculator(new PercentageDiscountPolicy())'], price: '10,000원', policy: 'PercentageDiscountPolicy', call: '생성자 주입', result: '전략 참조 저장', returnValue: '아직 없음', active: ['client', 'calculator', 'percentage'], description: '새 정책을 전달받은 PriceCalculator가 생성된다. Context의 계산 흐름 자체는 바뀌지 않는다.' },
+      { title: '3단계 · Client가 계산 요청', from: 'Client', to: 'PriceCalculator', route: 'Client가 Context의 calculate(10000)을 호출한다.', payload: ['calculator.calculate(10000)'], price: '10,000원', policy: 'PercentageDiscountPolicy', call: 'calculate(10000)', result: '계산 시작', returnValue: '아직 없음', active: ['client', 'calculator'], description: 'Client는 20%라는 계산식이 아니라 PriceCalculator의 공통 계약에 의존한다.' },
+      { title: '4단계 · Context가 전략에 위임', from: 'PriceCalculator', to: 'DiscountPolicy', route: 'PriceCalculator가 DiscountPolicy 타입으로 discount(10000)을 호출한다.', payload: ['discountPolicy.discount(10000)'], price: '10,000원', policy: 'PercentageDiscountPolicy', call: 'discount(10000)', result: '전략 호출 중', returnValue: '아직 없음', active: ['calculator', 'policy', 'percentage'], description: '동적 바인딩에 의해 실제 참조 객체인 PercentageDiscountPolicy의 메서드가 실행된다.' },
+      { title: '5단계 · 구체 전략이 계산', from: 'DiscountPolicy', to: 'PercentageDiscountPolicy', route: '동적 바인딩으로 PercentageDiscountPolicy.discount()가 실행된다.', payload: ['return 10_000 * 80 / 100'], price: '10,000원', policy: 'PercentageDiscountPolicy', call: 'discount(10000)', result: '8,000원', returnValue: '8,000원', active: ['policy', 'percentage'], description: 'PercentageDiscountPolicy는 20% 할인 후의 최종 결제 금액 8,000원을 반환한다.' },
+      { title: '6단계 · Context와 Client에 결과 반환', from: 'PriceCalculator', to: 'Client', route: '전략의 반환값이 PriceCalculator를 거쳐 Client로 돌아온다.', payload: ['return 8_000'], price: '10,000원', policy: 'PercentageDiscountPolicy', call: 'discount(10000)', result: '8,000원', returnValue: '8,000원', active: ['calculator', 'client', 'percentage'], description: '새 할인 정책을 추가해도 PriceCalculator의 공통 계산 흐름은 그대로 유지된다.' }
+    ]
+  };
+
+  const compositeSteps = [
+    { title: '1단계 · Root.getSize() 호출', active: ['root'], call: 'Root.getSize()', route: 'Root의 지역 변수 total은 0에서 시작한다.', current: 'Root', type: 'Composite', children: 'a.txt · Documents', size: '아직 반환 전', totals: { root: 0, documents: 0 }, description: 'Client는 Root가 파일인지 폴더인지 검사하지 않고 Component 계약의 getSize()를 호출한다.' },
+    { title: '2단계 · a.txt.getSize() 호출', active: ['root', 'a'], call: 'a.txt.getSize()', route: 'Root가 첫 번째 자식 Component에 연산을 위임한다.', current: 'a.txt', type: 'Leaf', children: '없음', size: '100을 반환할 예정', totals: { root: 0, documents: 0 }, description: 'Leaf인 a.txt는 하위 객체를 순회하지 않고 자신이 가진 크기를 반환한다.' },
+    { title: '3단계 · a.txt가 100 반환', active: ['a', 'root'], call: 'a.txt.getSize() → 100', route: 'Root의 지역 변수 total이 0 + 100으로 갱신된다.', current: 'a.txt', type: 'Leaf', children: '없음', size: '100', totals: { root: 100, documents: 0 }, description: '아직 Documents.getSize()가 반환되지 않았으므로 Root의 누적합에는 100만 반영되어 있다.' },
+    { title: '4단계 · Documents.getSize() 호출', active: ['root', 'documents'], call: 'Documents.getSize()', route: 'Root가 두 번째 자식 Composite에 연산을 위임한다.', current: 'Documents', type: 'Composite', children: 'b.txt · c.txt', size: '아직 반환 전', totals: { root: 100, documents: 0 }, description: 'Documents도 Component이므로 Root는 파일과 폴더를 구분하는 별도 분기 없이 같은 메서드를 호출한다.' },
+    { title: '5단계 · b.txt.getSize() 호출', active: ['documents', 'b'], call: 'b.txt.getSize()', route: 'Documents의 지역 변수 total은 0에서 시작한다.', current: 'b.txt', type: 'Leaf', children: '없음', size: '200을 반환할 예정', totals: { root: 100, documents: 0 }, description: 'Documents 내부의 합산은 Root의 total과 별개인 지역 변수에서 시작한다.' },
+    { title: '6단계 · b.txt가 200 반환', active: ['b', 'documents'], call: 'b.txt.getSize() → 200', route: 'Documents의 지역 변수 total이 0 + 200으로 갱신된다.', current: 'b.txt', type: 'Leaf', children: '없음', size: '200', totals: { root: 100, documents: 200 }, description: 'b.txt의 값이 Documents의 지역 합계에 반영된다. 아직 c.txt의 반환 전이다.' },
+    { title: '7단계 · c.txt.getSize() 호출 및 반환', active: ['documents', 'c'], call: 'c.txt.getSize() → 300', route: 'Documents의 지역 변수 total이 200 + 300으로 갱신된다.', current: 'c.txt', type: 'Leaf', children: '없음', size: '300', totals: { root: 100, documents: 500 }, description: 'c.txt가 300을 반환한 뒤 Documents의 지역 total은 500이 된다.' },
+    { title: '8단계 · Documents가 500 반환', active: ['documents', 'root'], call: 'Documents.getSize() → 500', route: 'Documents의 합계가 호출자 Root로 반환된다.', current: 'Documents', type: 'Composite', children: 'b.txt · c.txt', size: '500', totals: { root: 100, documents: 500 }, description: 'Documents 내부의 재귀 호출이 끝나고 500이라는 반환값이 Root에 전달된다.' },
+    { title: '9단계 · Root 누적합 600', active: ['root'], call: 'total += Documents.getSize()', route: 'Root의 지역 변수 total이 100 + 500으로 갱신된다.', current: 'Root', type: 'Composite', children: 'a.txt · Documents', size: '600을 반환할 예정', totals: { root: 600, documents: 500 }, description: 'Documents가 반환한 500이 이제 Root의 지역 total에 반영된다. 반환 전 값을 미리 더하지 않는다.' },
+    { title: '10단계 · Root.getSize() 반환 준비', active: ['root'], call: 'return total', route: 'Root의 지역 변수 total에 최종 합계 600이 있다.', current: 'Root', type: 'Composite', children: 'a.txt · Documents', size: '600', totals: { root: 600, documents: 500 }, description: 'Root는 자신의 모든 자식 연산이 끝난 뒤에만 최종 합계를 반환한다.' },
+    { title: '11단계 · Client에 최종 결과 반환', active: ['root'], call: 'Root.getSize() → 600', route: 'Client가 Component 계약을 통해 600을 받는다.', current: 'Root', type: 'Composite', children: 'a.txt · Documents', size: '600', totals: { root: 600, documents: 500 }, description: 'Leaf와 Composite는 같은 getSize() 계약을 제공하지만 내부에서 값을 반환하거나 하위 객체에 위임하는 방식은 다르다.' }
+  ];
+
+  const compositeNodes = {
+    root: { name: 'Root', type: 'Composite', children: 'a.txt, Documents', method: '자식 Component를 순회해 total에 더한다.', size: '현재 호출 단계에 따라 0 또는 600' },
+    a: { name: 'a.txt', type: 'Leaf', children: '없음', method: '자신의 size 100을 반환한다.', size: '100' },
+    documents: { name: 'Documents', type: 'Composite', children: 'b.txt, c.txt', method: '자식 Component를 순회해 total에 더한다.', size: '현재 호출 단계에 따라 0 또는 500' },
+    b: { name: 'b.txt', type: 'Leaf', children: '없음', method: '자신의 size 200을 반환한다.', size: '200' },
+    c: { name: 'c.txt', type: 'Leaf', children: '없음', method: '자신의 size 300을 반환한다.', size: '300' }
+  };
+
+  const solidPrinciples = {
+    srp: { label: 'SRP · Single Responsibility Principle', question: '무엇이 서로 다른 변경 이유인가?', beforeTitle: '주문 처리와 알림 발송이 한 객체에 혼재', beforeNodes: ['OrderService', '주문 검증', '알림 발송'], before: '주문 규칙과 알림 방식 중 어느 하나가 바뀌어도 같은 객체를 수정한다.', afterTitle: '변경 이유에 따라 책임을 분리', afterNodes: ['OrderService', 'NotificationSender'], after: '주문 흐름을 조율하는 책임과 알림 발송 책임을 나누되, 모든 메서드를 기계적으로 분리하지 않는다.', relation: '변경 이유가 다른 책임을 분리한다.', tradeoff: '협력 객체와 조립 코드가 늘어날 수 있다.', description: 'SRP의 기준은 메서드 개수가 아니라 하나의 모듈이 변경되는 이유를 얼마나 명확하게 유지하는가다.' },
+    ocp: { label: 'OCP · Open-Closed Principle', question: '새 정책이 기존 계산 흐름을 흔드는가?', beforeTitle: '서비스 내부의 할인 정책 조건문', beforeNodes: ['PriceCalculator', 'if · else', '할인 계산'], before: '새 할인 유형이 추가될 때 기존 서비스의 분기와 테스트 범위를 함께 수정한다.', afterTitle: 'DiscountPolicy와 구현체로 확장', afterNodes: ['PriceCalculator', 'DiscountPolicy', 'EventDiscountPolicy'], after: '새 정책을 구현체로 추가하고 PriceCalculator의 공통 계산 흐름은 유지한다.', relation: '변경 축을 구현체로 격리한다.', tradeoff: '전략 선택·등록 부분은 여전히 변경될 수 있다.', description: 'OCP는 모든 소스 코드의 수정을 금지하는 규칙이 아니라 변경의 영향을 필요한 범위로 제한하려는 원칙이다.' },
+    lsp: { label: 'LSP · Liskov Substitution Principle', question: '하위 타입이 상위 타입의 행동 계약을 지키는가?', beforeTitle: '공통 계약을 충족하지 않는 구현체 전달', beforeNodes: ['Client', 'Payment', 'refund() → 예외'], before: '컴파일은 되지만 상위 타입이 기대한 연산을 하위 타입이 거부하면 치환 뒤 Client의 기대가 깨진다.', afterTitle: '실제 행동 계약을 충족하는 구현체 사용', afterNodes: ['Client', 'Payment', '계약 유지'], after: '상위 타입을 사용하는 코드가 하위 타입으로 바뀌어도 사전·사후 조건과 불변 조건을 지킨다.', relation: '타입 호환이 아니라 행위 계약을 유지한다.', tradeoff: '공통 계약을 넓게 잡으면 구현체에 불필요한 의무가 생길 수 있다.', description: '동일한 인터페이스를 구현하거나 상속했다는 사실만으로 LSP를 만족한다고 단정할 수 없다.' },
+    isp: { label: 'ISP · Interface Segregation Principle', question: '사용하지 않는 기능까지 의존하게 만드는가?', beforeTitle: '사용하지 않는 기능까지 강제되는 인터페이스', beforeNodes: ['Notifier', 'Email', 'SMS', 'Push'], before: 'SMS만 보내는 객체도 이메일·Push 연산을 구현하거나 의존해야 한다.', afterTitle: '필요한 기능만 제공하는 계약', afterNodes: ['SmsSender', 'sendSms(message)'], after: 'Client와 구현체가 실제로 사용하는 기능만 의존하도록 계약을 나눈다.', relation: '불필요한 연산에 대한 의존을 줄인다.', tradeoff: '인터페이스가 지나치게 쪼개지면 관리할 계약 수가 늘어난다.', description: 'ISP는 모든 인터페이스를 한 메서드로 만드는 규칙이 아니라 사용하지 않는 기능을 강제하지 않는 원칙이다.' },
+    dip: { label: 'DIP · Dependency Inversion Principle', question: '고수준 정책이 구체 기술 구현에 직접 묶여 있는가?', beforeTitle: '서비스가 구체 결제 구현체에 직접 의존', beforeNodes: ['OrderService', 'KakaoPayment', '외부 응답 형식'], before: '서비스가 특정 결제 클래스와 응답 형식을 알면 기술 구현의 변경이 비즈니스 정책까지 번진다.', afterTitle: 'PaymentGateway 추상화에 의존', afterNodes: ['OrderService', 'PaymentGateway', 'KakaoPayment'], after: '소스 코드의 의존 방향은 추상화를 향하고, 런타임 호출은 주입된 구현체로 이어진다.', relation: '소스 코드 의존과 런타임 호출을 구분해 추상화에 의존한다.', tradeoff: '추상화와 Adapter·테스트 구현체를 설계·조립해야 한다.', description: 'DI는 의존성을 전달하는 방식이고 IoC는 제어권 이전이다. 구체 클래스를 생성자 주입하는 것만으로 DIP가 보장되지는 않는다.' }
+  };
+
   const singletonModes = {
     unsafe: [
       { title: '0단계 · instance = null', description: '공유 instance가 아직 없고 두 Thread가 접근할 수 있는 상태다.', a: '대기', b: '대기', instance: '참조 없음', monitor: '모니터 사용 안 함', objects: ['#1 · 없음', '#2 · 없음'], flow: '두 Thread가 null을 확인할 수 있다.', result: '서로 다른 객체가 만들어질 수 있다.' },
@@ -379,6 +428,180 @@
     if (window.InteractiveLayout) InteractiveLayout.watchResize(lock);
   };
 
+  const initStrategy = (root) => {
+    let mode = 'none';
+    let currentStep = 0;
+    const controls = {
+      previous: root.querySelector('[data-dpv-action="previous"]'),
+      reset: root.querySelector('[data-dpv-action="reset"]'),
+      next: root.querySelector('[data-dpv-action="next"]')
+    };
+    const render = (index = currentStep) => {
+      const steps = strategyModes[mode];
+      const step = steps[index];
+      root.dataset.dpvStep = String(index + 1);
+      root.dataset.dpvMode = mode;
+      setText(root, '[data-dpv-step-title]', step.title);
+      setText(root, '[data-dpv-step-count]', `${index + 1} / ${steps.length}`);
+      setText(root, '[data-dpv-strategy-from]', step.from);
+      setText(root, '[data-dpv-strategy-to]', step.to);
+      setText(root, '[data-dpv-strategy-route]', step.route);
+      setText(root, '[data-dpv-strategy-price]', step.price);
+      setText(root, '[data-dpv-strategy-policy]', step.policy);
+      setText(root, '[data-dpv-strategy-call]', step.call);
+      setText(root, '[data-dpv-strategy-result]', step.result);
+      setText(root, '[data-dpv-strategy-return]', step.returnValue);
+      setText(root, '[data-dpv-strategy-description]', step.description);
+      const payload = root.querySelector('[data-dpv-strategy-payload]');
+      payload.replaceChildren(...step.payload.map((item) => {
+        const chip = document.createElement('span');
+        chip.textContent = item;
+        return chip;
+      }));
+      root.querySelectorAll('[data-dpv-strategy-actor]').forEach((actor) => {
+        const active = step.active.includes(actor.dataset.dpvStrategyActor);
+        actor.dataset.state = active ? 'active' : 'idle';
+        const state = actor.querySelector('[data-dpv-actor-state]');
+        state.textContent = active ? '현재 단계' : '대기';
+      });
+      controls.previous.disabled = index === 0;
+      controls.reset.disabled = index === 0;
+      controls.next.disabled = index === steps.length - 1;
+    };
+    const moveTo = (index) => {
+      const steps = strategyModes[mode];
+      currentStep = Math.max(0, Math.min(index, steps.length - 1));
+      render();
+    };
+    const lock = () => lockStepLayout({ root, steps: strategyModes[mode], render, currentStep });
+    controls.previous.addEventListener('click', () => moveTo(currentStep - 1));
+    controls.reset.addEventListener('click', () => moveTo(0));
+    controls.next.addEventListener('click', () => moveTo(currentStep + 1));
+    root.querySelectorAll('[data-dpv-strategy-mode]').forEach((button) => {
+      button.addEventListener('click', () => {
+        mode = button.dataset.dpvStrategyMode;
+        currentStep = 0;
+        root.querySelectorAll('[data-dpv-strategy-mode]').forEach((item) => {
+          const active = item.dataset.dpvStrategyMode === mode;
+          item.classList.toggle('is-active', active);
+          item.setAttribute('aria-selected', String(active));
+        });
+        lock();
+      });
+    });
+    root.addEventListener('keydown', (event) => {
+      const steps = strategyModes[mode];
+      if (event.key === 'ArrowLeft') { event.preventDefault(); moveTo(currentStep - 1); }
+      if (event.key === 'ArrowRight') { event.preventDefault(); moveTo(currentStep + 1); }
+      if (event.key === 'Home') { event.preventDefault(); moveTo(0); }
+      if (event.key === 'End') { event.preventDefault(); moveTo(steps.length - 1); }
+    });
+    root.dataset.dpvInitialized = 'true';
+    lock();
+    root.classList.add('is-ready');
+    if (window.InteractiveLayout) InteractiveLayout.watchResize(lock);
+  };
+
+  const initComposite = (root) => {
+    let currentStep = 0;
+    let selectedNode = 'root';
+    const controls = {
+      previous: root.querySelector('[data-dpv-action="previous"]'),
+      reset: root.querySelector('[data-dpv-action="reset"]'),
+      next: root.querySelector('[data-dpv-action="next"]')
+    };
+    const renderSelection = () => {
+      const node = compositeNodes[selectedNode];
+      setText(root, '[data-dpv-composite-selection]', `${node.name} · ${node.type} · ${node.method}`);
+      root.querySelectorAll('[data-dpv-composite-select]').forEach((button) => {
+        const active = button.dataset.dpvCompositeSelect === selectedNode;
+        button.classList.toggle('is-selected', active);
+        button.setAttribute('aria-selected', String(active));
+      });
+    };
+    const render = (index = currentStep) => {
+      const step = compositeSteps[index];
+      root.dataset.dpvStep = String(index + 1);
+      setText(root, '[data-dpv-step-title]', step.title);
+      setText(root, '[data-dpv-step-count]', `${index + 1} / ${compositeSteps.length}`);
+      setText(root, '[data-dpv-composite-call]', step.call);
+      setText(root, '[data-dpv-composite-route]', step.route);
+      setText(root, '[data-dpv-composite-current]', step.current);
+      setText(root, '[data-dpv-composite-type]', step.type);
+      setText(root, '[data-dpv-composite-children]', step.children);
+      setText(root, '[data-dpv-composite-size]', step.size);
+      setText(root, '[data-dpv-composite-description]', step.description);
+      root.querySelector('[data-dpv-composite-total="root"]').textContent = String(step.totals.root);
+      root.querySelector('[data-dpv-composite-total="documents"]').textContent = String(step.totals.documents);
+      root.querySelectorAll('[data-dpv-composite-select]').forEach((node) => {
+        node.dataset.state = step.active.includes(node.dataset.dpvCompositeSelect) ? 'active' : 'idle';
+      });
+      controls.previous.disabled = index === 0;
+      controls.reset.disabled = index === 0;
+      controls.next.disabled = index === compositeSteps.length - 1;
+      renderSelection();
+    };
+    const moveTo = (index) => {
+      currentStep = Math.max(0, Math.min(index, compositeSteps.length - 1));
+      render();
+    };
+    const lock = () => lockStepLayout({ root, steps: compositeSteps, render, currentStep });
+    controls.previous.addEventListener('click', () => moveTo(currentStep - 1));
+    controls.reset.addEventListener('click', () => moveTo(0));
+    controls.next.addEventListener('click', () => moveTo(currentStep + 1));
+    root.querySelectorAll('[data-dpv-composite-select]').forEach((button) => {
+      button.addEventListener('click', () => {
+        selectedNode = button.dataset.dpvCompositeSelect;
+        renderSelection();
+      });
+    });
+    root.addEventListener('keydown', (event) => {
+      if (event.key === 'ArrowLeft') { event.preventDefault(); moveTo(currentStep - 1); }
+      if (event.key === 'ArrowRight') { event.preventDefault(); moveTo(currentStep + 1); }
+      if (event.key === 'Home') { event.preventDefault(); moveTo(0); }
+      if (event.key === 'End') { event.preventDefault(); moveTo(compositeSteps.length - 1); }
+    });
+    root.dataset.dpvInitialized = 'true';
+    lock();
+    root.classList.add('is-ready');
+    if (window.InteractiveLayout) InteractiveLayout.watchResize(lock);
+  };
+
+  const initSolid = (root) => {
+    const render = (key) => {
+      const principle = solidPrinciples[key];
+      root.dataset.dpvPrinciple = key;
+      setText(root, '[data-dpv-solid-label]', principle.label);
+      setText(root, '[data-dpv-solid-question]', principle.question);
+      setText(root, '[data-dpv-solid-before-title]', principle.beforeTitle);
+      setText(root, '[data-dpv-solid-before]', principle.before);
+      setText(root, '[data-dpv-solid-after-title]', principle.afterTitle);
+      setText(root, '[data-dpv-solid-after]', principle.after);
+      setText(root, '[data-dpv-solid-relation]', principle.relation);
+      setText(root, '[data-dpv-solid-tradeoff]', principle.tradeoff);
+      setText(root, '[data-dpv-solid-description]', principle.description);
+      ['before', 'after'].forEach((side) => {
+        const container = root.querySelector(`[data-dpv-solid-${side}-nodes]`);
+        container.replaceChildren(...principle[`${side}Nodes`].map((node) => {
+          const element = document.createElement('span');
+          element.textContent = node;
+          return element;
+        }));
+      });
+      root.querySelectorAll('[data-dpv-solid-principle]').forEach((button) => {
+        const active = button.dataset.dpvSolidPrinciple === key;
+        button.classList.toggle('is-active', active);
+        button.setAttribute('aria-selected', String(active));
+      });
+    };
+    root.querySelectorAll('[data-dpv-solid-principle]').forEach((button) => {
+      button.addEventListener('click', () => render(button.dataset.dpvSolidPrinciple));
+    });
+    root.dataset.dpvInitialized = 'true';
+    render('srp');
+    root.classList.add('is-ready');
+  };
+
   const initSingleton = (root) => {
     let mode = 'unsafe';
     let currentStep = 0;
@@ -489,6 +712,9 @@
       if (kind === 'factory') initFactory(root);
       if (kind === 'observer') initObserver(root);
       if (kind === 'adapter') initAdapter(root);
+      if (kind === 'strategy') initStrategy(root);
+      if (kind === 'composite') initComposite(root);
+      if (kind === 'solid') initSolid(root);
       if (kind === 'singleton') initSingleton(root);
       if (kind === 'spring') initSpring(root);
     } catch (error) {

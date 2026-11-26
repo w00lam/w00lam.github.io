@@ -226,6 +226,128 @@
       </div>
       <p class="design-pattern-visualization__note">패턴을 적용했다는 사실만으로 좋은 설계가 되지는 않는다. 변경 가능성, 결합도, 추적 비용, 유지보수성을 함께 비교해야 한다.</p>
 
+    {% when 'strategy' %}
+      <div class="design-pattern-visualization__header">
+        <p class="design-pattern-visualization__eyebrow">Interactive strategy flow</p>
+        <h3 id="{{ visualization_id }}-title">할인 전략 선택과 실행</h3>
+        <p>새 전략을 선택하면 그 전략을 전달받은 새로운 PriceCalculator가 실행을 시작한다.</p>
+      </div>
+      <div class="design-pattern-visualization__mode-tabs" role="tablist" aria-label="할인 전략 선택">
+        <button type="button" class="btn btn-outline-secondary btn-sm is-active" data-dpv-strategy-mode="none" role="tab" aria-selected="true">할인 없음</button>
+        <button type="button" class="btn btn-outline-secondary btn-sm" data-dpv-strategy-mode="percentage" role="tab" aria-selected="false">20% 할인</button>
+      </div>
+      <div class="design-pattern-visualization__progress" aria-live="polite">
+        <strong data-dpv-step-title>1단계 · Client가 전략 선택</strong>
+        <span data-dpv-step-count>1 / 6</span>
+      </div>
+      <div class="design-pattern-visualization__pattern-stage design-pattern-visualization__strategy-stage">
+        <div class="design-pattern-visualization__strategy-actors" role="list" aria-label="Strategy 구성 요소">
+          <article class="design-pattern-visualization__actor" data-dpv-strategy-actor="client" role="listitem"><span>Client</span><h4>Client</h4><p>사용할 정책을 선택하고 Context를 조립한다.</p><b data-dpv-actor-state>대기</b></article>
+          <article class="design-pattern-visualization__actor" data-dpv-strategy-actor="calculator" role="listitem"><span>Context</span><h4>PriceCalculator</h4><p>가격 계산을 전략 객체에 위임한다.</p><b data-dpv-actor-state>대기</b></article>
+          <article class="design-pattern-visualization__actor" data-dpv-strategy-actor="policy" role="listitem"><span>Strategy</span><h4>DiscountPolicy</h4><p>할인 정책이 제공해야 할 공통 계약이다.</p><b data-dpv-actor-state>대기</b></article>
+          <article class="design-pattern-visualization__actor" data-dpv-strategy-actor="none" role="listitem"><span>Concrete Strategy</span><h4>NoDiscountPolicy</h4><p>원래 가격을 그대로 최종 금액으로 반환한다.</p><b data-dpv-actor-state>대기</b></article>
+          <article class="design-pattern-visualization__actor" data-dpv-strategy-actor="percentage" role="listitem"><span>Concrete Strategy</span><h4>PercentageDiscountPolicy</h4><p>20% 할인된 최종 금액을 반환한다.</p><b data-dpv-actor-state>대기</b></article>
+        </div>
+        <div class="design-pattern-visualization__route" aria-live="polite">
+          <div><strong data-dpv-strategy-from>Client</strong><span aria-hidden="true">→</span><strong data-dpv-strategy-to>DiscountPolicy</strong></div>
+          <p data-dpv-strategy-route>Client가 사용할 전략을 선택한다.</p>
+          <div class="design-pattern-visualization__chips" data-dpv-strategy-payload><span>new NoDiscountPolicy()</span></div>
+        </div>
+        <div class="design-pattern-visualization__strategy-detail" aria-label="Strategy 실행 상태">
+          <div><span>원래 가격</span><strong data-dpv-strategy-price>10,000원</strong></div>
+          <div><span>선택한 정책</span><strong data-dpv-strategy-policy>NoDiscountPolicy</strong></div>
+          <div><span>호출 메서드</span><strong data-dpv-strategy-call>대기</strong></div>
+          <div><span>계산 결과</span><strong data-dpv-strategy-result>아직 없음</strong></div>
+          <div><span>최종 반환값</span><strong data-dpv-strategy-return>아직 없음</strong></div>
+        </div>
+      </div>
+      <p class="design-pattern-visualization__description" data-dpv-strategy-description>Client는 구체 정책의 계산을 직접 수행하지 않고 선택한 전략을 PriceCalculator에 전달한다.</p>
+      <div class="design-pattern-visualization__controls" aria-label="Strategy 시각화 단계 제어">
+        <button type="button" class="btn btn-outline-secondary btn-sm" data-dpv-action="previous" disabled>이전</button>
+        <button type="button" class="btn btn-outline-secondary btn-sm" data-dpv-action="reset" disabled>초기화</button>
+        <button type="button" class="btn btn-outline-secondary btn-sm" data-dpv-action="next">다음</button>
+      </div>
+
+    {% when 'composite' %}
+      <div class="design-pattern-visualization__header">
+        <p class="design-pattern-visualization__eyebrow">Interactive composite tree</p>
+        <h3 id="{{ visualization_id }}-title">Composite 트리의 재귀 합산</h3>
+        <p>파일과 폴더를 같은 Component 계약으로 다루면서 각자의 getSize()를 실행한다.</p>
+      </div>
+      <div class="design-pattern-visualization__progress" aria-live="polite">
+        <strong data-dpv-step-title>1단계 · Root.getSize() 호출</strong>
+        <span data-dpv-step-count>1 / 11</span>
+      </div>
+      <div class="design-pattern-visualization__pattern-stage design-pattern-visualization__composite-stage">
+        <div class="design-pattern-visualization__composite-tree" role="tree" aria-label="파일과 폴더 계층">
+          <button type="button" class="design-pattern-visualization__composite-node is-root" data-dpv-composite-select="root" role="treeitem" aria-selected="true"><span>Composite</span><strong>Root</strong><small>누적합 <b data-dpv-composite-total="root">0</b></small></button>
+          <div class="design-pattern-visualization__composite-branch" role="group">
+            <button type="button" class="design-pattern-visualization__composite-node is-leaf" data-dpv-composite-select="a" role="treeitem" aria-selected="false"><span>Leaf</span><strong>a.txt</strong><small>크기 100</small></button>
+            <button type="button" class="design-pattern-visualization__composite-node is-composite" data-dpv-composite-select="documents" role="treeitem" aria-selected="false"><span>Composite</span><strong>Documents</strong><small>누적합 <b data-dpv-composite-total="documents">0</b></small></button>
+            <div class="design-pattern-visualization__composite-branch is-nested" role="group">
+              <button type="button" class="design-pattern-visualization__composite-node is-leaf" data-dpv-composite-select="b" role="treeitem" aria-selected="false"><span>Leaf</span><strong>b.txt</strong><small>크기 200</small></button>
+              <button type="button" class="design-pattern-visualization__composite-node is-leaf" data-dpv-composite-select="c" role="treeitem" aria-selected="false"><span>Leaf</span><strong>c.txt</strong><small>크기 300</small></button>
+            </div>
+          </div>
+        </div>
+        <div class="design-pattern-visualization__composite-info">
+          <div class="design-pattern-visualization__composite-call">
+            <span>현재 호출</span><strong data-dpv-composite-call>Root.getSize()</strong>
+            <p data-dpv-composite-route>Root의 지역 변수 total은 0에서 시작한다.</p>
+          </div>
+          <div class="design-pattern-visualization__state-summary">
+            <div><span>현재 객체</span><strong data-dpv-composite-current>Root</strong></div>
+            <div><span>객체 유형</span><strong data-dpv-composite-type>Composite</strong></div>
+            <div><span>자식 객체</span><strong data-dpv-composite-children>2개</strong></div>
+            <div><span>확인 가능한 크기</span><strong data-dpv-composite-size>아직 반환 전</strong></div>
+          </div>
+          <p class="design-pattern-visualization__composite-selection" data-dpv-composite-selection>Root · Composite · 자식 Component를 순회해 합산한다.</p>
+        </div>
+      </div>
+      <p class="design-pattern-visualization__description" data-dpv-composite-description>Client는 파일인지 폴더인지 검사하지 않고 Root.getSize()라는 Component 계약을 호출한다.</p>
+      <div class="design-pattern-visualization__controls" aria-label="Composite 시각화 단계 제어">
+        <button type="button" class="btn btn-outline-secondary btn-sm" data-dpv-action="previous" disabled>이전</button>
+        <button type="button" class="btn btn-outline-secondary btn-sm" data-dpv-action="reset" disabled>초기화</button>
+        <button type="button" class="btn btn-outline-secondary btn-sm" data-dpv-action="next">다음</button>
+      </div>
+
+    {% when 'solid' %}
+      <div class="design-pattern-visualization__header">
+        <p class="design-pattern-visualization__eyebrow">Interactive SOLID comparison</p>
+        <h3 id="{{ visualization_id }}-title">SOLID 원칙별 구조 비교</h3>
+        <p>각 원칙을 선택해 변경 이유와 의존 관계가 어떻게 달라지는지 비교한다.</p>
+      </div>
+      <div class="design-pattern-visualization__mode-tabs" role="tablist" aria-label="SOLID 원칙 선택">
+        <button type="button" class="btn btn-outline-secondary btn-sm is-active" data-dpv-solid-principle="srp" role="tab" aria-selected="true">SRP</button>
+        <button type="button" class="btn btn-outline-secondary btn-sm" data-dpv-solid-principle="ocp" role="tab" aria-selected="false">OCP</button>
+        <button type="button" class="btn btn-outline-secondary btn-sm" data-dpv-solid-principle="lsp" role="tab" aria-selected="false">LSP</button>
+        <button type="button" class="btn btn-outline-secondary btn-sm" data-dpv-solid-principle="isp" role="tab" aria-selected="false">ISP</button>
+        <button type="button" class="btn btn-outline-secondary btn-sm" data-dpv-solid-principle="dip" role="tab" aria-selected="false">DIP</button>
+      </div>
+      <div class="design-pattern-visualization__pattern-stage design-pattern-visualization__solid-stage">
+        <div class="design-pattern-visualization__solid-heading">
+          <span data-dpv-solid-label>SRP · Single Responsibility Principle</span>
+          <strong data-dpv-solid-question>무엇이 서로 다른 변경 이유인가?</strong>
+        </div>
+        <div class="design-pattern-visualization__solid-columns">
+          <article class="design-pattern-visualization__solid-card is-before">
+            <span>개선 전 · 문제 상황</span><h4 data-dpv-solid-before-title>주문 처리와 알림 발송이 한 객체에 혼재</h4>
+            <div class="design-pattern-visualization__solid-nodes" data-dpv-solid-before-nodes></div>
+            <p data-dpv-solid-before>주문 규칙과 알림 방식 중 어느 하나가 바뀌어도 같은 객체를 수정한다.</p>
+          </article>
+          <article class="design-pattern-visualization__solid-card is-after">
+            <span>개선 후 · 설계 방향</span><h4 data-dpv-solid-after-title>변경 이유에 따라 책임을 분리</h4>
+            <div class="design-pattern-visualization__solid-nodes" data-dpv-solid-after-nodes></div>
+            <p data-dpv-solid-after>주문 흐름과 알림 발송이 서로의 변경에 끌려가지 않도록 나눈다.</p>
+          </article>
+        </div>
+        <div class="design-pattern-visualization__solid-summary">
+          <div><span>관계</span><strong data-dpv-solid-relation>변경 이유를 분리한다.</strong></div>
+          <div><span>고려할 trade-off</span><strong data-dpv-solid-tradeoff>클래스와 협력 객체가 늘어날 수 있다.</strong></div>
+        </div>
+      </div>
+      <p class="design-pattern-visualization__description" data-dpv-solid-description>SOLID는 클래스를 무조건 잘게 나누는 규칙이 아니라 변경의 영향 범위를 검토하는 기준이다.</p>
+
     {% when 'singleton' %}
       <div class="design-pattern-visualization__header">
         <p class="design-pattern-visualization__eyebrow">Interactive concurrency comparison</p>

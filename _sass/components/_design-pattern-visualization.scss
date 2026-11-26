@@ -361,6 +361,254 @@
     overflow: hidden;
   }
 
+  &__strategy-stage {
+    grid-template-rows: auto auto auto;
+  }
+
+  &__strategy-actors {
+    display: grid;
+    grid-template-columns: repeat(5, minmax(0, 1fr));
+    gap: 0.6rem;
+  }
+
+  &__strategy-detail {
+    display: grid;
+    grid-template-columns: repeat(5, minmax(0, 1fr));
+    gap: 0.6rem;
+
+    > div {
+      min-width: 0;
+      padding: 0.65rem;
+      border: 1px solid var(--dpv-border);
+      border-radius: calc(v.$radius-lg - 0.15rem);
+      background: var(--dpv-surface);
+    }
+
+    span,
+    strong { display: block; }
+
+    span { margin-bottom: 0.2rem; color: var(--dpv-muted); font-size: 0.7rem; }
+
+    strong {
+      color: var(--heading-color);
+      font-size: 0.82rem;
+      line-height: 1.35;
+      overflow-wrap: anywhere;
+    }
+  }
+
+  &__composite-stage {
+    grid-template-columns: minmax(0, 1.1fr) minmax(0, 0.9fr);
+  }
+
+  &__composite-tree,
+  &__composite-info {
+    min-width: 0;
+    padding: 0.75rem;
+    border: 1px solid var(--dpv-border);
+    border-radius: calc(v.$radius-lg - 0.15rem);
+    background: var(--dpv-surface);
+  }
+
+  &__composite-tree {
+    display: grid;
+    align-content: start;
+    gap: 0.55rem;
+    overflow-y: auto;
+  }
+
+  &__composite-branch {
+    display: grid;
+    gap: 0.45rem;
+    margin-left: 1rem;
+    padding-left: 0.75rem;
+    border-left: 1px solid var(--dpv-border);
+
+    &.is-nested { margin-left: 1.1rem; }
+  }
+
+  &__composite-node {
+    display: grid;
+    gap: 0.2rem;
+    min-width: 0;
+    padding: 0.55rem 0.65rem;
+    border: 1px solid var(--dpv-border);
+    border-radius: 0.45rem;
+    background: transparent;
+    color: var(--text-color);
+    text-align: left;
+    cursor: pointer;
+
+    &:hover,
+    &:focus-visible,
+    &.is-selected,
+    &[data-state='active'] {
+      border-color: var(--dpv-accent);
+      box-shadow: inset 0 0 0 2px var(--dpv-accent);
+    }
+
+    &[data-state='idle'] { opacity: 0.7; }
+
+    span,
+    small { color: var(--dpv-muted); font-size: 0.7rem; }
+
+    strong { color: var(--heading-color); overflow-wrap: anywhere; }
+
+    small b { color: var(--dpv-accent); }
+  }
+
+  &__composite-info {
+    display: grid;
+    grid-template-rows: auto auto minmax(0, 1fr);
+    gap: 0.65rem;
+    overflow-y: auto;
+  }
+
+  &__composite-call {
+    display: grid;
+    gap: 0.35rem;
+    min-height: 6rem;
+    padding: 0.7rem;
+    border: 1px dashed var(--dpv-border);
+    border-radius: 0.45rem;
+
+    span { color: var(--dpv-muted); font-size: 0.72rem; }
+
+    strong { color: var(--heading-color); overflow-wrap: anywhere; }
+
+    p {
+      min-height: 2.8em;
+      margin: 0;
+      color: var(--dpv-muted);
+      font-size: 0.78rem;
+      line-height: 1.45;
+    }
+  }
+
+  &__composite-selection {
+    min-height: 4.2rem;
+    margin: 0;
+    padding: 0.7rem;
+    border-left: 0.25rem solid var(--dpv-accent);
+    background: color-mix(in srgb, var(--dpv-accent) 7%, var(--dpv-surface));
+    color: var(--dpv-muted);
+    font-size: 0.8rem;
+    line-height: 1.45;
+    overflow-y: auto;
+  }
+
+  &__solid-stage {
+    grid-template-rows: auto minmax(0, 1fr) auto;
+  }
+
+  &__solid-heading {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.75rem;
+    min-width: 0;
+    padding: 0.65rem 0.75rem;
+    border: 1px solid var(--dpv-border);
+    border-radius: 0.45rem;
+    background: var(--dpv-surface);
+
+    span,
+    strong { overflow-wrap: anywhere; }
+
+    span { color: var(--dpv-accent); font-size: 0.78rem; font-weight: 700; }
+
+    strong { color: var(--heading-color); font-size: 0.88rem; }
+  }
+
+  &__solid-columns {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 0.7rem;
+    min-height: 0;
+  }
+
+  &__solid-card {
+    display: grid;
+    align-content: start;
+    gap: 0.45rem;
+    min-width: 0;
+    padding: 0.8rem;
+    border: 1px solid var(--dpv-border);
+    border-top: 0.25rem solid var(--dpv-accent);
+    border-radius: calc(v.$radius-lg - 0.15rem);
+    background: var(--dpv-surface);
+
+    > span { color: var(--dpv-muted); font-size: 0.72rem; }
+
+    h4 {
+      min-height: 2.6em;
+      margin: 0;
+      color: var(--heading-color);
+      font-size: 0.92rem;
+      line-height: 1.35;
+      overflow-wrap: anywhere;
+    }
+
+    p {
+      min-height: 3.4em;
+      margin: 0;
+      color: var(--dpv-muted);
+      font-size: 0.78rem;
+      line-height: 1.45;
+      overflow-y: auto;
+    }
+
+    &.is-before { border-top-color: var(--dpv-warning); }
+
+    &.is-after { border-top-color: var(--dpv-positive); }
+  }
+
+  &__solid-nodes {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.4rem;
+    min-height: 3.2rem;
+    align-content: start;
+
+    span {
+      display: inline-flex;
+      align-items: center;
+      min-height: 1.8rem;
+      padding: 0.25rem 0.5rem;
+      border: 1px solid var(--dpv-border);
+      border-radius: 999px;
+      color: var(--heading-color);
+      font-size: 0.74rem;
+      line-height: 1.25;
+    }
+  }
+
+  &__solid-summary {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 0.6rem;
+
+    > div {
+      min-width: 0;
+      padding: 0.6rem;
+      border: 1px solid var(--dpv-border);
+      border-radius: 0.45rem;
+      background: var(--dpv-surface);
+    }
+
+    span,
+    strong { display: block; }
+
+    span { margin-bottom: 0.2rem; color: var(--dpv-muted); font-size: 0.7rem; }
+
+    strong {
+      color: var(--heading-color);
+      font-size: 0.8rem;
+      line-height: 1.35;
+      overflow-wrap: anywhere;
+    }
+  }
+
   &__template-stage {
     grid-template-rows: auto auto auto;
   }
@@ -642,14 +890,19 @@
 
     &__overview-grid,
     &__actors,
+    &__strategy-actors,
     &__spring-stage,
     &__state-summary,
+    &__strategy-detail,
     &__adapter-detail,
     &__comparison-grid,
-    &__observer-actors { grid-template-columns: 1fr; }
+    &__observer-actors,
+    &__solid-columns,
+    &__solid-summary { grid-template-columns: 1fr; }
 
     &__factory-stage,
-    &__observer-stage { grid-template-columns: 1fr; }
+    &__observer-stage,
+    &__composite-stage { grid-template-columns: 1fr; }
 
     &__pattern-stage { height: var(--dpv-stage-height, 32rem); min-height: var(--dpv-stage-height, 32rem); }
 
