@@ -1,0 +1,209 @@
+{% assign visualization_id = 'linux-' | append: include.kind %}
+
+<figure
+  id="{{ visualization_id }}"
+  class="linux-visualization linux-visualization--{{ include.kind }}"
+  data-linux-visualization
+  data-linux-kind="{{ include.kind }}"
+  tabindex="0"
+  role="group"
+  aria-labelledby="{{ visualization_id }}-title"
+>
+  {% case include.kind %}
+    {% when 'pipe' %}
+      <div class="linux-visualization__header">
+        <p class="linux-visualization__eyebrow">Interactive Linux flow</p>
+        <h3 id="{{ visualization_id }}-title">Pipe와 Redirection 데이터 흐름</h3>
+        <p>Shell이 연결한 표준 입출력의 방향과 파일로 출력 대상을 바꾸는 Redirection을 비교한다.</p>
+      </div>
+
+      <div class="linux-visualization__mode-tabs" role="tablist" aria-label="Pipe와 Redirection 시나리오 선택">
+        <button type="button" class="btn btn-outline-secondary btn-sm is-active" data-linux-mode="pipe" role="tab" aria-selected="true">Pipe · `|`</button>
+        <button type="button" class="btn btn-outline-secondary btn-sm" data-linux-mode="overwrite" role="tab" aria-selected="false">덮어쓰기 · `>`</button>
+        <button type="button" class="btn btn-outline-secondary btn-sm" data-linux-mode="append" role="tab" aria-selected="false">추가 · `>>`</button>
+      </div>
+
+      <div class="linux-visualization__progress" aria-live="polite">
+        <strong data-linux-step-title>1단계 · 명령어와 연결 구조 확인</strong>
+        <span data-linux-step-count>1 / 6</span>
+      </div>
+
+      <div class="linux-visualization__stage linux-visualization__pipe-stage">
+        <div class="linux-visualization__command-card">
+          <span>Shell 명령어</span>
+          <code data-linux-command>grep "ERROR" app.log | wc -l</code>
+        </div>
+
+        <div class="linux-visualization__pipe-network" aria-live="polite">
+          <article class="linux-visualization__node" data-linux-pipe-node="shell"><span>Shell</span><strong>명령어 해석</strong><small data-linux-pipe-node-state>대기</small></article>
+          <article class="linux-visualization__node" data-linux-pipe-node="log"><span>입력 파일</span><strong>app.log</strong><small data-linux-pipe-node-state>대기</small></article>
+          <article class="linux-visualization__node" data-linux-pipe-node="grep"><span>프로세스</span><strong>grep</strong><small data-linux-pipe-node-state>대기</small></article>
+          <article class="linux-visualization__node" data-linux-pipe-node="pipe"><span>파일 디스크립터</span><strong>Pipe</strong><small data-linux-pipe-node-state>연결 없음</small></article>
+          <article class="linux-visualization__node" data-linux-pipe-node="wc"><span>프로세스</span><strong>wc</strong><small data-linux-pipe-node-state>대기</small></article>
+          <article class="linux-visualization__node" data-linux-pipe-node="terminal"><span>출력 대상</span><strong>Terminal</strong><small data-linux-pipe-node-state>대기</small></article>
+          <article class="linux-visualization__node" data-linux-pipe-node="error"><span>출력 대상</span><strong>error.log</strong><small data-linux-pipe-node-state>기존 내용 1줄</small></article>
+        </div>
+
+        <div class="linux-visualization__io-summary">
+          <div><span>stdin · 0</span><strong data-linux-stdin>터미널 또는 Pipe에서 입력</strong></div>
+          <div><span>stdout · 1</span><strong data-linux-stdout>grep 결과가 Pipe로 이동</strong></div>
+          <div><span>stderr · 2</span><strong data-linux-stderr>일반 Pipe 연결에 포함되지 않음</strong></div>
+        </div>
+
+        <div class="linux-visualization__data-panel">
+          <span>현재 처리 중인 데이터</span>
+          <code data-linux-data>ERROR가 포함된 줄을 찾기 전</code>
+          <strong data-linux-result>아직 출력되지 않음</strong>
+        </div>
+      </div>
+
+      <p class="linux-visualization__description" data-linux-description>두 명령어를 `|`로 연결하면 첫 번째 명령어의 표준 출력이 두 번째 명령어의 표준 입력으로 연결된다.</p>
+      <div class="linux-visualization__controls" aria-label="Pipe와 Redirection 시각화 단계 제어">
+        <button type="button" class="btn btn-outline-secondary btn-sm" data-linux-action="previous" disabled>이전</button>
+        <button type="button" class="btn btn-outline-secondary btn-sm" data-linux-action="reset" disabled>초기화</button>
+        <button type="button" class="btn btn-outline-secondary btn-sm" data-linux-action="next">다음</button>
+      </div>
+      <p class="linux-visualization__note">단계는 데이터 흐름을 읽기 위한 교육용 표현이다. 연결된 프로세스는 실제로 동시에 실행될 수 있으며, 일반적인 `|`는 stderr를 자동으로 전달하지 않는다.</p>
+      <ol class="linux-visualization__fallback" data-linux-fallback hidden>
+        <li>`grep`이 `app.log`에서 ERROR가 포함된 두 줄을 찾는다.</li>
+        <li>두 줄은 `grep`의 stdout으로 나온다.</li>
+        <li>Pipe가 stdout을 `wc`의 stdin으로 연결한다.</li>
+        <li>`wc`가 줄 수를 세어 Terminal에 `2`를 출력한다.</li>
+      </ol>
+
+    {% when 'von-neumann' %}
+      <div class="linux-visualization__header">
+        <p class="linux-visualization__eyebrow">Interactive computer architecture</p>
+        <h3 id="{{ visualization_id }}-title">폰 노이만 구조와 명령어 처리</h3>
+        <p>Instruction과 Data가 같은 Main Memory에 있고, CPU가 명령어를 가져와 해석하고 실행하는 교육용 모델이다.</p>
+      </div>
+
+      <div class="linux-visualization__progress" aria-live="polite">
+        <strong data-linux-step-title>초기 상태</strong>
+        <span data-linux-step-count>1 / 11</span>
+      </div>
+
+      <div class="linux-visualization__stage linux-visualization__von-neumann-stage">
+        <section class="linux-visualization__memory" aria-label="Main Memory">
+          <div class="linux-visualization__section-heading"><span>Main Memory</span><small>명령어와 데이터가 같은 메모리에 존재</small></div>
+          <div class="linux-visualization__memory-block" data-linux-memory-block="instruction">
+            <span>Instruction 영역</span>
+            <div class="linux-visualization__memory-cell" data-linux-memory-cell="100"><b>100</b><code>LOAD A</code></div>
+            <div class="linux-visualization__memory-cell" data-linux-memory-cell="101"><b>101</b><code>ADD B</code></div>
+            <div class="linux-visualization__memory-cell" data-linux-memory-cell="102"><b>102</b><code>STORE C</code></div>
+          </div>
+          <div class="linux-visualization__memory-block" data-linux-memory-block="data">
+            <span>Data 영역</span>
+            <div class="linux-visualization__memory-cell" data-linux-memory-cell="A"><b>A</b><code data-linux-memory-value="A">3</code></div>
+            <div class="linux-visualization__memory-cell" data-linux-memory-cell="B"><b>B</b><code data-linux-memory-value="B">5</code></div>
+            <div class="linux-visualization__memory-cell" data-linux-memory-cell="C"><b>C</b><code data-linux-memory-value="C">0</code></div>
+          </div>
+        </section>
+
+        <section class="linux-visualization__cpu" aria-label="CPU">
+          <div class="linux-visualization__section-heading"><span>CPU</span><small>Control Unit · ALU · Registers</small></div>
+          <div class="linux-visualization__cpu-core">
+            <article class="linux-visualization__cpu-part" data-linux-vn-part="control"><span>Control Unit</span><strong>명령어 해석</strong></article>
+            <article class="linux-visualization__cpu-part" data-linux-vn-part="alu"><span>ALU</span><strong>산술 연산</strong></article>
+            <article class="linux-visualization__cpu-part" data-linux-vn-part="bus"><span>Bus</span><strong>주소·데이터 전달</strong></article>
+          </div>
+          <div class="linux-visualization__register-grid">
+            <div data-linux-vn-register="PC"><span>PC</span><strong>100</strong></div>
+            <div data-linux-vn-register="IR"><span>IR</span><strong>비어 있음</strong></div>
+            <div data-linux-vn-register="MAR"><span>MAR</span><strong>—</strong></div>
+            <div data-linux-vn-register="MDR"><span>MDR</span><strong>—</strong></div>
+            <div data-linux-vn-register="ACC"><span>Accumulator</span><strong>0</strong></div>
+          </div>
+        </section>
+
+        <div class="linux-visualization__vn-state">
+          <div><span>현재 접근</span><strong data-linux-vn-access>없음</strong></div>
+          <div><span>현재 명령어</span><strong data-linux-vn-instruction>비어 있음</strong></div>
+          <div><span>처리 이유</span><strong data-linux-vn-reason>프로그램 시작 전 상태다.</strong></div>
+        </div>
+      </div>
+
+      <p class="linux-visualization__description" data-linux-description>PC는 다음에 가져올 명령어의 위치를, IR은 현재 해석하거나 실행하는 명령어를 나타낸다. 이 모델은 실제 CPU의 모든 세부 동작을 재현하지 않는다.</p>
+      <div class="linux-visualization__controls" aria-label="폰 노이만 시각화 단계 제어">
+        <button type="button" class="btn btn-outline-secondary btn-sm" data-linux-action="previous" disabled>이전</button>
+        <button type="button" class="btn btn-outline-secondary btn-sm" data-linux-action="reset" disabled>초기화</button>
+        <button type="button" class="btn btn-outline-secondary btn-sm" data-linux-action="next">다음</button>
+      </div>
+      <p class="linux-visualization__note">Instruction과 Data는 학습을 위한 논리적 구분이다. 현대 CPU의 실제 구현에는 캐시와 여러 실행 최적화가 있지만, 여기서는 Fetch·Decode·Execute의 기본 관계만 표시한다.</p>
+      <ol class="linux-visualization__fallback" data-linux-fallback hidden>
+        <li>PC가 가리키는 주소의 명령어를 MAR·MDR을 거쳐 가져오고 IR에 둔다.</li>
+        <li>Control Unit이 IR의 명령어를 해석한다.</li>
+        <li>필요한 데이터를 읽어 ALU가 처리하고 Accumulator 또는 메모리에 반영한다.</li>
+      </ol>
+
+    {% when 'permission' %}
+      <div class="linux-visualization__header">
+        <p class="linux-visualization__eyebrow">Interactive Linux permission</p>
+        <h3 id="{{ visualization_id }}-title">Linux 권한과 접근 가능 여부</h3>
+        <p>권한 숫자와 대상 사용자를 바꾸면서 파일과 디렉터리에 적용되는 권한 범주를 확인한다.</p>
+      </div>
+
+      <div class="linux-visualization__stage linux-visualization__permission-stage">
+        <div class="linux-visualization__permission-toolbar">
+          <div>
+            <span>파일 유형</span>
+            <div class="linux-visualization__choice-row" role="tablist" aria-label="파일 유형 선택">
+              <button type="button" class="btn btn-outline-secondary btn-sm is-active" data-linux-file-type="file" role="tab" aria-selected="true">일반 파일</button>
+              <button type="button" class="btn btn-outline-secondary btn-sm" data-linux-file-type="directory" role="tab" aria-selected="false">디렉터리</button>
+            </div>
+          </div>
+          <div>
+            <span>실행 주체</span>
+            <div class="linux-visualization__choice-row" role="tablist" aria-label="실행 주체 선택">
+              <button type="button" class="btn btn-outline-secondary btn-sm is-active" data-linux-actor="user" role="tab" aria-selected="true">소유자</button>
+              <button type="button" class="btn btn-outline-secondary btn-sm" data-linux-actor="group" role="tab" aria-selected="false">소유 그룹</button>
+              <button type="button" class="btn btn-outline-secondary btn-sm" data-linux-actor="other" role="tab" aria-selected="false">Others</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="linux-visualization__permission-editor">
+          <div class="linux-visualization__ownership"><span data-linux-permission-target>deploy.sh</span><strong>소유자: ubuntu · 그룹: spring</strong></div>
+          <div class="linux-visualization__permission-grid" role="group" aria-label="rwx 권한 선택">
+            <div class="linux-visualization__permission-row linux-visualization__permission-heading"><span>범주</span><b>r</b><b>w</b><b>x</b><span>비트</span></div>
+            <div class="linux-visualization__permission-row" data-linux-permission-group="user"><span>User</span><button type="button" data-linux-permission-bit="r" aria-label="User 읽기 권한">r</button><button type="button" data-linux-permission-bit="w" aria-label="User 쓰기 권한">w</button><button type="button" data-linux-permission-bit="x" aria-label="User 실행 권한">x</button><code data-linux-permission-bits>110</code></div>
+            <div class="linux-visualization__permission-row" data-linux-permission-group="group"><span>Group</span><button type="button" data-linux-permission-bit="r" aria-label="Group 읽기 권한">r</button><button type="button" data-linux-permission-bit="w" aria-label="Group 쓰기 권한">w</button><button type="button" data-linux-permission-bit="x" aria-label="Group 실행 권한">x</button><code data-linux-permission-bits>100</code></div>
+            <div class="linux-visualization__permission-row" data-linux-permission-group="other"><span>Others</span><button type="button" data-linux-permission-bit="r" aria-label="Others 읽기 권한">r</button><button type="button" data-linux-permission-bit="w" aria-label="Others 쓰기 권한">w</button><button type="button" data-linux-permission-bit="x" aria-label="Others 실행 권한">x</button><code data-linux-permission-bits>000</code></div>
+          </div>
+
+          <div class="linux-visualization__permission-summary">
+            <div><span>문자 권한</span><strong data-linux-permission-symbolic>rw-r-----</strong></div>
+            <div><span>숫자 권한</span><strong data-linux-permission-octal>640</strong></div>
+            <div><span>대응 명령어</span><code data-linux-permission-command>chmod 640 deploy.sh</code></div>
+          </div>
+        </div>
+
+        <div class="linux-visualization__access-panel">
+          <div class="linux-visualization__choice-row" role="tablist" aria-label="요청 동작 선택">
+            <button type="button" class="btn btn-outline-secondary btn-sm is-active" data-linux-operation="r" role="tab" aria-selected="true">읽기</button>
+            <button type="button" class="btn btn-outline-secondary btn-sm" data-linux-operation="w" role="tab" aria-selected="false">쓰기</button>
+            <button type="button" class="btn btn-outline-secondary btn-sm" data-linux-operation="x" role="tab" aria-selected="false"><span data-linux-operation-label>실행</span></button>
+          </div>
+          <div class="linux-visualization__access-result" aria-live="polite">
+            <span>접근 판단</span>
+            <strong data-linux-access-result>허용</strong>
+            <p data-linux-access-reason>User 범주에 읽기 권한 `r`이 있다.</p>
+          </div>
+        </div>
+      </div>
+
+      <p class="linux-visualization__description" data-linux-description>초기 상태는 `deploy.sh`, 소유자 `ubuntu`, 그룹 `spring`, 권한 `640`이다. User에게 x를 추가하면 `740`이 되고 `chmod u+x deploy.sh`로 표현할 수 있다.</p>
+      <div class="linux-visualization__controls" aria-label="Linux 권한 시각화 제어">
+        <button type="button" class="btn btn-outline-secondary btn-sm" data-linux-action="reset">초기화</button>
+      </div>
+      <p class="linux-visualization__note">이 시각화는 root, ACL, SELinux, AppArmor 같은 예외를 제외한 기본 권한 모델이다. 디렉터리에서는 `x`가 프로그램 실행이 아니라 경로 탐색 권한이며, 상위 디렉터리에도 필요한 탐색 권한이 있다는 전제를 둔다.</p>
+      <ol class="linux-visualization__fallback" data-linux-fallback hidden>
+        <li>`640`은 `rw-r-----`이며 User는 읽기·쓰기, Group은 읽기, Others는 아무 권한이 없다.</li>
+        <li>권한 범주는 User·Group·Others 중 하나만 선택되어 적용된다.</li>
+        <li>디렉터리의 `r`은 목록 확인, `x`는 경로 탐색, `w`는 항목 생성·삭제 등에 관여한다.</li>
+      </ol>
+  {% endcase %}
+</figure>
+
+<script defer src="{{ '/assets/js/interactive-layout.js' | relative_url }}"></script>
+<script defer src="{{ '/assets/js/linux-visualization.js' | relative_url }}"></script>
